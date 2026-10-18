@@ -17,10 +17,10 @@ Browser app (Vite + React + TypeScript) that generates a calendar to print on pa
 Three layers, kept strictly separated (see [doc/plan.md](doc/plan.md)):
 
 - `src/core/` — pure calendar logic, no React. `buildMonth` always returns 6 weeks so every month has the same height; dates are built from components (not ms arithmetic) to stay DST-safe. `locale.ts` derives month/weekday names from `Intl.DateTimeFormat`.
-- `src/config/` — the single `CalendarConfig` object. `App` holds it in state and persists it to `localStorage` on every change; `parseConfig` validates untrusted stored data field by field and falls back to defaults.
-- `src/ui/` — `ConfigPanel` edits the config; `Preview` renders page boxes (A4/A3/Letter) and puts a layout from `ui/layouts/` inside each page. Layouts take `config` and build their model from `core/` (memoized).
+- `src/config/` — the single `CalendarConfig` object. `ui/useCalendarConfig` holds it via the pure `configReducer` (`update` a few fields / `replace` the whole config) and persists it to `localStorage` on every change; `parseConfig` validates untrusted stored data field by field and falls back to defaults.
+- `src/ui/` — `sidebar/` holds the `Toolbar` (print, export/import, reset) and `ConfigForm`, whose sections (`CalendarSection`, `TextSection`, `PageSection`, `AppearanceSection`) build on the typed controls in `fields/` (`SelectField`, `NumberField`, …); `Preview` renders page boxes (A4/A3/Letter) and puts a layout from `ui/layouts/` inside each page. Layouts take `config` and build their model from `core/` (memoized).
 
-Adding a config option touches: `CalendarConfig` type, `defaultConfig()`, `parseConfig()` validation, and a `ConfigPanel` control.
+Adding a config option touches: `CalendarConfig` type, `defaultConfig()`, `parseConfig()` validation, and a control in the matching `ui/sidebar/*Section.tsx`.
 
 ### Printing
 
@@ -35,7 +35,7 @@ Adding a config option touches: `CalendarConfig` type, `defaultConfig()`, `parse
 
 ### Styles
 
-- Each component's styles live in a co-located CSS Module: `ConfigPanel.tsx` → `ConfigPanel.module.css`, imported as `import styles from './ConfigPanel.module.css'`.
+- Each component's styles live in a co-located CSS Module: `Toolbar.tsx` → `Toolbar.module.css`, imported as `import styles from './Toolbar.module.css'`.
 - Use camelCase class names (`.a4Portrait`) so they read as `styles.a4Portrait`.
 - Keep a component's print overrides (`@media print`) in its own module file.
 - `src/index.css` holds only global styles: reset, `:root` fonts/colors (CSS variables), `body`, and the `@page` rule. No component classes there.

@@ -29,5 +29,5 @@ Use Chrome/Chromium: **Print → Destination: Save as PDF, Paper: A4, Margins: N
 src/
   core/    pure calendar logic (no UI)
   config/  CalendarConfig type, defaults, persistence
-  ui/      ConfigPanel, Preview and page layouts
+  ui/      sidebar (toolbar + config form), form fields, Preview and page layouts
 ```

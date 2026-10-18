@@ -1,0 +1,14 @@
+.field {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	font-size: 0.875rem;
+	font-weight: 600;
+}
+
+.field input,
+.field select {
+	padding: 6px 8px;
+	font: inherit;
+	font-weight: normal;
+}

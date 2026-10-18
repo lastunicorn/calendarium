@@ -1,6 +1,8 @@
 import styles from './App.module.css'
-import { ConfigPanel } from './ui/ConfigPanel'
 import { Preview } from './ui/Preview'
+import { ConfigForm } from './ui/sidebar/ConfigForm'
+import { Sidebar } from './ui/sidebar/Sidebar'
+import { Toolbar } from './ui/sidebar/Toolbar'
 import { useCalendarConfig } from './ui/useCalendarConfig'
 
 export default function App() {
@@ -8,7 +10,10 @@ export default function App() {
 
 	return (
 		<div className={styles.app}>
-			<ConfigPanel config={config} onUpdate={update} onReplace={replace} />
+			<Sidebar>
+				<Toolbar config={config} onReplace={replace} />
+				<ConfigForm config={config} onUpdate={update} />
+			</Sidebar>
 			<Preview config={config} />
 		</div>
 	)
