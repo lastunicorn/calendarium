@@ -1,3 +1,5 @@
+/* Global styles only. Component styles live in co-located *.module.css files. */
+
 :root {
 	font-family: system-ui, sans-serif;
 	color: #222;
@@ -12,39 +14,6 @@ body {
 	margin: 0;
 }
 
-.app {
-	display: flex;
-	min-height: 100vh;
-}
-
-.config-panel {
-	width: 280px;
-	flex-shrink: 0;
-	padding: 16px;
-	background: #fff;
-	border-right: 1px solid #ccc;
-}
-
-.preview {
-	flex: 1;
-	display: flex;
-	justify-content: center;
-	padding: 24px;
-	overflow: auto;
-}
-
-/* Pages are sized in mm so the preview matches the printed output. */
-.page {
-	background: #fff;
-	box-shadow: 0 2px 8px rgb(0 0 0 / 0.2);
-	padding: 10mm;
-}
-
-.page--a4-portrait {
-	width: 210mm;
-	height: 297mm;
-}
-
 @page {
 	size: A4 portrait;
 	margin: 0;
@@ -53,17 +22,5 @@ body {
 @media print {
 	:root {
 		background: #fff;
-	}
-
-	.config-panel {
-		display: none;
-	}
-
-	.preview {
-		padding: 0;
-	}
-
-	.page {
-		box-shadow: none;
 	}
 }

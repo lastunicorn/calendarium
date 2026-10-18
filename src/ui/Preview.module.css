@@ -1,0 +1,30 @@
+.preview {
+	flex: 1;
+	display: flex;
+	justify-content: center;
+	padding: 24px;
+	overflow: auto;
+}
+
+/* Pages are sized in mm so the preview matches the printed output. */
+.page {
+	flex-shrink: 0;
+	background: #fff;
+	box-shadow: 0 2px 8px rgb(0 0 0 / 0.2);
+	padding: 10mm;
+}
+
+.a4Portrait {
+	width: 210mm;
+	height: 297mm;
+}
+
+@media print {
+	.preview {
+		padding: 0;
+	}
+
+	.page {
+		box-shadow: none;
+	}
+}

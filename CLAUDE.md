@@ -11,6 +11,14 @@ Browser app (Vite + React + TypeScript) that generates a calendar to print on pa
 - Indent with tabs (enforced by Prettier and `.editorconfig`); Markdown and YAML use 2 spaces.
 - Run `npm run format` after editing.
 
+### Styles
+
+- Each component's styles live in a co-located CSS Module: `ConfigPanel.tsx` → `ConfigPanel.module.css`, imported as `import styles from './ConfigPanel.module.css'`.
+- Use camelCase class names (`.a4Portrait`) so they read as `styles.a4Portrait`.
+- Keep a component's print overrides (`@media print`) in its own module file.
+- `src/index.css` holds only global styles: reset, `:root` fonts/colors (CSS variables), `body`, and the `@page` rule. No component classes there.
+- Size anything inside a printed page in `mm`/`pt`, never `px`.
+
 ### Event handlers
 
 - Never write event handlers inline in JSX (`onClick={() => ...}`). Extract them as named functions and pass them by reference: `onClick={handlePrintClick}`.
