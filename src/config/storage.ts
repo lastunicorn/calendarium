@@ -1,3 +1,4 @@
+import { isWeekStart } from '../core/calendar'
 import { type CalendarConfig, defaultConfig, LOCALES } from './CalendarConfig'
 
 const STORAGE_KEY = 'calendar-config'
@@ -18,7 +19,7 @@ export function parseConfig(data: unknown): CalendarConfig {
 	if (LOCALES.some((locale) => locale.value === stored.locale))
 		config.locale = stored.locale as string
 
-	if (stored.weekStart === 0 || stored.weekStart === 1) config.weekStart = stored.weekStart
+	if (isWeekStart(stored.weekStart)) config.weekStart = stored.weekStart
 
 	if (typeof stored.title === 'string') config.title = stored.title
 

@@ -10,9 +10,10 @@ describe('monthNames', () => {
 })
 
 describe('weekdayNames', () => {
-	it('starts on Monday or Sunday', () => {
+	it('starts on the given week start day', () => {
 		expect(weekdayNames('en-US', 1)).toEqual(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'])
 		expect(weekdayNames('en-US', 0)).toEqual(['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'])
+		expect(weekdayNames('en-US', 6)).toEqual(['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'])
 	})
 
 	it('strips abbreviation dots', () => {

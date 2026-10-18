@@ -1,7 +1,16 @@
 import { describe, expect, it } from 'vitest'
-import { buildMonth, buildYear, daysInMonth, isLeapYear, WEEKS_PER_MONTH } from './calendar'
+import {
+	buildMonth,
+	buildYear,
+	daysInMonth,
+	isLeapYear,
+	type WeekStart,
+	WEEKS_PER_MONTH,
+} from './calendar'
 
-function inMonthDays(year: number, month: number, weekStart: 0 | 1) {
+const WEEK_STARTS: WeekStart[] = [0, 1, 2, 3, 4, 5, 6]
+
+function inMonthDays(year: number, month: number, weekStart: WeekStart) {
 	return buildMonth(year, month, weekStart)
 		.weeks.flat()
 		.filter((day) => day.inMonth)
@@ -33,7 +42,7 @@ describe('daysInMonth', () => {
 
 describe('buildMonth', () => {
 	it('always has 6 weeks of 7 days', () => {
-		for (const weekStart of [0, 1] as const) {
+		for (const weekStart of WEEK_STARTS) {
 			for (let month = 0; month < 12; month++) {
 				const { weeks } = buildMonth(2026, month, weekStart)
 				expect(weeks).toHaveLength(WEEKS_PER_MONTH)
@@ -53,6 +62,17 @@ describe('buildMonth', () => {
 		expect(monday.findIndex((day) => day.inMonth)).toBe(3)
 		const sunday = buildMonth(2026, 0, 0).weeks[0]
 		expect(sunday.findIndex((day) => day.inMonth)).toBe(4)
+		const thursday = buildMonth(2026, 0, 4).weeks[0]
+		expect(thursday.findIndex((day) => day.inMonth)).toBe(0)
+		const friday = buildMonth(2026, 0, 5).weeks[0]
+		expect(friday.findIndex((day) => day.inMonth)).toBe(6)
+	})
+
+	it('starts every week on the week start day', () => {
+		for (const weekStart of WEEK_STARTS) {
+			for (const week of buildMonth(2026, 2, weekStart).weeks)
+				expect(week[0].date.getDay()).toBe(weekStart)
+		}
 	})
 
 	it('starts on the first cell when the month begins on the week start', () => {

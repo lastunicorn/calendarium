@@ -12,7 +12,7 @@ describe('parseConfig', () => {
 		const stored = {
 			year: 2030,
 			locale: 'ro-RO',
-			weekStart: 0,
+			weekStart: 6,
 			title: 'Family',
 			highlightWeekends: false,
 			orientation: 'landscape',
@@ -24,7 +24,7 @@ describe('parseConfig', () => {
 		const config = parseConfig({
 			year: 2030.5,
 			locale: 'xx',
-			weekStart: 3,
+			weekStart: 7,
 			title: 7,
 			orientation: 'up',
 		})

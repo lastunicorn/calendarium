@@ -8,6 +8,17 @@ interface ConfigPanelProps {
 	onChange: (config: CalendarConfig) => void
 }
 
+/** Week start options in panel order, Monday first. */
+const WEEK_STARTS: { value: WeekStart; label: string }[] = [
+	{ value: 1, label: 'Monday' },
+	{ value: 2, label: 'Tuesday' },
+	{ value: 3, label: 'Wednesday' },
+	{ value: 4, label: 'Thursday' },
+	{ value: 5, label: 'Friday' },
+	{ value: 6, label: 'Saturday' },
+	{ value: 0, label: 'Sunday' },
+]
+
 function handlePrintClick() {
 	window.print()
 }
@@ -77,8 +88,11 @@ export function ConfigPanel({ config, onChange }: ConfigPanelProps) {
 			<label className={styles.field}>
 				Week starts on
 				<select value={config.weekStart} onChange={handleWeekStartChange}>
-					<option value={1}>Monday</option>
-					<option value={0}>Sunday</option>
+					{WEEK_STARTS.map((weekStart) => (
+						<option key={weekStart.value} value={weekStart.value}>
+							{weekStart.label}
+						</option>
+					))}
 				</select>
 			</label>
 

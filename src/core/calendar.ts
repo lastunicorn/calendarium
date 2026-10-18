@@ -1,5 +1,9 @@
-/** Day of the week a calendar week starts on: 0 = Sunday, 1 = Monday. */
-export type WeekStart = 0 | 1
+/** Day of the week a calendar week starts on, as in `Date.getDay()`: 0 = Sunday … 6 = Saturday. */
+export type WeekStart = 0 | 1 | 2 | 3 | 4 | 5 | 6
+
+export function isWeekStart(value: unknown): value is WeekStart {
+	return Number.isInteger(value) && (value as number) >= 0 && (value as number) <= 6
+}
 
 export interface CalendarDay {
 	date: Date
