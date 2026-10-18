@@ -1,6 +1,7 @@
 import { type ChangeEvent, useRef, useState } from 'react'
 import {
 	type CalendarConfig,
+	defaultConfig,
 	isMargin,
 	LOCALES,
 	MARGIN_SIDES,
@@ -14,7 +15,7 @@ import { parseConfigFile, serializeConfig } from '../config/storage'
 import type { WeekStart } from '../core/calendar'
 import type { WeekdayFormat } from '../core/locale'
 import styles from './ConfigPanel.module.css'
-import { ExportIcon, ImportIcon, PrintIcon } from './icons'
+import { ExportIcon, ImportIcon, PrintIcon, ResetIcon } from './icons'
 
 interface ConfigPanelProps {
 	config: CalendarConfig
@@ -55,8 +56,8 @@ function downloadFile(name: string, text: string, type: string) {
 export function ConfigPanel({ config, onChange }: ConfigPanelProps) {
 	const fileInput = useRef<HTMLInputElement>(null)
 	const [importError, setImportError] = useState('')
-	/** Bumped on import to remount the uncontrolled number inputs with the imported values. */
-	const [importCount, setImportCount] = useState(0)
+	/** Bumped on import and reset to remount the uncontrolled number inputs with the new values. */
+	const [loadCount, setLoadCount] = useState(0)
 
 	function handleYearChange(event: ChangeEvent<HTMLInputElement>) {
 		const year = event.currentTarget.valueAsNumber
@@ -114,6 +115,13 @@ export function ConfigPanel({ config, onChange }: ConfigPanelProps) {
 		fileInput.current?.click()
 	}
 
+	function handleResetClick() {
+		if (!window.confirm('Reset all settings to their defaults?')) return
+		setImportError('')
+		setLoadCount(loadCount + 1)
+		onChange(defaultConfig())
+	}
+
 	async function handleImportFileChange(event: ChangeEvent<HTMLInputElement>) {
 		const input = event.currentTarget
 		const file = input.files?.[0]
@@ -127,7 +135,7 @@ export function ConfigPanel({ config, onChange }: ConfigPanelProps) {
 			return
 		}
 		setImportError('')
-		setImportCount(importCount + 1)
+		setLoadCount(loadCount + 1)
 		onChange(imported)
 	}
 
@@ -138,7 +146,7 @@ export function ConfigPanel({ config, onChange }: ConfigPanelProps) {
 			<label className={styles.field}>
 				Year
 				<input
-					key={importCount}
+					key={loadCount}
 					type="number"
 					min={1}
 					max={9999}
@@ -215,7 +223,7 @@ export function ConfigPanel({ config, onChange }: ConfigPanelProps) {
 					<label key={side} className={styles.margin}>
 						{MARGIN_LABELS[side]}
 						<input
-							key={importCount}
+							key={loadCount}
 							type="number"
 							min={0}
 							max={MAX_MARGIN}
@@ -259,6 +267,10 @@ export function ConfigPanel({ config, onChange }: ConfigPanelProps) {
 				<button type="button" className={styles.button} onClick={handleImportClick}>
 					<ImportIcon />
 					Import
+				</button>
+				<button type="button" className={styles.button} onClick={handleResetClick}>
+					<ResetIcon />
+					Reset
 				</button>
 				<input
 					ref={fileInput}
