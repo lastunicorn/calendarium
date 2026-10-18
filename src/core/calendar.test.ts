@@ -2,7 +2,9 @@ import { describe, expect, it } from 'vitest'
 import {
 	buildMonth,
 	buildYear,
+	dayOfYear,
 	daysInMonth,
+	daysOfYear,
 	isLeapYear,
 	isoWeek,
 	type WeekStart,
@@ -128,6 +130,37 @@ describe('buildYear', () => {
 			)
 		expect(count(2026)).toBe(365)
 		expect(count(2024)).toBe(366)
+	})
+})
+
+describe('daysOfYear', () => {
+	it('lists every day of the year once, in order', () => {
+		for (const year of [2024, 2026]) {
+			const days = daysOfYear(buildYear(year, 1))
+			expect(days).toHaveLength(isLeapYear(year) ? 366 : 365)
+			days.forEach((day, index) => {
+				expect(day.date).toEqual(new Date(year, 0, 1 + index))
+				expect(day.inMonth).toBe(true)
+			})
+		}
+	})
+})
+
+describe('dayOfYear', () => {
+	it('counts from 1 on January 1', () => {
+		expect(dayOfYear(new Date(2026, 0, 1))).toBe(1)
+		expect(dayOfYear(new Date(2026, 1, 1))).toBe(32)
+		expect(dayOfYear(new Date(2026, 11, 31))).toBe(365)
+	})
+
+	it('counts February 29 in leap years', () => {
+		expect(dayOfYear(new Date(2024, 1, 29))).toBe(60)
+		expect(dayOfYear(new Date(2024, 11, 31))).toBe(366)
+	})
+
+	it('ignores DST changes and the time of day', () => {
+		expect(dayOfYear(new Date(2026, 2, 30))).toBe(89)
+		expect(dayOfYear(new Date(2026, 9, 26, 23, 30))).toBe(299)
 	})
 })
 

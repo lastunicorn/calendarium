@@ -1,0 +1,46 @@
+.layout {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+.top {
+	display: flex;
+	gap: 6mm;
+	align-items: flex-start;
+	margin-bottom: 4mm;
+}
+
+.heading {
+	flex: 1;
+	min-width: 0;
+}
+
+.details {
+	margin: 0;
+	font-size: 9pt;
+	color: var(--color-text-muted);
+}
+
+/* A grid, so the mini month stretches to this fixed box. */
+.miniMonth {
+	display: grid;
+	flex-shrink: 0;
+	width: 56mm;
+	height: 42mm;
+}
+
+/* A writing line every 8mm: one tile repeated, so every line rasterizes alike and costs no DOM. */
+.lines {
+	flex: 1;
+	min-height: 0;
+	border-top: 0.3mm solid var(--color-rule);
+	background: linear-gradient(to top, var(--color-rule-light) 0.25mm, transparent 0.25mm) 0 0 /
+		100% 8mm;
+}
+
+@media print {
+	.lines {
+		print-color-adjust: exact;
+	}
+}

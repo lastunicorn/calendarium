@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { monthNames, monthYearName, weekdayNames } from './locale'
+import { fullDateName, monthNames, monthYearName, weekdayName, weekdayNames } from './locale'
 
 describe('monthNames', () => {
 	it('returns 12 capitalized names', () => {
@@ -40,5 +40,23 @@ describe('weekdayNames', () => {
 
 	it('writes Japanese weekday names', () => {
 		expect(weekdayNames('ja-JP', 0)).toEqual(['日', '月', '火', '水', '木', '金', '土'])
+	})
+})
+
+describe('weekdayName', () => {
+	it('writes the full weekday name in the locale, capitalized', () => {
+		const date = new Date(2026, 9, 19)
+		expect(weekdayName('en-US', date)).toBe('Monday')
+		expect(weekdayName('ro-RO', date)).toBe('Luni')
+		expect(weekdayName('ja-JP', date)).toBe('月曜日')
+	})
+})
+
+describe('fullDateName', () => {
+	it('writes the long date in the locale', () => {
+		const date = new Date(2026, 9, 19)
+		expect(fullDateName('en-US', date)).toBe('October 19, 2026')
+		expect(fullDateName('ro-RO', date)).toBe('19 octombrie 2026')
+		expect(fullDateName('ja-JP', date)).toBe('2026年10月19日')
 	})
 })

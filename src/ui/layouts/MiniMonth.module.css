@@ -58,6 +58,13 @@
 	background: var(--color-weekend-background);
 }
 
+/* After `.day.weekend`, so a marked weekend day is marked too. */
+.day.marked {
+	font-weight: 700;
+	color: var(--color-surface);
+	background: var(--color-text);
+}
+
 @media print {
 	.month {
 		print-color-adjust: exact;

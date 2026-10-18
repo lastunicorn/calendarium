@@ -1,5 +1,6 @@
 import type { ComponentType } from 'react'
 import type { CalendarConfig, LayoutId } from '../../config/CalendarConfig'
+import { DayPerPageLayout } from './DayPerPageLayout'
 import { MonthPerPageLayout } from './MonthPerPageLayout'
 import { YearOnePageLayout } from './YearOnePageLayout'
 
@@ -10,4 +11,5 @@ import { YearOnePageLayout } from './YearOnePageLayout'
 export const LAYOUTS: Record<LayoutId, ComponentType<{ config: CalendarConfig }>> = {
 	'year-one-page': YearOnePageLayout,
 	'month-per-page': MonthPerPageLayout,
+	'day-per-page': DayPerPageLayout,
 }

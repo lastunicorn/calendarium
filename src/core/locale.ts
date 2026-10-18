@@ -23,6 +23,16 @@ export function monthYearName(locale: string, year: number, month: number): stri
 	return capitalize(format.format(new Date(year, month, 1)), locale)
 }
 
+/** Localized full weekday name of `date`, e.g. "Monday", "Luni", "月曜日". */
+export function weekdayName(locale: string, date: Date): string {
+	return capitalize(new Intl.DateTimeFormat(locale, { weekday: 'long' }).format(date), locale)
+}
+
+/** Localized long date, e.g. "October 19, 2026", "19 octombrie 2026", "2026年10月19日". */
+export function fullDateName(locale: string, date: Date): string {
+	return capitalize(new Intl.DateTimeFormat(locale, { dateStyle: 'long' }).format(date), locale)
+}
+
 /** Localized weekday names, ordered from `weekStart`. */
 export function weekdayNames(
 	locale: string,

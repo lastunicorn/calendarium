@@ -6,6 +6,7 @@ import { type ConfigSectionProps, Section } from './Section'
 const LAYOUT_OPTIONS = optionsFrom(LAYOUT_IDS, {
 	'year-one-page': 'Year (Whole year on one page)',
 	'month-per-page': 'Month (One month per page)',
+	'day-per-page': 'Day (One day per page)',
 })
 
 /** How the calendar is spread over pages. */

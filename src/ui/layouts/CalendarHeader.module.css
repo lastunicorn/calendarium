@@ -41,3 +41,11 @@
 .compact .subtitle {
 	font-size: 11pt;
 }
+
+.start {
+	text-align: start;
+}
+
+.highlight .title {
+	color: var(--color-weekend);
+}

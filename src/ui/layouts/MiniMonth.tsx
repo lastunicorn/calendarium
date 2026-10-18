@@ -10,6 +10,8 @@ interface MiniMonthProps {
 	weekdays: string[]
 	highlightWeekends: WeekendHighlight
 	showWeekNumbers: boolean
+	/** Day of the month to mark, e.g. the day a page is about. */
+	markedDay?: number
 }
 
 export function MiniMonth({
@@ -18,6 +20,7 @@ export function MiniMonth({
 	weekdays,
 	highlightWeekends,
 	showWeekNumbers,
+	markedDay,
 }: MiniMonthProps) {
 	const weekendColumns = month.weeks[0].map((day) => isHighlightedColumn(day, highlightWeekends))
 
@@ -46,7 +49,11 @@ export function MiniMonth({
 						{week.map((day) => (
 							<div
 								key={day.date.toISOString()}
-								className={`${styles.day} ${isHighlightedDay(day, highlightWeekends) ? styles.weekend : ''}`}
+								className={[
+									styles.day,
+									isHighlightedDay(day, highlightWeekends) ? styles.weekend : '',
+									day.inMonth && day.day === markedDay ? styles.marked : '',
+								].join(' ')}
 							>
 								{day.inMonth ? day.day : ''}
 							</div>

@@ -8,7 +8,7 @@ import type { WeekendHighlight } from '../core/weekend'
 // there: paper sizes and orientations in `core/paper.ts`, weekend highlights in `core/weekend.ts`.
 
 /** Ids of the page layouts; each maps to a component in `ui/layouts/registry.ts`. */
-export const LAYOUT_IDS = ['year-one-page', 'month-per-page'] as const
+export const LAYOUT_IDS = ['year-one-page', 'month-per-page', 'day-per-page'] as const
 export type LayoutId = (typeof LAYOUT_IDS)[number]
 
 /** BCP 47 tags of the languages month and weekday names can be shown in. */

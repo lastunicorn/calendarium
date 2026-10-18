@@ -50,6 +50,11 @@ export function isoWeek(date: Date): number {
 	return 1 + Math.round((dayNumber(thursday) - dayNumber(firstThursday)) / 7)
 }
 
+/** Position of `date` in its year: 1 for January 1 … 365 or 366 for December 31. */
+export function dayOfYear(date: Date): number {
+	return dayNumber(date) - dayNumber(new Date(date.getFullYear(), 0, 1)) + 1
+}
+
 /** Days since the epoch, ignoring the time of day and DST. */
 function dayNumber(date: Date): number {
 	return Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 86_400_000
@@ -97,4 +102,9 @@ export function visibleWeeks(month: CalendarMonth): CalendarDay[][] {
 
 export function buildYear(year: number, weekStart: WeekStart): CalendarMonth[] {
 	return Array.from({ length: 12 }, (_, month) => buildMonth(year, month, weekStart))
+}
+
+/** Every day of the year in order, taken from `buildYear`'s months without adjacent-month days. */
+export function daysOfYear(months: CalendarMonth[]): CalendarDay[] {
+	return months.flatMap((month) => month.weeks.flat().filter((day) => day.inMonth))
 }
