@@ -1,10 +1,5 @@
-import {
-	type Margins,
-	type Orientation,
-	ORIENTATIONS,
-	PAPER_SIZES,
-	type PaperSize,
-} from '../../config/CalendarConfig'
+import type { Margins } from '../../config/CalendarConfig'
+import { type Orientation, ORIENTATIONS, PAPER_SIZES, type PaperSize } from '../../core/paper'
 import { MarginsField } from '../fields/MarginsField'
 import { optionsFrom } from '../fields/options'
 import { SelectField } from '../fields/SelectField'

@@ -1,14 +1,10 @@
 import type { WeekStart } from '../core/calendar'
 import type { WeekdayFormat } from '../core/locale'
+import type { Orientation, PaperSize } from '../core/paper'
 
 // Each set of allowed values is listed once; the type and the validation in `parseConfig`
-// derive from the array, and the UI labels are keyed by the type.
-
-export const ORIENTATIONS = ['portrait', 'landscape'] as const
-export type Orientation = (typeof ORIENTATIONS)[number]
-
-export const PAPER_SIZES = ['a4', 'a3', 'letter'] as const
-export type PaperSize = (typeof PAPER_SIZES)[number]
+// derive from the array, and the UI labels are keyed by the type. Paper sizes and orientations
+// live in `core/paper.ts` with the paper dimensions.
 
 /** `days` highlights only weekend cells with a day number; `columns` the whole weekend column. */
 export const WEEKEND_HIGHLIGHTS = ['off', 'days', 'columns'] as const

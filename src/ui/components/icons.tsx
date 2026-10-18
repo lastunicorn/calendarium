@@ -30,8 +30,8 @@ export function PrintIcon() {
 	)
 }
 
-/** Arrow down into a tray: saves the config to a file. */
-export function ExportIcon() {
+/** Arrow up out of a tray: loads the config from a file. */
+export function ImportIcon() {
 	return (
 		<Icon>
 			<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -41,8 +41,8 @@ export function ExportIcon() {
 	)
 }
 
-/** Arrow up out of a tray: loads the config from a file. */
-export function ImportIcon() {
+/** Arrow down into a tray: saves the config to a file. */
+export function ExportIcon() {
 	return (
 		<Icon>
 			<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />

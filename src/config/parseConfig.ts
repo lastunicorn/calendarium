@@ -1,5 +1,6 @@
 import { isWeekStart } from '../core/calendar'
 import { WEEKDAY_FORMATS } from '../core/locale'
+import { ORIENTATIONS, PAPER_SIZES } from '../core/paper'
 import {
 	type CalendarConfig,
 	defaultConfig,
@@ -7,8 +8,6 @@ import {
 	isYear,
 	LOCALES,
 	MARGIN_SIDES,
-	ORIENTATIONS,
-	PAPER_SIZES,
 	WEEKEND_HIGHLIGHTS,
 } from './CalendarConfig'
 

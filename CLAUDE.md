@@ -18,7 +18,7 @@ Three layers, kept strictly separated (see [doc/plan.md](doc/plan.md)):
 
 - `src/core/` — pure calendar logic, no React. `buildMonth` always returns 6 weeks so every month has the same height; dates are built from components (not ms arithmetic) to stay DST-safe. `locale.ts` derives month/weekday names from `Intl.DateTimeFormat`.
 - `src/config/` — the single `CalendarConfig` object. `ui/useCalendarConfig` holds it via the pure `configReducer` (`update` a few fields / `replace` the whole config) and persists it to `localStorage` on every change; `parseConfig` validates untrusted stored data field by field and falls back to defaults.
-- `src/ui/` — `sidebar/` holds the `Toolbar` (print, export/import, reset) and `ConfigForm`, whose sections (`CalendarSection`, `TextSection`, `PageSection`, `AppearanceSection`) build on the typed controls in `fields/` (`SelectField`, `NumberField`, …); `Preview` renders page boxes (A4/A3/Letter) and puts a layout from `ui/layouts/` inside each page. Layouts take `config` and build their model from `core/` (memoized).
+- `src/ui/` — `sidebar/` holds the `Toolbar` (print, export/import, reset) and `ConfigForm`, whose sections (`CalendarSection`, `TextSection`, `PageSection`, `AppearanceSection`) build on the typed controls in `fields/` (`SelectField`, `NumberField`, …); `preview/Preview` puts a layout from `ui/layouts/` inside a `preview/Page` (one paper sheet). Layouts take `config` and build their model from `core/` (memoized).
 
 Adding a config option touches: `CalendarConfig` type, `defaultConfig()`, a validator in `VALIDATORS` (`config/parseConfig.ts`), and a control in the matching `ui/sidebar/*Section.tsx`. The compiler enforces the validator. For a choice between fixed values, declare a `const` array in `CalendarConfig.ts` and derive the type from it (`(typeof X)[number]`); the validator is `oneOf(X)` and the select options are `optionsFrom(X, labels)`, which fails to compile if a value has no label.
 
@@ -26,8 +26,7 @@ Stored and exported configs are tagged with `CONFIG_VERSION`. Bump it only for a
 
 ### Printing
 
-- Preview page boxes are sized in mm (e.g. A4 210×297) so the screen preview matches print.
-- Paper size and orientation work through CSS named pages: a page class in `Preview.module.css` sets `page: <size><Orientation>` (e.g. `a4Portrait`, `letterLandscape`), matching an `@page` rule of the same name in `src/index.css`. A new paper size/orientation needs both.
+- Paper sizes are defined once in `src/core/paper.ts` (`PAPERS`: CSS name and mm dimensions). `Page` sizes its box in mm from it, so the screen preview matches print, and `Preview` renders a `<style>` with the matching `@page { size }` rule. A new paper size is one entry there plus its label in `PageSection`.
 - Printing targets Chrome/Chromium: Save as PDF, paper size matching the selection, Margins: None, Scale: 100%.
 
 ## Code style
@@ -40,7 +39,7 @@ Stored and exported configs are tagged with `CONFIG_VERSION`. Bump it only for a
 - Each component's styles live in a co-located CSS Module: `Toolbar.tsx` → `Toolbar.module.css`, imported as `import styles from './Toolbar.module.css'`.
 - Use camelCase class names (`.a4Portrait`) so they read as `styles.a4Portrait`.
 - Keep a component's print overrides (`@media print`) in its own module file.
-- `src/index.css` holds only global styles: reset, `:root` fonts/colors (CSS variables), `body`, and the `@page` rule. No component classes there.
+- `src/index.css` holds only global styles: reset, `:root` fonts/colors (CSS variables), `body`, and the global `@page { margin: 0 }`. No component classes there.
 - Size anything inside a printed page in `mm`/`pt`, never `px`.
 
 ### Event handlers

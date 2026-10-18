@@ -1,0 +1,13 @@
+/* Width, height and padding (the page margins) are set inline from the config. */
+.page {
+	flex-shrink: 0;
+	overflow: hidden;
+	background: #fff;
+	box-shadow: 0 2px 8px rgb(0 0 0 / 0.2);
+}
+
+@media print {
+	.page {
+		box-shadow: none;
+	}
+}

@@ -1,0 +1,15 @@
+.preview {
+	flex: 1;
+	display: flex;
+	/* `safe` keeps the page's left edge reachable when it is wider than the preview area. */
+	justify-content: safe center;
+	align-items: flex-start;
+	padding: 24px;
+	overflow: auto;
+}
+
+@media print {
+	.preview {
+		padding: 0;
+	}
+}

@@ -1,5 +1,5 @@
 import styles from './App.module.css'
-import { Preview } from './ui/Preview'
+import { Preview } from './ui/preview/Preview'
 import { ConfigForm } from './ui/sidebar/ConfigForm'
 import { Sidebar } from './ui/sidebar/Sidebar'
 import { Toolbar } from './ui/sidebar/Toolbar'

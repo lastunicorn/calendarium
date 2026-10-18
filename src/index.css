@@ -14,34 +14,9 @@ body {
 	margin: 0;
 }
 
+/* The paper size is set per config by a generated `@page` rule (see ui/preview/Preview.tsx). */
 @page {
-	size: A4 portrait;
 	margin: 0;
-}
-
-/* Named pages, selected per page element via the `page` property (see Preview.module.css). */
-@page a4Portrait {
-	size: A4 portrait;
-}
-
-@page a4Landscape {
-	size: A4 landscape;
-}
-
-@page a3Portrait {
-	size: A3 portrait;
-}
-
-@page a3Landscape {
-	size: A3 landscape;
-}
-
-@page letterPortrait {
-	size: letter portrait;
-}
-
-@page letterLandscape {
-	size: letter landscape;
 }
 
 @media print {
