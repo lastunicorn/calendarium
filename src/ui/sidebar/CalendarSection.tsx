@@ -1,6 +1,15 @@
-import { isYear, type Locale, LOCALES, MAX_YEAR, MIN_YEAR } from '../../config/CalendarConfig'
+import {
+	isYear,
+	type Locale,
+	LOCALES,
+	MAX_YEAR,
+	MIN_YEAR,
+	WEEKEND_HIGHLIGHTS,
+	type WeekendHighlight,
+} from '../../config/CalendarConfig'
 import type { WeekStart } from '../../core/calendar'
 import { WEEKDAY_FORMATS, type WeekdayFormat } from '../../core/locale'
+import { CheckboxField } from '../fields/CheckboxField'
 import { NumberField } from '../fields/NumberField'
 import { type Option, optionsFrom } from '../fields/options'
 import { SelectField } from '../fields/SelectField'
@@ -33,7 +42,13 @@ const WEEKDAY_FORMAT_OPTIONS = optionsFrom(WEEKDAY_FORMATS, {
 	narrow: 'One letter (M)',
 })
 
-/** Which year, and how dates are named and ordered. */
+const WEEKEND_HIGHLIGHT_OPTIONS = optionsFrom(WEEKEND_HIGHLIGHTS, {
+	off: 'Off',
+	days: 'Days only',
+	columns: 'Whole columns',
+})
+
+/** Which year, how dates are named and ordered, and what the grid marks. */
 export function CalendarSection({ config, onUpdate }: ConfigSectionProps) {
 	function handleYearChange(year: number) {
 		onUpdate({ year })
@@ -49,6 +64,14 @@ export function CalendarSection({ config, onUpdate }: ConfigSectionProps) {
 
 	function handleWeekdayFormatChange(weekdayFormat: WeekdayFormat) {
 		onUpdate({ weekdayFormat })
+	}
+
+	function handleHighlightWeekendsChange(highlightWeekends: WeekendHighlight) {
+		onUpdate({ highlightWeekends })
+	}
+
+	function handleShowWeekNumbersChange(showWeekNumbers: boolean) {
+		onUpdate({ showWeekNumbers })
 	}
 
 	return (
@@ -78,6 +101,17 @@ export function CalendarSection({ config, onUpdate }: ConfigSectionProps) {
 				value={config.weekdayFormat}
 				options={WEEKDAY_FORMAT_OPTIONS}
 				onChange={handleWeekdayFormatChange}
+			/>
+			<SelectField
+				label="Highlight weekends"
+				value={config.highlightWeekends}
+				options={WEEKEND_HIGHLIGHT_OPTIONS}
+				onChange={handleHighlightWeekendsChange}
+			/>
+			<CheckboxField
+				label="Week numbers"
+				checked={config.showWeekNumbers}
+				onChange={handleShowWeekNumbersChange}
 			/>
 		</Section>
 	)

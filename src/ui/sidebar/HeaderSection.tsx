@@ -2,7 +2,7 @@ import { TextField } from '../fields/TextField'
 import { type ConfigSectionProps, Section } from './Section'
 
 /** The heading printed above the calendar. */
-export function TextSection({ config, onUpdate }: ConfigSectionProps) {
+export function HeaderSection({ config, onUpdate }: ConfigSectionProps) {
 	function handleTitleChange(title: string) {
 		onUpdate({ title })
 	}
@@ -12,7 +12,7 @@ export function TextSection({ config, onUpdate }: ConfigSectionProps) {
 	}
 
 	return (
-		<Section title="Text">
+		<Section title="Header">
 			<TextField
 				label="Title"
 				value={config.title}
