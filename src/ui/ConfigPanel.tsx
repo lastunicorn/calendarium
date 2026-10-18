@@ -1,7 +1,6 @@
-import { type ChangeEvent, useRef, useState } from 'react'
+import type { ChangeEvent } from 'react'
 import {
 	type CalendarConfig,
-	defaultConfig,
 	isMargin,
 	LOCALES,
 	MARGIN_SIDES,
@@ -11,12 +10,11 @@ import {
 	type PaperSize,
 	type WeekendHighlight,
 } from '../config/CalendarConfig'
-import { parseConfigFile, serializeConfig } from '../config/storage'
 import type { WeekStart } from '../core/calendar'
 import type { WeekdayFormat } from '../core/locale'
 import styles from './ConfigPanel.module.css'
 import { NumberInput } from './fields/NumberInput'
-import { ExportIcon, ImportIcon, PrintIcon, ResetIcon } from './icons'
+import { Toolbar } from './toolbar/Toolbar'
 
 interface ConfigPanelProps {
 	config: CalendarConfig
@@ -71,23 +69,7 @@ function MarginInput({ side, value, onChange }: MarginInputProps) {
 	)
 }
 
-function handlePrintClick() {
-	window.print()
-}
-
-function downloadFile(name: string, text: string, type: string) {
-	const url = URL.createObjectURL(new Blob([text], { type }))
-	const link = document.createElement('a')
-	link.href = url
-	link.download = name
-	link.click()
-	URL.revokeObjectURL(url)
-}
-
 export function ConfigPanel({ config, onChange }: ConfigPanelProps) {
-	const fileInput = useRef<HTMLInputElement>(null)
-	const [importError, setImportError] = useState('')
-
 	function handleYearChange(year: number) {
 		onChange({ ...config, year })
 	}
@@ -132,87 +114,11 @@ export function ConfigPanel({ config, onChange }: ConfigPanelProps) {
 		onChange({ ...config, margins: { ...config.margins, [side]: margin } })
 	}
 
-	function handleExportClick() {
-		downloadFile(`calendar-${config.year}.json`, serializeConfig(config), 'application/json')
-	}
-
-	function handleImportClick() {
-		fileInput.current?.click()
-	}
-
-	function handleResetClick() {
-		if (!window.confirm('Reset all settings to their defaults?')) return
-		setImportError('')
-		onChange(defaultConfig())
-	}
-
-	async function handleImportFileChange(event: ChangeEvent<HTMLInputElement>) {
-		const input = event.currentTarget
-		const file = input.files?.[0]
-		// Reset so choosing the same file again still fires `change`.
-		input.value = ''
-		if (!file) return
-
-		const imported = parseConfigFile(await file.text())
-		if (imported === null) {
-			setImportError(`${file.name} is not a valid configuration file.`)
-			return
-		}
-		setImportError('')
-		onChange(imported)
-	}
-
 	return (
 		<aside className={styles.panel}>
 			<h1 className={styles.heading}>Calendar</h1>
 
-			<div className={styles.toolbar} role="toolbar" aria-label="Calendar actions">
-				<button
-					type="button"
-					className={styles.iconButton}
-					title="Print"
-					aria-label="Print"
-					onClick={handlePrintClick}
-				>
-					<PrintIcon />
-				</button>
-				<button
-					type="button"
-					className={styles.iconButton}
-					title="Export settings to a file"
-					aria-label="Export settings to a file"
-					onClick={handleExportClick}
-				>
-					<ExportIcon />
-				</button>
-				<button
-					type="button"
-					className={styles.iconButton}
-					title="Import settings from a file"
-					aria-label="Import settings from a file"
-					onClick={handleImportClick}
-				>
-					<ImportIcon />
-				</button>
-				<button
-					type="button"
-					className={styles.iconButton}
-					title="Reset all settings"
-					aria-label="Reset all settings"
-					onClick={handleResetClick}
-				>
-					<ResetIcon />
-				</button>
-				<input
-					ref={fileInput}
-					type="file"
-					accept=".json,application/json"
-					hidden
-					onChange={handleImportFileChange}
-				/>
-			</div>
-
-			{importError && <p className={styles.error}>{importError}</p>}
+			<Toolbar config={config} onReplace={onChange} />
 
 			<label className={styles.field}>
 				Year

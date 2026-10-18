@@ -1,0 +1,10 @@
+.toolbar {
+	display: flex;
+	gap: 8px;
+}
+
+.error {
+	margin: 0;
+	font-size: 0.875rem;
+	color: #b00020;
+}

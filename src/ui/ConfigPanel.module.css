@@ -67,27 +67,6 @@
 	font-weight: 600;
 }
 
-.toolbar {
-	display: flex;
-	gap: 8px;
-}
-
-.iconButton {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 36px;
-	height: 36px;
-	padding: 0;
-	cursor: pointer;
-}
-
-.error {
-	margin: 0;
-	font-size: 0.875rem;
-	color: #b00020;
-}
-
 @media print {
 	.panel {
 		display: none;
