@@ -16,7 +16,7 @@
 	display: grid;
 	grid-template-columns: repeat(7, 1fr);
 	grid-template-rows: repeat(7, 1fr);
-	font-size: 9pt;
+	font-size: 10pt;
 	text-align: center;
 }
 

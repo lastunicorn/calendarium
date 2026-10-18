@@ -15,16 +15,24 @@ describe('parseConfig', () => {
 			weekStart: 0,
 			title: 'Family',
 			highlightWeekends: false,
+			orientation: 'landscape',
 		}
 		expect(parseConfig(stored)).toEqual(stored)
 	})
 
 	it('drops invalid fields', () => {
-		const config = parseConfig({ year: 2030.5, locale: 'xx', weekStart: 3, title: 7 })
+		const config = parseConfig({
+			year: 2030.5,
+			locale: 'xx',
+			weekStart: 3,
+			title: 7,
+			orientation: 'up',
+		})
 		const defaults = defaultConfig()
 		expect(config.year).toBe(defaults.year)
 		expect(config.locale).toBe(defaults.locale)
 		expect(config.weekStart).toBe(defaults.weekStart)
 		expect(config.title).toBe(defaults.title)
+		expect(config.orientation).toBe(defaults.orientation)
 	})
 })

@@ -1,5 +1,7 @@
 import type { WeekStart } from '../core/calendar'
 
+export type Orientation = 'portrait' | 'landscape'
+
 export interface CalendarConfig {
 	year: number
 	/** BCP 47 tag used for month and weekday names, e.g. `en-US`, `ro-RO`. */
@@ -8,6 +10,7 @@ export interface CalendarConfig {
 	/** Shown above the calendar; when empty, the year is shown instead. */
 	title: string
 	highlightWeekends: boolean
+	orientation: Orientation
 }
 
 export const LOCALES = [
@@ -31,5 +34,6 @@ export function defaultConfig(): CalendarConfig {
 		weekStart: 1,
 		title: '',
 		highlightWeekends: true,
+		orientation: 'portrait',
 	}
 }

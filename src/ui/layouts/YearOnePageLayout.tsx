@@ -10,7 +10,7 @@ interface YearOnePageLayoutProps {
 }
 
 export function YearOnePageLayout({ config }: YearOnePageLayoutProps) {
-	const { year, locale, weekStart, title, highlightWeekends } = config
+	const { year, locale, weekStart, title, highlightWeekends, orientation } = config
 	const months = useMemo(() => buildYear(year, weekStart), [year, weekStart])
 	const names = useMemo(() => monthNames(locale), [locale])
 	const weekdays = useMemo(() => weekdayNames(locale, weekStart), [locale, weekStart])
@@ -18,7 +18,7 @@ export function YearOnePageLayout({ config }: YearOnePageLayoutProps) {
 	return (
 		<div className={styles.layout}>
 			<h1 className={styles.title}>{title.trim() || year}</h1>
-			<div className={styles.grid}>
+			<div className={`${styles.grid} ${styles[orientation]}`}>
 				{months.map((month) => (
 					<MiniMonth
 						key={month.month}

@@ -14,18 +14,19 @@ export function parseConfig(data: unknown): CalendarConfig {
 		(stored.year as number) <= 9999
 	)
 		config.year = stored.year as number
-	
+
 	if (LOCALES.some((locale) => locale.value === stored.locale))
 		config.locale = stored.locale as string
-	
-	if (stored.weekStart === 0 || stored.weekStart === 1)
-		config.weekStart = stored.weekStart
-	
-	if (typeof stored.title === 'string')
-		config.title = stored.title
-	
+
+	if (stored.weekStart === 0 || stored.weekStart === 1) config.weekStart = stored.weekStart
+
+	if (typeof stored.title === 'string') config.title = stored.title
+
 	if (typeof stored.highlightWeekends === 'boolean')
 		config.highlightWeekends = stored.highlightWeekends
+
+	if (stored.orientation === 'portrait' || stored.orientation === 'landscape')
+		config.orientation = stored.orientation
 
 	return config
 }
@@ -33,11 +34,9 @@ export function parseConfig(data: unknown): CalendarConfig {
 export function loadConfig(): CalendarConfig {
 	try {
 		const raw = localStorage.getItem(STORAGE_KEY)
-		
-		const obj = raw === null
-			? null
-			: JSON.parse(raw)
-		
+
+		const obj = raw === null ? null : JSON.parse(raw)
+
 		return parseConfig(obj)
 	} catch {
 		return defaultConfig()

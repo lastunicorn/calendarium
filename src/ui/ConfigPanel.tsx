@@ -1,5 +1,5 @@
 import type { ChangeEvent } from 'react'
-import { type CalendarConfig, LOCALES } from '../config/CalendarConfig'
+import { type CalendarConfig, LOCALES, type Orientation } from '../config/CalendarConfig'
 import type { WeekStart } from '../core/calendar'
 import styles from './ConfigPanel.module.css'
 
@@ -32,6 +32,10 @@ export function ConfigPanel({ config, onChange }: ConfigPanelProps) {
 
 	function handleHighlightWeekendsChange(event: ChangeEvent<HTMLInputElement>) {
 		onChange({ ...config, highlightWeekends: event.currentTarget.checked })
+	}
+
+	function handleOrientationChange(event: ChangeEvent<HTMLSelectElement>) {
+		onChange({ ...config, orientation: event.currentTarget.value as Orientation })
 	}
 
 	return (
@@ -75,6 +79,14 @@ export function ConfigPanel({ config, onChange }: ConfigPanelProps) {
 				<select value={config.weekStart} onChange={handleWeekStartChange}>
 					<option value={1}>Monday</option>
 					<option value={0}>Sunday</option>
+				</select>
+			</label>
+
+			<label className={styles.field}>
+				Orientation
+				<select value={config.orientation} onChange={handleOrientationChange}>
+					<option value="portrait">Portrait</option>
+					<option value="landscape">Landscape</option>
 				</select>
 			</label>
 

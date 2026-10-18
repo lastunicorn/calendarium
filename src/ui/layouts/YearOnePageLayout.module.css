@@ -16,8 +16,16 @@
 .grid {
 	flex: 1;
 	display: grid;
-	grid-template-columns: repeat(3, 1fr);
-	grid-template-rows: repeat(4, 1fr);
 	gap: 6mm 8mm;
 	min-height: 0;
+}
+
+.portrait {
+	grid-template-columns: repeat(3, 1fr);
+	grid-template-rows: repeat(4, 1fr);
+}
+
+.landscape {
+	grid-template-columns: repeat(4, 1fr);
+	grid-template-rows: repeat(3, 1fr);
 }

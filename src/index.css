@@ -19,6 +19,15 @@ body {
 	margin: 0;
 }
 
+/* Named pages, selected per page element via the `page` property (see Preview.module.css). */
+@page a4Portrait {
+	size: A4 portrait;
+}
+
+@page a4Landscape {
+	size: A4 landscape;
+}
+
 @media print {
 	:root {
 		background: #fff;

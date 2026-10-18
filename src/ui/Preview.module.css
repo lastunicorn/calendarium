@@ -1,7 +1,8 @@
 .preview {
 	flex: 1;
 	display: flex;
-	justify-content: center;
+	/* `safe` keeps the page's left edge reachable when it is wider than the preview area. */
+	justify-content: safe center;
 	align-items: flex-start;
 	padding: 24px;
 	overflow: auto;
@@ -16,9 +17,17 @@
 	padding: 10mm;
 }
 
+/* `page` selects the named @page rule in index.css, which sets the printed paper orientation. */
 .a4Portrait {
+	page: a4Portrait;
 	width: 210mm;
 	height: 297mm;
+}
+
+.a4Landscape {
+	page: a4Landscape;
+	width: 297mm;
+	height: 210mm;
 }
 
 @media print {
