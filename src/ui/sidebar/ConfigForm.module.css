@@ -1,5 +1,15 @@
+/*
+ * The form takes the sidebar's remaining height and scrolls on its own, so the
+ * heading and toolbar above it stay in place. The negative margins push the
+ * scrollbar into the sidebar's right and bottom padding, against its edges.
+ */
 .form {
+	flex: 1;
+	min-height: 0;
 	display: flex;
 	flex-direction: column;
 	gap: 28px;
+	margin: 0 -16px -16px 0;
+	padding: 0 16px 16px 0;
+	overflow-y: auto;
 }
