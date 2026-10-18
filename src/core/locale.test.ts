@@ -7,6 +7,11 @@ describe('monthNames', () => {
 		expect(monthNames('en-US')[11]).toBe('December')
 		expect(monthNames('ro-RO')[0]).toBe('Ianuarie')
 	})
+
+	it('writes Japanese month names', () => {
+		expect(monthNames('ja-JP')[0]).toBe('1月')
+		expect(monthNames('ja-JP')[11]).toBe('12月')
+	})
 })
 
 describe('weekdayNames', () => {
@@ -23,5 +28,9 @@ describe('weekdayNames', () => {
 
 	it('strips abbreviation dots', () => {
 		expect(weekdayNames('ro-RO', 1)[0]).toBe('Lun')
+	})
+
+	it('writes Japanese weekday names', () => {
+		expect(weekdayNames('ja-JP', 0)).toEqual(['日', '月', '火', '水', '木', '金', '土'])
 	})
 })

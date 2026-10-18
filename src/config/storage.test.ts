@@ -15,6 +15,7 @@ describe('parseConfig', () => {
 			weekStart: 6,
 			weekdayFormat: 'narrow',
 			title: 'Family',
+			subtitle: 'Birthdays',
 			highlightWeekends: 'days',
 			orientation: 'landscape',
 		}
@@ -28,6 +29,7 @@ describe('parseConfig', () => {
 			weekStart: 7,
 			weekdayFormat: 'long',
 			title: 7,
+			subtitle: null,
 			highlightWeekends: true,
 			orientation: 'up',
 		})
@@ -37,6 +39,7 @@ describe('parseConfig', () => {
 		expect(config.weekStart).toBe(defaults.weekStart)
 		expect(config.weekdayFormat).toBe(defaults.weekdayFormat)
 		expect(config.title).toBe(defaults.title)
+		expect(config.subtitle).toBe(defaults.subtitle)
 		expect(config.highlightWeekends).toBe(defaults.highlightWeekends)
 		expect(config.orientation).toBe(defaults.orientation)
 	})

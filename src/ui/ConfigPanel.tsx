@@ -51,6 +51,10 @@ export function ConfigPanel({ config, onChange }: ConfigPanelProps) {
 		onChange({ ...config, title: event.currentTarget.value })
 	}
 
+	function handleSubtitleChange(event: ChangeEvent<HTMLInputElement>) {
+		onChange({ ...config, subtitle: event.currentTarget.value })
+	}
+
 	function handleHighlightWeekendsChange(event: ChangeEvent<HTMLSelectElement>) {
 		onChange({ ...config, highlightWeekends: event.currentTarget.value as WeekendHighlight })
 	}
@@ -82,6 +86,11 @@ export function ConfigPanel({ config, onChange }: ConfigPanelProps) {
 					placeholder={String(config.year)}
 					onChange={handleTitleChange}
 				/>
+			</label>
+
+			<label className={styles.field}>
+				Subtitle
+				<input type="text" value={config.subtitle} onChange={handleSubtitleChange} />
 			</label>
 
 			<label className={styles.field}>

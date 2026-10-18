@@ -14,6 +14,8 @@ export interface CalendarConfig {
 	weekdayFormat: WeekdayFormat
 	/** Shown above the calendar; when empty, the year is shown instead. */
 	title: string
+	/** Shown below the title; hidden when empty. */
+	subtitle: string
 	highlightWeekends: WeekendHighlight
 	orientation: Orientation
 }
@@ -25,6 +27,7 @@ export const LOCALES = [
 	{ value: 'fr-FR', label: 'Français' },
 	{ value: 'es-ES', label: 'Español' },
 	{ value: 'it-IT', label: 'Italiano' },
+	{ value: 'ja-JP', label: '日本語' },
 ]
 
 function defaultLocale(): string {
@@ -39,6 +42,7 @@ export function defaultConfig(): CalendarConfig {
 		weekStart: 1,
 		weekdayFormat: 'narrow',
 		title: '',
+		subtitle: '',
 		highlightWeekends: 'columns',
 		orientation: 'portrait',
 	}
