@@ -18,7 +18,10 @@ import { Toolbar } from './toolbar/Toolbar'
 
 interface ConfigPanelProps {
 	config: CalendarConfig
-	onChange: (config: CalendarConfig) => void
+	/** Changes some fields, keeping the rest. */
+	onUpdate: (patch: Partial<CalendarConfig>) => void
+	/** Replaces the whole config (import, reset). */
+	onReplace: (config: CalendarConfig) => void
 }
 
 /** Week start options in panel order, Monday first. */
@@ -69,56 +72,56 @@ function MarginInput({ side, value, onChange }: MarginInputProps) {
 	)
 }
 
-export function ConfigPanel({ config, onChange }: ConfigPanelProps) {
+export function ConfigPanel({ config, onUpdate, onReplace }: ConfigPanelProps) {
 	function handleYearChange(year: number) {
-		onChange({ ...config, year })
+		onUpdate({ year })
 	}
 
 	function handleLocaleChange(event: ChangeEvent<HTMLSelectElement>) {
-		onChange({ ...config, locale: event.currentTarget.value })
+		onUpdate({ locale: event.currentTarget.value })
 	}
 
 	function handleWeekStartChange(event: ChangeEvent<HTMLSelectElement>) {
-		onChange({ ...config, weekStart: Number(event.currentTarget.value) as WeekStart })
+		onUpdate({ weekStart: Number(event.currentTarget.value) as WeekStart })
 	}
 
 	function handleWeekdayFormatChange(event: ChangeEvent<HTMLSelectElement>) {
-		onChange({ ...config, weekdayFormat: event.currentTarget.value as WeekdayFormat })
+		onUpdate({ weekdayFormat: event.currentTarget.value as WeekdayFormat })
 	}
 
 	function handleTitleChange(event: ChangeEvent<HTMLInputElement>) {
-		onChange({ ...config, title: event.currentTarget.value })
+		onUpdate({ title: event.currentTarget.value })
 	}
 
 	function handleSubtitleChange(event: ChangeEvent<HTMLInputElement>) {
-		onChange({ ...config, subtitle: event.currentTarget.value })
+		onUpdate({ subtitle: event.currentTarget.value })
 	}
 
 	function handleHighlightWeekendsChange(event: ChangeEvent<HTMLSelectElement>) {
-		onChange({ ...config, highlightWeekends: event.currentTarget.value as WeekendHighlight })
+		onUpdate({ highlightWeekends: event.currentTarget.value as WeekendHighlight })
 	}
 
 	function handleShowWeekNumbersChange(event: ChangeEvent<HTMLInputElement>) {
-		onChange({ ...config, showWeekNumbers: event.currentTarget.checked })
+		onUpdate({ showWeekNumbers: event.currentTarget.checked })
 	}
 
 	function handlePaperSizeChange(event: ChangeEvent<HTMLSelectElement>) {
-		onChange({ ...config, paperSize: event.currentTarget.value as PaperSize })
+		onUpdate({ paperSize: event.currentTarget.value as PaperSize })
 	}
 
 	function handleOrientationChange(event: ChangeEvent<HTMLSelectElement>) {
-		onChange({ ...config, orientation: event.currentTarget.value as Orientation })
+		onUpdate({ orientation: event.currentTarget.value as Orientation })
 	}
 
 	function handleMarginChange(side: MarginSide, margin: number) {
-		onChange({ ...config, margins: { ...config.margins, [side]: margin } })
+		onUpdate({ margins: { ...config.margins, [side]: margin } })
 	}
 
 	return (
 		<aside className={styles.panel}>
 			<h1 className={styles.heading}>Calendar</h1>
 
-			<Toolbar config={config} onReplace={onChange} />
+			<Toolbar config={config} onReplace={onReplace} />
 
 			<label className={styles.field}>
 				Year
