@@ -37,11 +37,28 @@
 	font-weight: 600;
 }
 
-.print {
+.print,
+.button {
 	padding: 8px;
 	font: inherit;
 	font-weight: 600;
 	cursor: pointer;
+}
+
+.actions {
+	display: flex;
+	gap: 8px;
+}
+
+.button {
+	flex: 1;
+	font-weight: normal;
+}
+
+.error {
+	margin: 0;
+	font-size: 0.875rem;
+	color: #b00020;
 }
 
 @media print {

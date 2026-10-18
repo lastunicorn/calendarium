@@ -1,4 +1,4 @@
-import type { ChangeEvent } from 'react'
+import { type ChangeEvent, useRef, useState } from 'react'
 import {
 	type CalendarConfig,
 	LOCALES,
@@ -6,6 +6,7 @@ import {
 	type PaperSize,
 	type WeekendHighlight,
 } from '../config/CalendarConfig'
+import { parseConfigFile, serializeConfig } from '../config/storage'
 import type { WeekStart } from '../core/calendar'
 import type { WeekdayFormat } from '../core/locale'
 import styles from './ConfigPanel.module.css'
@@ -30,7 +31,21 @@ function handlePrintClick() {
 	window.print()
 }
 
+function downloadFile(name: string, text: string, type: string) {
+	const url = URL.createObjectURL(new Blob([text], { type }))
+	const link = document.createElement('a')
+	link.href = url
+	link.download = name
+	link.click()
+	URL.revokeObjectURL(url)
+}
+
 export function ConfigPanel({ config, onChange }: ConfigPanelProps) {
+	const fileInput = useRef<HTMLInputElement>(null)
+	const [importError, setImportError] = useState('')
+	/** Bumped on import to remount the uncontrolled year input with the imported value. */
+	const [importCount, setImportCount] = useState(0)
+
 	function handleYearChange(event: ChangeEvent<HTMLInputElement>) {
 		const year = event.currentTarget.valueAsNumber
 		if (Number.isInteger(year) && year >= 1 && year <= 9999) onChange({ ...config, year })
@@ -72,6 +87,31 @@ export function ConfigPanel({ config, onChange }: ConfigPanelProps) {
 		onChange({ ...config, orientation: event.currentTarget.value as Orientation })
 	}
 
+	function handleExportClick() {
+		downloadFile(`calendar-${config.year}.json`, serializeConfig(config), 'application/json')
+	}
+
+	function handleImportClick() {
+		fileInput.current?.click()
+	}
+
+	async function handleImportFileChange(event: ChangeEvent<HTMLInputElement>) {
+		const input = event.currentTarget
+		const file = input.files?.[0]
+		// Reset so choosing the same file again still fires `change`.
+		input.value = ''
+		if (!file) return
+
+		const imported = parseConfigFile(await file.text())
+		if (imported === null) {
+			setImportError(`${file.name} is not a valid configuration file.`)
+			return
+		}
+		setImportError('')
+		setImportCount(importCount + 1)
+		onChange(imported)
+	}
+
 	return (
 		<aside className={styles.panel}>
 			<h1 className={styles.heading}>Calendar</h1>
@@ -79,6 +119,7 @@ export function ConfigPanel({ config, onChange }: ConfigPanelProps) {
 			<label className={styles.field}>
 				Year
 				<input
+					key={importCount}
 					type="number"
 					min={1}
 					max={9999}
@@ -170,6 +211,24 @@ export function ConfigPanel({ config, onChange }: ConfigPanelProps) {
 			<button type="button" className={styles.print} onClick={handlePrintClick}>
 				Print
 			</button>
+
+			<div className={styles.actions}>
+				<button type="button" className={styles.button} onClick={handleExportClick}>
+					Export
+				</button>
+				<button type="button" className={styles.button} onClick={handleImportClick}>
+					Import
+				</button>
+				<input
+					ref={fileInput}
+					type="file"
+					accept=".json,application/json"
+					hidden
+					onChange={handleImportFileChange}
+				/>
+			</div>
+
+			{importError && <p className={styles.error}>{importError}</p>}
 		</aside>
 	)
 }
