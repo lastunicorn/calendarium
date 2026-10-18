@@ -87,6 +87,14 @@ export function buildMonth(year: number, month: number, weekStart: WeekStart): C
 	return { year, month, weeks }
 }
 
+/**
+ * The rows of `month` holding at least one of its days: 4–6 rows, as on a wall calendar.
+ * `buildMonth` itself keeps 6 so grids of several months line up.
+ */
+export function visibleWeeks(month: CalendarMonth): CalendarDay[][] {
+	return month.weeks.filter((week) => week.some((day) => day.inMonth))
+}
+
 export function buildYear(year: number, weekStart: WeekStart): CalendarMonth[] {
 	return Array.from({ length: 12 }, (_, month) => buildMonth(year, month, weekStart))
 }

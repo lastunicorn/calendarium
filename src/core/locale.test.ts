@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { monthNames, weekdayNames } from './locale'
+import { monthNames, monthYearName, weekdayNames } from './locale'
 
 describe('monthNames', () => {
 	it('returns 12 capitalized names', () => {
@@ -11,6 +11,14 @@ describe('monthNames', () => {
 	it('writes Japanese month names', () => {
 		expect(monthNames('ja-JP')[0]).toBe('1月')
 		expect(monthNames('ja-JP')[11]).toBe('12月')
+	})
+})
+
+describe('monthYearName', () => {
+	it('writes the month and year in the locale, capitalized', () => {
+		expect(monthYearName('en-US', 2026, 0)).toBe('January 2026')
+		expect(monthYearName('ro-RO', 2026, 0)).toBe('Ianuarie 2026')
+		expect(monthYearName('ja-JP', 2026, 11)).toBe('2026年12月')
 	})
 })
 

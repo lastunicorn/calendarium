@@ -16,6 +16,8 @@
 	--color-week-number: #888;
 	--color-weekend: #c62828;
 	--color-weekend-background: #f3f3f3;
+	--color-cell-border: #bbb;
+	--color-adjacent-day: #aaa;
 
 	font-family: system-ui, sans-serif;
 	color: var(--color-text);

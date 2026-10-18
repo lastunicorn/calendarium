@@ -1,17 +1,19 @@
 import styles from './CalendarHeader.module.css'
 
 interface CalendarHeaderProps {
-	year: number
-	title: string
-	subtitle: string
+	heading: string
+	/** Smaller line below the heading; hidden when empty. */
+	subheading: string
+	/** `large` heads a single-page calendar; `compact` leaves room for a month grid. */
+	size?: 'large' | 'compact'
 }
 
-/** The title (the year when empty) and optional subtitle at the top of a page. */
-export function CalendarHeader({ year, title, subtitle }: CalendarHeaderProps) {
+/** The heading block at the top of a page. */
+export function CalendarHeader({ heading, subheading, size = 'large' }: CalendarHeaderProps) {
 	return (
-		<header className={styles.header}>
-			<h1 className={styles.title}>{title.trim() || year}</h1>
-			{subtitle.trim() && <p className={styles.subtitle}>{subtitle.trim()}</p>}
+		<header className={`${styles.header} ${styles[size]}`}>
+			<h1 className={styles.title}>{heading}</h1>
+			{subheading.trim() && <p className={styles.subtitle}>{subheading.trim()}</p>}
 		</header>
 	)
 }

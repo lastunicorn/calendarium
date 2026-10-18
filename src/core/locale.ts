@@ -17,6 +17,12 @@ export function monthNames(locale: string): string[] {
 	)
 }
 
+/** Localized month and year heading, e.g. "January 2026", "2026年1月". */
+export function monthYearName(locale: string, year: number, month: number): string {
+	const format = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' })
+	return capitalize(format.format(new Date(year, month, 1)), locale)
+}
+
 /** Localized weekday names, ordered from `weekStart`. */
 export function weekdayNames(
 	locale: string,

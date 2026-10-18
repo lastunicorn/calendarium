@@ -18,13 +18,15 @@ Three layers, kept strictly separated (see [doc/plan.md](doc/plan.md)):
 
 - `src/core/` — pure calendar logic, no React. `buildMonth` always returns 6 weeks so every month has the same height; dates are built from components (not ms arithmetic) to stay DST-safe. `locale.ts` derives month/weekday names from `Intl.DateTimeFormat`.
 - `src/config/` — the single `CalendarConfig` object. `ui/useCalendarConfig` holds it via the pure `configReducer` (`update` a few fields / `replace` the whole config) and persists it to `localStorage` on every change; `parseConfig` validates untrusted stored data field by field and falls back to defaults.
-- `src/ui/` — `sidebar/` holds the `Toolbar` (print, export/import, reset) and `ConfigForm`, whose sections (`CalendarSection`, `HeaderSection`, `PageSection`) build on the typed controls in `fields/` (`SelectField`, `NumberField`, …); `preview/Preview` renders the layout chosen by `config.layout`, looked up in `ui/layouts/registry.ts`.
+- `src/ui/` — `sidebar/` holds the `Toolbar` (print, export/import, reset) and `ConfigForm`, whose sections (`LayoutSection`, `CalendarSection`, `HeaderSection`, `PageSection`) build on the typed controls in `fields/` (`SelectField`, `NumberField`, …); `preview/Preview` renders the layout chosen by `config.layout`, looked up in `ui/layouts/registry.ts`.
 
 ### Layouts
 
-A layout takes `config` and renders its own `Page`s (`ui/layouts/Page.tsx`, one paper sheet each, given `setup={config.page}`), so it decides the page count; consecutive pages print on separate sheets. Build the model with `useCalendarModel(config)` (memoized months, month and weekday names), reuse `CalendarHeader` for the title/subtitle, and pass small view components like `MiniMonth` primitives rather than the whole config. Weekend highlighting rules live in `core/weekend.ts`.
+Two layouts: `year-one-page` (`YearOnePageLayout`: 12 `MiniMonth`s on one page, every month 6 rows so they line up) and `month-per-page` (`MonthPerPageLayout`: 12 pages, each a `MonthGrid` of large writing cells showing only the month's 4–6 rows via `visibleWeeks`, adjacent-month days in gray).
 
-Adding a layout: an id in `LAYOUT_IDS` (`CalendarConfig.ts`), its component in `LAYOUTS` (`registry.ts`; compile-enforced), and a layout select in the sidebar if there isn't one yet (there is none while only one layout exists).
+A layout takes `config` and renders its own `Page`s (`ui/layouts/Page.tsx`, one paper sheet each, given `setup={config.page}`), so it decides the page count; consecutive pages print on separate sheets. Build the model with `useCalendarModel(config)` (memoized months, month and weekday names), reuse `CalendarHeader` for the page heading (`size="large"` or `"compact"`), and pass small view components like `MiniMonth` primitives rather than the whole config. Weekend highlighting rules live in `core/weekend.ts`.
+
+Adding a layout: an id in `LAYOUT_IDS` (`CalendarConfig.ts`), its component in `LAYOUTS` (`registry.ts`), and its label in `LayoutSection` (both compile-enforced).
 
 ### Config options
 

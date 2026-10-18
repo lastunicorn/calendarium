@@ -17,7 +17,7 @@ export function YearOnePageLayout({ config }: YearOnePageLayoutProps) {
 	return (
 		<Page setup={page}>
 			<div className={styles.layout}>
-				<CalendarHeader year={year} title={title} subtitle={subtitle} />
+				<CalendarHeader heading={title.trim() || String(year)} subheading={subtitle} />
 
 				<div className={`${styles.grid} ${styles[page.orientation]}`}>
 					{months.map((month) => (

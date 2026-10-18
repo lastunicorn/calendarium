@@ -1,0 +1,66 @@
+/* A ruled table: the grid draws the top and left edges, each cell its right and bottom. */
+.grid {
+	flex: 1;
+	display: grid;
+	grid-template-columns: repeat(7, 1fr);
+	min-height: 0;
+	border-top: 0.3mm solid var(--color-rule);
+	border-left: 0.2mm solid var(--color-cell-border);
+}
+
+.withWeekNumbers {
+	grid-template-columns: 9mm repeat(7, 1fr);
+}
+
+.weekday,
+.weekNumber,
+.day {
+	border-right: 0.2mm solid var(--color-cell-border);
+	border-bottom: 0.2mm solid var(--color-cell-border);
+}
+
+.weekday {
+	padding: 1.5mm 0;
+	font-size: 9pt;
+	font-weight: 600;
+	text-align: center;
+	text-transform: uppercase;
+	border-bottom: 0.3mm solid var(--color-rule);
+}
+
+.weekNumber {
+	padding-top: 1.5mm;
+	font-size: 8pt;
+	text-align: center;
+	color: var(--color-week-number);
+}
+
+/* Day number in the top-left corner; the rest of the cell is space to write in. */
+.day {
+	min-height: 0;
+	padding: 1.5mm 2mm;
+	font-size: 14pt;
+	font-weight: 600;
+	line-height: 1;
+	overflow: hidden;
+}
+
+.weekend {
+	color: var(--color-weekend);
+}
+
+.day.weekend {
+	background: var(--color-weekend-background);
+}
+
+/* After `.weekend`, so days of the previous and next month stay gray in weekend columns too. */
+.adjacent {
+	font-weight: 400;
+	color: var(--color-adjacent-day);
+}
+
+@media print {
+	.grid {
+		print-color-adjust: exact;
+	}
+}

@@ -32,7 +32,7 @@ describe('parseConfig', () => {
 	it('drops invalid fields', () => {
 		const config = parseConfig({
 			version: CONFIG_VERSION,
-			layout: 'month-per-page',
+			layout: 'week-per-page',
 			year: 2030.5,
 			locale: 'xx',
 			weekStart: 7,

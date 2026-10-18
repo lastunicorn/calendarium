@@ -7,6 +7,7 @@ import {
 	isoWeek,
 	type WeekStart,
 	WEEKS_PER_MONTH,
+	visibleWeeks,
 	weekNumber,
 } from './calendar'
 
@@ -166,5 +167,27 @@ describe('weekNumber', () => {
 		expect(weekNumber(buildMonth(2026, 0, 5).weeks[1])).toBe(2)
 		// Saturday-first row 27 Dec 2025 – 2 Jan 2026 contains 1 January (W01).
 		expect(weekNumber(buildMonth(2026, 0, 6).weeks[0])).toBe(1)
+	})
+})
+
+describe('visibleWeeks', () => {
+	it('drops rows without days of the month', () => {
+		// February 2027 starts on a Monday and has 28 days: exactly 4 rows.
+		expect(visibleWeeks(buildMonth(2027, 1, 1))).toHaveLength(4)
+		// March 2026 starts on a Sunday: with Monday first it spans 6 rows.
+		expect(visibleWeeks(buildMonth(2026, 2, 1))).toHaveLength(6)
+		// The same March starting weeks on Sunday needs only 5.
+		expect(visibleWeeks(buildMonth(2026, 2, 0))).toHaveLength(5)
+	})
+
+	it('keeps every day of the month', () => {
+		for (const weekStart of [0, 1, 6] as WeekStart[]) {
+			for (let month = 0; month < 12; month++) {
+				const days = visibleWeeks(buildMonth(2026, month, weekStart))
+					.flat()
+					.filter((day) => day.inMonth)
+				expect(days).toHaveLength(daysInMonth(2026, month))
+			}
+		}
 	})
 })
