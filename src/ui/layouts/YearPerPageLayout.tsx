@@ -3,14 +3,14 @@ import { CalendarHeader } from './CalendarHeader'
 import { MiniMonth } from './MiniMonth'
 import { Page } from './Page'
 import { useCalendarModel } from './useCalendarModel'
-import styles from './YearOnePageLayout.module.css'
+import styles from './YearPerPageLayout.module.css'
 
-interface YearOnePageLayoutProps {
+interface YearPerPageLayoutProps {
 	config: CalendarConfig
 }
 
 /** The whole year on one page: the header above a grid of 12 small months. */
-export function YearOnePageLayout({ config }: YearOnePageLayoutProps) {
+export function YearPerPageLayout({ config }: YearPerPageLayoutProps) {
 	const { year, title, subtitle, highlightWeekends, showWeekNumbers, page } = config
 	const { months, monthNames, weekdays } = useCalendarModel(config)
 

@@ -8,7 +8,7 @@ import type { WeekendHighlight } from '../core/weekend'
 // there: paper sizes and orientations in `core/paper.ts`, weekend highlights in `core/weekend.ts`.
 
 /** Ids of the page layouts; each maps to a component in `ui/layouts/registry.ts`. */
-export const LAYOUT_IDS = ['year-one-page', 'month-per-page', 'day-per-page'] as const
+export const LAYOUT_IDS = ['year-per-page', 'month-per-page', 'day-per-page'] as const
 export type LayoutId = (typeof LAYOUT_IDS)[number]
 
 /** What fills a `day-per-page` page under its header: an hourly schedule or plain ruled lines. */
@@ -91,7 +91,7 @@ function defaultLocale(): Locale {
 
 export function defaultConfig(): CalendarConfig {
 	return {
-		layout: 'year-one-page',
+		layout: 'year-per-page',
 		dayPageLines: 'hours',
 		hourFormat: 'auto',
 		firstHour: 7,

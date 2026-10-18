@@ -11,7 +11,7 @@ describe('parseConfig', () => {
 
 	it('keeps valid fields', () => {
 		const config = {
-			layout: 'year-one-page',
+			layout: 'year-per-page',
 			dayPageLines: 'ruled',
 			hourFormat: '24h',
 			firstHour: 0,
@@ -109,6 +109,13 @@ describe('parseConfig migration', () => {
 	it('renames the old `en-UK` locale to `en-GB`', () => {
 		expect(parseConfig({ version: CONFIG_VERSION, locale: 'en-UK' }).locale).toBe('en-GB')
 		expect(parseConfig({ locale: 'en-UK' }).locale).toBe('en-GB')
+	})
+
+	it('renames the old `year-one-page` layout to `year-per-page`', () => {
+		expect(parseConfig({ version: CONFIG_VERSION, layout: 'year-one-page' }).layout).toBe(
+			'year-per-page',
+		)
+		expect(parseConfig({ layout: 'year-one-page' }).layout).toBe('year-per-page')
 	})
 
 	it('still validates migrated fields', () => {

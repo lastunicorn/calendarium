@@ -43,20 +43,28 @@ function migrateFromV1({ paperSize, orientation, margins, ...rest }: StoredData)
 	return { ...rest, page: { paperSize, orientation, margins } }
 }
 
-/** Locale values that were once stored under a wrong tag, mapped to the right one. */
-const RENAMED_LOCALES: Record<string, string> = {
+/** Values that were once stored under another name, mapped per field to the current one. */
+const RENAMED_VALUES: Record<string, Record<string, string>> = {
 	// British English was briefly stored as `en-UK`, which is not a valid BCP 47 region.
-	'en-UK': 'en-GB',
+	locale: { 'en-UK': 'en-GB' },
+	layout: { 'year-one-page': 'year-per-page' },
+}
+
+/** Replaces each renamed value in `data` with its current name. */
+function renameValues(data: StoredData): StoredData {
+	const renamed = { ...data }
+	for (const [field, names] of Object.entries(RENAMED_VALUES)) {
+		const value = renamed[field]
+		if (typeof value === 'string' && Object.hasOwn(names, value)) renamed[field] = names[value]
+	}
+	return renamed
 }
 
 /** Brings stored data of any older version to the current shape. */
 function upgrade(stored: StoredData): StoredData {
 	const current =
 		stored.version === undefined || stored.version === 1 ? migrateFromV1(stored) : stored
-	const { locale } = current
-	return typeof locale === 'string' && Object.hasOwn(RENAMED_LOCALES, locale)
-		? { ...current, locale: RENAMED_LOCALES[locale] }
-		: current
+	return renameValues(current)
 }
 
 function oneOf<T>(values: readonly T[]) {
