@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # Printable Calendar
 
-Browser app (Vite + React + TypeScript) that generates a calendar to print on paper. Roadmap: [doc/plan.md](doc/plan.md).
+Browser app (Vite + React + TypeScript) that generates a calendar to print on paper.
 
 ## Commands
 
@@ -14,7 +14,7 @@ Browser app (Vite + React + TypeScript) that generates a calendar to print on pa
 
 ## Architecture
 
-Three layers, kept strictly separated (see [doc/plan.md](doc/plan.md)):
+Three layers, kept strictly separated:
 
 - `src/core/` — pure calendar logic, no React. `buildMonth` always returns 6 weeks so every month has the same height; dates are built from components (not ms arithmetic) to stay DST-safe. `locale.ts` derives month/weekday names from `Intl.DateTimeFormat`.
 - `src/config/` — the single `CalendarConfig` object. `ui/useCalendarConfig` holds it via the pure `configReducer` (`update` a few fields / `replace` the whole config) and persists it to `localStorage` on every change; `parseConfig` validates untrusted stored data field by field and falls back to defaults.

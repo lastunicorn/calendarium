@@ -1,6 +1,6 @@
 # Printable Calendar
 
-A browser app that generates a calendar to print on paper: a configuration panel on the left and a WYSIWYG page preview (A4, A3 or Letter, portrait or landscape) on the right. See [doc/plan.md](doc/plan.md) for the roadmap.
+A browser app that generates a calendar to print on paper: a configuration panel on the left and a WYSIWYG page preview (A4, A3 or Letter, portrait or landscape) on the right.
 
 ## Requirements
 
