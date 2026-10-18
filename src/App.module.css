@@ -1,4 +1,12 @@
+/* The app fills the viewport so the sidebar and the preview each scroll on their own. */
 .app {
 	display: flex;
-	min-height: 100vh;
+	height: 100vh;
+}
+
+@media print {
+	.app {
+		display: block;
+		height: auto;
+	}
 }
