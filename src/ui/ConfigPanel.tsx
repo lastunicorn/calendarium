@@ -15,6 +15,7 @@ import { parseConfigFile, serializeConfig } from '../config/storage'
 import type { WeekStart } from '../core/calendar'
 import type { WeekdayFormat } from '../core/locale'
 import styles from './ConfigPanel.module.css'
+import { NumberInput } from './fields/NumberInput'
 import { ExportIcon, ImportIcon, PrintIcon, ResetIcon } from './icons'
 
 interface ConfigPanelProps {
@@ -40,6 +41,36 @@ const MARGIN_LABELS: Record<MarginSide, string> = {
 	left: 'Left',
 }
 
+function isValidYear(year: number): boolean {
+	return Number.isInteger(year) && year >= 1 && year <= 9999
+}
+
+interface MarginInputProps {
+	side: MarginSide
+	value: number
+	onChange: (side: MarginSide, margin: number) => void
+}
+
+function MarginInput({ side, value, onChange }: MarginInputProps) {
+	function handleInputChange(margin: number) {
+		onChange(side, margin)
+	}
+
+	return (
+		<label className={styles.margin}>
+			{MARGIN_LABELS[side]}
+			<NumberInput
+				value={value}
+				min={0}
+				max={MAX_MARGIN}
+				step={0.5}
+				isValid={isMargin}
+				onChange={handleInputChange}
+			/>
+		</label>
+	)
+}
+
 function handlePrintClick() {
 	window.print()
 }
@@ -56,12 +87,9 @@ function downloadFile(name: string, text: string, type: string) {
 export function ConfigPanel({ config, onChange }: ConfigPanelProps) {
 	const fileInput = useRef<HTMLInputElement>(null)
 	const [importError, setImportError] = useState('')
-	/** Bumped on import and reset to remount the uncontrolled number inputs with the new values. */
-	const [loadCount, setLoadCount] = useState(0)
 
-	function handleYearChange(event: ChangeEvent<HTMLInputElement>) {
-		const year = event.currentTarget.valueAsNumber
-		if (Number.isInteger(year) && year >= 1 && year <= 9999) onChange({ ...config, year })
+	function handleYearChange(year: number) {
+		onChange({ ...config, year })
 	}
 
 	function handleLocaleChange(event: ChangeEvent<HTMLSelectElement>) {
@@ -100,11 +128,8 @@ export function ConfigPanel({ config, onChange }: ConfigPanelProps) {
 		onChange({ ...config, orientation: event.currentTarget.value as Orientation })
 	}
 
-	function handleMarginChange(event: ChangeEvent<HTMLInputElement>) {
-		const side = event.currentTarget.dataset.side as MarginSide
-		const margin = event.currentTarget.valueAsNumber
-		if (isMargin(margin))
-			onChange({ ...config, margins: { ...config.margins, [side]: margin } })
+	function handleMarginChange(side: MarginSide, margin: number) {
+		onChange({ ...config, margins: { ...config.margins, [side]: margin } })
 	}
 
 	function handleExportClick() {
@@ -118,7 +143,6 @@ export function ConfigPanel({ config, onChange }: ConfigPanelProps) {
 	function handleResetClick() {
 		if (!window.confirm('Reset all settings to their defaults?')) return
 		setImportError('')
-		setLoadCount(loadCount + 1)
 		onChange(defaultConfig())
 	}
 
@@ -135,7 +159,6 @@ export function ConfigPanel({ config, onChange }: ConfigPanelProps) {
 			return
 		}
 		setImportError('')
-		setLoadCount(loadCount + 1)
 		onChange(imported)
 	}
 
@@ -193,12 +216,11 @@ export function ConfigPanel({ config, onChange }: ConfigPanelProps) {
 
 			<label className={styles.field}>
 				Year
-				<input
-					key={loadCount}
-					type="number"
+				<NumberInput
+					value={config.year}
 					min={1}
 					max={9999}
-					defaultValue={config.year}
+					isValid={isValidYear}
 					onChange={handleYearChange}
 				/>
 			</label>
@@ -268,19 +290,12 @@ export function ConfigPanel({ config, onChange }: ConfigPanelProps) {
 			<fieldset className={styles.margins}>
 				<legend>Margins (mm)</legend>
 				{MARGIN_SIDES.map((side) => (
-					<label key={side} className={styles.margin}>
-						{MARGIN_LABELS[side]}
-						<input
-							key={loadCount}
-							type="number"
-							min={0}
-							max={MAX_MARGIN}
-							step={0.5}
-							defaultValue={config.margins[side]}
-							data-side={side}
-							onChange={handleMarginChange}
-						/>
-					</label>
+					<MarginInput
+						key={side}
+						side={side}
+						value={config.margins[side]}
+						onChange={handleMarginChange}
+					/>
 				))}
 			</fieldset>
 
