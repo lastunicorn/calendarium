@@ -4,6 +4,7 @@ import {
 	LAYOUT_IDS,
 	type LayoutId,
 } from '../../config/CalendarConfig'
+import { HOUR_FORMATS, type HourFormat } from '../../core/locale'
 import { optionsFrom } from '../fields/options'
 import { SelectField } from '../fields/SelectField'
 import { type ConfigSectionProps, Section } from './Section'
@@ -19,6 +20,12 @@ const DAY_PAGE_LINES_OPTIONS = optionsFrom(DAY_PAGE_LINES, {
 	ruled: 'Ruled lines',
 })
 
+const HOUR_FORMAT_OPTIONS = optionsFrom(HOUR_FORMATS, {
+	auto: 'Language default',
+	'12h': '12-hour (7:00 AM)',
+	'24h': '24-hour (07:00)',
+})
+
 /** How the calendar is spread over pages. */
 export function LayoutSection({ config, onUpdate }: ConfigSectionProps) {
 	function handleLayoutChange(layout: LayoutId) {
@@ -27,6 +34,10 @@ export function LayoutSection({ config, onUpdate }: ConfigSectionProps) {
 
 	function handleDayPageLinesChange(dayPageLines: DayPageLines) {
 		onUpdate({ dayPageLines })
+	}
+
+	function handleHourFormatChange(hourFormat: HourFormat) {
+		onUpdate({ hourFormat })
 	}
 
 	return (
@@ -43,6 +54,14 @@ export function LayoutSection({ config, onUpdate }: ConfigSectionProps) {
 					value={config.dayPageLines}
 					options={DAY_PAGE_LINES_OPTIONS}
 					onChange={handleDayPageLinesChange}
+				/>
+			)}
+			{config.layout === 'day-per-page' && config.dayPageLines === 'hours' && (
+				<SelectField
+					label="Hour format"
+					value={config.hourFormat}
+					options={HOUR_FORMAT_OPTIONS}
+					onChange={handleHourFormatChange}
 				/>
 			)}
 		</Section>

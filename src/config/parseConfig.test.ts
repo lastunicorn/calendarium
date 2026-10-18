@@ -13,6 +13,7 @@ describe('parseConfig', () => {
 		const config = {
 			layout: 'year-one-page',
 			dayPageLines: 'ruled',
+			hourFormat: '24h',
 			year: 2030,
 			locale: 'ro-RO',
 			weekStart: 6,
@@ -35,6 +36,7 @@ describe('parseConfig', () => {
 			version: CONFIG_VERSION,
 			layout: 'week-per-page',
 			dayPageLines: 'dotted',
+			hourFormat: '25h',
 			year: 2030.5,
 			locale: 'xx',
 			weekStart: 7,

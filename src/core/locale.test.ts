@@ -80,4 +80,17 @@ describe('hourNames', () => {
 			'1:00 PM',
 		])
 	})
+
+	it('uses the requested clock over the locale’s', () => {
+		const plain = (names: string[]) => names.map((name) => name.replace(/\s/g, ' '))
+		expect(hourNames('en-US', 0, 1, '24h')).toEqual(['00:00', '01:00'])
+		expect(hourNames('en-US', 20, 21, '24h')).toEqual(['20:00', '21:00'])
+		expect(plain(hourNames('de-DE', 0, 1, '12h'))).toEqual(['12:00 AM', '1:00 AM'])
+		expect(plain(hourNames('en-US', 11, 13, '12h'))).toEqual([
+			'11:00 AM',
+			'12:00 PM',
+			'1:00 PM',
+		])
+		expect(hourNames('de-DE', 7, 8, 'auto')).toEqual(['07:00', '08:00'])
+	})
 })

@@ -15,12 +15,23 @@ interface DayPerPageLayoutProps {
 
 /** A page for every day of the year: the date, a small month for context, and an hourly schedule or ruled lines. */
 export function DayPerPageLayout({ config }: DayPerPageLayoutProps) {
-	const { dayPageLines, locale, title, subtitle, highlightWeekends, showWeekNumbers, page } =
-		config
+	const {
+		dayPageLines,
+		hourFormat,
+		locale,
+		title,
+		subtitle,
+		highlightWeekends,
+		showWeekNumbers,
+		page,
+	} = config
 	const { months, monthNames, weekdays } = useCalendarModel(config)
 	const days = useMemo(() => daysOfYear(months), [months])
 	// Built once here, not per page: 366 pages would each create a formatter.
-	const hours = useMemo(() => hourNames(locale, FIRST_HOUR, LAST_HOUR), [locale])
+	const hours = useMemo(
+		() => hourNames(locale, FIRST_HOUR, LAST_HOUR, hourFormat),
+		[locale, hourFormat],
+	)
 	const subheading = [title.trim(), subtitle.trim()].filter(Boolean).join(' · ')
 
 	return days.map((day) => {

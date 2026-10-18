@@ -1,5 +1,5 @@
 import type { WeekStart } from '../core/calendar'
-import type { WeekdayFormat } from '../core/locale'
+import type { HourFormat, WeekdayFormat } from '../core/locale'
 import type { Orientation, PaperSize } from '../core/paper'
 import type { WeekendHighlight } from '../core/weekend'
 
@@ -16,7 +16,7 @@ export const DAY_PAGE_LINES = ['hours', 'ruled'] as const
 export type DayPageLines = (typeof DAY_PAGE_LINES)[number]
 
 /** BCP 47 tags of the languages month and weekday names can be shown in. */
-export const LOCALES = ['en-US', 'ro-RO', 'de-DE', 'fr-FR', 'es-ES', 'it-IT', 'ja-JP'] as const
+export const LOCALES = ['en-US', 'en-UK', 'ro-RO', 'de-DE', 'fr-FR', 'es-ES', 'it-IT', 'ja-JP'] as const
 export type Locale = (typeof LOCALES)[number]
 
 export const MARGIN_SIDES = ['top', 'right', 'bottom', 'left'] as const
@@ -48,6 +48,8 @@ export interface CalendarConfig {
 	layout: LayoutId
 	/** Only used by the `day-per-page` layout. */
 	dayPageLines: DayPageLines
+	/** Clock of the hour labels on `day-per-page` schedules. */
+	hourFormat: HourFormat
 	year: number
 	/** Language of month and weekday names. */
 	locale: Locale
@@ -72,6 +74,7 @@ export function defaultConfig(): CalendarConfig {
 	return {
 		layout: 'year-one-page',
 		dayPageLines: 'hours',
+		hourFormat: 'auto',
 		year: new Date().getFullYear(),
 		locale: defaultLocale(),
 		weekStart: 1,

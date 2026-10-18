@@ -5,6 +5,11 @@ export const WEEKDAY_FORMATS = ['short', 'narrow'] as const
 /** How weekday names are written: `short` = "Mon", `narrow` = "M". */
 export type WeekdayFormat = (typeof WEEKDAY_FORMATS)[number]
 
+export const HOUR_FORMATS = ['auto', '12h', '24h'] as const
+
+/** Clock for hour labels: `auto` = the locale's own, `12h` = "7:00 AM", `24h` = "07:00". */
+export type HourFormat = (typeof HOUR_FORMATS)[number]
+
 function capitalize(text: string, locale: string): string {
 	return text.charAt(0).toLocaleUpperCase(locale) + text.slice(1)
 }
@@ -34,14 +39,23 @@ export function fullDateName(locale: string, date: Date): string {
 }
 
 /**
- * Localized labels for the hours `first` to `last` inclusive, in the locale's clock:
- * "7:00 AM" in en-US, "07:00" in de-DE (24-hour clocks keep two digits so labels line up).
+ * Localized labels for the hours `first` to `last` inclusive. With `auto`, the locale's clock
+ * decides: "7:00 AM" in en-US, "07:00" in de-DE. 24-hour labels keep two digits so they line up.
  */
-export function hourNames(locale: string, first: number, last: number): string[] {
-	const { hour12 } = new Intl.DateTimeFormat(locale, { hour: 'numeric' }).resolvedOptions()
+export function hourNames(
+	locale: string,
+	first: number,
+	last: number,
+	hourFormat: HourFormat = 'auto',
+): string[] {
+	const hour12 =
+		hourFormat === 'auto'
+			? new Intl.DateTimeFormat(locale, { hour: 'numeric' }).resolvedOptions().hour12
+			: hourFormat === '12h'
 	const format = new Intl.DateTimeFormat(locale, {
 		hour: hour12 ? 'numeric' : '2-digit',
 		minute: '2-digit',
+		hourCycle: hour12 ? 'h12' : 'h23',
 	})
 	return Array.from({ length: last - first + 1 }, (_, index) =>
 		format.format(new Date(2000, 0, 1, first + index)),
