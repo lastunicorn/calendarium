@@ -1,7 +1,11 @@
 import { type ChangeEvent, useRef, useState } from 'react'
 import {
 	type CalendarConfig,
+	isMargin,
 	LOCALES,
+	MARGIN_SIDES,
+	type MarginSide,
+	MAX_MARGIN,
 	type Orientation,
 	type PaperSize,
 	type WeekendHighlight,
@@ -28,6 +32,13 @@ const WEEK_STARTS: { value: WeekStart; label: string }[] = [
 	{ value: 0, label: 'Sunday' },
 ]
 
+const MARGIN_LABELS: Record<MarginSide, string> = {
+	top: 'Top',
+	right: 'Right',
+	bottom: 'Bottom',
+	left: 'Left',
+}
+
 function handlePrintClick() {
 	window.print()
 }
@@ -44,7 +55,7 @@ function downloadFile(name: string, text: string, type: string) {
 export function ConfigPanel({ config, onChange }: ConfigPanelProps) {
 	const fileInput = useRef<HTMLInputElement>(null)
 	const [importError, setImportError] = useState('')
-	/** Bumped on import to remount the uncontrolled year input with the imported value. */
+	/** Bumped on import to remount the uncontrolled number inputs with the imported values. */
 	const [importCount, setImportCount] = useState(0)
 
 	function handleYearChange(event: ChangeEvent<HTMLInputElement>) {
@@ -86,6 +97,13 @@ export function ConfigPanel({ config, onChange }: ConfigPanelProps) {
 
 	function handleOrientationChange(event: ChangeEvent<HTMLSelectElement>) {
 		onChange({ ...config, orientation: event.currentTarget.value as Orientation })
+	}
+
+	function handleMarginChange(event: ChangeEvent<HTMLInputElement>) {
+		const side = event.currentTarget.dataset.side as MarginSide
+		const margin = event.currentTarget.valueAsNumber
+		if (isMargin(margin))
+			onChange({ ...config, margins: { ...config.margins, [side]: margin } })
 	}
 
 	function handleExportClick() {
@@ -190,6 +208,25 @@ export function ConfigPanel({ config, onChange }: ConfigPanelProps) {
 					<option value="landscape">Landscape</option>
 				</select>
 			</label>
+
+			<fieldset className={styles.margins}>
+				<legend>Margins (mm)</legend>
+				{MARGIN_SIDES.map((side) => (
+					<label key={side} className={styles.margin}>
+						{MARGIN_LABELS[side]}
+						<input
+							key={importCount}
+							type="number"
+							min={0}
+							max={MAX_MARGIN}
+							step={0.5}
+							defaultValue={config.margins[side]}
+							data-side={side}
+							onChange={handleMarginChange}
+						/>
+					</label>
+				))}
+			</fieldset>
 
 			<label className={styles.field}>
 				Highlight weekends

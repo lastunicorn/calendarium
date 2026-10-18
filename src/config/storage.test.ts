@@ -20,6 +20,7 @@ describe('parseConfig', () => {
 			showWeekNumbers: true,
 			paperSize: 'letter',
 			orientation: 'landscape',
+			margins: { top: 5, right: 12.5, bottom: 0, left: 50 },
 		}
 		expect(parseConfig(stored)).toEqual(stored)
 	})
@@ -36,6 +37,7 @@ describe('parseConfig', () => {
 			showWeekNumbers: 'yes',
 			paperSize: 'a5',
 			orientation: 'up',
+			margins: 'wide',
 		})
 		const defaults = defaultConfig()
 		expect(config.year).toBe(defaults.year)
@@ -48,6 +50,12 @@ describe('parseConfig', () => {
 		expect(config.showWeekNumbers).toBe(defaults.showWeekNumbers)
 		expect(config.paperSize).toBe(defaults.paperSize)
 		expect(config.orientation).toBe(defaults.orientation)
+		expect(config.margins).toEqual(defaults.margins)
+	})
+
+	it('validates each margin separately', () => {
+		const config = parseConfig({ margins: { top: 20, right: -1, bottom: 51, left: '5' } })
+		expect(config.margins).toEqual({ ...defaultConfig().margins, top: 20 })
 	})
 })
 

@@ -13,10 +13,12 @@ const PAGE_CLASSES = {
 }
 
 export function Preview({ config }: PreviewProps) {
+	const { top, right, bottom, left } = config.margins
 	return (
 		<main className={styles.preview}>
 			<section
 				className={`${styles.page} ${PAGE_CLASSES[config.paperSize][config.orientation]}`}
+				style={{ padding: `${top}mm ${right}mm ${bottom}mm ${left}mm` }}
 			>
 				<YearOnePageLayout config={config} />
 			</section>

@@ -8,13 +8,12 @@
 	overflow: auto;
 }
 
-/* Pages are sized in mm so the preview matches the printed output. */
+/* Pages are sized in mm so the preview matches the printed output. Padding (the page margins) is set inline from the config. */
 .page {
 	flex-shrink: 0;
 	overflow: hidden;
 	background: #fff;
 	box-shadow: 0 2px 8px rgb(0 0 0 / 0.2);
-	padding: 10mm;
 }
 
 /* `page` selects the named @page rule in index.css, which sets the printed paper size and orientation. */

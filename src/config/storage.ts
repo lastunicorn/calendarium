@@ -1,5 +1,11 @@
 import { isWeekStart } from '../core/calendar'
-import { type CalendarConfig, defaultConfig, LOCALES } from './CalendarConfig'
+import {
+	type CalendarConfig,
+	defaultConfig,
+	isMargin,
+	LOCALES,
+	MARGIN_SIDES,
+} from './CalendarConfig'
 
 const STORAGE_KEY = 'calendar-config'
 
@@ -42,6 +48,13 @@ export function parseConfig(data: unknown): CalendarConfig {
 
 	if (stored.orientation === 'portrait' || stored.orientation === 'landscape')
 		config.orientation = stored.orientation
+
+	if (typeof stored.margins === 'object' && stored.margins !== null) {
+		const margins = stored.margins as Record<string, unknown>
+		for (const side of MARGIN_SIDES) {
+			if (isMargin(margins[side])) config.margins[side] = margins[side]
+		}
+	}
 
 	return config
 }

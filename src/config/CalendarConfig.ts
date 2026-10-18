@@ -8,6 +8,19 @@ export type PaperSize = 'a4' | 'a3' | 'letter'
 /** `days` highlights only weekend cells with a day number; `columns` the whole weekend column. */
 export type WeekendHighlight = 'off' | 'days' | 'columns'
 
+export type MarginSide = 'top' | 'right' | 'bottom' | 'left'
+
+/** Blank space between the paper edge and the calendar, in mm. */
+export type Margins = Record<MarginSide, number>
+
+export const MARGIN_SIDES: MarginSide[] = ['top', 'right', 'bottom', 'left']
+
+export const MAX_MARGIN = 50
+
+export function isMargin(value: unknown): value is number {
+	return typeof value === 'number' && Number.isFinite(value) && value >= 0 && value <= MAX_MARGIN
+}
+
 export interface CalendarConfig {
 	year: number
 	/** BCP 47 tag used for month and weekday names, e.g. `en-US`, `ro-RO`. */
@@ -23,6 +36,7 @@ export interface CalendarConfig {
 	showWeekNumbers: boolean
 	paperSize: PaperSize
 	orientation: Orientation
+	margins: Margins
 }
 
 export const LOCALES = [
@@ -52,5 +66,6 @@ export function defaultConfig(): CalendarConfig {
 		showWeekNumbers: false,
 		paperSize: 'a4',
 		orientation: 'portrait',
+		margins: { top: 10, right: 10, bottom: 10, left: 10 },
 	}
 }
