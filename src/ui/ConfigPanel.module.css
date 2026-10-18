@@ -67,26 +67,19 @@
 	font-weight: 600;
 }
 
-.print,
-.button {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	gap: 6px;
-	padding: 8px;
-	font: inherit;
-	font-weight: 600;
-	cursor: pointer;
-}
-
-.actions {
+.toolbar {
 	display: flex;
 	gap: 8px;
 }
 
-.button {
-	flex: 1;
-	font-weight: normal;
+.iconButton {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 36px;
+	height: 36px;
+	padding: 0;
+	cursor: pointer;
 }
 
 .error {

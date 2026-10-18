@@ -143,6 +143,54 @@ export function ConfigPanel({ config, onChange }: ConfigPanelProps) {
 		<aside className={styles.panel}>
 			<h1 className={styles.heading}>Calendar</h1>
 
+			<div className={styles.toolbar} role="toolbar" aria-label="Calendar actions">
+				<button
+					type="button"
+					className={styles.iconButton}
+					title="Print"
+					aria-label="Print"
+					onClick={handlePrintClick}
+				>
+					<PrintIcon />
+				</button>
+				<button
+					type="button"
+					className={styles.iconButton}
+					title="Export settings to a file"
+					aria-label="Export settings to a file"
+					onClick={handleExportClick}
+				>
+					<ExportIcon />
+				</button>
+				<button
+					type="button"
+					className={styles.iconButton}
+					title="Import settings from a file"
+					aria-label="Import settings from a file"
+					onClick={handleImportClick}
+				>
+					<ImportIcon />
+				</button>
+				<button
+					type="button"
+					className={styles.iconButton}
+					title="Reset all settings"
+					aria-label="Reset all settings"
+					onClick={handleResetClick}
+				>
+					<ResetIcon />
+				</button>
+				<input
+					ref={fileInput}
+					type="file"
+					accept=".json,application/json"
+					hidden
+					onChange={handleImportFileChange}
+				/>
+			</div>
+
+			{importError && <p className={styles.error}>{importError}</p>}
+
 			<label className={styles.field}>
 				Year
 				<input
@@ -253,35 +301,6 @@ export function ConfigPanel({ config, onChange }: ConfigPanelProps) {
 				/>
 				Week numbers
 			</label>
-
-			<button type="button" className={styles.print} onClick={handlePrintClick}>
-				<PrintIcon />
-				Print
-			</button>
-
-			<div className={styles.actions}>
-				<button type="button" className={styles.button} onClick={handleExportClick}>
-					<ExportIcon />
-					Export
-				</button>
-				<button type="button" className={styles.button} onClick={handleImportClick}>
-					<ImportIcon />
-					Import
-				</button>
-				<button type="button" className={styles.button} onClick={handleResetClick}>
-					<ResetIcon />
-					Reset
-				</button>
-				<input
-					ref={fileInput}
-					type="file"
-					accept=".json,application/json"
-					hidden
-					onChange={handleImportFileChange}
-				/>
-			</div>
-
-			{importError && <p className={styles.error}>{importError}</p>}
 		</aside>
 	)
 }
