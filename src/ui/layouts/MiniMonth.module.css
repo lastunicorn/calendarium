@@ -1,0 +1,49 @@
+.month {
+	display: flex;
+	flex-direction: column;
+	min-height: 0;
+}
+
+.name {
+	margin: 0 0 1.5mm;
+	font-size: 12pt;
+	font-weight: 700;
+	text-align: center;
+}
+
+.days {
+	flex: 1;
+	display: grid;
+	grid-template-columns: repeat(7, 1fr);
+	grid-template-rows: repeat(7, 1fr);
+	font-size: 9pt;
+	text-align: center;
+}
+
+.weekday,
+.day {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.weekday {
+	font-size: 7pt;
+	font-weight: 600;
+	text-transform: uppercase;
+	border-bottom: 0.3mm solid #999;
+}
+
+.weekend {
+	color: #c62828;
+}
+
+.day.weekend {
+	background: #f3f3f3;
+}
+
+@media print {
+	.month {
+		print-color-adjust: exact;
+	}
+}
