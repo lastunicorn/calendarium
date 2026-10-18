@@ -10,6 +10,7 @@ import { parseConfigFile, serializeConfig } from '../config/storage'
 import type { WeekStart } from '../core/calendar'
 import type { WeekdayFormat } from '../core/locale'
 import styles from './ConfigPanel.module.css'
+import { ExportIcon, ImportIcon, PrintIcon } from './icons'
 
 interface ConfigPanelProps {
 	config: CalendarConfig
@@ -209,14 +210,17 @@ export function ConfigPanel({ config, onChange }: ConfigPanelProps) {
 			</label>
 
 			<button type="button" className={styles.print} onClick={handlePrintClick}>
+				<PrintIcon />
 				Print
 			</button>
 
 			<div className={styles.actions}>
 				<button type="button" className={styles.button} onClick={handleExportClick}>
+					<ExportIcon />
 					Export
 				</button>
 				<button type="button" className={styles.button} onClick={handleImportClick}>
+					<ImportIcon />
 					Import
 				</button>
 				<input
