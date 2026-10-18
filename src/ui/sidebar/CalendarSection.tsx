@@ -1,14 +1,7 @@
-import {
-	isYear,
-	type Locale,
-	LOCALES,
-	MAX_YEAR,
-	MIN_YEAR,
-	WEEKEND_HIGHLIGHTS,
-	type WeekendHighlight,
-} from '../../config/CalendarConfig'
+import { isYear, type Locale, LOCALES, MAX_YEAR, MIN_YEAR } from '../../config/CalendarConfig'
 import type { WeekStart } from '../../core/calendar'
 import { WEEKDAY_FORMATS, type WeekdayFormat } from '../../core/locale'
+import { WEEKEND_HIGHLIGHTS, type WeekendHighlight } from '../../core/weekend'
 import { CheckboxField } from '../fields/CheckboxField'
 import { NumberField } from '../fields/NumberField'
 import { type Option, optionsFrom } from '../fields/options'

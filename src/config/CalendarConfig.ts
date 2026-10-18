@@ -1,14 +1,15 @@
 import type { WeekStart } from '../core/calendar'
 import type { WeekdayFormat } from '../core/locale'
 import type { Orientation, PaperSize } from '../core/paper'
+import type { WeekendHighlight } from '../core/weekend'
 
 // Each set of allowed values is listed once; the type and the validation in `parseConfig`
-// derive from the array, and the UI labels are keyed by the type. Paper sizes and orientations
-// live in `core/paper.ts` with the paper dimensions.
+// derive from the array, and the UI labels are keyed by the type. Sets used by `core/` logic live
+// there: paper sizes and orientations in `core/paper.ts`, weekend highlights in `core/weekend.ts`.
 
-/** `days` highlights only weekend cells with a day number; `columns` the whole weekend column. */
-export const WEEKEND_HIGHLIGHTS = ['off', 'days', 'columns'] as const
-export type WeekendHighlight = (typeof WEEKEND_HIGHLIGHTS)[number]
+/** Ids of the page layouts; each maps to a component in `ui/layouts/registry.ts`. */
+export const LAYOUT_IDS = ['year-one-page'] as const
+export type LayoutId = (typeof LAYOUT_IDS)[number]
 
 /** BCP 47 tags of the languages month and weekday names can be shown in. */
 export const LOCALES = ['en-US', 'ro-RO', 'de-DE', 'fr-FR', 'es-ES', 'it-IT', 'ja-JP'] as const
@@ -33,6 +34,7 @@ export function isMargin(value: unknown): value is number {
 }
 
 export interface CalendarConfig {
+	layout: LayoutId
 	year: number
 	/** Language of month and weekday names. */
 	locale: Locale
@@ -57,6 +59,7 @@ function defaultLocale(): Locale {
 
 export function defaultConfig(): CalendarConfig {
 	return {
+		layout: 'year-one-page',
 		year: new Date().getFullYear(),
 		locale: defaultLocale(),
 		weekStart: 1,

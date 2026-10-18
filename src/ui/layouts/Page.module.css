@@ -6,6 +6,11 @@
 	box-shadow: 0 2px 8px rgb(0 0 0 / 0.2);
 }
 
+/* Each page of a multi-page layout starts a new printed sheet. */
+.page + .page {
+	break-before: page;
+}
+
 @media print {
 	.page {
 		box-shadow: none;

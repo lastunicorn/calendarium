@@ -1,6 +1,6 @@
 import { Fragment } from 'react'
-import type { WeekendHighlight } from '../../config/CalendarConfig'
-import { type CalendarDay, type CalendarMonth, weekNumber } from '../../core/calendar'
+import { type CalendarMonth, weekNumber } from '../../core/calendar'
+import { isHighlightedColumn, isHighlightedDay, type WeekendHighlight } from '../../core/weekend'
 import styles from './MiniMonth.module.css'
 
 interface MiniMonthProps {
@@ -19,12 +19,7 @@ export function MiniMonth({
 	highlightWeekends,
 	showWeekNumbers,
 }: MiniMonthProps) {
-	const weekendColumns = month.weeks[0].map((day) => highlightWeekends !== 'off' && day.isWeekend)
-
-	function isHighlighted(day: CalendarDay): boolean {
-		if (!day.isWeekend) return false
-		return highlightWeekends === 'columns' || (highlightWeekends === 'days' && day.inMonth)
-	}
+	const weekendColumns = month.weeks[0].map((day) => isHighlightedColumn(day, highlightWeekends))
 
 	return (
 		<div className={styles.month}>
@@ -51,7 +46,7 @@ export function MiniMonth({
 						{week.map((day) => (
 							<div
 								key={day.date.toISOString()}
-								className={`${styles.day} ${isHighlighted(day) ? styles.weekend : ''}`}
+								className={`${styles.day} ${isHighlightedDay(day, highlightWeekends) ? styles.weekend : ''}`}
 							>
 								{day.inMonth ? day.day : ''}
 							</div>

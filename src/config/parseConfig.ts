@@ -1,14 +1,15 @@
 import { isWeekStart } from '../core/calendar'
 import { WEEKDAY_FORMATS } from '../core/locale'
 import { ORIENTATIONS, PAPER_SIZES } from '../core/paper'
+import { WEEKEND_HIGHLIGHTS } from '../core/weekend'
 import {
 	type CalendarConfig,
 	defaultConfig,
 	isMargin,
 	isYear,
+	LAYOUT_IDS,
 	LOCALES,
 	MARGIN_SIDES,
-	WEEKEND_HIGHLIGHTS,
 } from './CalendarConfig'
 
 /**
@@ -42,6 +43,7 @@ type ValidatedKey = Exclude<keyof CalendarConfig, 'margins'>
 
 // A mapped type: a new config field without a validator here is a compile error.
 const VALIDATORS: { [K in ValidatedKey]: Validator<CalendarConfig[K]> } = {
+	layout: oneOf(LAYOUT_IDS),
 	year: isYear,
 	locale: oneOf(LOCALES),
 	weekStart: isWeekStart,

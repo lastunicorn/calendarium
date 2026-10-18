@@ -10,6 +10,7 @@ describe('parseConfig', () => {
 
 	it('keeps valid fields', () => {
 		const stored = {
+			layout: 'year-one-page',
 			year: 2030,
 			locale: 'ro-RO',
 			weekStart: 6,
@@ -27,6 +28,7 @@ describe('parseConfig', () => {
 
 	it('drops invalid fields', () => {
 		const config = parseConfig({
+			layout: 'month-per-page',
 			year: 2030.5,
 			locale: 'xx',
 			weekStart: 7,
@@ -40,6 +42,7 @@ describe('parseConfig', () => {
 			margins: 'wide',
 		})
 		const defaults = defaultConfig()
+		expect(config.layout).toBe(defaults.layout)
 		expect(config.year).toBe(defaults.year)
 		expect(config.locale).toBe(defaults.locale)
 		expect(config.weekStart).toBe(defaults.weekStart)

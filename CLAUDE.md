@@ -18,7 +18,15 @@ Three layers, kept strictly separated (see [doc/plan.md](doc/plan.md)):
 
 - `src/core/` — pure calendar logic, no React. `buildMonth` always returns 6 weeks so every month has the same height; dates are built from components (not ms arithmetic) to stay DST-safe. `locale.ts` derives month/weekday names from `Intl.DateTimeFormat`.
 - `src/config/` — the single `CalendarConfig` object. `ui/useCalendarConfig` holds it via the pure `configReducer` (`update` a few fields / `replace` the whole config) and persists it to `localStorage` on every change; `parseConfig` validates untrusted stored data field by field and falls back to defaults.
-- `src/ui/` — `sidebar/` holds the `Toolbar` (print, export/import, reset) and `ConfigForm`, whose sections (`CalendarSection`, `HeaderSection`, `PageSection`) build on the typed controls in `fields/` (`SelectField`, `NumberField`, …); `preview/Preview` puts a layout from `ui/layouts/` inside a `preview/Page` (one paper sheet). Layouts take `config` and build their model from `core/` (memoized).
+- `src/ui/` — `sidebar/` holds the `Toolbar` (print, export/import, reset) and `ConfigForm`, whose sections (`CalendarSection`, `HeaderSection`, `PageSection`) build on the typed controls in `fields/` (`SelectField`, `NumberField`, …); `preview/Preview` renders the layout chosen by `config.layout`, looked up in `ui/layouts/registry.ts`.
+
+### Layouts
+
+A layout takes `config` and renders its own `Page`s (`ui/layouts/Page.tsx`, one paper sheet each), so it decides the page count; consecutive pages print on separate sheets. Build the model with `useCalendarModel(config)` (memoized months, month and weekday names), reuse `CalendarHeader` for the title/subtitle, and pass small view components like `MiniMonth` primitives rather than the whole config. Weekend highlighting rules live in `core/weekend.ts`.
+
+Adding a layout: an id in `LAYOUT_IDS` (`CalendarConfig.ts`), its component in `LAYOUTS` (`registry.ts`; compile-enforced), and a layout select in the sidebar if there isn't one yet (there is none while only one layout exists).
+
+### Config options
 
 Adding a config option touches: `CalendarConfig` type, `defaultConfig()`, a validator in `VALIDATORS` (`config/parseConfig.ts`), and a control in the matching `ui/sidebar/*Section.tsx`. The compiler enforces the validator. For a choice between fixed values, declare a `const` array in `CalendarConfig.ts` and derive the type from it (`(typeof X)[number]`); the validator is `oneOf(X)` and the select options are `optionsFrom(X, labels)`, which fails to compile if a value has no label.
 
