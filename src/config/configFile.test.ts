@@ -5,8 +5,22 @@ import { CONFIG_VERSION } from './parseConfig'
 
 describe('config files', () => {
 	it('round-trips through serializeConfig', () => {
-		const config = { ...defaultConfig(), year: 2031, title: 'Office', paperSize: 'a3' as const }
+		const defaults = defaultConfig()
+		const config = {
+			...defaults,
+			year: 2031,
+			title: 'Office',
+			page: { ...defaults.page, paperSize: 'a3' as const },
+		}
 		expect(parseConfigFile(serializeConfig(config))).toEqual(config)
+	})
+
+	it('imports files exported in the version 1 format', () => {
+		const v1File = '{"version": 1, "year": 2031, "paperSize": "a3", "orientation": "landscape"}'
+		expect(parseConfigFile(v1File)?.page).toMatchObject({
+			paperSize: 'a3',
+			orientation: 'landscape',
+		})
 	})
 
 	it('tags the file with the format version', () => {

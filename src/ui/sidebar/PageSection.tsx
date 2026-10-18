@@ -14,33 +14,35 @@ const ORIENTATION_OPTIONS = optionsFrom(ORIENTATIONS, {
 
 /** The sheet of paper: size, orientation and margins. */
 export function PageSection({ config, onUpdate }: ConfigSectionProps) {
+	const { page } = config
+
 	function handlePaperSizeChange(paperSize: PaperSize) {
-		onUpdate({ paperSize })
+		onUpdate({ page: { ...page, paperSize } })
 	}
 
 	function handleOrientationChange(orientation: Orientation) {
-		onUpdate({ orientation })
+		onUpdate({ page: { ...page, orientation } })
 	}
 
 	function handleMarginsChange(margins: Margins) {
-		onUpdate({ margins })
+		onUpdate({ page: { ...page, margins } })
 	}
 
 	return (
 		<Section title="Page">
 			<SelectField
 				label="Paper size"
-				value={config.paperSize}
+				value={page.paperSize}
 				options={PAPER_SIZE_OPTIONS}
 				onChange={handlePaperSizeChange}
 			/>
 			<SelectField
 				label="Orientation"
-				value={config.orientation}
+				value={page.orientation}
 				options={ORIENTATION_OPTIONS}
 				onChange={handleOrientationChange}
 			/>
-			<MarginsField value={config.margins} onChange={handleMarginsChange} />
+			<MarginsField value={page.margins} onChange={handleMarginsChange} />
 		</Section>
 	)
 }

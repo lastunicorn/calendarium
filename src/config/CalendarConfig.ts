@@ -33,6 +33,13 @@ export function isMargin(value: unknown): value is number {
 	return typeof value === 'number' && Number.isFinite(value) && value >= 0 && value <= MAX_MARGIN
 }
 
+/** The sheet the calendar is printed on. */
+export interface PageSetup {
+	paperSize: PaperSize
+	orientation: Orientation
+	margins: Margins
+}
+
 export interface CalendarConfig {
 	layout: LayoutId
 	year: number
@@ -47,9 +54,7 @@ export interface CalendarConfig {
 	highlightWeekends: WeekendHighlight
 	/** ISO week numbers in a column before each week. */
 	showWeekNumbers: boolean
-	paperSize: PaperSize
-	orientation: Orientation
-	margins: Margins
+	page: PageSetup
 }
 
 function defaultLocale(): Locale {
@@ -66,10 +71,17 @@ export function defaultConfig(): CalendarConfig {
 		weekdayFormat: 'narrow',
 		title: '',
 		subtitle: '',
-		highlightWeekends: 'columns',
+		highlightWeekends: 'days',
 		showWeekNumbers: false,
-		paperSize: 'a4',
-		orientation: 'portrait',
-		margins: { top: 10, right: 10, bottom: 10, left: 10 },
+		page: {
+			paperSize: 'a4',
+			orientation: 'portrait',
+			margins: {
+				top: 12,
+				right: 12,
+				bottom: 12,
+				left: 12
+			},
+		},
 	}
 }

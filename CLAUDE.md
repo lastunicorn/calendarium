@@ -22,7 +22,7 @@ Three layers, kept strictly separated (see [doc/plan.md](doc/plan.md)):
 
 ### Layouts
 
-A layout takes `config` and renders its own `Page`s (`ui/layouts/Page.tsx`, one paper sheet each), so it decides the page count; consecutive pages print on separate sheets. Build the model with `useCalendarModel(config)` (memoized months, month and weekday names), reuse `CalendarHeader` for the title/subtitle, and pass small view components like `MiniMonth` primitives rather than the whole config. Weekend highlighting rules live in `core/weekend.ts`.
+A layout takes `config` and renders its own `Page`s (`ui/layouts/Page.tsx`, one paper sheet each, given `setup={config.page}`), so it decides the page count; consecutive pages print on separate sheets. Build the model with `useCalendarModel(config)` (memoized months, month and weekday names), reuse `CalendarHeader` for the title/subtitle, and pass small view components like `MiniMonth` primitives rather than the whole config. Weekend highlighting rules live in `core/weekend.ts`.
 
 Adding a layout: an id in `LAYOUT_IDS` (`CalendarConfig.ts`), its component in `LAYOUTS` (`registry.ts`; compile-enforced), and a layout select in the sidebar if there isn't one yet (there is none while only one layout exists).
 
@@ -30,7 +30,7 @@ Adding a layout: an id in `LAYOUT_IDS` (`CalendarConfig.ts`), its component in `
 
 Adding a config option touches: `CalendarConfig` type, `defaultConfig()`, a validator in `VALIDATORS` (`config/parseConfig.ts`), and a control in the matching `ui/sidebar/*Section.tsx`. The compiler enforces the validator. For a choice between fixed values, declare a `const` array in `CalendarConfig.ts` and derive the type from it (`(typeof X)[number]`); the validator is `oneOf(X)` and the select options are `optionsFrom(X, labels)`, which fails to compile if a value has no label.
 
-Stored and exported configs are tagged with `CONFIG_VERSION`. Bump it only for a change that would misread older data (renamed or restructured field) and migrate the old shape in `parseConfig`; adding a field needs no bump.
+Stored and exported configs are tagged with `CONFIG_VERSION`. Bump it only for a change that would misread older data (renamed or restructured field), list the new shape in its doc comment, and add a migration step to `upgrade` in `parseConfig.ts` (v1 → v2 moved `paperSize`, `orientation` and `margins` under `page`); adding a field needs no bump. Nested objects like `page` get their own `Validators` table.
 
 ### Printing
 
@@ -49,6 +49,7 @@ Stored and exported configs are tagged with `CONFIG_VERSION`. Bump it only for a
 - Keep a component's print overrides (`@media print`) in its own module file.
 - `src/index.css` holds only global styles: reset, `:root` fonts/colors (CSS variables), `body`, and the global `@page { margin: 0 }`. No component classes there.
 - Size anything inside a printed page in `mm`/`pt`, never `px`.
+- Use the color variables from `:root` in `index.css` (`var(--color-weekend)`), never literal colors in a module; add a variable when a new color is needed.
 
 ### Event handlers
 

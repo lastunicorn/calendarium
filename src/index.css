@@ -1,9 +1,25 @@
 /* Global styles only. Component styles live in co-located *.module.css files. */
 
 :root {
+	/* App */
+	--color-text: #222;
+	--color-text-muted: #666;
+	--color-app-background: #e5e5e5;
+	--color-surface: #fff;
+	--color-border: #ccc;
+	--color-error: #b00020;
+	--color-page-shadow: rgb(0 0 0 / 0.2);
+
+	/* Printed calendar */
+	--color-rule: #999;
+	--color-rule-light: #ccc;
+	--color-week-number: #888;
+	--color-weekend: #c62828;
+	--color-weekend-background: #f3f3f3;
+
 	font-family: system-ui, sans-serif;
-	color: #222;
-	background: #e5e5e5;
+	color: var(--color-text);
+	background: var(--color-app-background);
 }
 
 * {
@@ -21,6 +37,6 @@ body {
 
 @media print {
 	:root {
-		background: #fff;
+		background: var(--color-surface);
 	}
 }

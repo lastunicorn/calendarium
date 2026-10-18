@@ -2,8 +2,8 @@
 .page {
 	flex-shrink: 0;
 	overflow: hidden;
-	background: #fff;
-	box-shadow: 0 2px 8px rgb(0 0 0 / 0.2);
+	background: var(--color-surface);
+	box-shadow: 0 2px 8px var(--color-page-shadow);
 }
 
 /* Each page of a multi-page layout starts a new printed sheet. */

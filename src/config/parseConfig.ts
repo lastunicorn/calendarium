@@ -10,18 +10,41 @@ import {
 	LAYOUT_IDS,
 	LOCALES,
 	MARGIN_SIDES,
+	type PageSetup,
 } from './CalendarConfig'
 
 /**
  * Version of the stored and exported config format. Bump it when a change would misread older
- * data (a renamed or restructured field), and migrate the older shape in `parseConfig`.
- * Data without a version predates versioning and has the version 1 shape.
+ * data (a renamed or restructured field), and migrate the older shape in `upgrade`.
+ *
+ * - 1: flat; data without a version also has this shape.
+ * - 2: `paperSize`, `orientation` and `margins` grouped under `page`.
  */
-export const CONFIG_VERSION = 1
+export const CONFIG_VERSION = 2
 
 /** The config as written to storage and files: tagged with its format version. */
 export function toStoredConfig(config: CalendarConfig) {
 	return { version: CONFIG_VERSION, ...config }
+}
+
+type StoredData = Record<string, unknown>
+
+/** `value` as an object whose fields can be read, or `null` when it is not a plain object. */
+function asObject(value: unknown): StoredData | null {
+	return typeof value === 'object' && value !== null && !Array.isArray(value)
+		? (value as StoredData)
+		: null
+}
+
+/** Moves the version 1 top-level page fields under `page`. */
+function migrateFromV1({ paperSize, orientation, margins, ...rest }: StoredData): StoredData {
+	return { ...rest, page: { paperSize, orientation, margins } }
+}
+
+/** Brings stored data of any older version to the current shape. */
+function upgrade(stored: StoredData): StoredData {
+	if (stored.version === undefined || stored.version === 1) return migrateFromV1(stored)
+	return stored
 }
 
 function oneOf<T>(values: readonly T[]) {
@@ -38,11 +61,11 @@ function isBoolean(value: unknown): value is boolean {
 
 type Validator<T> = (value: unknown) => value is T
 
-/** Margins are validated per side instead, so one bad side keeps the others. */
-type ValidatedKey = Exclude<keyof CalendarConfig, 'margins'>
+/** One validator per listed field of `T`. As a mapped type, a missing one is a compile error. */
+type Validators<T, K extends keyof T> = { [P in K]: Validator<T[P]> }
 
-// A mapped type: a new config field without a validator here is a compile error.
-const VALIDATORS: { [K in ValidatedKey]: Validator<CalendarConfig[K]> } = {
+/** `page` is an object, validated by its own fields below. */
+const CONFIG_VALIDATORS: Validators<CalendarConfig, Exclude<keyof CalendarConfig, 'page'>> = {
 	layout: oneOf(LAYOUT_IDS),
 	year: isYear,
 	locale: oneOf(LOCALES),
@@ -52,33 +75,43 @@ const VALIDATORS: { [K in ValidatedKey]: Validator<CalendarConfig[K]> } = {
 	subtitle: isString,
 	highlightWeekends: oneOf(WEEKEND_HIGHLIGHTS),
 	showWeekNumbers: isBoolean,
+}
+
+/** Margins are validated per side instead, so one bad side keeps the others. */
+const PAGE_VALIDATORS: Validators<PageSetup, Exclude<keyof PageSetup, 'margins'>> = {
 	paperSize: oneOf(PAPER_SIZES),
 	orientation: oneOf(ORIENTATIONS),
 }
 
-function copyIfValid<K extends ValidatedKey>(
-	config: CalendarConfig,
-	stored: Record<string, unknown>,
-	key: K,
+/** Copies each field of `source` that passes its validator onto `target`. */
+function copyValid<T, K extends keyof T>(
+	target: T,
+	source: StoredData,
+	validators: Validators<T, K>,
 ) {
-	const value = stored[key]
-	if (VALIDATORS[key](value)) config[key] = value
+	for (const key of Object.keys(validators) as K[]) {
+		const value = source[key as string]
+		if (validators[key](value)) target[key] = value
+	}
 }
 
 /** Keeps only valid fields from untrusted stored data, falling back to defaults. */
 export function parseConfig(data: unknown): CalendarConfig {
 	const config = defaultConfig()
-	if (typeof data !== 'object' || data === null) return config
-	const stored = data as Record<string, unknown>
+	const raw = asObject(data)
+	if (raw === null) return config
+	const stored = upgrade(raw)
 
-	for (const key of Object.keys(VALIDATORS) as ValidatedKey[]) {
-		copyIfValid(config, stored, key)
-	}
+	copyValid(config, stored, CONFIG_VALIDATORS)
 
-	if (typeof stored.margins === 'object' && stored.margins !== null) {
-		const margins = stored.margins as Record<string, unknown>
-		for (const side of MARGIN_SIDES) {
-			if (isMargin(margins[side])) config.margins[side] = margins[side]
+	const page = asObject(stored.page)
+	if (page !== null) {
+		copyValid(config.page, page, PAGE_VALIDATORS)
+		const margins = asObject(page.margins)
+		if (margins !== null) {
+			for (const side of MARGIN_SIDES) {
+				if (isMargin(margins[side])) config.page.margins[side] = margins[side]
+			}
 		}
 	}
 

@@ -6,5 +6,5 @@
 .error {
 	margin: 0;
 	font-size: 0.875rem;
-	color: #b00020;
+	color: var(--color-error);
 }

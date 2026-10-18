@@ -13,7 +13,7 @@ export function Preview({ config }: PreviewProps) {
 	return (
 		<main className={styles.preview}>
 			{/* The printed paper size. Every page shares it, so one rule covers the document. */}
-			<style>{`@page { size: ${pageSizeCss(config.paperSize, config.orientation)}; }`}</style>
+			<style>{`@page { size: ${pageSizeCss(config.page.paperSize, config.page.orientation)}; }`}</style>
 			<Layout config={config} />
 		</main>
 	)

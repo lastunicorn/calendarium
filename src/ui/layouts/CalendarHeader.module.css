@@ -17,5 +17,5 @@
 	margin: 0;
 	font-size: 14pt;
 	line-height: 1.2;
-	color: #666;
+	color: var(--color-text-muted);
 }

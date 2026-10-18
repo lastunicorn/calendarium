@@ -11,16 +11,15 @@ interface YearOnePageLayoutProps {
 
 /** The whole year on one page: the header above a grid of 12 small months. */
 export function YearOnePageLayout({ config }: YearOnePageLayoutProps) {
-	const { year, title, subtitle, highlightWeekends, showWeekNumbers } = config
-	const { paperSize, orientation, margins } = config
+	const { year, title, subtitle, highlightWeekends, showWeekNumbers, page } = config
 	const { months, monthNames, weekdays } = useCalendarModel(config)
 
 	return (
-		<Page paperSize={paperSize} orientation={orientation} margins={margins}>
+		<Page setup={page}>
 			<div className={styles.layout}>
 				<CalendarHeader year={year} title={title} subtitle={subtitle} />
 
-				<div className={`${styles.grid} ${styles[orientation]}`}>
+				<div className={`${styles.grid} ${styles[page.orientation]}`}>
 					{months.map((month) => (
 						<MiniMonth
 							key={month.month}

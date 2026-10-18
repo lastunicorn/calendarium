@@ -36,26 +36,26 @@
 	font-size: 8pt;
 	font-weight: 600;
 	text-transform: uppercase;
-	border-bottom: 0.3mm solid #999;
+	border-bottom: 0.3mm solid var(--color-rule);
 }
 
 .weekNumber {
 	padding-right: 1mm;
 	font-size: 7.5pt;
-	color: #888;
-	border-right: 0.3mm solid #ccc;
+	color: var(--color-week-number);
+	border-right: 0.3mm solid var(--color-rule-light);
 }
 
 .weekday.weekNumber {
-	border-bottom-color: #999;
+	border-bottom-color: var(--color-rule);
 }
 
 .weekend {
-	color: #c62828;
+	color: var(--color-weekend);
 }
 
 .day.weekend {
-	background: #f3f3f3;
+	background: var(--color-weekend-background);
 }
 
 @media print {
