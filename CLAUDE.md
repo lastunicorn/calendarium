@@ -8,7 +8,7 @@ Browser app (Vite + React + TypeScript) that generates a calendar to print on pa
 
 ## Commands
 
-- `npm run dev` / `npm run build` / `npm test` / `npm run lint` (oxlint) / `npm run format` / `npm run typecheck`
+- `npm run dev` / `npm run build` / `npm test` / `npm run lint` (oxlint) / `npm run format` (`format:check` to verify only) / `npm run typecheck`
 - Single test file: `npx vitest run src/core/calendar.test.ts`; single test by name: `npx vitest run -t "leap year"`
 - Tests are plain `src/**/*.test.ts` files (no DOM/component tests); they cover `core/` and `config/`.
 
@@ -43,6 +43,8 @@ Stored and exported configs are tagged with `CONFIG_VERSION`. Bump it only for a
 
 - Indent with tabs (enforced by Prettier and `.editorconfig`); Markdown and YAML use 2 spaces.
 - Run `npm run format` after editing.
+- A `.tsx` file exports only components (oxlint `react/only-export-components`, for Fast Refresh); put shared constants in a `.ts` file next to it, as `sidebar/layoutNames.ts` does.
+- `doc/` holds design and implementation plans (e.g. `per-layout-config-plan.md`) that explain why the code looks the way it does.
 
 ### Styles
 
