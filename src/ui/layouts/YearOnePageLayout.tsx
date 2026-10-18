@@ -10,10 +10,13 @@ interface YearOnePageLayoutProps {
 }
 
 export function YearOnePageLayout({ config }: YearOnePageLayoutProps) {
-	const { year, locale, weekStart, title, highlightWeekends, orientation } = config
+	const { year, locale, weekStart, weekdayFormat, title, highlightWeekends, orientation } = config
 	const months = useMemo(() => buildYear(year, weekStart), [year, weekStart])
 	const names = useMemo(() => monthNames(locale), [locale])
-	const weekdays = useMemo(() => weekdayNames(locale, weekStart), [locale, weekStart])
+	const weekdays = useMemo(
+		() => weekdayNames(locale, weekStart, weekdayFormat),
+		[locale, weekStart, weekdayFormat],
+	)
 
 	return (
 		<div className={styles.layout}>

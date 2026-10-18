@@ -13,6 +13,7 @@ describe('parseConfig', () => {
 			year: 2030,
 			locale: 'ro-RO',
 			weekStart: 6,
+			weekdayFormat: 'narrow',
 			title: 'Family',
 			highlightWeekends: false,
 			orientation: 'landscape',
@@ -25,6 +26,7 @@ describe('parseConfig', () => {
 			year: 2030.5,
 			locale: 'xx',
 			weekStart: 7,
+			weekdayFormat: 'long',
 			title: 7,
 			orientation: 'up',
 		})
@@ -32,6 +34,7 @@ describe('parseConfig', () => {
 		expect(config.year).toBe(defaults.year)
 		expect(config.locale).toBe(defaults.locale)
 		expect(config.weekStart).toBe(defaults.weekStart)
+		expect(config.weekdayFormat).toBe(defaults.weekdayFormat)
 		expect(config.title).toBe(defaults.title)
 		expect(config.orientation).toBe(defaults.orientation)
 	})

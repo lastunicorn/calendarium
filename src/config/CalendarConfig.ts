@@ -1,4 +1,5 @@
 import type { WeekStart } from '../core/calendar'
+import type { WeekdayFormat } from '../core/locale'
 
 export type Orientation = 'portrait' | 'landscape'
 
@@ -7,6 +8,7 @@ export interface CalendarConfig {
 	/** BCP 47 tag used for month and weekday names, e.g. `en-US`, `ro-RO`. */
 	locale: string
 	weekStart: WeekStart
+	weekdayFormat: WeekdayFormat
 	/** Shown above the calendar; when empty, the year is shown instead. */
 	title: string
 	highlightWeekends: boolean
@@ -32,6 +34,7 @@ export function defaultConfig(): CalendarConfig {
 		year: new Date().getFullYear(),
 		locale: defaultLocale(),
 		weekStart: 1,
+		weekdayFormat: 'narrow',
 		title: '',
 		highlightWeekends: true,
 		orientation: 'portrait',

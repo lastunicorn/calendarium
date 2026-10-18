@@ -1,5 +1,8 @@
 import type { WeekStart } from './calendar'
 
+/** How weekday names are written: `short` = "Mon", `narrow` = "M". */
+export type WeekdayFormat = 'short' | 'narrow'
+
 function capitalize(text: string, locale: string): string {
 	return text.charAt(0).toLocaleUpperCase(locale) + text.slice(1)
 }
@@ -12,9 +15,13 @@ export function monthNames(locale: string): string[] {
 	)
 }
 
-/** Short localized weekday names, ordered from `weekStart`. */
-export function weekdayNames(locale: string, weekStart: WeekStart): string[] {
-	const format = new Intl.DateTimeFormat(locale, { weekday: 'short' })
+/** Localized weekday names, ordered from `weekStart`. */
+export function weekdayNames(
+	locale: string,
+	weekStart: WeekStart,
+	weekdayFormat: WeekdayFormat = 'short',
+): string[] {
+	const format = new Intl.DateTimeFormat(locale, { weekday: weekdayFormat })
 	// 2023-01-01 was a Sunday.
 	return Array.from({ length: 7 }, (_, index) =>
 		capitalize(

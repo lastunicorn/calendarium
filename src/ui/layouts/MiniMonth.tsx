@@ -18,7 +18,8 @@ export function MiniMonth({ month, name, weekdays, highlightWeekends }: MiniMont
 			<div className={styles.days}>
 				{weekdays.map((weekday, index) => (
 					<div
-						key={weekday}
+						// Narrow names repeat (T, T, S, S), so the column index is the key.
+						key={index}
 						className={`${styles.weekday} ${weekendColumns[index] ? styles.weekend : ''}`}
 					>
 						{weekday}

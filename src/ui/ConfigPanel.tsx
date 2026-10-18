@@ -1,6 +1,7 @@
 import type { ChangeEvent } from 'react'
 import { type CalendarConfig, LOCALES, type Orientation } from '../config/CalendarConfig'
 import type { WeekStart } from '../core/calendar'
+import type { WeekdayFormat } from '../core/locale'
 import styles from './ConfigPanel.module.css'
 
 interface ConfigPanelProps {
@@ -35,6 +36,10 @@ export function ConfigPanel({ config, onChange }: ConfigPanelProps) {
 
 	function handleWeekStartChange(event: ChangeEvent<HTMLSelectElement>) {
 		onChange({ ...config, weekStart: Number(event.currentTarget.value) as WeekStart })
+	}
+
+	function handleWeekdayFormatChange(event: ChangeEvent<HTMLSelectElement>) {
+		onChange({ ...config, weekdayFormat: event.currentTarget.value as WeekdayFormat })
 	}
 
 	function handleTitleChange(event: ChangeEvent<HTMLInputElement>) {
@@ -93,6 +98,14 @@ export function ConfigPanel({ config, onChange }: ConfigPanelProps) {
 							{weekStart.label}
 						</option>
 					))}
+				</select>
+			</label>
+
+			<label className={styles.field}>
+				Weekday names
+				<select value={config.weekdayFormat} onChange={handleWeekdayFormatChange}>
+					<option value="short">Three letters (MON)</option>
+					<option value="narrow">One letter (M)</option>
 				</select>
 			</label>
 

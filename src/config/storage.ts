@@ -21,6 +21,9 @@ export function parseConfig(data: unknown): CalendarConfig {
 
 	if (isWeekStart(stored.weekStart)) config.weekStart = stored.weekStart
 
+	if (stored.weekdayFormat === 'short' || stored.weekdayFormat === 'narrow')
+		config.weekdayFormat = stored.weekdayFormat
+
 	if (typeof stored.title === 'string') config.title = stored.title
 
 	if (typeof stored.highlightWeekends === 'boolean')

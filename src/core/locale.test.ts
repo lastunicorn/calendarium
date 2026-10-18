@@ -16,6 +16,11 @@ describe('weekdayNames', () => {
 		expect(weekdayNames('en-US', 6)).toEqual(['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'])
 	})
 
+	it('writes one-letter names in the narrow format', () => {
+		expect(weekdayNames('en-US', 1, 'narrow')).toEqual(['M', 'T', 'W', 'T', 'F', 'S', 'S'])
+		expect(weekdayNames('ro-RO', 1, 'narrow')).toEqual(['L', 'M', 'M', 'J', 'V', 'S', 'D'])
+	})
+
 	it('strips abbreviation dots', () => {
 		expect(weekdayNames('ro-RO', 1)[0]).toBe('Lun')
 	})
