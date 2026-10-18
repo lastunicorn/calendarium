@@ -30,13 +30,24 @@
 	height: 42mm;
 }
 
-/* A writing line every 8mm: one tile repeated, so every line rasterizes alike and costs no DOM. */
+/*
+ * Every line in the writing areas is a border, not a background gradient: browsers draw any
+ * non-zero border at least one device pixel wide, while a gradient this thin can vanish
+ * depending on zoom and where it lands on the pixel grid.
+ */
+
+/* Rows of fixed height (set inline), each drawing the line below it. */
 .ruled {
 	flex: 1;
+	display: grid;
+	align-content: start;
 	min-height: 0;
+	overflow: hidden;
 	border-top: 0.3mm solid var(--color-rule);
-	background: linear-gradient(to top, var(--color-rule-light) 0.25mm, transparent 0.25mm) 0 0 /
-		100% 8mm;
+}
+
+.ruledLine {
+	border-bottom: 0.2mm solid var(--color-rule-light);
 }
 
 /* One row per hour, sharing the height left under the header. */
@@ -49,11 +60,20 @@
 
 /* The label sits left of a writing area split by a light half-hour line. */
 .hour {
+	position: relative;
 	display: flex;
 	min-height: 0;
 	border-bottom: 0.2mm solid var(--color-cell-border);
-	background: linear-gradient(var(--color-rule-light), var(--color-rule-light)) 16mm 50% / 100%
-		0.2mm no-repeat;
+}
+
+/* The half-hour line, from the label column to the right edge. */
+.hour::after {
+	content: '';
+	position: absolute;
+	top: 50%;
+	right: 0;
+	left: 16mm;
+	border-top: 0.2mm solid var(--color-rule-light);
 }
 
 .hourLabel {
@@ -63,11 +83,4 @@
 	font-size: 8pt;
 	color: var(--color-text-muted);
 	border-right: 0.2mm solid var(--color-cell-border);
-}
-
-@media print {
-	.ruled,
-	.schedule {
-		print-color-adjust: exact;
-	}
 }

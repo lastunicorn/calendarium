@@ -2,11 +2,24 @@ import { memo } from 'react'
 import type { DayPageLines, PageSetup } from '../../config/CalendarConfig'
 import { type CalendarDay, type CalendarMonth, dayOfYear, isoWeek } from '../../core/calendar'
 import { fullDateName, weekdayName } from '../../core/locale'
+import { pageDimensions } from '../../core/paper'
 import { isHighlightedDay, type WeekendHighlight } from '../../core/weekend'
 import { CalendarHeader } from './CalendarHeader'
 import styles from './DayPage.module.css'
 import { MiniMonth } from './MiniMonth'
 import { Page } from './Page'
+
+/** Distance between ruled lines, in mm. */
+const RULED_LINE_SPACING = 8
+
+/**
+ * Enough ruled lines to fill the page inside its margins; the header takes some of that height,
+ * and the ruled area clips the lines that don't fit.
+ */
+function ruledLineCount({ paperSize, orientation, margins }: PageSetup): number {
+	const { height } = pageDimensions(paperSize, orientation)
+	return Math.ceil((height - margins.top - margins.bottom) / RULED_LINE_SPACING)
+}
 
 interface DayPageProps {
 	day: CalendarDay
@@ -81,7 +94,15 @@ export const DayPage = memo(function DayPage({
 					</div>
 				</div>
 				{lines === 'ruled' ? (
-					<div className={styles.ruled} />
+					<div
+						className={styles.ruled}
+						style={{ gridAutoRows: `${RULED_LINE_SPACING}mm` }}
+					>
+						{Array.from({ length: ruledLineCount(setup) }, (_, index) => (
+							// The lines are identical and never reorder, so the index is the key.
+							<div key={index} className={styles.ruledLine} />
+						))}
+					</div>
 				) : (
 					<div
 						className={styles.schedule}
