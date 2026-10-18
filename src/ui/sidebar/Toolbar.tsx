@@ -1,6 +1,6 @@
 import { type ChangeEvent, useRef, useState } from 'react'
 import { type CalendarConfig, defaultConfig } from '../../config/CalendarConfig'
-import { parseConfigFile, serializeConfig } from '../../config/storage'
+import { parseConfigFile, serializeConfig } from '../../config/configFile'
 import { IconButton } from '../components/IconButton'
 import { ExportIcon, ImportIcon, PrintIcon, ResetIcon } from '../components/icons'
 import { downloadFile } from '../download'

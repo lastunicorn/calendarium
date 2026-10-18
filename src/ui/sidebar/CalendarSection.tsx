@@ -1,8 +1,9 @@
-import { LOCALES } from '../../config/CalendarConfig'
+import { isYear, type Locale, LOCALES, MAX_YEAR, MIN_YEAR } from '../../config/CalendarConfig'
 import type { WeekStart } from '../../core/calendar'
-import type { WeekdayFormat } from '../../core/locale'
+import { WEEKDAY_FORMATS, type WeekdayFormat } from '../../core/locale'
 import { NumberField } from '../fields/NumberField'
-import { type Option, SelectField } from '../fields/SelectField'
+import { type Option, optionsFrom } from '../fields/options'
+import { SelectField } from '../fields/SelectField'
 import { type ConfigSectionProps, Section } from './Section'
 
 /** Week start options in panel order, Monday first. */
@@ -16,14 +17,21 @@ const WEEK_START_OPTIONS: Option<WeekStart>[] = [
 	{ value: 0, label: 'Sunday' },
 ]
 
-const WEEKDAY_FORMAT_OPTIONS: Option<WeekdayFormat>[] = [
-	{ value: 'short', label: 'Three letters (MON)' },
-	{ value: 'narrow', label: 'One letter (M)' },
-]
+/** Each language's name in itself, so a reader can find their own. */
+const LOCALE_OPTIONS = optionsFrom(LOCALES, {
+	'en-US': 'English',
+	'ro-RO': 'Română',
+	'de-DE': 'Deutsch',
+	'fr-FR': 'Français',
+	'es-ES': 'Español',
+	'it-IT': 'Italiano',
+	'ja-JP': '日本語',
+})
 
-function isValidYear(year: number): boolean {
-	return Number.isInteger(year) && year >= 1 && year <= 9999
-}
+const WEEKDAY_FORMAT_OPTIONS = optionsFrom(WEEKDAY_FORMATS, {
+	short: 'Three letters (MON)',
+	narrow: 'One letter (M)',
+})
 
 /** Which year, and how dates are named and ordered. */
 export function CalendarSection({ config, onUpdate }: ConfigSectionProps) {
@@ -31,7 +39,7 @@ export function CalendarSection({ config, onUpdate }: ConfigSectionProps) {
 		onUpdate({ year })
 	}
 
-	function handleLocaleChange(locale: string) {
+	function handleLocaleChange(locale: Locale) {
 		onUpdate({ locale })
 	}
 
@@ -48,15 +56,15 @@ export function CalendarSection({ config, onUpdate }: ConfigSectionProps) {
 			<NumberField
 				label="Year"
 				value={config.year}
-				min={1}
-				max={9999}
-				isValid={isValidYear}
+				min={MIN_YEAR}
+				max={MAX_YEAR}
+				isValid={isYear}
 				onChange={handleYearChange}
 			/>
 			<SelectField
 				label="Language"
 				value={config.locale}
-				options={LOCALES}
+				options={LOCALE_OPTIONS}
 				onChange={handleLocaleChange}
 			/>
 			<SelectField

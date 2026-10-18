@@ -20,7 +20,9 @@ Three layers, kept strictly separated (see [doc/plan.md](doc/plan.md)):
 - `src/config/` — the single `CalendarConfig` object. `ui/useCalendarConfig` holds it via the pure `configReducer` (`update` a few fields / `replace` the whole config) and persists it to `localStorage` on every change; `parseConfig` validates untrusted stored data field by field and falls back to defaults.
 - `src/ui/` — `sidebar/` holds the `Toolbar` (print, export/import, reset) and `ConfigForm`, whose sections (`CalendarSection`, `TextSection`, `PageSection`, `AppearanceSection`) build on the typed controls in `fields/` (`SelectField`, `NumberField`, …); `Preview` renders page boxes (A4/A3/Letter) and puts a layout from `ui/layouts/` inside each page. Layouts take `config` and build their model from `core/` (memoized).
 
-Adding a config option touches: `CalendarConfig` type, `defaultConfig()`, `parseConfig()` validation, and a control in the matching `ui/sidebar/*Section.tsx`.
+Adding a config option touches: `CalendarConfig` type, `defaultConfig()`, a validator in `VALIDATORS` (`config/parseConfig.ts`), and a control in the matching `ui/sidebar/*Section.tsx`. The compiler enforces the validator. For a choice between fixed values, declare a `const` array in `CalendarConfig.ts` and derive the type from it (`(typeof X)[number]`); the validator is `oneOf(X)` and the select options are `optionsFrom(X, labels)`, which fails to compile if a value has no label.
+
+Stored and exported configs are tagged with `CONFIG_VERSION`. Bump it only for a change that would misread older data (renamed or restructured field) and migrate the old shape in `parseConfig`; adding a field needs no bump.
 
 ### Printing
 

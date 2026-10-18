@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { defaultConfig } from './CalendarConfig'
-import { parseConfig, parseConfigFile, serializeConfig } from './storage'
+import { CONFIG_VERSION, parseConfig, toStoredConfig } from './parseConfig'
 
 describe('parseConfig', () => {
 	it('returns defaults for missing or malformed data', () => {
@@ -53,29 +53,20 @@ describe('parseConfig', () => {
 		expect(config.margins).toEqual(defaults.margins)
 	})
 
+	it('reads data with and without a version tag', () => {
+		const config = { ...defaultConfig(), year: 2030 }
+		expect(parseConfig(toStoredConfig(config))).toEqual(config)
+		expect(parseConfig({ ...config })).toEqual(config)
+	})
+
+	it('does not copy unknown fields, including the version tag', () => {
+		const config = parseConfig({ version: CONFIG_VERSION, extra: 'x', year: 2030 })
+		expect(config).not.toHaveProperty('version')
+		expect(config).not.toHaveProperty('extra')
+	})
+
 	it('validates each margin separately', () => {
 		const config = parseConfig({ margins: { top: 20, right: -1, bottom: 51, left: '5' } })
 		expect(config.margins).toEqual({ ...defaultConfig().margins, top: 20 })
-	})
-})
-
-describe('config files', () => {
-	it('round-trips through serializeConfig', () => {
-		const config = { ...defaultConfig(), year: 2031, title: 'Office', paperSize: 'a3' as const }
-		expect(parseConfigFile(serializeConfig(config))).toEqual(config)
-	})
-
-	it('rejects files that are not a JSON object', () => {
-		expect(parseConfigFile('not json')).toBeNull()
-		expect(parseConfigFile('[]')).toBeNull()
-		expect(parseConfigFile('null')).toBeNull()
-		expect(parseConfigFile('2030')).toBeNull()
-	})
-
-	it('falls back to defaults for invalid fields', () => {
-		expect(parseConfigFile('{"year": 2030, "orientation": "up"}')).toEqual({
-			...defaultConfig(),
-			year: 2030,
-		})
 	})
 })

@@ -1,21 +1,36 @@
 import type { WeekStart } from '../core/calendar'
 import type { WeekdayFormat } from '../core/locale'
 
-export type Orientation = 'portrait' | 'landscape'
+// Each set of allowed values is listed once; the type and the validation in `parseConfig`
+// derive from the array, and the UI labels are keyed by the type.
 
-export type PaperSize = 'a4' | 'a3' | 'letter'
+export const ORIENTATIONS = ['portrait', 'landscape'] as const
+export type Orientation = (typeof ORIENTATIONS)[number]
+
+export const PAPER_SIZES = ['a4', 'a3', 'letter'] as const
+export type PaperSize = (typeof PAPER_SIZES)[number]
 
 /** `days` highlights only weekend cells with a day number; `columns` the whole weekend column. */
-export type WeekendHighlight = 'off' | 'days' | 'columns'
+export const WEEKEND_HIGHLIGHTS = ['off', 'days', 'columns'] as const
+export type WeekendHighlight = (typeof WEEKEND_HIGHLIGHTS)[number]
 
-export type MarginSide = 'top' | 'right' | 'bottom' | 'left'
+/** BCP 47 tags of the languages month and weekday names can be shown in. */
+export const LOCALES = ['en-US', 'ro-RO', 'de-DE', 'fr-FR', 'es-ES', 'it-IT', 'ja-JP'] as const
+export type Locale = (typeof LOCALES)[number]
+
+export const MARGIN_SIDES = ['top', 'right', 'bottom', 'left'] as const
+export type MarginSide = (typeof MARGIN_SIDES)[number]
 
 /** Blank space between the paper edge and the calendar, in mm. */
 export type Margins = Record<MarginSide, number>
 
-export const MARGIN_SIDES: MarginSide[] = ['top', 'right', 'bottom', 'left']
-
+export const MIN_YEAR = 1
+export const MAX_YEAR = 9999
 export const MAX_MARGIN = 50
+
+export function isYear(value: unknown): value is number {
+	return Number.isInteger(value) && (value as number) >= MIN_YEAR && (value as number) <= MAX_YEAR
+}
 
 export function isMargin(value: unknown): value is number {
 	return typeof value === 'number' && Number.isFinite(value) && value >= 0 && value <= MAX_MARGIN
@@ -23,8 +38,8 @@ export function isMargin(value: unknown): value is number {
 
 export interface CalendarConfig {
 	year: number
-	/** BCP 47 tag used for month and weekday names, e.g. `en-US`, `ro-RO`. */
-	locale: string
+	/** Language of month and weekday names. */
+	locale: Locale
 	weekStart: WeekStart
 	weekdayFormat: WeekdayFormat
 	/** Shown above the calendar; when empty, the year is shown instead. */
@@ -39,19 +54,9 @@ export interface CalendarConfig {
 	margins: Margins
 }
 
-export const LOCALES = [
-	{ value: 'en-US', label: 'English' },
-	{ value: 'ro-RO', label: 'Română' },
-	{ value: 'de-DE', label: 'Deutsch' },
-	{ value: 'fr-FR', label: 'Français' },
-	{ value: 'es-ES', label: 'Español' },
-	{ value: 'it-IT', label: 'Italiano' },
-	{ value: 'ja-JP', label: '日本語' },
-]
-
-function defaultLocale(): string {
+function defaultLocale(): Locale {
 	const language = globalThis.navigator?.language.slice(0, 2)
-	return LOCALES.find((x) => x.value.startsWith(language))?.value ?? 'en-US'
+	return LOCALES.find((locale) => locale.startsWith(language)) ?? 'en-US'
 }
 
 export function defaultConfig(): CalendarConfig {

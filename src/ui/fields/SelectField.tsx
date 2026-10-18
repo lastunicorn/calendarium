@@ -1,10 +1,6 @@
 import type { ChangeEvent } from 'react'
 import { Field } from './Field'
-
-export interface Option<T> {
-	value: T
-	label: string
-}
+import type { Option } from './options'
 
 interface SelectFieldProps<T extends string | number> {
 	label: string

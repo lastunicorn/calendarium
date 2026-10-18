@@ -1,7 +1,9 @@
 import type { WeekStart } from './calendar'
 
+export const WEEKDAY_FORMATS = ['short', 'narrow'] as const
+
 /** How weekday names are written: `short` = "Mon", `narrow` = "M". */
-export type WeekdayFormat = 'short' | 'narrow'
+export type WeekdayFormat = (typeof WEEKDAY_FORMATS)[number]
 
 function capitalize(text: string, locale: string): string {
 	return text.charAt(0).toLocaleUpperCase(locale) + text.slice(1)

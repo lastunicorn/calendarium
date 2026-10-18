@@ -1,18 +1,21 @@
-import type { Margins, Orientation, PaperSize } from '../../config/CalendarConfig'
+import {
+	type Margins,
+	type Orientation,
+	ORIENTATIONS,
+	PAPER_SIZES,
+	type PaperSize,
+} from '../../config/CalendarConfig'
 import { MarginsField } from '../fields/MarginsField'
-import { type Option, SelectField } from '../fields/SelectField'
+import { optionsFrom } from '../fields/options'
+import { SelectField } from '../fields/SelectField'
 import { type ConfigSectionProps, Section } from './Section'
 
-const PAPER_SIZE_OPTIONS: Option<PaperSize>[] = [
-	{ value: 'a4', label: 'A4' },
-	{ value: 'a3', label: 'A3' },
-	{ value: 'letter', label: 'Letter' },
-]
+const PAPER_SIZE_OPTIONS = optionsFrom(PAPER_SIZES, { a4: 'A4', a3: 'A3', letter: 'Letter' })
 
-const ORIENTATION_OPTIONS: Option<Orientation>[] = [
-	{ value: 'portrait', label: 'Portrait' },
-	{ value: 'landscape', label: 'Landscape' },
-]
+const ORIENTATION_OPTIONS = optionsFrom(ORIENTATIONS, {
+	portrait: 'Portrait',
+	landscape: 'Landscape',
+})
 
 /** The sheet of paper: size, orientation and margins. */
 export function PageSection({ config, onUpdate }: ConfigSectionProps) {
