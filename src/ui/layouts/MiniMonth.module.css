@@ -20,7 +20,12 @@
 	text-align: center;
 }
 
+.withWeekNumbers {
+	grid-template-columns: auto repeat(7, 1fr);
+}
+
 .weekday,
+.weekNumber,
 .day {
 	display: flex;
 	align-items: center;
@@ -32,6 +37,17 @@
 	font-weight: 600;
 	text-transform: uppercase;
 	border-bottom: 0.3mm solid #999;
+}
+
+.weekNumber {
+	padding-right: 1mm;
+	font-size: 7.5pt;
+	color: #888;
+	border-right: 0.3mm solid #ccc;
+}
+
+.weekday.weekNumber {
+	border-bottom-color: #999;
 }
 
 .weekend {

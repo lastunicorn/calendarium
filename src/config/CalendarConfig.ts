@@ -17,6 +17,8 @@ export interface CalendarConfig {
 	/** Shown below the title; hidden when empty. */
 	subtitle: string
 	highlightWeekends: WeekendHighlight
+	/** ISO week numbers in a column before each week. */
+	showWeekNumbers: boolean
 	orientation: Orientation
 }
 
@@ -44,6 +46,7 @@ export function defaultConfig(): CalendarConfig {
 		title: '',
 		subtitle: '',
 		highlightWeekends: 'columns',
+		showWeekNumbers: false,
 		orientation: 'portrait',
 	}
 }

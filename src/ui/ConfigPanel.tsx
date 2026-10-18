@@ -59,6 +59,10 @@ export function ConfigPanel({ config, onChange }: ConfigPanelProps) {
 		onChange({ ...config, highlightWeekends: event.currentTarget.value as WeekendHighlight })
 	}
 
+	function handleShowWeekNumbersChange(event: ChangeEvent<HTMLInputElement>) {
+		onChange({ ...config, showWeekNumbers: event.currentTarget.checked })
+	}
+
 	function handleOrientationChange(event: ChangeEvent<HTMLSelectElement>) {
 		onChange({ ...config, orientation: event.currentTarget.value as Orientation })
 	}
@@ -138,6 +142,15 @@ export function ConfigPanel({ config, onChange }: ConfigPanelProps) {
 					<option value="days">Days only</option>
 					<option value="columns">Whole columns</option>
 				</select>
+			</label>
+
+			<label className={styles.checkbox}>
+				<input
+					type="checkbox"
+					checked={config.showWeekNumbers}
+					onChange={handleShowWeekNumbersChange}
+				/>
+				Week numbers
 			</label>
 
 			<button type="button" className={styles.print} onClick={handlePrintClick}>

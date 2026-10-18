@@ -18,6 +18,7 @@ export function YearOnePageLayout({ config }: YearOnePageLayoutProps) {
 		title,
 		subtitle,
 		highlightWeekends,
+		showWeekNumbers,
 		orientation,
 	} = config
 	const months = useMemo(() => buildYear(year, weekStart), [year, weekStart])
@@ -29,7 +30,6 @@ export function YearOnePageLayout({ config }: YearOnePageLayoutProps) {
 
 	return (
 		<div className={styles.layout}>
-
 			<header className={styles.header}>
 				<h1 className={styles.title}>{title.trim() || year}</h1>
 				{subtitle.trim() && <p className={styles.subtitle}>{subtitle.trim()}</p>}
@@ -43,10 +43,10 @@ export function YearOnePageLayout({ config }: YearOnePageLayoutProps) {
 						name={names[month.month]}
 						weekdays={weekdays}
 						highlightWeekends={highlightWeekends}
+						showWeekNumbers={showWeekNumbers}
 					/>
 				))}
 			</div>
-
 		</div>
 	)
 }

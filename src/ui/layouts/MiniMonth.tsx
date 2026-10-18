@@ -1,5 +1,6 @@
+import { Fragment } from 'react'
 import type { WeekendHighlight } from '../../config/CalendarConfig'
-import type { CalendarDay, CalendarMonth } from '../../core/calendar'
+import { type CalendarDay, type CalendarMonth, weekNumber } from '../../core/calendar'
 import styles from './MiniMonth.module.css'
 
 interface MiniMonthProps {
@@ -8,9 +9,16 @@ interface MiniMonthProps {
 	/** Weekday labels, already ordered by week start. */
 	weekdays: string[]
 	highlightWeekends: WeekendHighlight
+	showWeekNumbers: boolean
 }
 
-export function MiniMonth({ month, name, weekdays, highlightWeekends }: MiniMonthProps) {
+export function MiniMonth({
+	month,
+	name,
+	weekdays,
+	highlightWeekends,
+	showWeekNumbers,
+}: MiniMonthProps) {
 	const weekendColumns = month.weeks[0].map((day) => highlightWeekends !== 'off' && day.isWeekend)
 
 	function isHighlighted(day: CalendarDay): boolean {
@@ -21,7 +29,8 @@ export function MiniMonth({ month, name, weekdays, highlightWeekends }: MiniMont
 	return (
 		<div className={styles.month}>
 			<h2 className={styles.name}>{name}</h2>
-			<div className={styles.days}>
+			<div className={`${styles.days} ${showWeekNumbers ? styles.withWeekNumbers : ''}`}>
+				{showWeekNumbers && <div className={`${styles.weekday} ${styles.weekNumber}`} />}
 				{weekdays.map((weekday, index) => (
 					<div
 						// Narrow names repeat (T, T, S, S), so the column index is the key.
@@ -31,13 +40,23 @@ export function MiniMonth({ month, name, weekdays, highlightWeekends }: MiniMont
 						{weekday}
 					</div>
 				))}
-				{month.weeks.flat().map((day) => (
-					<div
-						key={day.date.toISOString()}
-						className={`${styles.day} ${isHighlighted(day) ? styles.weekend : ''}`}
-					>
-						{day.inMonth ? day.day : ''}
-					</div>
+				{month.weeks.map((week) => (
+					<Fragment key={week[0].date.toISOString()}>
+						{showWeekNumbers && (
+							<div className={styles.weekNumber}>
+								{/* Trailing rows made only of next-month days stay blank. */}
+								{week.some((day) => day.inMonth) ? weekNumber(week) : ''}
+							</div>
+						)}
+						{week.map((day) => (
+							<div
+								key={day.date.toISOString()}
+								className={`${styles.day} ${isHighlighted(day) ? styles.weekend : ''}`}
+							>
+								{day.inMonth ? day.day : ''}
+							</div>
+						))}
+					</Fragment>
 				))}
 			</div>
 		</div>

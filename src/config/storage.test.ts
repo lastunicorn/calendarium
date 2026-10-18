@@ -17,6 +17,7 @@ describe('parseConfig', () => {
 			title: 'Family',
 			subtitle: 'Birthdays',
 			highlightWeekends: 'days',
+			showWeekNumbers: true,
 			orientation: 'landscape',
 		}
 		expect(parseConfig(stored)).toEqual(stored)
@@ -31,6 +32,7 @@ describe('parseConfig', () => {
 			title: 7,
 			subtitle: null,
 			highlightWeekends: true,
+			showWeekNumbers: 'yes',
 			orientation: 'up',
 		})
 		const defaults = defaultConfig()
@@ -41,6 +43,7 @@ describe('parseConfig', () => {
 		expect(config.title).toBe(defaults.title)
 		expect(config.subtitle).toBe(defaults.subtitle)
 		expect(config.highlightWeekends).toBe(defaults.highlightWeekends)
+		expect(config.showWeekNumbers).toBe(defaults.showWeekNumbers)
 		expect(config.orientation).toBe(defaults.orientation)
 	})
 })

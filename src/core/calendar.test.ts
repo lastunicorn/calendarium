@@ -4,8 +4,10 @@ import {
 	buildYear,
 	daysInMonth,
 	isLeapYear,
+	isoWeek,
 	type WeekStart,
 	WEEKS_PER_MONTH,
+	weekNumber,
 } from './calendar'
 
 const WEEK_STARTS: WeekStart[] = [0, 1, 2, 3, 4, 5, 6]
@@ -125,5 +127,44 @@ describe('buildYear', () => {
 			)
 		expect(count(2026)).toBe(365)
 		expect(count(2024)).toBe(366)
+	})
+})
+
+describe('isoWeek', () => {
+	it('numbers weeks from the one containing the first Thursday', () => {
+		expect(isoWeek(new Date(2026, 0, 1))).toBe(1) // Thursday
+		expect(isoWeek(new Date(2026, 0, 5))).toBe(2)
+		expect(isoWeek(new Date(2026, 9, 18))).toBe(42)
+	})
+
+	it('puts early January days in the previous year’s last week', () => {
+		expect(isoWeek(new Date(2021, 0, 3))).toBe(53) // Sunday after 2020-W53
+		expect(isoWeek(new Date(2023, 0, 1))).toBe(52)
+	})
+
+	it('puts late December days in the next year’s first week', () => {
+		expect(isoWeek(new Date(2024, 11, 30))).toBe(1)
+		expect(isoWeek(new Date(2025, 11, 31))).toBe(1)
+	})
+
+	it('reaches week 53 in long years', () => {
+		expect(isoWeek(new Date(2026, 11, 31))).toBe(53)
+		expect(isoWeek(new Date(2020, 11, 31))).toBe(53)
+	})
+})
+
+describe('weekNumber', () => {
+	it('matches the ISO week for Monday-first rows', () => {
+		const { weeks } = buildMonth(2026, 0, 1)
+		expect(weeks.map(weekNumber)).toEqual([1, 2, 3, 4, 5, 6])
+	})
+
+	it('uses the ISO week holding most days of the row', () => {
+		// Sunday-first row 4–10 January 2026: Monday–Saturday are in W02.
+		expect(weekNumber(buildMonth(2026, 0, 0).weeks[1])).toBe(2)
+		// Friday-first row 2–8 January 2026: Monday–Thursday are in W02.
+		expect(weekNumber(buildMonth(2026, 0, 5).weeks[1])).toBe(2)
+		// Saturday-first row 27 Dec 2025 – 2 Jan 2026 contains 1 January (W01).
+		expect(weekNumber(buildMonth(2026, 0, 6).weeks[0])).toBe(1)
 	})
 })

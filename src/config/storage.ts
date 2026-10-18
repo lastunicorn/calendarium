@@ -19,14 +19,17 @@ export function parseConfig(data: unknown): CalendarConfig {
 	if (LOCALES.some((locale) => locale.value === stored.locale))
 		config.locale = stored.locale as string
 
-	if (isWeekStart(stored.weekStart)) config.weekStart = stored.weekStart
+	if (isWeekStart(stored.weekStart))
+		config.weekStart = stored.weekStart
 
 	if (stored.weekdayFormat === 'short' || stored.weekdayFormat === 'narrow')
 		config.weekdayFormat = stored.weekdayFormat
 
-	if (typeof stored.title === 'string') config.title = stored.title
+	if (typeof stored.title === 'string')
+		config.title = stored.title
 
-	if (typeof stored.subtitle === 'string') config.subtitle = stored.subtitle
+	if (typeof stored.subtitle === 'string')
+		config.subtitle = stored.subtitle
 
 	if (
 		stored.highlightWeekends === 'off' ||
@@ -34,6 +37,9 @@ export function parseConfig(data: unknown): CalendarConfig {
 		stored.highlightWeekends === 'columns'
 	)
 		config.highlightWeekends = stored.highlightWeekends
+
+	if (typeof stored.showWeekNumbers === 'boolean')
+		config.showWeekNumbers = stored.showWeekNumbers
 
 	if (stored.orientation === 'portrait' || stored.orientation === 'landscape')
 		config.orientation = stored.orientation
@@ -45,7 +51,9 @@ export function loadConfig(): CalendarConfig {
 	try {
 		const raw = localStorage.getItem(STORAGE_KEY)
 
-		const obj = raw === null ? null : JSON.parse(raw)
+		const obj = raw === null
+			? null
+			: JSON.parse(raw)
 
 		return parseConfig(obj)
 	} catch {
