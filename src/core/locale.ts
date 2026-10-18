@@ -33,6 +33,21 @@ export function fullDateName(locale: string, date: Date): string {
 	return capitalize(new Intl.DateTimeFormat(locale, { dateStyle: 'long' }).format(date), locale)
 }
 
+/**
+ * Localized labels for the hours `first` to `last` inclusive, in the locale's clock:
+ * "7:00 AM" in en-US, "07:00" in de-DE (24-hour clocks keep two digits so labels line up).
+ */
+export function hourNames(locale: string, first: number, last: number): string[] {
+	const { hour12 } = new Intl.DateTimeFormat(locale, { hour: 'numeric' }).resolvedOptions()
+	const format = new Intl.DateTimeFormat(locale, {
+		hour: hour12 ? 'numeric' : '2-digit',
+		minute: '2-digit',
+	})
+	return Array.from({ length: last - first + 1 }, (_, index) =>
+		format.format(new Date(2000, 0, 1, first + index)),
+	)
+}
+
 /** Localized weekday names, ordered from `weekStart`. */
 export function weekdayNames(
 	locale: string,

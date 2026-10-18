@@ -31,7 +31,7 @@
 }
 
 /* A writing line every 8mm: one tile repeated, so every line rasterizes alike and costs no DOM. */
-.lines {
+.ruled {
 	flex: 1;
 	min-height: 0;
 	border-top: 0.3mm solid var(--color-rule);
@@ -39,8 +39,35 @@
 		100% 8mm;
 }
 
+/* One row per hour, sharing the height left under the header. */
+.schedule {
+	flex: 1;
+	display: grid;
+	min-height: 0;
+	border-top: 0.3mm solid var(--color-rule);
+}
+
+/* The label sits left of a writing area split by a light half-hour line. */
+.hour {
+	display: flex;
+	min-height: 0;
+	border-bottom: 0.2mm solid var(--color-cell-border);
+	background: linear-gradient(var(--color-rule-light), var(--color-rule-light)) 16mm 50% / 100%
+		0.2mm no-repeat;
+}
+
+.hourLabel {
+	width: 16mm;
+	flex-shrink: 0;
+	padding-top: 1mm;
+	font-size: 8pt;
+	color: var(--color-text-muted);
+	border-right: 0.2mm solid var(--color-cell-border);
+}
+
 @media print {
-	.lines {
+	.ruled,
+	.schedule {
 		print-color-adjust: exact;
 	}
 }

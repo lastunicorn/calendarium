@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import type { PageSetup } from '../../config/CalendarConfig'
+import type { DayPageLines, PageSetup } from '../../config/CalendarConfig'
 import { type CalendarDay, type CalendarMonth, dayOfYear, isoWeek } from '../../core/calendar'
 import { fullDateName, weekdayName } from '../../core/locale'
 import { isHighlightedDay, type WeekendHighlight } from '../../core/weekend'
@@ -17,6 +17,10 @@ interface DayPageProps {
 	monthName: string
 	/** Weekday labels, already ordered by week start. */
 	weekdays: string[]
+	/** Labels of the schedule's hours, one row each. */
+	hours: string[]
+	/** What fills the page under the header. */
+	lines: DayPageLines
 	locale: string
 	/** Title and subtitle, shown in small type; hidden when empty. */
 	subheading: string
@@ -35,6 +39,8 @@ export const DayPage = memo(function DayPage({
 	month,
 	monthName,
 	weekdays,
+	hours,
+	lines,
 	locale,
 	subheading,
 	highlightWeekends,
@@ -74,7 +80,20 @@ export const DayPage = memo(function DayPage({
 						/>
 					</div>
 				</div>
-				<div className={styles.lines} />
+				{lines === 'ruled' ? (
+					<div className={styles.ruled} />
+				) : (
+					<div
+						className={styles.schedule}
+						style={{ gridTemplateRows: `repeat(${hours.length}, 1fr)` }}
+					>
+						{hours.map((hour) => (
+							<div key={hour} className={styles.hour}>
+								<span className={styles.hourLabel}>{hour}</span>
+							</div>
+						))}
+					</div>
+				)}
 			</div>
 		</Page>
 	)

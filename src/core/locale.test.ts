@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { fullDateName, monthNames, monthYearName, weekdayName, weekdayNames } from './locale'
+import {
+	fullDateName,
+	hourNames,
+	monthNames,
+	monthYearName,
+	weekdayName,
+	weekdayNames,
+} from './locale'
 
 describe('monthNames', () => {
 	it('returns 12 capitalized names', () => {
@@ -58,5 +65,19 @@ describe('fullDateName', () => {
 		expect(fullDateName('en-US', date)).toBe('October 19, 2026')
 		expect(fullDateName('ro-RO', date)).toBe('19 octombrie 2026')
 		expect(fullDateName('ja-JP', date)).toBe('2026年10月19日')
+	})
+})
+
+describe('hourNames', () => {
+	it('lists every hour of the range, in the locale’s clock', () => {
+		expect(hourNames('de-DE', 7, 21)).toHaveLength(15)
+		expect(hourNames('de-DE', 7, 9)).toEqual(['07:00', '08:00', '09:00'])
+		expect(hourNames('ro-RO', 20, 21)).toEqual(['20:00', '21:00'])
+		expect(hourNames('ja-JP', 7, 8)).toEqual(['07:00', '08:00'])
+		expect(hourNames('en-US', 11, 13).map((name) => name.replace(/\s/g, ' '))).toEqual([
+			'11:00 AM',
+			'12:00 PM',
+			'1:00 PM',
+		])
 	})
 })

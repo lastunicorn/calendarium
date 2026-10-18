@@ -12,6 +12,7 @@ describe('parseConfig', () => {
 	it('keeps valid fields', () => {
 		const config = {
 			layout: 'year-one-page',
+			dayPageLines: 'ruled',
 			year: 2030,
 			locale: 'ro-RO',
 			weekStart: 6,
@@ -33,6 +34,7 @@ describe('parseConfig', () => {
 		const config = parseConfig({
 			version: CONFIG_VERSION,
 			layout: 'week-per-page',
+			dayPageLines: 'dotted',
 			year: 2030.5,
 			locale: 'xx',
 			weekStart: 7,

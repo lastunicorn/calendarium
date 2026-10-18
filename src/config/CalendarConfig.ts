@@ -11,6 +11,10 @@ import type { WeekendHighlight } from '../core/weekend'
 export const LAYOUT_IDS = ['year-one-page', 'month-per-page', 'day-per-page'] as const
 export type LayoutId = (typeof LAYOUT_IDS)[number]
 
+/** What fills a `day-per-page` page under its header: an hourly schedule or plain ruled lines. */
+export const DAY_PAGE_LINES = ['hours', 'ruled'] as const
+export type DayPageLines = (typeof DAY_PAGE_LINES)[number]
+
 /** BCP 47 tags of the languages month and weekday names can be shown in. */
 export const LOCALES = ['en-US', 'ro-RO', 'de-DE', 'fr-FR', 'es-ES', 'it-IT', 'ja-JP'] as const
 export type Locale = (typeof LOCALES)[number]
@@ -42,6 +46,8 @@ export interface PageSetup {
 
 export interface CalendarConfig {
 	layout: LayoutId
+	/** Only used by the `day-per-page` layout. */
+	dayPageLines: DayPageLines
 	year: number
 	/** Language of month and weekday names. */
 	locale: Locale
@@ -65,6 +71,7 @@ function defaultLocale(): Locale {
 export function defaultConfig(): CalendarConfig {
 	return {
 		layout: 'year-one-page',
+		dayPageLines: 'hours',
 		year: new Date().getFullYear(),
 		locale: defaultLocale(),
 		weekStart: 1,

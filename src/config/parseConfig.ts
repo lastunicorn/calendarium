@@ -4,6 +4,7 @@ import { ORIENTATIONS, PAPER_SIZES } from '../core/paper'
 import { WEEKEND_HIGHLIGHTS } from '../core/weekend'
 import {
 	type CalendarConfig,
+	DAY_PAGE_LINES,
 	defaultConfig,
 	isMargin,
 	isYear,
@@ -67,6 +68,7 @@ type Validators<T, K extends keyof T> = { [P in K]: Validator<T[P]> }
 /** `page` is an object, validated by its own fields below. */
 const CONFIG_VALIDATORS: Validators<CalendarConfig, Exclude<keyof CalendarConfig, 'page'>> = {
 	layout: oneOf(LAYOUT_IDS),
+	dayPageLines: oneOf(DAY_PAGE_LINES),
 	year: isYear,
 	locale: oneOf(LOCALES),
 	weekStart: isWeekStart,
