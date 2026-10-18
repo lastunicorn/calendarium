@@ -1,4 +1,4 @@
-import type { CalendarConfig } from '../../config/CalendarConfig'
+import type { YearPerPageConfig } from '../../config/CalendarConfig'
 import { CalendarHeader } from './CalendarHeader'
 import { MiniMonth } from './MiniMonth'
 import { Page } from './Page'
@@ -6,7 +6,7 @@ import { useCalendarModel } from './useCalendarModel'
 import styles from './YearPerPageLayout.module.css'
 
 interface YearPerPageLayoutProps {
-	config: CalendarConfig
+	config: YearPerPageConfig
 }
 
 /** The whole year on one page: the header above a grid of 12 small months. */

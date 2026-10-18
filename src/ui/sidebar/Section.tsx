@@ -1,11 +1,13 @@
 import type { ReactNode } from 'react'
-import type { CalendarConfig } from '../../config/CalendarConfig'
 import styles from './Section.module.css'
 
-/** Props shared by the form sections: the config and a way to change some of its fields. */
-export interface ConfigSectionProps {
-	config: CalendarConfig
-	onUpdate: (patch: Partial<CalendarConfig>) => void
+/**
+ * Props shared by the form sections: a layout's options, or the part of them the section edits,
+ * and a way to change some of their fields.
+ */
+export interface ConfigSectionProps<C> {
+	config: C
+	onUpdate: (patch: Partial<C>) => void
 }
 
 interface SectionProps {

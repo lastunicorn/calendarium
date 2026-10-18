@@ -35,8 +35,6 @@ interface DayPageProps {
 	/** What fills the page under the header. */
 	lines: DayPageLines
 	locale: string
-	/** Title and subtitle, shown in small type; hidden when empty. */
-	subheading: string
 	highlightWeekends: WeekendHighlight
 	showWeekNumbers: boolean
 	setup: PageSetup
@@ -55,13 +53,11 @@ export const DayPage = memo(function DayPage({
 	hours,
 	lines,
 	locale,
-	subheading,
 	highlightWeekends,
 	showWeekNumbers,
 	setup,
 }: DayPageProps) {
 	const details = [
-		subheading,
 		showWeekNumbers ? `Week ${isoWeek(day.date)}` : '',
 		`Day ${dayOfYear(day.date)} / ${daysInYear}`,
 	]

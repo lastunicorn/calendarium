@@ -1,28 +1,42 @@
 import { type ChangeEvent, useRef, useState } from 'react'
-import { type CalendarConfig, defaultConfig } from '../../config/CalendarConfig'
-import { parseConfigFile, serializeConfig } from '../../config/configFile'
+import type { AppConfig, LayoutId } from '../../config/CalendarConfig'
+import {
+	type ImportedLayoutConfig,
+	parseConfigFile,
+	serializeLayoutConfig,
+} from '../../config/configFile'
 import { IconButton } from '../components/IconButton'
 import { ExportIcon, ImportIcon, PrintIcon, ResetIcon } from '../components/icons'
 import { downloadFile } from '../download'
+import { LAYOUT_NAMES } from './layoutNames'
 import styles from './Toolbar.module.css'
 
 interface ToolbarProps {
-	config: CalendarConfig
-	/** Replaces the whole config (import, reset). */
-	onReplace: (config: CalendarConfig) => void
+	config: AppConfig
+	/** Restores one layout's default options. */
+	onReset: (layout: LayoutId) => void
+	/** Replaces one layout's options with an imported file's and shows that layout. */
+	onImport: (imported: ImportedLayoutConfig) => void
 }
 
 function handlePrintClick() {
 	window.print()
 }
 
-/** Calendar-wide actions: print, export/import the config as a file, reset to defaults. */
-export function Toolbar({ config, onReplace }: ToolbarProps) {
+/** Print, and export/import/reset the current layout's options. */
+export function Toolbar({ config, onReset, onImport }: ToolbarProps) {
+	const { layout } = config
+	const options = config.layouts[layout]
+
 	const fileInput = useRef<HTMLInputElement>(null)
 	const [importError, setImportError] = useState('')
 
 	function handleExportClick() {
-		downloadFile(`calendar-${config.year}.json`, serializeConfig(config), 'application/json')
+		downloadFile(
+			`calendar-${layout}-${options.year}.json`,
+			serializeLayoutConfig(layout, options),
+			'application/json',
+		)
 	}
 
 	function handleImportClick() {
@@ -30,9 +44,9 @@ export function Toolbar({ config, onReplace }: ToolbarProps) {
 	}
 
 	function handleResetClick() {
-		if (!window.confirm('Reset all settings to their defaults?')) return
+		if (!window.confirm(`Reset ${LAYOUT_NAMES[layout]} settings to their defaults?`)) return
 		setImportError('')
-		onReplace(defaultConfig())
+		onReset(layout)
 	}
 
 	async function handleImportFileChange(event: ChangeEvent<HTMLInputElement>) {
@@ -42,13 +56,13 @@ export function Toolbar({ config, onReplace }: ToolbarProps) {
 		input.value = ''
 		if (!file) return
 
-		const imported = parseConfigFile(await file.text())
+		const imported = parseConfigFile(await file.text(), layout)
 		if (imported === null) {
 			setImportError(`${file.name} is not a valid configuration file.`)
 			return
 		}
 		setImportError('')
-		onReplace(imported)
+		onImport(imported)
 	}
 
 	return (
@@ -66,7 +80,7 @@ export function Toolbar({ config, onReplace }: ToolbarProps) {
 					onClick={handleImportClick}
 				/>
 				<IconButton
-					label="Reset all settings"
+					label="Reset layout settings"
 					icon={<ResetIcon />}
 					onClick={handleResetClick}
 				/>

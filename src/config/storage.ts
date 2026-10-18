@@ -1,9 +1,9 @@
-import { type CalendarConfig, defaultConfig } from './CalendarConfig'
+import { type AppConfig, defaultAppConfig } from './CalendarConfig'
 import { parseConfig, toStoredConfig } from './parseConfig'
 
 const STORAGE_KEY = 'calendar-config'
 
-export function loadConfig(): CalendarConfig {
+export function loadConfig(): AppConfig {
 	try {
 		const raw = localStorage.getItem(STORAGE_KEY)
 
@@ -11,11 +11,11 @@ export function loadConfig(): CalendarConfig {
 
 		return parseConfig(obj)
 	} catch {
-		return defaultConfig()
+		return defaultAppConfig()
 	}
 }
 
-export function saveConfig(config: CalendarConfig): void {
+export function saveConfig(config: AppConfig): void {
 	try {
 		localStorage.setItem(STORAGE_KEY, JSON.stringify(toStoredConfig(config)))
 	} catch {

@@ -6,13 +6,13 @@ import { Toolbar } from './ui/sidebar/Toolbar'
 import { useCalendarConfig } from './ui/useCalendarConfig'
 
 export default function App() {
-	const { config, update, replace } = useCalendarConfig()
+	const { config, selectLayout, update, resetLayout, importLayout } = useCalendarConfig()
 
 	return (
 		<div className={styles.app}>
 			<Sidebar>
-				<Toolbar config={config} onReplace={replace} />
-				<ConfigForm config={config} onUpdate={update} />
+				<Toolbar config={config} onReset={resetLayout} onImport={importLayout} />
+				<ConfigForm config={config} onSelectLayout={selectLayout} onUpdate={update} />
 			</Sidebar>
 			<Preview config={config} />
 		</div>

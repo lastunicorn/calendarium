@@ -2,8 +2,8 @@ import styles from './CalendarHeader.module.css'
 
 interface CalendarHeaderProps {
 	heading: string
-	/** Smaller line below the heading; hidden when empty. */
-	subheading: string
+	/** Smaller line below the heading; hidden when empty or left out. */
+	subheading?: string
 	/** `large` heads a single-page calendar; `compact` leaves room for a month grid. */
 	size?: 'large' | 'compact'
 	/** `start` sits the header beside other content instead of centered above it. */
@@ -15,7 +15,7 @@ interface CalendarHeaderProps {
 /** The heading block at the top of a page. */
 export function CalendarHeader({
 	heading,
-	subheading,
+	subheading = '',
 	size = 'large',
 	align = 'center',
 	highlight = false,

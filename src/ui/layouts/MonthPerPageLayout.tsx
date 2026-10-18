@@ -1,4 +1,4 @@
-import type { CalendarConfig } from '../../config/CalendarConfig'
+import type { MonthPerPageConfig } from '../../config/CalendarConfig'
 import { monthYearName } from '../../core/locale'
 import { CalendarHeader } from './CalendarHeader'
 import { MonthGrid } from './MonthGrid'
@@ -7,23 +7,18 @@ import { Page } from './Page'
 import { useCalendarModel } from './useCalendarModel'
 
 interface MonthPerPageLayoutProps {
-	config: CalendarConfig
+	config: MonthPerPageConfig
 }
 
-/** Twelve pages, each one month under a "January 2026" heading, with the title in small type. */
+/** Twelve pages, each one month under a "January 2026" heading. */
 export function MonthPerPageLayout({ config }: MonthPerPageLayoutProps) {
-	const { year, locale, title, subtitle, highlightWeekends, showWeekNumbers, page } = config
+	const { year, locale, highlightWeekends, showWeekNumbers, page } = config
 	const { months, weekdays } = useCalendarModel(config)
-	const subheading = [title.trim(), subtitle.trim()].filter(Boolean).join(' · ')
 
 	return months.map((month) => (
 		<Page key={month.month} setup={page}>
 			<div className={styles.layout}>
-				<CalendarHeader
-					heading={monthYearName(locale, year, month.month)}
-					subheading={subheading}
-					size="compact"
-				/>
+				<CalendarHeader heading={monthYearName(locale, year, month.month)} size="compact" />
 				<MonthGrid
 					month={month}
 					weekdays={weekdays}

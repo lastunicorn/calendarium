@@ -1,8 +1,9 @@
+import type { YearPerPageConfig } from '../../config/CalendarConfig'
 import { TextField } from '../fields/TextField'
 import { type ConfigSectionProps, Section } from './Section'
 
 /** The heading printed above the calendar. */
-export function HeaderSection({ config, onUpdate }: ConfigSectionProps) {
+export function HeaderSection({ config, onUpdate }: ConfigSectionProps<YearPerPageConfig>) {
 	function handleTitleChange(title: string) {
 		onUpdate({ title })
 	}

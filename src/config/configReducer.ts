@@ -1,16 +1,36 @@
-import type { CalendarConfig } from './CalendarConfig'
+import type { AppConfig, LayoutConfigs, LayoutId } from './CalendarConfig'
 
+// The per-layout actions have one variant per layout, so a patch or config has that layout's type.
 export type ConfigAction =
-	/** Changes some fields, keeping the rest. */
-	| { type: 'update'; patch: Partial<CalendarConfig> }
-	/** Swaps in a whole config, e.g. an imported file or the defaults. */
-	| { type: 'replace'; config: CalendarConfig }
+	/** Shows another layout; every layout's options stay as they were. */
+	| { type: 'selectLayout'; layout: LayoutId }
+	/** Changes some of one layout's options, keeping the rest. */
+	| { [K in LayoutId]: { type: 'update'; layout: K; patch: Partial<LayoutConfigs[K]> } }[LayoutId]
+	/** Swaps in one layout's whole set of options (reset to defaults). */
+	| { [K in LayoutId]: { type: 'replaceLayout'; layout: K; config: LayoutConfigs[K] } }[LayoutId]
+	/** Swaps in one layout's options and shows that layout (an imported file). */
+	| { [K in LayoutId]: { type: 'importLayout'; layout: K; config: LayoutConfigs[K] } }[LayoutId]
 
-export function configReducer(config: CalendarConfig, action: ConfigAction): CalendarConfig {
+function withLayout(
+	config: AppConfig,
+	layout: LayoutId,
+	options: LayoutConfigs[LayoutId],
+): AppConfig {
+	return { ...config, layouts: { ...config.layouts, [layout]: options } }
+}
+
+export function configReducer(config: AppConfig, action: ConfigAction): AppConfig {
 	switch (action.type) {
+		case 'selectLayout':
+			return { ...config, layout: action.layout }
 		case 'update':
-			return { ...config, ...action.patch }
-		case 'replace':
-			return action.config
+			return withLayout(config, action.layout, {
+				...config.layouts[action.layout],
+				...action.patch,
+			})
+		case 'replaceLayout':
+			return withLayout(config, action.layout, action.config)
+		case 'importLayout':
+			return { ...withLayout(config, action.layout, action.config), layout: action.layout }
 	}
 }

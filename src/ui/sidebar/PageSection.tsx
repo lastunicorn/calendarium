@@ -1,4 +1,4 @@
-import type { Margins } from '../../config/CalendarConfig'
+import type { CommonConfig, Margins } from '../../config/CalendarConfig'
 import { type Orientation, ORIENTATIONS, PAPER_SIZES, type PaperSize } from '../../core/paper'
 import { MarginsField } from '../fields/MarginsField'
 import { optionsFrom } from '../fields/options'
@@ -13,7 +13,7 @@ const ORIENTATION_OPTIONS = optionsFrom(ORIENTATIONS, {
 })
 
 /** The sheet of paper: size, orientation and margins. */
-export function PageSection({ config, onUpdate }: ConfigSectionProps) {
+export function PageSection({ config, onUpdate }: ConfigSectionProps<CommonConfig>) {
 	const { page } = config
 
 	function handlePaperSizeChange(paperSize: PaperSize) {

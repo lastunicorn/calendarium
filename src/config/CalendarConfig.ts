@@ -60,28 +60,65 @@ export interface PageSetup {
 	margins: Margins
 }
 
-export interface CalendarConfig {
-	layout: LayoutId
-	/** Only used by the `day-per-page` layout. */
-	dayPageLines: DayPageLines
-	/** Clock of the hour labels on `day-per-page` schedules. */
-	hourFormat: HourFormat
-	/** First and last rows of `day-per-page` schedules, as hours 0–23; both rows are shown. */
-	firstHour: number
-	lastHour: number
+/** Options every layout has. */
+export interface CommonConfig {
 	year: number
 	/** Language of month and weekday names. */
 	locale: Locale
 	weekStart: WeekStart
 	weekdayFormat: WeekdayFormat
-	/** Shown above the calendar; when empty, the year is shown instead. */
-	title: string
-	/** Shown below the title; hidden when empty. */
-	subtitle: string
 	highlightWeekends: WeekendHighlight
 	/** ISO week numbers in a column before each week. */
 	showWeekNumbers: boolean
 	page: PageSetup
+}
+
+export interface YearPerPageConfig extends CommonConfig {
+	/** Shown above the calendar; when empty, the year is shown instead. */
+	title: string
+	/** Shown below the title; hidden when empty. */
+	subtitle: string
+}
+
+export type MonthPerPageConfig = CommonConfig
+
+export interface DayPerPageConfig extends CommonConfig {
+	/** What fills the page under its header. */
+	dayPageLines: DayPageLines
+	/** Clock of the hour labels on the schedule. */
+	hourFormat: HourFormat
+	/** First and last rows of the schedule, as hours 0–23; both rows are shown. */
+	firstHour: number
+	lastHour: number
+}
+
+/** Each layout's own options. Keyed by every `LayoutId` (checked below). */
+export interface LayoutConfigs {
+	'year-per-page': YearPerPageConfig
+	'month-per-page': MonthPerPageConfig
+	'day-per-page': DayPerPageConfig
+}
+
+// Compile-time checks: `LayoutConfigs` has exactly the layout ids, each extending `CommonConfig`.
+type Assert<T extends true> = T
+export type LayoutConfigsCheck = Assert<
+	[keyof LayoutConfigs] extends [LayoutId]
+		? [LayoutId] extends [keyof LayoutConfigs]
+			? LayoutConfigs extends Record<LayoutId, CommonConfig>
+				? true
+				: false
+			: false
+		: false
+>
+
+/** The options of any one layout. */
+export type LayoutConfig = LayoutConfigs[LayoutId]
+
+/** The app's whole config: which layout is shown, and a remembered set of options per layout. */
+export interface AppConfig {
+	/** The active layout, whose options the sidebar edits and the preview shows. */
+	layout: LayoutId
+	layouts: LayoutConfigs
 }
 
 function defaultLocale(): Locale {
@@ -89,30 +126,56 @@ function defaultLocale(): Locale {
 	return LOCALES.find((locale) => locale.startsWith(language)) ?? 'en-US'
 }
 
-export function defaultConfig(): CalendarConfig {
+function margins(mm: number): Margins {
+	return { top: mm, right: mm, bottom: mm, left: mm }
+}
+
+/** The options shared by every layout, with the values all layouts start from. */
+function commonDefaults(): CommonConfig {
 	return {
-		layout: 'year-per-page',
-		dayPageLines: 'hours',
-		hourFormat: 'auto',
-		firstHour: 7,
-		lastHour: 21,
 		year: new Date().getFullYear(),
 		locale: defaultLocale(),
 		weekStart: 1,
 		weekdayFormat: 'narrow',
-		title: '',
-		subtitle: '',
 		highlightWeekends: 'days',
 		showWeekNumbers: false,
-		page: {
-			paperSize: 'a4',
-			orientation: 'portrait',
-			margins: {
-				top: 12,
-				right: 12,
-				bottom: 12,
-				left: 12,
-			},
+		page: { paperSize: 'a4', orientation: 'portrait', margins: margins(12) },
+	}
+}
+
+/** Each layout's defaults, picked for how it is drawn. */
+export const DEFAULTS: { [K in LayoutId]: () => LayoutConfigs[K] } = {
+	// 12 small months fit portrait; one-letter weekdays keep them narrow.
+	'year-per-page': () => ({ ...commonDefaults(), title: '', subtitle: '' }),
+	// Large writing cells fit landscape, with room for three-letter weekdays.
+	'month-per-page': () => {
+		const common = commonDefaults()
+		return {
+			...common,
+			weekdayFormat: 'short',
+			highlightWeekends: 'columns',
+			showWeekNumbers: true,
+			page: { ...common.page, orientation: 'landscape', margins: margins(10) },
+		}
+	},
+	// A tall schedule fits portrait; week numbers show as "Week N" in the heading.
+	'day-per-page': () => ({
+		...commonDefaults(),
+		showWeekNumbers: true,
+		dayPageLines: 'hours',
+		hourFormat: 'auto',
+		firstHour: 7,
+		lastHour: 21,
+	}),
+}
+
+export function defaultAppConfig(): AppConfig {
+	return {
+		layout: 'year-per-page',
+		layouts: {
+			'year-per-page': DEFAULTS['year-per-page'](),
+			'month-per-page': DEFAULTS['month-per-page'](),
+			'day-per-page': DEFAULTS['day-per-page'](),
 		},
 	}
 }
