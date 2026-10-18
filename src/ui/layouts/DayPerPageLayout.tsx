@@ -5,10 +5,6 @@ import { hourNames } from '../../core/locale'
 import { DayPage } from './DayPage'
 import { useCalendarModel } from './useCalendarModel'
 
-/** The hours on each page's schedule, 07:00 to 21:00, one row each. */
-const FIRST_HOUR = 7
-const LAST_HOUR = 21
-
 interface DayPerPageLayoutProps {
 	config: CalendarConfig
 }
@@ -18,6 +14,8 @@ export function DayPerPageLayout({ config }: DayPerPageLayoutProps) {
 	const {
 		dayPageLines,
 		hourFormat,
+		firstHour,
+		lastHour,
 		locale,
 		title,
 		subtitle,
@@ -28,9 +26,16 @@ export function DayPerPageLayout({ config }: DayPerPageLayoutProps) {
 	const { months, monthNames, weekdays } = useCalendarModel(config)
 	const days = useMemo(() => daysOfYear(months), [months])
 	// Built once here, not per page: 366 pages would each create a formatter.
+	// One row per hour from the first to the last, both shown; a stored reversed range is put in order.
 	const hours = useMemo(
-		() => hourNames(locale, FIRST_HOUR, LAST_HOUR, hourFormat),
-		[locale, hourFormat],
+		() =>
+			hourNames(
+				locale,
+				Math.min(firstHour, lastHour),
+				Math.max(firstHour, lastHour),
+				hourFormat,
+			),
+		[locale, firstHour, lastHour, hourFormat],
 	)
 	const subheading = [title.trim(), subtitle.trim()].filter(Boolean).join(' · ')
 

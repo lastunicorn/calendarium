@@ -22,13 +22,13 @@ const WEEK_START_OPTIONS: Option<WeekStart>[] = [
 /** Each language's name in itself, so a reader can find their own. */
 const LOCALE_OPTIONS = optionsFrom(LOCALES, {
 	'en-US': 'English (US)',
-	'en-UK': 'English (UK)',
+	'en-GB': 'English (UK)',
 	'ro-RO': 'Română',
 	'de-DE': 'Deutsch',
 	'fr-FR': 'Français',
 	'es-ES': 'Español',
 	'it-IT': 'Italiano',
-	'ja-JP': '日本語'
+	'ja-JP': '日本語',
 })
 
 const WEEKDAY_FORMAT_OPTIONS = optionsFrom(WEEKDAY_FORMATS, {

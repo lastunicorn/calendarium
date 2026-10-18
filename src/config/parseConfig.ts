@@ -6,6 +6,7 @@ import {
 	type CalendarConfig,
 	DAY_PAGE_LINES,
 	defaultConfig,
+	isHour,
 	isMargin,
 	isYear,
 	LAYOUT_IDS,
@@ -42,10 +43,20 @@ function migrateFromV1({ paperSize, orientation, margins, ...rest }: StoredData)
 	return { ...rest, page: { paperSize, orientation, margins } }
 }
 
+/** Locale values that were once stored under a wrong tag, mapped to the right one. */
+const RENAMED_LOCALES: Record<string, string> = {
+	// British English was briefly stored as `en-UK`, which is not a valid BCP 47 region.
+	'en-UK': 'en-GB',
+}
+
 /** Brings stored data of any older version to the current shape. */
 function upgrade(stored: StoredData): StoredData {
-	if (stored.version === undefined || stored.version === 1) return migrateFromV1(stored)
-	return stored
+	const current =
+		stored.version === undefined || stored.version === 1 ? migrateFromV1(stored) : stored
+	const { locale } = current
+	return typeof locale === 'string' && Object.hasOwn(RENAMED_LOCALES, locale)
+		? { ...current, locale: RENAMED_LOCALES[locale] }
+		: current
 }
 
 function oneOf<T>(values: readonly T[]) {
@@ -70,6 +81,8 @@ const CONFIG_VALIDATORS: Validators<CalendarConfig, Exclude<keyof CalendarConfig
 	layout: oneOf(LAYOUT_IDS),
 	dayPageLines: oneOf(DAY_PAGE_LINES),
 	hourFormat: oneOf(HOUR_FORMATS),
+	firstHour: isHour,
+	lastHour: isHour,
 	year: isYear,
 	locale: oneOf(LOCALES),
 	weekStart: isWeekStart,

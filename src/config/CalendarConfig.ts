@@ -16,7 +16,16 @@ export const DAY_PAGE_LINES = ['hours', 'ruled'] as const
 export type DayPageLines = (typeof DAY_PAGE_LINES)[number]
 
 /** BCP 47 tags of the languages month and weekday names can be shown in. */
-export const LOCALES = ['en-US', 'en-UK', 'ro-RO', 'de-DE', 'fr-FR', 'es-ES', 'it-IT', 'ja-JP'] as const
+export const LOCALES = [
+	'en-US',
+	'en-GB',
+	'ro-RO',
+	'de-DE',
+	'fr-FR',
+	'es-ES',
+	'it-IT',
+	'ja-JP',
+] as const
 export type Locale = (typeof LOCALES)[number]
 
 export const MARGIN_SIDES = ['top', 'right', 'bottom', 'left'] as const
@@ -28,9 +37,16 @@ export type Margins = Record<MarginSide, number>
 export const MIN_YEAR = 1
 export const MAX_YEAR = 9999
 export const MAX_MARGIN = 50
+export const MIN_HOUR = 0
+export const MAX_HOUR = 23
 
 export function isYear(value: unknown): value is number {
 	return Number.isInteger(value) && (value as number) >= MIN_YEAR && (value as number) <= MAX_YEAR
+}
+
+/** A whole hour of the day, 0–23. */
+export function isHour(value: unknown): value is number {
+	return Number.isInteger(value) && (value as number) >= MIN_HOUR && (value as number) <= MAX_HOUR
 }
 
 export function isMargin(value: unknown): value is number {
@@ -50,6 +66,9 @@ export interface CalendarConfig {
 	dayPageLines: DayPageLines
 	/** Clock of the hour labels on `day-per-page` schedules. */
 	hourFormat: HourFormat
+	/** First and last rows of `day-per-page` schedules, as hours 0–23; both rows are shown. */
+	firstHour: number
+	lastHour: number
 	year: number
 	/** Language of month and weekday names. */
 	locale: Locale
@@ -75,6 +94,8 @@ export function defaultConfig(): CalendarConfig {
 		layout: 'year-one-page',
 		dayPageLines: 'hours',
 		hourFormat: 'auto',
+		firstHour: 7,
+		lastHour: 21,
 		year: new Date().getFullYear(),
 		locale: defaultLocale(),
 		weekStart: 1,

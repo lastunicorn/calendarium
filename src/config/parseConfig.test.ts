@@ -14,6 +14,8 @@ describe('parseConfig', () => {
 			layout: 'year-one-page',
 			dayPageLines: 'ruled',
 			hourFormat: '24h',
+			firstHour: 0,
+			lastHour: 23,
 			year: 2030,
 			locale: 'ro-RO',
 			weekStart: 6,
@@ -37,6 +39,8 @@ describe('parseConfig', () => {
 			layout: 'week-per-page',
 			dayPageLines: 'dotted',
 			hourFormat: '25h',
+			firstHour: 24,
+			lastHour: 7.5,
 			year: 2030.5,
 			locale: 'xx',
 			weekStart: 7,
@@ -100,6 +104,11 @@ describe('parseConfig migration', () => {
 
 	it('treats data without a version as version 1', () => {
 		expect(parseConfig(v1).page).toEqual(expectedPage)
+	})
+
+	it('renames the old `en-UK` locale to `en-GB`', () => {
+		expect(parseConfig({ version: CONFIG_VERSION, locale: 'en-UK' }).locale).toBe('en-GB')
+		expect(parseConfig({ locale: 'en-UK' }).locale).toBe('en-GB')
 	})
 
 	it('still validates migrated fields', () => {
