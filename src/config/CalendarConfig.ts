@@ -3,6 +3,8 @@ import type { WeekdayFormat } from '../core/locale'
 
 export type Orientation = 'portrait' | 'landscape'
 
+export type PaperSize = 'a4' | 'a3' | 'letter'
+
 /** `days` highlights only weekend cells with a day number; `columns` the whole weekend column. */
 export type WeekendHighlight = 'off' | 'days' | 'columns'
 
@@ -19,6 +21,7 @@ export interface CalendarConfig {
 	highlightWeekends: WeekendHighlight
 	/** ISO week numbers in a column before each week. */
 	showWeekNumbers: boolean
+	paperSize: PaperSize
 	orientation: Orientation
 }
 
@@ -47,6 +50,7 @@ export function defaultConfig(): CalendarConfig {
 		subtitle: '',
 		highlightWeekends: 'columns',
 		showWeekNumbers: false,
+		paperSize: 'a4',
 		orientation: 'portrait',
 	}
 }

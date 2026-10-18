@@ -18,6 +18,7 @@ describe('parseConfig', () => {
 			subtitle: 'Birthdays',
 			highlightWeekends: 'days',
 			showWeekNumbers: true,
+			paperSize: 'letter',
 			orientation: 'landscape',
 		}
 		expect(parseConfig(stored)).toEqual(stored)
@@ -33,6 +34,7 @@ describe('parseConfig', () => {
 			subtitle: null,
 			highlightWeekends: true,
 			showWeekNumbers: 'yes',
+			paperSize: 'a5',
 			orientation: 'up',
 		})
 		const defaults = defaultConfig()
@@ -44,6 +46,7 @@ describe('parseConfig', () => {
 		expect(config.subtitle).toBe(defaults.subtitle)
 		expect(config.highlightWeekends).toBe(defaults.highlightWeekends)
 		expect(config.showWeekNumbers).toBe(defaults.showWeekNumbers)
+		expect(config.paperSize).toBe(defaults.paperSize)
 		expect(config.orientation).toBe(defaults.orientation)
 	})
 })

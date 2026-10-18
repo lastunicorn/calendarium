@@ -17,7 +17,7 @@
 	padding: 10mm;
 }
 
-/* `page` selects the named @page rule in index.css, which sets the printed paper orientation. */
+/* `page` selects the named @page rule in index.css, which sets the printed paper size and orientation. */
 .a4Portrait {
 	page: a4Portrait;
 	width: 210mm;
@@ -28,6 +28,30 @@
 	page: a4Landscape;
 	width: 297mm;
 	height: 210mm;
+}
+
+.a3Portrait {
+	page: a3Portrait;
+	width: 297mm;
+	height: 420mm;
+}
+
+.a3Landscape {
+	page: a3Landscape;
+	width: 420mm;
+	height: 297mm;
+}
+
+.letterPortrait {
+	page: letterPortrait;
+	width: 215.9mm;
+	height: 279.4mm;
+}
+
+.letterLandscape {
+	page: letterLandscape;
+	width: 279.4mm;
+	height: 215.9mm;
 }
 
 @media print {

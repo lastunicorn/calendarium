@@ -41,6 +41,9 @@ export function parseConfig(data: unknown): CalendarConfig {
 	if (typeof stored.showWeekNumbers === 'boolean')
 		config.showWeekNumbers = stored.showWeekNumbers
 
+	if (stored.paperSize === 'a4' || stored.paperSize === 'a3' || stored.paperSize === 'letter')
+		config.paperSize = stored.paperSize
+
 	if (stored.orientation === 'portrait' || stored.orientation === 'landscape')
 		config.orientation = stored.orientation
 

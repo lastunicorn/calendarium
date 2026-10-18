@@ -7,14 +7,17 @@ interface PreviewProps {
 }
 
 const PAGE_CLASSES = {
-	portrait: styles.a4Portrait,
-	landscape: styles.a4Landscape,
+	a4: { portrait: styles.a4Portrait, landscape: styles.a4Landscape },
+	a3: { portrait: styles.a3Portrait, landscape: styles.a3Landscape },
+	letter: { portrait: styles.letterPortrait, landscape: styles.letterLandscape },
 }
 
 export function Preview({ config }: PreviewProps) {
 	return (
 		<main className={styles.preview}>
-			<section className={`${styles.page} ${PAGE_CLASSES[config.orientation]}`}>
+			<section
+				className={`${styles.page} ${PAGE_CLASSES[config.paperSize][config.orientation]}`}
+			>
 				<YearOnePageLayout config={config} />
 			</section>
 		</main>

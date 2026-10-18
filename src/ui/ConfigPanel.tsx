@@ -3,6 +3,7 @@ import {
 	type CalendarConfig,
 	LOCALES,
 	type Orientation,
+	type PaperSize,
 	type WeekendHighlight,
 } from '../config/CalendarConfig'
 import type { WeekStart } from '../core/calendar'
@@ -61,6 +62,10 @@ export function ConfigPanel({ config, onChange }: ConfigPanelProps) {
 
 	function handleShowWeekNumbersChange(event: ChangeEvent<HTMLInputElement>) {
 		onChange({ ...config, showWeekNumbers: event.currentTarget.checked })
+	}
+
+	function handlePaperSizeChange(event: ChangeEvent<HTMLSelectElement>) {
+		onChange({ ...config, paperSize: event.currentTarget.value as PaperSize })
 	}
 
 	function handleOrientationChange(event: ChangeEvent<HTMLSelectElement>) {
@@ -124,6 +129,15 @@ export function ConfigPanel({ config, onChange }: ConfigPanelProps) {
 				<select value={config.weekdayFormat} onChange={handleWeekdayFormatChange}>
 					<option value="short">Three letters (MON)</option>
 					<option value="narrow">One letter (M)</option>
+				</select>
+			</label>
+
+			<label className={styles.field}>
+				Paper size
+				<select value={config.paperSize} onChange={handlePaperSizeChange}>
+					<option value="a4">A4</option>
+					<option value="a3">A3</option>
+					<option value="letter">Letter</option>
 				</select>
 			</label>
 

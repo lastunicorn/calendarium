@@ -28,6 +28,22 @@ body {
 	size: A4 landscape;
 }
 
+@page a3Portrait {
+	size: A3 portrait;
+}
+
+@page a3Landscape {
+	size: A3 landscape;
+}
+
+@page letterPortrait {
+	size: letter portrait;
+}
+
+@page letterLandscape {
+	size: letter landscape;
+}
+
 @media print {
 	:root {
 		background: #fff;
