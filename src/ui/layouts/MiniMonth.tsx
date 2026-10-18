@@ -1,4 +1,5 @@
-import type { CalendarMonth } from '../../core/calendar'
+import type { WeekendHighlight } from '../../config/CalendarConfig'
+import type { CalendarDay, CalendarMonth } from '../../core/calendar'
 import styles from './MiniMonth.module.css'
 
 interface MiniMonthProps {
@@ -6,11 +7,16 @@ interface MiniMonthProps {
 	name: string
 	/** Weekday labels, already ordered by week start. */
 	weekdays: string[]
-	highlightWeekends: boolean
+	highlightWeekends: WeekendHighlight
 }
 
 export function MiniMonth({ month, name, weekdays, highlightWeekends }: MiniMonthProps) {
-	const weekendColumns = month.weeks[0].map((day) => highlightWeekends && day.isWeekend)
+	const weekendColumns = month.weeks[0].map((day) => highlightWeekends !== 'off' && day.isWeekend)
+
+	function isHighlighted(day: CalendarDay): boolean {
+		if (!day.isWeekend) return false
+		return highlightWeekends === 'columns' || (highlightWeekends === 'days' && day.inMonth)
+	}
 
 	return (
 		<div className={styles.month}>
@@ -28,7 +34,7 @@ export function MiniMonth({ month, name, weekdays, highlightWeekends }: MiniMont
 				{month.weeks.flat().map((day) => (
 					<div
 						key={day.date.toISOString()}
-						className={`${styles.day} ${highlightWeekends && day.isWeekend ? styles.weekend : ''}`}
+						className={`${styles.day} ${isHighlighted(day) ? styles.weekend : ''}`}
 					>
 						{day.inMonth ? day.day : ''}
 					</div>

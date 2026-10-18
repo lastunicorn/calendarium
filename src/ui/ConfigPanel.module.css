@@ -29,13 +29,6 @@
 	font-weight: normal;
 }
 
-.checkbox {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-	font-size: 0.875rem;
-}
-
 .print {
 	padding: 8px;
 	font: inherit;

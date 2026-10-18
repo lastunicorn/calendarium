@@ -1,5 +1,10 @@
 import type { ChangeEvent } from 'react'
-import { type CalendarConfig, LOCALES, type Orientation } from '../config/CalendarConfig'
+import {
+	type CalendarConfig,
+	LOCALES,
+	type Orientation,
+	type WeekendHighlight,
+} from '../config/CalendarConfig'
 import type { WeekStart } from '../core/calendar'
 import type { WeekdayFormat } from '../core/locale'
 import styles from './ConfigPanel.module.css'
@@ -46,8 +51,8 @@ export function ConfigPanel({ config, onChange }: ConfigPanelProps) {
 		onChange({ ...config, title: event.currentTarget.value })
 	}
 
-	function handleHighlightWeekendsChange(event: ChangeEvent<HTMLInputElement>) {
-		onChange({ ...config, highlightWeekends: event.currentTarget.checked })
+	function handleHighlightWeekendsChange(event: ChangeEvent<HTMLSelectElement>) {
+		onChange({ ...config, highlightWeekends: event.currentTarget.value as WeekendHighlight })
 	}
 
 	function handleOrientationChange(event: ChangeEvent<HTMLSelectElement>) {
@@ -117,13 +122,13 @@ export function ConfigPanel({ config, onChange }: ConfigPanelProps) {
 				</select>
 			</label>
 
-			<label className={styles.checkbox}>
-				<input
-					type="checkbox"
-					checked={config.highlightWeekends}
-					onChange={handleHighlightWeekendsChange}
-				/>
+			<label className={styles.field}>
 				Highlight weekends
+				<select value={config.highlightWeekends} onChange={handleHighlightWeekendsChange}>
+					<option value="off">Off</option>
+					<option value="days">Days only</option>
+					<option value="columns">Whole columns</option>
+				</select>
 			</label>
 
 			<button type="button" className={styles.print} onClick={handlePrintClick}>

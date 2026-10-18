@@ -26,7 +26,11 @@ export function parseConfig(data: unknown): CalendarConfig {
 
 	if (typeof stored.title === 'string') config.title = stored.title
 
-	if (typeof stored.highlightWeekends === 'boolean')
+	if (
+		stored.highlightWeekends === 'off' ||
+		stored.highlightWeekends === 'days' ||
+		stored.highlightWeekends === 'columns'
+	)
 		config.highlightWeekends = stored.highlightWeekends
 
 	if (stored.orientation === 'portrait' || stored.orientation === 'landscape')

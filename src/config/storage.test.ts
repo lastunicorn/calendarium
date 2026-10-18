@@ -15,7 +15,7 @@ describe('parseConfig', () => {
 			weekStart: 6,
 			weekdayFormat: 'narrow',
 			title: 'Family',
-			highlightWeekends: false,
+			highlightWeekends: 'days',
 			orientation: 'landscape',
 		}
 		expect(parseConfig(stored)).toEqual(stored)
@@ -28,6 +28,7 @@ describe('parseConfig', () => {
 			weekStart: 7,
 			weekdayFormat: 'long',
 			title: 7,
+			highlightWeekends: true,
 			orientation: 'up',
 		})
 		const defaults = defaultConfig()
@@ -36,6 +37,7 @@ describe('parseConfig', () => {
 		expect(config.weekStart).toBe(defaults.weekStart)
 		expect(config.weekdayFormat).toBe(defaults.weekdayFormat)
 		expect(config.title).toBe(defaults.title)
+		expect(config.highlightWeekends).toBe(defaults.highlightWeekends)
 		expect(config.orientation).toBe(defaults.orientation)
 	})
 })

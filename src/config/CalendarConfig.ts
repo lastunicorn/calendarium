@@ -3,6 +3,9 @@ import type { WeekdayFormat } from '../core/locale'
 
 export type Orientation = 'portrait' | 'landscape'
 
+/** `days` highlights only weekend cells with a day number; `columns` the whole weekend column. */
+export type WeekendHighlight = 'off' | 'days' | 'columns'
+
 export interface CalendarConfig {
 	year: number
 	/** BCP 47 tag used for month and weekday names, e.g. `en-US`, `ro-RO`. */
@@ -11,7 +14,7 @@ export interface CalendarConfig {
 	weekdayFormat: WeekdayFormat
 	/** Shown above the calendar; when empty, the year is shown instead. */
 	title: string
-	highlightWeekends: boolean
+	highlightWeekends: WeekendHighlight
 	orientation: Orientation
 }
 
@@ -36,7 +39,7 @@ export function defaultConfig(): CalendarConfig {
 		weekStart: 1,
 		weekdayFormat: 'narrow',
 		title: '',
-		highlightWeekends: true,
+		highlightWeekends: 'columns',
 		orientation: 'portrait',
 	}
 }
