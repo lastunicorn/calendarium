@@ -25,6 +25,28 @@ export function pageDimensions(size: PaperSize, orientation: Orientation) {
 	return orientation === 'portrait' ? { width, height } : { width: height, height: width }
 }
 
+/** The sheet's blank border, in mm per side. */
+interface PageMargins {
+	top: number
+	right: number
+	bottom: number
+	left: number
+}
+
+/**
+ * Width and height in mm of the area inside the margins, where a layout's content goes.
+ * Takes the config's page setup (structurally, since `core/` doesn't import `config/`).
+ */
+export function contentBox(page: {
+	paperSize: PaperSize
+	orientation: Orientation
+	margins: PageMargins
+}) {
+	const { width, height } = pageDimensions(page.paperSize, page.orientation)
+	const { top, right, bottom, left } = page.margins
+	return { width: width - left - right, height: height - top - bottom }
+}
+
 /** Value for `@page { size }`, e.g. `A4 landscape`. */
 export function pageSizeCss(size: PaperSize, orientation: Orientation): string {
 	return `${PAPERS[size].cssName} ${orientation}`

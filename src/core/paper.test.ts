@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { pageDimensions, pageSizeCss, PAPER_SIZES, PAPERS } from './paper'
+import { contentBox, pageDimensions, pageSizeCss, PAPER_SIZES, PAPERS } from './paper'
 
 describe('pageDimensions', () => {
 	it('keeps portrait dimensions as listed', () => {
@@ -21,5 +21,19 @@ describe('pageSizeCss', () => {
 	it('combines the CSS paper name and orientation', () => {
 		expect(pageSizeCss('a4', 'portrait')).toBe('A4 portrait')
 		expect(pageSizeCss('letter', 'landscape')).toBe('letter landscape')
+	})
+})
+
+describe('contentBox', () => {
+	it('subtracts the margins from the sheet as it lies', () => {
+		const margins = { top: 10, right: 15, bottom: 20, left: 5 }
+		expect(contentBox({ paperSize: 'a4', orientation: 'portrait', margins })).toEqual({
+			width: 190,
+			height: 267,
+		})
+		expect(contentBox({ paperSize: 'a4', orientation: 'landscape', margins })).toEqual({
+			width: 277,
+			height: 180,
+		})
 	})
 })

@@ -24,15 +24,9 @@ export function DayPerPageLayout({ config }: DayPerPageLayoutProps) {
 	const { months, monthNames, weekdays } = useCalendarModel(config)
 	const days = useMemo(() => daysOfYear(months), [months])
 	// Built once here, not per page: 366 pages would each create a formatter.
-	// One row per hour from the first to the last, both shown; a stored reversed range is put in order.
+	// One row per hour from the first to the last, both shown (the config keeps them in order).
 	const hours = useMemo(
-		() =>
-			hourNames(
-				locale,
-				Math.min(firstHour, lastHour),
-				Math.max(firstHour, lastHour),
-				hourFormat,
-			),
+		() => hourNames(locale, firstHour, lastHour, hourFormat),
 		[locale, firstHour, lastHour, hourFormat],
 	)
 

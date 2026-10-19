@@ -18,6 +18,7 @@ import {
 	MARGIN_SIDES,
 	type PageSetup,
 } from './CalendarConfig'
+import { normalizeLayout } from './normalize'
 
 /**
  * Version of the stored and exported config format. Bump it when a change would misread older
@@ -180,14 +181,17 @@ function copyValidPage(target: PageSetup, data: unknown) {
 	}
 }
 
-/** Keeps only the valid fields of one layout's options, falling back to that layout's defaults. */
+/**
+ * Keeps only the valid fields of one layout's options, falling back to that layout's defaults,
+ * then applies the layout's cross-field rules.
+ */
 function parseCurrentLayoutConfig<K extends LayoutId>(layout: K, data: unknown): LayoutConfigs[K] {
 	const config = DEFAULTS[layout]()
 	const stored = asObject(data)
 	if (stored === null) return config
 	copyValid(config, stored, LAYOUT_VALIDATORS[layout])
 	copyValidPage(config.page, stored.page)
-	return config
+	return normalizeLayout(layout, config)
 }
 
 /** Keeps only the valid fields of untrusted flat data (an imported file) for one layout. */

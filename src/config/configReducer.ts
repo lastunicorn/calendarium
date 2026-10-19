@@ -1,4 +1,5 @@
 import type { AppConfig, LayoutConfigs, LayoutId } from './CalendarConfig'
+import { normalizeLayout } from './normalize'
 
 // The per-layout actions have one variant per layout, so a patch or config has that layout's type.
 export type ConfigAction =
@@ -11,12 +12,13 @@ export type ConfigAction =
 	/** Swaps in one layout's options and shows that layout (an imported file). */
 	| { [K in LayoutId]: { type: 'importLayout'; layout: K; config: LayoutConfigs[K] } }[LayoutId]
 
-function withLayout(
+/** `config` with `layout`'s options replaced, after applying that layout's rules. */
+function withLayout<K extends LayoutId>(
 	config: AppConfig,
-	layout: LayoutId,
-	options: LayoutConfigs[LayoutId],
+	layout: K,
+	options: LayoutConfigs[K],
 ): AppConfig {
-	return { ...config, layouts: { ...config.layouts, [layout]: options } }
+	return { ...config, layouts: { ...config.layouts, [layout]: normalizeLayout(layout, options) } }
 }
 
 export function configReducer(config: AppConfig, action: ConfigAction): AppConfig {

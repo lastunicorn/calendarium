@@ -41,7 +41,8 @@ export function DayPageSection({ config, onUpdate }: ConfigSectionProps<DayPerPa
 		onUpdate({ lastHour })
 	}
 
-	// Each bound stops at the other, so the range can't be turned around.
+	// Each bound stops at the other, so the range can't be turned around while typing; the config
+	// would put a reversed range in order anyway (`config/normalize.ts`).
 	function isValidFirstHour(hour: number) {
 		return isHour(hour) && hour <= config.lastHour
 	}
