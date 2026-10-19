@@ -1,6 +1,6 @@
 import { memo } from 'react'
 import type { PageSetup } from '../../../config/CalendarConfig'
-import type { DayPageLines } from '../../../config/layouts/dayPerPage'
+import type { DayPageLines, DayPageTitle } from '../../../config/layouts/dayPerPage'
 import { type CalendarDay, type CalendarMonth, dayOfYear, isoWeek } from '../../../core/calendar'
 import { fullDateName, type Locale, weekdayName } from '../../../core/locale'
 import { PRINT_MESSAGES } from '../../../core/messages'
@@ -33,6 +33,8 @@ interface DayPageProps {
 	weekdays: string[]
 	/** Labels of the schedule's hours, one row each. */
 	hours: string[]
+	/** Whether the heading is the weekday or the date; the other is the subheading. */
+	title: DayPageTitle
 	/** What fills the page under the header. */
 	lines: DayPageLines
 	/** Language of the date names and of the week and day-of-year line. */
@@ -57,6 +59,7 @@ export const DayPage = memo(function DayPage({
 	monthName,
 	weekdays,
 	hours,
+	title,
 	lines,
 	locale,
 	highlightWeekends,
@@ -66,6 +69,8 @@ export const DayPage = memo(function DayPage({
 	setup,
 }: DayPageProps) {
 	const messages = PRINT_MESSAGES[locale]
+	const weekday = weekdayName(locale, day)
+	const date = fullDateName(locale, day)
 	const details = [
 		showWeek ? messages.week(isoWeek(day)) : '',
 		showDayOfYear ? messages.dayOfYear(dayOfYear(day), daysInYear) : '',
@@ -79,8 +84,8 @@ export const DayPage = memo(function DayPage({
 				<div className={styles.top}>
 					<div className={styles.heading}>
 						<CalendarHeader
-							heading={weekdayName(locale, day)}
-							subheading={fullDateName(locale, day)}
+							heading={title === 'weekday' ? weekday : date}
+							subheading={title === 'weekday' ? date : weekday}
 							size="compact"
 							align="start"
 							highlight={isHighlightedDay(day, highlightWeekends)}

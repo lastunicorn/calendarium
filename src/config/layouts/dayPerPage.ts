@@ -7,6 +7,10 @@ import type { LayoutSpec } from './LayoutSpec'
 export const DAY_PAGE_LINES = ['hours', 'ruled'] as const
 export type DayPageLines = (typeof DAY_PAGE_LINES)[number]
 
+/** What a `day-per-page` page's heading shows; the other one goes in the subheading. */
+export const DAY_PAGE_TITLES = ['weekday', 'date'] as const
+export type DayPageTitle = (typeof DAY_PAGE_TITLES)[number]
+
 export const MIN_HOUR = 0
 export const MAX_HOUR = 23
 
@@ -16,6 +20,8 @@ export function isHour(value: unknown): value is number {
 }
 
 export interface DayPerPageConfig extends CommonConfig {
+	/** Whether the heading is the weekday ("Thursday") or the date ("1 January 2026"). */
+	dayPageTitle: DayPageTitle
 	/** What fills the page under its header. */
 	dayPageLines: DayPageLines
 	/** Clock of the hour labels on the schedule. */
@@ -36,6 +42,7 @@ export const DAY_PER_PAGE_SPEC: LayoutSpec<DayPerPageConfig> = {
 	defaults: () => ({
 		...commonDefaults(),
 		showWeekNumbers: true,
+		dayPageTitle: 'weekday',
 		dayPageLines: 'hours',
 		hourFormat: 'auto',
 		firstHour: 7,
@@ -46,6 +53,7 @@ export const DAY_PER_PAGE_SPEC: LayoutSpec<DayPerPageConfig> = {
 	}),
 	validators: {
 		...COMMON_VALIDATORS,
+		dayPageTitle: oneOf(DAY_PAGE_TITLES),
 		dayPageLines: oneOf(DAY_PAGE_LINES),
 		hourFormat: oneOf(HOUR_FORMATS),
 		firstHour: isHour,

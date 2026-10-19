@@ -48,6 +48,7 @@ describe('parseConfig', () => {
 				'day-per-page': {
 					...common,
 					year: 2032,
+					dayPageTitle: 'date',
 					dayPageLines: 'ruled',
 					hourFormat: '24h',
 					firstHour: 0,
@@ -80,6 +81,7 @@ describe('parseConfig', () => {
 				'week-per-page': invalidCommon,
 				'day-per-page': {
 					...invalidCommon,
+					dayPageTitle: 'month',
 					dayPageLines: 'dotted',
 					hourFormat: '25h',
 					firstHour: 24,

@@ -12,6 +12,7 @@ interface DayPerPageLayoutProps {
 /** A page for every day of the year: the date, an optional small month for context, and an hourly schedule or ruled lines. */
 export function DayPerPageLayout({ config }: DayPerPageLayoutProps) {
 	const {
+		dayPageTitle,
 		dayPageLines,
 		hourFormat,
 		firstHour,
@@ -44,6 +45,7 @@ export function DayPerPageLayout({ config }: DayPerPageLayoutProps) {
 				monthName={monthNames[month]}
 				weekdays={weekdays}
 				hours={hours}
+				title={dayPageTitle}
 				lines={dayPageLines}
 				locale={locale}
 				highlightWeekends={highlightWeekends}
