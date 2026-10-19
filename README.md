@@ -15,8 +15,9 @@ A browser app that generates a calendar to print on paper: a configuration panel
 | `npm install`        | Install dependencies                         |
 | `npm run dev`        | Start the dev server (http://localhost:5173) |
 | `npm run build`      | Type-check and build to `dist/`              |
-| `npm test`           | Run unit tests once (Vitest)                 |
+| `npm test`           | Run unit and component tests once (Vitest)   |
 | `npm run test:watch` | Run tests in watch mode                      |
+| `npm run test:e2e`   | Run the Playwright print tests (Chromium)    |
 | `npm run lint`       | Lint with oxlint                             |
 | `npm run format`     | Format with Prettier                         |
 | `npm run typecheck`  | Type-check only                              |

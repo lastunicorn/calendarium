@@ -278,6 +278,12 @@ have caught issue 3.2. Optionally add a pre-commit hook (e.g. `simple-git-hooks`
 
 ### 5.2 Tests above the pure layer — high value, medium effort
 
+> **Update (implemented):** component tests run as Vitest's `component` project (jsdom,
+> `src/**/*.test.tsx`): page counts in `Preview.test.tsx`, form sections in
+> `ConfigForm.test.tsx`, the import flow in `App.test.tsx`. `e2e/print.spec.ts` prints each
+> layout to PDF in Chromium (`npm run test:e2e`, also run by CI) and checks page count, paper size
+> and that no page's content is clipped in print media.
+
 The policy "tests cover `core/` and `config/` only" kept tests fast and simple, but the risky
 parts are now in rendering and print, where nothing is tested. Two narrow additions:
 

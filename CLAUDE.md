@@ -8,9 +8,10 @@ Browser app (Vite + React + TypeScript) that generates a calendar to print on pa
 
 ## Commands
 
-- `npm run dev` / `npm run build` / `npm test` / `npm run lint` (oxlint) / `npm run format` (`format:check` to verify only) / `npm run typecheck`
+- `npm run dev` / `npm run build` / `npm test` / `npm run test:e2e` (Playwright) / `npm run lint` (oxlint) / `npm run format` (`format:check` to verify only) / `npm run typecheck`
 - Single test file: `npx vitest run src/core/calendar.test.ts`; single test by name: `npx vitest run -t "leap year"`
-- Tests are plain `src/**/*.test.ts` files (no DOM/component tests); they cover `core/` and `config/`.
+- Unit tests are plain `src/**/*.test.ts` files, DOM-free, covering `core/` and `config/`. Component tests are `src/**/*.test.tsx` (Vitest `component` project: jsdom + Testing Library, setup in `src/test/setupDom.ts`); they check structure only (page counts, which form sections show, the import flow), never appearance. Run one project with `npx vitest run --project unit` (or `component`).
+- `e2e/print.spec.ts` (Playwright, Chromium) builds the app, prints each layout to PDF and checks the page count and paper size, and that no page's content is clipped in print media. First run needs `npx playwright install chromium`.
 
 ## Architecture
 

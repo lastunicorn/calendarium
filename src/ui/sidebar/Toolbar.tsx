@@ -108,16 +108,8 @@ export function Toolbar({ config, onReset, onImport }: ToolbarProps) {
 					icon={<ResetIcon />}
 					onClick={handleResetClick}
 				/>
-				<div
-					className={styles.separator}
-					role="separator"
-					aria-orientation="vertical"
-				/>
-				<IconButton
-					label="Print"
-					icon={<PrintIcon />}
-					onClick={handlePrintClick}
-				/>
+				<div className={styles.separator} role="separator" aria-orientation="vertical" />
+				<IconButton label="Print" icon={<PrintIcon />} onClick={handlePrintClick} />
 				<input
 					ref={fileInput}
 					type="file"

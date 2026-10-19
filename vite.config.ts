@@ -10,7 +10,19 @@ export default defineConfig({
 	// Lets tooling (e.g. the Claude preview) pick the port; Vite's default is used otherwise.
 	server: { port: Number(process.env.PORT) || undefined },
 	test: {
-		include: ['src/**/*.test.ts'],
 		passWithNoTests: true,
+		// Plain `.test.ts` files stay DOM-free; component tests (`.test.tsx`) run in jsdom.
+		projects: [
+			{ extends: true, test: { name: 'unit', include: ['src/**/*.test.ts'] } },
+			{
+				extends: true,
+				test: {
+					name: 'component',
+					include: ['src/**/*.test.tsx'],
+					environment: 'jsdom',
+					setupFiles: ['src/test/setupDom.ts'],
+				},
+			},
+		],
 	},
 })
