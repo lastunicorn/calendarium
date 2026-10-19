@@ -1,6 +1,5 @@
-import { isWeekStartSetting, LOCALES, WEEKDAY_FORMATS } from '../core/locale'
+import { isWeekStartSetting, LOCALES } from '../core/locale'
 import { ORIENTATIONS, PAPER_SIZES } from '../core/paper'
-import { WEEKEND_HIGHLIGHTS } from '../core/weekend'
 import { type CommonConfig, isMargin, isYear, type Margins, type PageSetup } from './CalendarConfig'
 
 export type Validator<T> = (value: unknown) => value is T
@@ -50,8 +49,5 @@ export const COMMON_VALIDATORS: ConfigValidators<CommonConfig> = {
 	year: isYear,
 	locale: oneOf(LOCALES),
 	weekStart: isWeekStartSetting,
-	weekdayFormat: oneOf(WEEKDAY_FORMATS),
-	highlightWeekends: oneOf(WEEKEND_HIGHLIGHTS),
-	showWeekNumbers: isBoolean,
 	page: PAGE_VALIDATORS,
 }

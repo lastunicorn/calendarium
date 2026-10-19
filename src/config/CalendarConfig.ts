@@ -1,6 +1,5 @@
-import { type Locale, LOCALES, type WeekdayFormat, type WeekStartSetting } from '../core/locale'
+import { type Locale, LOCALES, type WeekStartSetting } from '../core/locale'
 import type { Orientation, PaperSize } from '../core/paper'
-import type { WeekendHighlight } from '../core/weekend'
 import type { DayPerPageConfig } from './layouts/dayPerPage'
 import type { MonthPerPageConfig } from './layouts/monthPerPage'
 import type { WeekPerPageConfig } from './layouts/weekPerPage'
@@ -58,10 +57,6 @@ export interface CommonConfig {
 	locale: Locale
 	/** A fixed first day of the week, or `auto` for the language's own. */
 	weekStart: WeekStartSetting
-	weekdayFormat: WeekdayFormat
-	highlightWeekends: WeekendHighlight
-	/** ISO week numbers in a column before each week. */
-	showWeekNumbers: boolean
 	page: PageSetup
 }
 
@@ -119,9 +114,6 @@ export function commonDefaults(): CommonConfig {
 		year: new Date().getFullYear(),
 		locale: defaultLocale(),
 		weekStart: 'auto',
-		weekdayFormat: 'narrow',
-		highlightWeekends: 'days',
-		showWeekNumbers: false,
 		page: {
 			paperSize: 'a4',
 			orientation: 'portrait',

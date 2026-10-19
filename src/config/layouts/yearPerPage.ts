@@ -1,8 +1,9 @@
 import { type CommonConfig, commonDefaults } from '../CalendarConfig'
 import { COMMON_VALIDATORS, isString } from '../validators'
 import { type LayoutSpec, unchanged } from './LayoutSpec'
+import { MONTH_GRID_VALIDATORS, type MonthGridOptions, monthGridDefaults } from './monthGrid'
 
-export interface YearPerPageConfig extends CommonConfig {
+export interface YearPerPageConfig extends CommonConfig, MonthGridOptions {
 	/** Shown above the calendar; when empty, the year is shown instead. */
 	title: string
 	/** Shown below the title; hidden when empty. */
@@ -11,7 +12,12 @@ export interface YearPerPageConfig extends CommonConfig {
 
 export const YEAR_PER_PAGE_SPEC: LayoutSpec<YearPerPageConfig> = {
 	// 12 small months fit portrait; one-letter weekdays keep them narrow.
-	defaults: () => ({ ...commonDefaults(), title: '', subtitle: '' }),
-	validators: { ...COMMON_VALIDATORS, title: isString, subtitle: isString },
+	defaults: () => ({ ...commonDefaults(), ...monthGridDefaults(), title: '', subtitle: '' }),
+	validators: {
+		...COMMON_VALIDATORS,
+		...MONTH_GRID_VALIDATORS,
+		title: isString,
+		subtitle: isString,
+	},
 	normalize: unchanged,
 }

@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 import type { WeekPerPageConfig } from '../../../config/layouts/weekPerPage'
 import { weeksOfYear } from '../../../core/calendar'
-import { hourNames, resolveWeekStart } from '../../../core/locale'
+import { hourNames } from '../../../core/locale'
 import { weekCells } from '../../../core/weekend'
-import { useCalendarModel } from '../useCalendarModel'
+import { useCalendarModel, useWeekdayNames } from '../useCalendarModel'
 import { WeekPage } from './WeekPage'
 
 interface WeekPerPageLayoutProps {
@@ -32,8 +32,8 @@ export function WeekPerPageLayout({ config }: WeekPerPageLayoutProps) {
 		lastHour,
 		page,
 	} = config
-	const weekStart = resolveWeekStart(config.weekStart, locale)
-	const { monthNames, weekdays } = useCalendarModel(config)
+	const { weekStart, monthNames } = useCalendarModel(config)
+	const weekdays = useWeekdayNames(locale, weekStart, config.weekdayFormat)
 	// A week whose only days of the year are a left-out weekend gets no page.
 	const pages = useMemo(
 		() =>

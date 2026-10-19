@@ -3,7 +3,7 @@ import type { DayPerPageConfig } from '../../../config/layouts/dayPerPage'
 import { daysOfYear } from '../../../core/calendar'
 import { hourNames } from '../../../core/locale'
 import { DayPage } from './DayPage'
-import { useCalendarModel } from '../useCalendarModel'
+import { useCalendarModel, useWeekdayNames } from '../useCalendarModel'
 
 interface DayPerPageLayoutProps {
 	config: DayPerPageConfig
@@ -26,7 +26,8 @@ export function DayPerPageLayout({ config }: DayPerPageLayoutProps) {
 		showWeekNumbers,
 		page,
 	} = config
-	const { months, monthNames, weekdays } = useCalendarModel(config)
+	const { weekStart, months, monthNames } = useCalendarModel(config)
+	const weekdays = useWeekdayNames(locale, weekStart, config.weekdayFormat)
 	const days = useMemo(() => daysOfYear(months), [months])
 	// Built once here, not per page: 366 pages would each create a formatter.
 	// One row per hour from the first to the last, both shown (the config keeps them in order).

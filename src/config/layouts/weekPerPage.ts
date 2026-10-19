@@ -4,6 +4,7 @@ import { type CommonConfig, commonDefaults, margins } from '../CalendarConfig'
 import { COMMON_VALIDATORS, isBoolean, oneOf } from '../validators'
 import { type HourSchedule, orderHours, SCHEDULE_VALIDATORS, scheduleDefaults } from './hours'
 import type { LayoutSpec } from './LayoutSpec'
+import { MONTH_GRID_VALIDATORS, type MonthGridOptions, monthGridDefaults } from './monthGrid'
 
 /** What fills each day's cell on a `week-per-page` page under its label: nothing, or an hourly schedule. */
 export const WEEK_PAGE_LINES = ['none', 'hours'] as const
@@ -27,7 +28,7 @@ export function stacksDays(
 	return direction === 'horizontal'
 }
 
-export interface WeekPerPageConfig extends CommonConfig, HourSchedule {
+export interface WeekPerPageConfig extends CommonConfig, MonthGridOptions, HourSchedule {
 	/** Whether Saturday and Sunday get a cell each, share one, or are left out. */
 	weekendDisplay: WeekendDisplay
 	/**
@@ -52,6 +53,7 @@ export const WEEK_PER_PAGE_SPEC: LayoutSpec<WeekPerPageConfig> = {
 		const common = commonDefaults()
 		return {
 			...common,
+			...monthGridDefaults(),
 			weekdayFormat: 'short',
 			showWeekNumbers: true,
 			weekendDisplay: 'reduced',
@@ -64,6 +66,7 @@ export const WEEK_PER_PAGE_SPEC: LayoutSpec<WeekPerPageConfig> = {
 	},
 	validators: {
 		...COMMON_VALIDATORS,
+		...MONTH_GRID_VALIDATORS,
 		weekendDisplay: oneOf(WEEKEND_DISPLAYS),
 		weekPageLines: oneOf(WEEK_PAGE_LINES),
 		twoPagesPerWeek: isBoolean,
