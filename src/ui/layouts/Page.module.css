@@ -1,5 +1,10 @@
-/* Width, height and padding (the page margins) are set inline from the config. */
+/*
+ * Width, height and top/bottom padding are set inline from the config; the side margins come as
+ * `--margin-left` and `--margin-right`, so mirrored pages can swap them.
+ */
 .page {
+	padding-left: var(--margin-left);
+	padding-right: var(--margin-right);
 	/* Positions the overflow badge. */
 	position: relative;
 	flex-shrink: 0;
@@ -11,6 +16,15 @@
 /* Each page of a multi-page layout starts a new printed sheet. */
 .page + .page {
 	break-before: page;
+}
+
+/*
+ * Mirrored margins: every even page (the back of a double-sided sheet) swaps its side margins.
+ * Pages are the only sections among their siblings, so `nth-of-type` counts pages.
+ */
+.mirrored:nth-of-type(even) {
+	padding-left: var(--margin-right);
+	padding-right: var(--margin-left);
 }
 
 /*

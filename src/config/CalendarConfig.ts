@@ -47,6 +47,8 @@ export interface PageSetup {
 	paperSize: PaperSize
 	orientation: Orientation
 	margins: Margins
+	/** Swaps the left and right margins on even pages, for double-sided printing and binding. */
+	mirrorMargins: boolean
 }
 
 /** Options every layout has. */
@@ -120,6 +122,11 @@ export function commonDefaults(): CommonConfig {
 		weekdayFormat: 'narrow',
 		highlightWeekends: 'days',
 		showWeekNumbers: false,
-		page: { paperSize: 'a4', orientation: 'portrait', margins: margins(12) },
+		page: {
+			paperSize: 'a4',
+			orientation: 'portrait',
+			margins: margins(12),
+			mirrorMargins: false,
+		},
 	}
 }

@@ -101,6 +101,7 @@ export const DayPage = memo(function DayPage({
 								highlightWeekends={highlightWeekends}
 								showWeekNumbers={showWeekNumbers}
 								markedDay={day.day}
+								size="small"
 							/>
 						</div>
 					)}

@@ -1,6 +1,7 @@
 import type { CommonConfig, Margins } from '../../config/CalendarConfig'
 import { type Orientation, ORIENTATIONS, PAPER_SIZES, type PaperSize } from '../../core/paper'
 import { PageIcon } from '../components/icons'
+import { CheckboxField } from '../fields/CheckboxField'
 import { MarginsField } from '../fields/MarginsField'
 import { optionsFrom } from '../fields/options'
 import { RadioField } from '../fields/RadioField'
@@ -19,7 +20,7 @@ const ORIENTATION_OPTIONS = optionsFrom(ORIENTATIONS, {
 	landscape: 'Landscape',
 })
 
-/** The sheet of paper: size, orientation and margins. */
+/** The sheet of paper: size, orientation and margins, optionally mirrored on even pages. */
 export function PageSection({ config, onUpdate }: ConfigSectionProps<CommonConfig>) {
 	const { page } = config
 
@@ -33,6 +34,10 @@ export function PageSection({ config, onUpdate }: ConfigSectionProps<CommonConfi
 
 	function handleMarginsChange(margins: Margins) {
 		onUpdate({ page: { ...page, margins } })
+	}
+
+	function handleMirrorMarginsChange(mirrorMargins: boolean) {
+		onUpdate({ page: { ...page, mirrorMargins } })
 	}
 
 	return (
@@ -50,6 +55,11 @@ export function PageSection({ config, onUpdate }: ConfigSectionProps<CommonConfi
 				onChange={handleOrientationChange}
 			/>
 			<MarginsField value={page.margins} onChange={handleMarginsChange} />
+			<CheckboxField
+				label="Use mirror margins"
+				checked={page.mirrorMargins}
+				onChange={handleMirrorMarginsChange}
+			/>
 		</Section>
 	)
 }

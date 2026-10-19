@@ -10,7 +10,7 @@ import {
 } from './CalendarConfig'
 import { defaultAppConfig, layoutSpec, mapLayouts } from './layouts'
 import { asObject, type StoredData, upgradeStorage } from './migrations'
-import { oneOf, type Validators } from './validators'
+import { isBoolean, oneOf, type Validators } from './validators'
 import { APP_VERSION, CONFIG_VERSION } from './version'
 
 /** The app config as written to storage: tagged with its config version and the app version. */
@@ -22,6 +22,7 @@ export function toStoredConfig(config: AppConfig) {
 const PAGE_VALIDATORS: Validators<PageSetup, Exclude<keyof PageSetup, 'margins'>> = {
 	paperSize: oneOf(PAPER_SIZES),
 	orientation: oneOf(ORIENTATIONS),
+	mirrorMargins: isBoolean,
 }
 
 const isLayoutId = oneOf(LAYOUT_IDS)

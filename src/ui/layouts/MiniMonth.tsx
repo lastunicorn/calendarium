@@ -12,6 +12,8 @@ interface MiniMonthProps {
 	showWeekNumbers: boolean
 	/** Day of the month to mark, e.g. the day a page is about. */
 	markedDay?: number
+	/** `small` shrinks the text, for a mini month in the corner of a page. */
+	size?: 'normal' | 'small'
 }
 
 export function MiniMonth({
@@ -21,11 +23,12 @@ export function MiniMonth({
 	highlightWeekends,
 	showWeekNumbers,
 	markedDay,
+	size = 'normal',
 }: MiniMonthProps) {
 	const weekendColumns = month.weeks[0].map((day) => isHighlightedColumn(day, highlightWeekends))
 
 	return (
-		<div className={styles.month}>
+		<div className={`${styles.month} ${size === 'small' ? styles.small : ''}`}>
 			<h2 className={styles.name}>{name}</h2>
 			<div className={`${styles.days} ${showWeekNumbers ? styles.withWeekNumbers : ''}`}>
 				{showWeekNumbers && <div className={`${styles.weekday} ${styles.weekNumber}`} />}

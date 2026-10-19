@@ -65,6 +65,24 @@
 	background: var(--color-text);
 }
 
+/* Smaller text, for a mini month in the corner of a page. */
+.small .name {
+	margin-bottom: 1mm;
+	font-size: 10pt;
+}
+
+.small .days {
+	font-size: 8.5pt;
+}
+
+.small .weekday {
+	font-size: 7pt;
+}
+
+.small .weekNumber {
+	font-size: 6.5pt;
+}
+
 @media print {
 	.month {
 		print-color-adjust: exact;

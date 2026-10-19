@@ -26,8 +26,8 @@
 .miniMonth {
 	display: grid;
 	flex-shrink: 0;
-	width: 56mm;
-	height: 42mm;
+	width: 48mm;
+	height: 36mm;
 }
 
 /*
