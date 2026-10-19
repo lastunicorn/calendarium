@@ -13,8 +13,8 @@ interface WeekPerPageLayoutProps {
 /**
  * A page for every week holding a day of the year, from the one with January 1 to the one with
  * December 31; their days of the previous and next year are grayed out. The weekend gets a cell
- * per day, one shared cell, or none, per `weekendDisplay`. Each day's own cell may hold an hourly
- * schedule, per `weekPageLines`; a shared weekend cell has no room for one.
+ * per day, one shared cell, or none, per `weekendDisplay`. Each day of the year in its own cell
+ * may hold an hourly schedule, per `weekPageLines`; a shared weekend cell has no room for one.
  */
 export function WeekPerPageLayout({ config }: WeekPerPageLayoutProps) {
 	const {

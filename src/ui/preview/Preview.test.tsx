@@ -52,7 +52,7 @@ describe('Preview', () => {
 		expect(container.querySelectorAll('section')).toHaveLength(52)
 	})
 
-	it('draws an hourly schedule in each day of a week, except in a shared weekend cell', () => {
+	it('draws an hourly schedule in each day of the year, except in a shared weekend cell', () => {
 		const config = configFor('week-per-page', 2025)
 		Object.assign(config.layouts['week-per-page'], {
 			weekPageLines: 'hours',
@@ -62,14 +62,16 @@ describe('Preview', () => {
 		})
 		const hourLabels = () =>
 			render(<Preview config={config} onResetLayout={noop} />).queryAllByText('07:00')
-		expect(hourLabels()).toHaveLength(53 * 7)
+		// One schedule per day of 2025, none for the days of 2024 and 2026 on the first and last page.
+		expect(hourLabels()).toHaveLength(365)
 		cleanup()
+		// Its 104 weekend days share cells.
 		config.layouts['week-per-page'].weekendDisplay = 'collapsed'
-		expect(hourLabels()).toHaveLength(53 * 5)
+		expect(hourLabels()).toHaveLength(261)
 		cleanup()
 		// A week starting on Sunday can't collapse its weekend, so its cells keep the schedule.
 		config.layouts['week-per-page'].weekStart = 0
-		expect(hourLabels()).toHaveLength(53 * 7)
+		expect(hourLabels()).toHaveLength(365)
 	})
 
 	it('draws a page per day, with February 29 in a leap year', () => {

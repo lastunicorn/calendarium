@@ -13,7 +13,8 @@ export interface WeekPerPageConfig extends CommonConfig, HourSchedule {
 	weekendDisplay: WeekendDisplay
 	/**
 	 * What fills each day's cell; the schedule's hours come from `HourSchedule`. Saturday and
-	 * Sunday sharing a cell have no room for one, so only the other days get it.
+	 * Sunday sharing a cell have no room for one, so only the other days get it; days of
+	 * the previous and next year never do.
 	 */
 	weekPageLines: WeekPageLines
 }

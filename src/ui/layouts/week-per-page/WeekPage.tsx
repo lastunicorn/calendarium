@@ -19,8 +19,8 @@ interface WeekPageProps {
 	weekStart: WeekStart
 	monthNames: string[]
 	/**
-	 * Labels of the hourly schedule drawn in each day's own cell, one row each; days sharing a cell
-	 * get none. None leaves every cell blank.
+	 * Labels of the hourly schedule drawn in the cell of each day of the year, one row each; days
+	 * sharing a cell get none. None leaves every cell blank.
 	 */
 	hours?: string[]
 	/** Language of the date range and of the week line. */
@@ -97,7 +97,10 @@ export const WeekPage = memo(function WeekPage({
 	const stacked = setup.orientation === 'portrait'
 	const days = cells.flat()
 
-	/** `shared` for a day sharing its cell, which has no room for the schedule. */
+	/**
+	 * `shared` for a day sharing its cell, which has no room for the schedule; days of another year
+	 * get none either.
+	 */
 	function cellProps(day: WeekDay, shared: boolean): WeekDayCellProps {
 		return {
 			day,
@@ -105,7 +108,7 @@ export const WeekPage = memo(function WeekPage({
 			// The month is named where it changes, and on the page's first day for context.
 			monthName: day === days[0] || day.day === 1 ? monthNames[day.month] : undefined,
 			highlighted: isHighlightedWeekDay(day, highlightWeekends),
-			hours: shared ? undefined : hours,
+			hours: shared || !day.inYear ? undefined : hours,
 			stacked,
 		}
 	}
