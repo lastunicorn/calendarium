@@ -26,7 +26,7 @@ const WEEK_START_OPTIONS: Option<WeekStartSetting>[] = [
 	{ value: 0, label: 'Sunday' },
 ]
 
-/** Each language's name in itself, so a reader can find their own. */
+/** Each language's name in itself, so a reader can find their own, in alphabetical order. */
 const LOCALE_OPTIONS = optionsFrom(LOCALES, {
 	'en-US': 'English (US)',
 	'en-GB': 'English (UK)',
@@ -53,7 +53,7 @@ const LOCALE_OPTIONS = optionsFrom(LOCALES, {
 	'fi-FI': 'Finnish (Suomi)',
 	'zh-CN': 'Chinese (中文, 简体)',
 	'ko-KR': 'Korean (한국어)',
-})
+}).sort((a, b) => a.label.localeCompare(b.label, 'en'))
 
 const WEEKDAY_FORMAT_OPTIONS = optionsFrom(WEEKDAY_FORMATS, {
 	short: 'Three letters (MON)',
