@@ -40,21 +40,15 @@ describe('ConfigForm', () => {
 	})
 
 	it('shows the week page options only on the week layout', () => {
-		expect(sectionTitles('week-per-page')).toEqual([
-			'Layout',
-			'Calendar',
-			'Appearance',
-			'Week page',
-			'Page',
-		])
+		expect(sectionTitles('week-per-page')).toEqual(['Layout', 'Calendar', 'Week page', 'Page'])
 	})
 
-	it('shows the day page options only on the day layout', () => {
+	it('shows the day page and mini calendar options only on the day layout', () => {
 		expect(sectionTitles('day-per-page')).toEqual([
 			'Layout',
 			'Calendar',
-			'Appearance',
 			'Day page',
+			'Mini calendar',
 			'Page',
 		])
 		expect(screen.queryByLabelText('Title')).toBeNull()

@@ -35,19 +35,20 @@ describe('parseConfig', () => {
 			year: 2030,
 			locale: 'ro-RO',
 			weekStart: 6,
-			weekdayFormat: 'narrow',
-			highlightWeekends: 'days',
-			showWeekNumbers: true,
 			page,
 		}
+		const grid = { weekdayFormat: 'short', highlightWeekends: 'off', showWeekNumbers: true }
 		const config = {
 			layout: 'month-per-page',
 			layouts: {
-				'year-per-page': { ...common, title: 'Family', subtitle: 'Birthdays' },
-				'month-per-page': { ...common, year: 2031 },
+				'year-per-page': { ...common, ...grid, title: 'Family', subtitle: 'Birthdays' },
+				'month-per-page': { ...common, ...grid, year: 2031 },
 				'week-per-page': {
 					...common,
 					year: 2033,
+					weekdayFormat: 'narrow',
+					highlightWeekendDays: false,
+					showHeaderWeek: false,
 					weekendDisplay: 'reduced',
 					weekPageLines: 'hours',
 					twoPagesPerWeek: true,
@@ -65,7 +66,8 @@ describe('parseConfig', () => {
 					hourFormat: '24h',
 					firstHour: 0,
 					lastHour: 23,
-					showMiniMonth: false,
+					highlightWeekendDays: false,
+					miniMonth: { ...grid, show: false, highlightWeekends: 'columns' },
 					showHeaderWeek: false,
 					showHeaderDayOfYear: false,
 				},
@@ -74,24 +76,51 @@ describe('parseConfig', () => {
 		expect(parseConfig({ version: CONFIG_VERSION, ...config })).toEqual(config)
 	})
 
+	it('reads the week and day options of a 3.x config', () => {
+		const config = parseConfig({
+			version: 3,
+			layouts: {
+				'week-per-page': { highlightWeekends: 'off', showWeekNumbers: false },
+				'day-per-page': { highlightWeekends: 'columns', showMiniMonth: false },
+			},
+		})
+		expect(config.layouts['week-per-page']).toMatchObject({
+			highlightWeekendDays: false,
+			showHeaderWeek: false,
+		})
+		expect(config.layouts['day-per-page']).toMatchObject({
+			highlightWeekendDays: true,
+			miniMonth: {
+				...defaultLayoutConfig('day-per-page').miniMonth,
+				highlightWeekends: 'columns',
+				show: false,
+			},
+		})
+	})
+
 	it('drops invalid fields', () => {
 		const invalidCommon = {
 			year: 2030.5,
 			locale: 'xx',
 			weekStart: 7,
+			page: { paperSize: 'b5', orientation: 'up', margins: 'wide' },
+		}
+		const invalidGrid = {
 			weekdayFormat: 'long',
 			highlightWeekends: true,
 			showWeekNumbers: 'yes',
-			page: { paperSize: 'b5', orientation: 'up', margins: 'wide' },
 		}
 		const config = parseConfig({
 			version: CONFIG_VERSION,
 			layout: 'quarter-per-page',
 			layouts: {
-				'year-per-page': { ...invalidCommon, title: 7, subtitle: null },
-				'month-per-page': invalidCommon,
+				'year-per-page': { ...invalidCommon, ...invalidGrid, title: 7, subtitle: null },
+				'month-per-page': { ...invalidCommon, ...invalidGrid },
 				'week-per-page': {
 					...invalidCommon,
+					weekdayFormat: 'long',
+					highlightWeekendDays: 'days',
+					showHeaderWeek: 'yes',
 					weekendDisplay: 'off',
 					weekPageLines: 'ruled',
 					twoPagesPerWeek: 0,
@@ -108,7 +137,8 @@ describe('parseConfig', () => {
 					hourFormat: '25h',
 					firstHour: 24,
 					lastHour: 7.5,
-					showMiniMonth: 'no',
+					highlightWeekendDays: 'yes',
+					miniMonth: { ...invalidGrid, show: 'no' },
 					showHeaderWeek: 1,
 					showHeaderDayOfYear: null,
 				},

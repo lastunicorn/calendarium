@@ -77,6 +77,58 @@ describe('upgradeStorage and upgradeFile', () => {
 	})
 })
 
+describe('the step from 3 to 4', () => {
+	const week = { year: 2030, highlightWeekends: 'columns', showWeekNumbers: false }
+	const day = {
+		year: 2030,
+		weekdayFormat: 'short',
+		highlightWeekends: 'off',
+		showWeekNumbers: true,
+		showMiniMonth: false,
+	}
+
+	it('moves the week and day options in storage, leaving the other layouts as they were', () => {
+		const month = { highlightWeekends: 'columns', showWeekNumbers: true }
+		const stored = {
+			version: 3,
+			layouts: { 'month-per-page': month, 'week-per-page': week, 'day-per-page': day },
+		}
+		expect(upgradeStorage(stored)?.layouts).toEqual({
+			'month-per-page': month,
+			'week-per-page': { year: 2030, highlightWeekendDays: true, showHeaderWeek: false },
+			'day-per-page': {
+				year: 2030,
+				highlightWeekendDays: false,
+				miniMonth: {
+					show: false,
+					weekdayFormat: 'short',
+					highlightWeekends: 'off',
+					showWeekNumbers: true,
+				},
+			},
+		})
+	})
+
+	it('moves the options of a week or day file', () => {
+		expect(upgradeFile({ version: 3, layout: 'week-per-page', ...week })).toEqual({
+			version: 3,
+			layout: 'week-per-page',
+			year: 2030,
+			highlightWeekendDays: true,
+			showHeaderWeek: false,
+		})
+		expect(upgradeFile({ version: 3, layout: 'day-per-page', ...day })).toMatchObject({
+			highlightWeekendDays: false,
+			miniMonth: { show: false },
+		})
+	})
+
+	it('keeps an unknown weekend highlight for parsing to reject', () => {
+		const file = { version: 3, layout: 'week-per-page', highlightWeekends: 'always' }
+		expect(upgradeFile(file)).toMatchObject({ highlightWeekendDays: 'always' })
+	})
+})
+
 describe('isConfigFile', () => {
 	it('accepts only files marked with the format', () => {
 		expect(isConfigFile({ format: FILE_FORMAT })).toBe(true)

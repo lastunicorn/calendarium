@@ -1,10 +1,10 @@
 import { WEEKEND_DISPLAYS, type WeekendDisplay } from '../../core/weekend'
+import { WEEKDAY_FORMATS, type WeekdayFormat } from '../../core/locale'
 import type { Orientation } from '../../core/paper'
 import { type CommonConfig, commonDefaults, margins } from '../CalendarConfig'
 import { COMMON_VALIDATORS, isBoolean, oneOf } from '../validators'
 import { type HourSchedule, orderHours, SCHEDULE_VALIDATORS, scheduleDefaults } from './hours'
 import type { LayoutSpec } from './LayoutSpec'
-import { MONTH_GRID_VALIDATORS, type MonthGridOptions, monthGridDefaults } from './monthGrid'
 
 /** What fills each day's cell on a `week-per-page` page under its label: nothing, or an hourly schedule. */
 export const WEEK_PAGE_LINES = ['none', 'hours'] as const
@@ -28,7 +28,13 @@ export function stacksDays(
 	return direction === 'horizontal'
 }
 
-export interface WeekPerPageConfig extends CommonConfig, MonthGridOptions, HourSchedule {
+export interface WeekPerPageConfig extends CommonConfig, HourSchedule {
+	/** How the weekday name in each day's cell is abbreviated. */
+	weekdayFormat: WeekdayFormat
+	/** Whether the weekend days of the year get the weekend color; other years' days stay gray. */
+	highlightWeekendDays: boolean
+	/** Whether the heading shows the week's ISO number ("Week 1"). */
+	showHeaderWeek: boolean
 	/** Whether Saturday and Sunday get a cell each, share one, or are left out. */
 	weekendDisplay: WeekendDisplay
 	/**
@@ -47,15 +53,15 @@ export interface WeekPerPageConfig extends CommonConfig, MonthGridOptions, HourS
 }
 
 export const WEEK_PER_PAGE_SPEC: LayoutSpec<WeekPerPageConfig> = {
-	// Columns side by side fit landscape; week numbers show as "Week N" in the heading. The weekend
+	// Columns side by side fit landscape, with room for three-letter weekdays. The weekend
 	// shares a cell, leaving the weekdays room for an hourly schedule.
 	defaults: () => {
 		const common = commonDefaults()
 		return {
 			...common,
-			...monthGridDefaults(),
 			weekdayFormat: 'short',
-			showWeekNumbers: true,
+			highlightWeekendDays: true,
+			showHeaderWeek: true,
 			weekendDisplay: 'reduced',
 			weekPageLines: 'hours',
 			twoPagesPerWeek: false,
@@ -66,7 +72,9 @@ export const WEEK_PER_PAGE_SPEC: LayoutSpec<WeekPerPageConfig> = {
 	},
 	validators: {
 		...COMMON_VALIDATORS,
-		...MONTH_GRID_VALIDATORS,
+		weekdayFormat: oneOf(WEEKDAY_FORMATS),
+		highlightWeekendDays: isBoolean,
+		showHeaderWeek: isBoolean,
 		weekendDisplay: oneOf(WEEKEND_DISPLAYS),
 		weekPageLines: oneOf(WEEK_PAGE_LINES),
 		twoPagesPerWeek: isBoolean,

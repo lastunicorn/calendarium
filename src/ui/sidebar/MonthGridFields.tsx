@@ -1,15 +1,11 @@
 import type { MonthGridOptions } from '../../config/layouts/monthGrid'
-import { WEEKDAY_FORMATS, type WeekdayFormat } from '../../core/locale'
+import type { WeekdayFormat } from '../../core/locale'
 import { WEEKEND_HIGHLIGHTS, type WeekendHighlight } from '../../core/weekend'
 import { CheckboxField } from '../fields/CheckboxField'
 import { optionsFrom } from '../fields/options'
 import { RadioField } from '../fields/RadioField'
+import { WEEKDAY_FORMAT_OPTIONS } from './fieldOptions'
 import type { ConfigSectionProps } from './Section'
-
-const WEEKDAY_FORMAT_OPTIONS = optionsFrom(WEEKDAY_FORMATS, {
-	short: 'Three letters (MON)',
-	narrow: 'One letter (M)',
-})
 
 const WEEKEND_HIGHLIGHT_OPTIONS = optionsFrom(WEEKEND_HIGHLIGHTS, {
 	off: 'Off',

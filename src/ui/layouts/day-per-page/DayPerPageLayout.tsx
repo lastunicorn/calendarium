@@ -18,16 +18,15 @@ export function DayPerPageLayout({ config }: DayPerPageLayoutProps) {
 		hourFormat,
 		firstHour,
 		lastHour,
-		showMiniMonth,
 		showHeaderWeek,
 		showHeaderDayOfYear,
 		locale,
-		highlightWeekends,
-		showWeekNumbers,
+		highlightWeekendDays,
+		miniMonth,
 		page,
 	} = config
 	const { weekStart, months, monthNames } = useCalendarModel(config)
-	const weekdays = useWeekdayNames(locale, weekStart, config.weekdayFormat)
+	const weekdays = useWeekdayNames(locale, weekStart, miniMonth.weekdayFormat)
 	const days = useMemo(() => daysOfYear(months), [months])
 	// Built once here, not per page: 366 pages would each create a formatter.
 	// One row per hour from the first to the last, both shown (the config keeps them in order).
@@ -43,7 +42,7 @@ export function DayPerPageLayout({ config }: DayPerPageLayoutProps) {
 				key={day.key}
 				day={day}
 				daysInYear={days.length}
-				month={showMiniMonth ? months[month] : undefined}
+				month={miniMonth.show ? months[month] : undefined}
 				monthName={monthNames[month]}
 				weekdays={weekdays}
 				hours={hours}
@@ -51,8 +50,9 @@ export function DayPerPageLayout({ config }: DayPerPageLayoutProps) {
 				lines={dayPageLines}
 				twoPages={twoPagesPerDay}
 				locale={locale}
-				highlightWeekends={highlightWeekends}
-				showWeekNumbers={showWeekNumbers}
+				highlightWeekendDays={highlightWeekendDays}
+				miniMonthHighlight={miniMonth.highlightWeekends}
+				miniMonthWeekNumbers={miniMonth.showWeekNumbers}
 				showWeek={showHeaderWeek}
 				showDayOfYear={showHeaderDayOfYear}
 				setup={page}

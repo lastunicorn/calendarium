@@ -45,12 +45,11 @@ describe('isHighlightedWeekDay', () => {
 	const inYear = weeks[0][5]
 	const nextYear = weeks.at(-1)![5]
 
-	it('highlights weekend days of another year only in columns mode', () => {
+	it('highlights weekend days of the year only, and only when on', () => {
 		expect(nextYear.inYear).toBe(false)
-		expect(isHighlightedWeekDay(inYear, 'days')).toBe(true)
-		expect(isHighlightedWeekDay(nextYear, 'days')).toBe(false)
-		expect(isHighlightedWeekDay(nextYear, 'columns')).toBe(true)
-		expect(isHighlightedWeekDay(inYear, 'off')).toBe(false)
+		expect(isHighlightedWeekDay(inYear, true)).toBe(true)
+		expect(isHighlightedWeekDay(nextYear, true)).toBe(false)
+		expect(isHighlightedWeekDay(inYear, false)).toBe(false)
 	})
 })
 

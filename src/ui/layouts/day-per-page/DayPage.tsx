@@ -5,7 +5,7 @@ import { type CalendarDay, type CalendarMonth, dayOfYear, isoWeek } from '../../
 import { fullDateName, type Locale, weekdayName } from '../../../core/locale'
 import { PRINT_MESSAGES } from '../../../core/messages'
 import { contentBox } from '../../../core/paper'
-import { isHighlightedDay, type WeekendHighlight } from '../../../core/weekend'
+import type { WeekendHighlight } from '../../../core/weekend'
 import { CalendarHeader } from '../CalendarHeader'
 import styles from './DayPage.module.css'
 import { MiniMonth } from '../MiniMonth'
@@ -62,7 +62,7 @@ interface DayPageProps {
 	/** The month `day` belongs to, drawn small with the day marked; none hides it. */
 	month?: CalendarMonth
 	monthName: string
-	/** Weekday labels, already ordered by week start. */
+	/** The small month's weekday labels, already ordered by week start. */
 	weekdays: string[]
 	/** Labels of the schedule's hours, one row each. */
 	hours: string[]
@@ -74,9 +74,11 @@ interface DayPageProps {
 	twoPages: boolean
 	/** Language of the date names and of the week and day-of-year line. */
 	locale: Locale
-	highlightWeekends: WeekendHighlight
-	/** Week numbers column of the small month. */
-	showWeekNumbers: boolean
+	/** Whether the heading of a Saturday or Sunday is drawn in the weekend color. */
+	highlightWeekendDays: boolean
+	/** How the small month highlights its weekends, and whether it has a week numbers column. */
+	miniMonthHighlight: WeekendHighlight
+	miniMonthWeekNumbers: boolean
 	/** Parts of the details line under the heading: "Week N" and "Day N / 365". */
 	showWeek: boolean
 	showDayOfYear: boolean
@@ -98,8 +100,9 @@ export const DayPage = memo(function DayPage({
 	lines,
 	twoPages,
 	locale,
-	highlightWeekends,
-	showWeekNumbers,
+	highlightWeekendDays,
+	miniMonthHighlight,
+	miniMonthWeekNumbers,
 	showWeek,
 	showDayOfYear,
 	setup,
@@ -127,7 +130,7 @@ export const DayPage = memo(function DayPage({
 							subheading={title === 'weekday' ? date : weekday}
 							size="compact"
 							align="start"
-							highlight={isHighlightedDay(day, highlightWeekends)}
+							highlight={highlightWeekendDays && day.isWeekend}
 						/>
 						{details && <p className={styles.details}>{details}</p>}
 					</div>
@@ -137,8 +140,8 @@ export const DayPage = memo(function DayPage({
 								month={month}
 								name={monthName}
 								weekdays={weekdays}
-								highlightWeekends={highlightWeekends}
-								showWeekNumbers={showWeekNumbers}
+								highlightWeekends={miniMonthHighlight}
+								showWeekNumbers={miniMonthWeekNumbers}
 								markedDay={day.day}
 								size="small"
 							/>

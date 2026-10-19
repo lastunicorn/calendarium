@@ -21,8 +21,8 @@ export function WeekPerPageLayout({ config }: WeekPerPageLayoutProps) {
 	const {
 		year,
 		locale,
-		highlightWeekends,
-		showWeekNumbers,
+		highlightWeekendDays,
+		showHeaderWeek,
 		weekendDisplay,
 		weekPageLines,
 		twoPagesPerWeek,
@@ -62,8 +62,8 @@ export function WeekPerPageLayout({ config }: WeekPerPageLayoutProps) {
 			weekStart={weekStart}
 			monthNames={monthNames}
 			locale={locale}
-			highlightWeekends={highlightWeekends}
-			showWeekNumbers={showWeekNumbers}
+			highlightWeekendDays={highlightWeekendDays}
+			showHeaderWeek={showHeaderWeek}
 			setup={page}
 		/>
 	))

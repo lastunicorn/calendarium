@@ -25,3 +25,18 @@ export const MONTH_GRID_VALIDATORS: Validators<MonthGridOptions> = {
 	highlightWeekends: oneOf(WEEKEND_HIGHLIGHTS),
 	showWeekNumbers: isBoolean,
 }
+
+/** A month drawn small beside a page's main content, for context; it can be left out. */
+export interface MiniMonthOptions extends MonthGridOptions {
+	show: boolean
+}
+
+/** The default mini month: shown, with week numbers. */
+export function miniMonthDefaults(): MiniMonthOptions {
+	return { show: true, ...monthGridDefaults(), showWeekNumbers: true }
+}
+
+export const MINI_MONTH_VALIDATORS: Validators<MiniMonthOptions> = {
+	show: isBoolean,
+	...MONTH_GRID_VALIDATORS,
+}

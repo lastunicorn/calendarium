@@ -50,7 +50,9 @@ describe('configReducer', () => {
 		const updated = configReducer(config, {
 			type: 'update',
 			layout: 'day-per-page',
-			patch: { showWeekNumbers: false },
+			patch: {
+				miniMonth: { ...config.layouts['day-per-page'].miniMonth, showWeekNumbers: false },
+			},
 		})
 		expect(updated).not.toBe(config)
 		expect(config).toEqual(before)

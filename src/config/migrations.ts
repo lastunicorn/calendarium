@@ -1,3 +1,4 @@
+import { WEEKEND_HIGHLIGHTS } from '../core/weekend'
 import { CONFIG_VERSION, isLaterAppVersion } from './version'
 
 // Storage and files are two formats, tagged with the same `CONFIG_VERSION` (the app's major
@@ -15,19 +16,66 @@ type Migration = (data: StoredData) => StoredData
 /** The first config version; data tagged with any earlier one is not this app's. */
 export const FIRST_CONFIG_VERSION = 3
 
+/** A 3 `highlightWeekends` (`off`, `days`, `columns`) as a 4 on/off; any other value kept as is. */
+function weekendDaysHighlighted(value: unknown): unknown {
+	return WEEKEND_HIGHLIGHTS.includes(value as never) ? value !== 'off' : value
+}
+
+/**
+ * One layout's options from 3 to 4. The week and day layouts lost the month grid options: the
+ * week's `highlightWeekends` became `highlightWeekendDays`, on or off, and its `showWeekNumbers`
+ * (the heading's "Week N") `showHeaderWeek`; the day's grid options and `showMiniMonth` moved
+ * under `miniMonth`, its `highlightWeekends` (for the heading) became `highlightWeekendDays`.
+ * Values are moved as they are; parsing checks them afterwards.
+ */
+function layoutTo4(layout: unknown, options: StoredData): StoredData {
+	if (layout === 'week-per-page') {
+		const { highlightWeekends, showWeekNumbers, ...rest } = options
+		return {
+			...rest,
+			highlightWeekendDays: weekendDaysHighlighted(highlightWeekends),
+			showHeaderWeek: showWeekNumbers,
+		}
+	}
+	if (layout === 'day-per-page') {
+		const { showMiniMonth, weekdayFormat, highlightWeekends, showWeekNumbers, ...rest } =
+			options
+		return {
+			...rest,
+			highlightWeekendDays: weekendDaysHighlighted(highlightWeekends),
+			miniMonth: { show: showMiniMonth, weekdayFormat, highlightWeekends, showWeekNumbers },
+		}
+	}
+	return options
+}
+
 /**
  * Storage steps; the step at index `i` migrates version `FIRST_CONFIG_VERSION + i` to the next.
  *
  * - 3: `{ version, app, layout, layouts: { <id>: {...} } }`, one set of options per layout.
+ * - 4: the same, with the week and day layouts' options changed as `layoutTo4` describes.
  */
-export const STORAGE_MIGRATIONS: readonly Migration[] = []
+export const STORAGE_MIGRATIONS: readonly Migration[] = [
+	(data) => {
+		const layouts = asObject(data.layouts)
+		if (layouts === null) return data
+		const upgraded: StoredData = {}
+		for (const [layout, options] of Object.entries(layouts)) {
+			const object = asObject(options)
+			upgraded[layout] = object === null ? options : layoutTo4(layout, object)
+		}
+		return { ...data, layouts: upgraded }
+	},
+]
 
 /**
  * File steps; the step at index `i` migrates version `FIRST_CONFIG_VERSION + i` to the next.
  *
  * - 3: `{ format, version, app, layout, ...options }`, one layout's options, flat.
+ * - 4: the same, with the week and day layouts' options changed as `layoutTo4` describes; a file
+ *   that names no layout is left as is.
  */
-export const FILE_MIGRATIONS: readonly Migration[] = []
+export const FILE_MIGRATIONS: readonly Migration[] = [(data) => layoutTo4(data.layout, data)]
 
 /** Marks a JSON file as one of this app's layout files. */
 export const FILE_FORMAT = 'printable-calendar/layout'

@@ -36,8 +36,8 @@ export function DayPageSection({ config, onUpdate }: ConfigSectionProps<DayPerPa
 		onUpdate({ twoPagesPerDay })
 	}
 
-	function handleShowMiniMonthChange(showMiniMonth: boolean) {
-		onUpdate({ showMiniMonth })
+	function handleHighlightWeekendDaysChange(highlightWeekendDays: boolean) {
+		onUpdate({ highlightWeekendDays })
 	}
 
 	function handleShowHeaderWeekChange(showHeaderWeek: boolean) {
@@ -51,9 +51,9 @@ export function DayPageSection({ config, onUpdate }: ConfigSectionProps<DayPerPa
 	return (
 		<Section title="Day page" icon={<DayPageIcon />}>
 			<CheckboxField
-				label="Show mini calendar"
-				checked={config.showMiniMonth}
-				onChange={handleShowMiniMonthChange}
+				label="Highlight weekends"
+				checked={config.highlightWeekendDays}
+				onChange={handleHighlightWeekendDaysChange}
 			/>
 			<CheckboxField
 				label="Week number in header"

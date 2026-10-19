@@ -4,7 +4,7 @@ import { stacksDays, type WeekDayDirection } from '../../../config/layouts/weekP
 import { type WeekDay, type WeekStart, weekNumber } from '../../../core/calendar'
 import { dateRangeName, type Locale } from '../../../core/locale'
 import { PRINT_MESSAGES } from '../../../core/messages'
-import { isHighlightedWeekDay, splitWeekCells, type WeekendHighlight } from '../../../core/weekend'
+import { isHighlightedWeekDay, splitWeekCells } from '../../../core/weekend'
 import { CalendarHeader } from '../CalendarHeader'
 import { Page } from '../Page'
 import styles from './WeekPage.module.css'
@@ -33,8 +33,10 @@ interface WeekPageProps {
 	direction: WeekDayDirection
 	/** Language of the date range and of the week line. */
 	locale: Locale
-	highlightWeekends: WeekendHighlight
-	showWeekNumbers: boolean
+	/** Whether the weekend days of the year get the weekend color. */
+	highlightWeekendDays: boolean
+	/** Whether the heading shows "Week N". */
+	showHeaderWeek: boolean
 	setup: PageSetup
 }
 
@@ -92,7 +94,7 @@ interface WeekGridProps {
 	weekStart: WeekStart
 	monthNames: string[]
 	hours?: string[]
-	highlightWeekends: WeekendHighlight
+	highlightWeekendDays: boolean
 	stacked: boolean
 }
 
@@ -103,7 +105,7 @@ function WeekGrid({
 	weekStart,
 	monthNames,
 	hours,
-	highlightWeekends,
+	highlightWeekendDays,
 	stacked,
 }: WeekGridProps) {
 	const firstDay = cells[0][0]
@@ -118,7 +120,7 @@ function WeekGrid({
 			weekday: weekdays[(day.weekday - weekStart + 7) % 7],
 			// The month is named where it changes, and on the page's first day for context.
 			monthName: day === firstDay || day.day === 1 ? monthNames[day.month] : undefined,
-			highlighted: isHighlightedWeekDay(day, highlightWeekends),
+			highlighted: isHighlightedWeekDay(day, highlightWeekendDays),
 			hours: shared || !day.inYear ? undefined : hours,
 			stacked,
 		}
@@ -157,17 +159,17 @@ export const WeekPage = memo(function WeekPage({
 	twoPages,
 	direction,
 	locale,
-	highlightWeekends,
-	showWeekNumbers,
+	highlightWeekendDays,
+	showHeaderWeek,
 	setup,
 }: WeekPageProps) {
 	const stacked = stacksDays(direction, setup.orientation, twoPages)
 	const days = cells.flat()
-	const gridProps = { weekdays, weekStart, monthNames, hours, highlightWeekends, stacked }
+	const gridProps = { weekdays, weekStart, monthNames, hours, highlightWeekendDays, stacked }
 	const header = (
 		<CalendarHeader
 			heading={dateRangeName(locale, days[0], days.at(-1)!)}
-			subheading={showWeekNumbers ? PRINT_MESSAGES[locale].week(weekNumber(days)) : ''}
+			subheading={showHeaderWeek ? PRINT_MESSAGES[locale].week(weekNumber(days)) : ''}
 			size="compact"
 			align={twoPages ? 'start' : 'center'}
 		/>

@@ -5,11 +5,13 @@ import {
 	type WeekPageLines,
 	type WeekPerPageConfig,
 } from '../../../config/layouts/weekPerPage'
+import type { WeekdayFormat } from '../../../core/locale'
 import { WEEKEND_DISPLAYS, type WeekendDisplay } from '../../../core/weekend'
 import { DayPageIcon } from '../../components/icons'
 import { CheckboxField } from '../../fields/CheckboxField'
 import { optionsFrom } from '../../fields/options'
 import { RadioField } from '../../fields/RadioField'
+import { WEEKDAY_FORMAT_OPTIONS } from '../../sidebar/fieldOptions'
 import { ScheduleFields } from '../../sidebar/ScheduleFields'
 import { type ConfigSectionProps, Section } from '../../sidebar/Section'
 
@@ -30,8 +32,23 @@ const WEEK_PAGE_LINES_OPTIONS = optionsFrom(WEEK_PAGE_LINES, {
 	hours: 'Hourly schedule',
 })
 
-/** How a week's page (or two) is divided between its days, and what fills each day's cell. */
+/**
+ * How a week's page (or two) is headed and divided between its days, how each day is labeled,
+ * and what fills its cell.
+ */
 export function WeekPageSection({ config, onUpdate }: ConfigSectionProps<WeekPerPageConfig>) {
+	function handleShowHeaderWeekChange(showHeaderWeek: boolean) {
+		onUpdate({ showHeaderWeek })
+	}
+
+	function handleWeekdayFormatChange(weekdayFormat: WeekdayFormat) {
+		onUpdate({ weekdayFormat })
+	}
+
+	function handleHighlightWeekendDaysChange(highlightWeekendDays: boolean) {
+		onUpdate({ highlightWeekendDays })
+	}
+
 	function handleWeekendDisplayChange(weekendDisplay: WeekendDisplay) {
 		onUpdate({ weekendDisplay })
 	}
@@ -50,6 +67,22 @@ export function WeekPageSection({ config, onUpdate }: ConfigSectionProps<WeekPer
 
 	return (
 		<Section title="Week page" icon={<DayPageIcon />}>
+			<CheckboxField
+				label="Week number in header"
+				checked={config.showHeaderWeek}
+				onChange={handleShowHeaderWeekChange}
+			/>
+			<RadioField
+				label="Weekday names"
+				value={config.weekdayFormat}
+				options={WEEKDAY_FORMAT_OPTIONS}
+				onChange={handleWeekdayFormatChange}
+			/>
+			<CheckboxField
+				label="Highlight weekends"
+				checked={config.highlightWeekendDays}
+				onChange={handleHighlightWeekendDaysChange}
+			/>
 			<CheckboxField
 				label="Two pages per week"
 				checked={config.twoPagesPerWeek}
