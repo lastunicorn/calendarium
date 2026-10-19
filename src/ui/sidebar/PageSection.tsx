@@ -5,7 +5,12 @@ import { optionsFrom } from '../fields/options'
 import { SelectField } from '../fields/SelectField'
 import { type ConfigSectionProps, Section } from './Section'
 
-const PAPER_SIZE_OPTIONS = optionsFrom(PAPER_SIZES, { a4: 'A4', a3: 'A3', letter: 'Letter' })
+const PAPER_SIZE_OPTIONS = optionsFrom(PAPER_SIZES, {
+	a4: 'A4',
+	a5: 'A5',
+	a3: 'A3',
+	letter: 'Letter',
+})
 
 const ORIENTATION_OPTIONS = optionsFrom(ORIENTATIONS, {
 	portrait: 'Portrait',

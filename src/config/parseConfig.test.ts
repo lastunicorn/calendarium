@@ -64,7 +64,7 @@ describe('parseConfig', () => {
 			weekdayFormat: 'long',
 			highlightWeekends: true,
 			showWeekNumbers: 'yes',
-			page: { paperSize: 'a5', orientation: 'up', margins: 'wide' },
+			page: { paperSize: 'b5', orientation: 'up', margins: 'wide' },
 		}
 		const config = parseConfig({
 			version: CONFIG_VERSION,

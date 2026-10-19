@@ -9,6 +9,7 @@ describe('pageDimensions', () => {
 
 	it('swaps width and height for landscape', () => {
 		expect(pageDimensions('a3', 'landscape')).toEqual({ width: 420, height: 297 })
+		expect(pageDimensions('a5', 'landscape')).toEqual({ width: 210, height: 148 })
 	})
 
 	it('lists every paper size taller than wide', () => {
