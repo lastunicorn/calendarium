@@ -44,7 +44,7 @@ function handlePrintClick() {
 	window.print()
 }
 
-/** Print, and export/import/reset the current layout's options. */
+/** Export/import/reset the current layout's options, and print. */
 export function Toolbar({ config, onReset, onImport }: ToolbarProps) {
 	const { layout } = config
 	const options = config.layouts[layout]
@@ -93,7 +93,6 @@ export function Toolbar({ config, onReset, onImport }: ToolbarProps) {
 	return (
 		<>
 			<div className={styles.toolbar} role="toolbar" aria-label="Calendar actions">
-				<IconButton label="Print" icon={<PrintIcon />} onClick={handlePrintClick} />
 				<IconButton
 					label="Export settings to a file"
 					icon={<ExportIcon />}
@@ -108,6 +107,16 @@ export function Toolbar({ config, onReset, onImport }: ToolbarProps) {
 					label="Reset layout settings"
 					icon={<ResetIcon />}
 					onClick={handleResetClick}
+				/>
+				<div
+					className={styles.separator}
+					role="separator"
+					aria-orientation="vertical"
+				/>
+				<IconButton
+					label="Print"
+					icon={<PrintIcon />}
+					onClick={handlePrintClick}
 				/>
 				<input
 					ref={fileInput}
