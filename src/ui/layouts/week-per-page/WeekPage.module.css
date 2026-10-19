@@ -4,28 +4,42 @@
 	flex-direction: column;
 }
 
-/* The heading beside the mini month, which keeps a fixed box (a grid, so the month stretches to it). */
+/*
+ * The heading beside the mini month, in one row as tall as the taller of them. The mini month
+ * keeps a fixed box (a grid, so the month stretches to it).
+ */
 .top {
-	display: flex;
-	gap: 6mm;
-	align-items: flex-start;
+	display: grid;
+	grid-template-columns: 1fr auto;
+	column-gap: 6mm;
+	align-items: start;
 	margin-bottom: 3mm;
 }
 
 .heading {
-	flex: 1;
+	grid-row: 1;
+	grid-column: 1;
 	min-width: 0;
 }
 
+/*
+ * On a week's two pages, where only one of the two shows, the heading takes the whole row,
+ * under the mini month's box, so it wraps only where the page is too narrow for it.
+ */
+.heading.wide {
+	grid-column: 1 / -1;
+}
+
 .miniMonth {
+	grid-row: 1;
+	grid-column: 2;
 	display: grid;
-	flex-shrink: 0;
 	width: 44mm;
 	height: 32mm;
 }
 
-/* Keeps the heading's space on a week's second page, so its cells line up with the first page's. */
-.headerSpace {
+/* A header part one of a week's two pages leaves out, keeping its space so their cells line up. */
+.hidden {
 	visibility: hidden;
 }
 

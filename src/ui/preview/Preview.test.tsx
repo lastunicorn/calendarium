@@ -72,6 +72,21 @@ describe('Preview', () => {
 		expect(pages[1].querySelector('h1')?.closest('[aria-hidden]')).not.toBeNull()
 	})
 
+	it('draws the mini month on the second of a week’s two pages, its space kept on the first', () => {
+		const config = configFor('week-per-page', 2025)
+		const week = config.layouts['week-per-page']
+		Object.assign(week, { twoPagesPerWeek: true, miniMonth: { ...week.miniMonth, show: true } })
+		const { container } = render(<Preview config={config} onResetLayout={noop} />)
+		const [first, second] = container.querySelectorAll('section')
+		// The week of 30 December 2024 is mostly in January.
+		const miniMonth = (page: Element) =>
+			[...page.querySelectorAll('h2')].find((name) => name.textContent === 'January')
+		expect(miniMonth(first)?.closest('[aria-hidden]')).not.toBeNull()
+		expect(miniMonth(second)?.closest('[aria-hidden]')).toBeNull()
+		expect(first.querySelector('h1')?.closest('[aria-hidden]')).toBeNull()
+		expect(second.querySelector('h1')?.closest('[aria-hidden]')).not.toBeNull()
+	})
+
 	it('draws an hourly schedule in each day of the year, except in a shared weekend cell', () => {
 		const config = configFor('week-per-page', 2025)
 		Object.assign(config.layouts['week-per-page'], {

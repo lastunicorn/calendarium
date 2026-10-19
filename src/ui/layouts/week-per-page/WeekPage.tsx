@@ -32,7 +32,7 @@ interface WeekPageProps {
 	hours?: string[]
 	/**
 	 * Whether the week spreads over two pages (`splitWeekCells`): the heading, set to the left,
-	 * on the first only, its space left empty on the second.
+	 * on the first only, and the mini month on the second only, each leaving the other's space.
 	 */
 	twoPages: boolean
 	/** Whether the days are columns or rows, with the orientation and `twoPages` (`stacksDays`). */
@@ -190,31 +190,60 @@ export const WeekPage = memo(function WeekPage({
 			align={twoPages || miniMonth ? 'start' : 'center'}
 		/>
 	)
-	// With the mini month, the heading is set to its left, as on a day page.
-	const header = miniMonth ? (
-		<div className={styles.top}>
-			<div className={styles.heading}>{heading}</div>
-			<div className={styles.miniMonth}>
-				<MiniMonth
-					month={miniMonth}
-					name={monthNames[miniMonth.month]}
-					weekdays={miniWeekdays}
-					highlightWeekends={miniMonthHighlight}
-					showWeekNumbers={miniMonthWeekNumbers}
-					markedWeek={days[0].key}
-					size="small"
-				/>
+	/**
+	 * The header row showing `part`: a single page shows both, a week's first page the heading and
+	 * its second the mini month. The part left out keeps its space, hidden, so both pages' cells
+	 * start at the same height. With the mini month, the heading is set to its left, as on a day page;
+	 * on two pages, where they never show together, the heading may run under the mini month's box.
+	 */
+	function header(part: 'both' | 'heading' | 'miniMonth') {
+		const hideHeading = part === 'miniMonth'
+		const hideMiniMonth = part === 'heading'
+		if (!miniMonth) {
+			return (
+				<div
+					className={hideHeading ? styles.hidden : undefined}
+					aria-hidden={hideHeading || undefined}
+				>
+					{heading}
+				</div>
+			)
+		}
+		return (
+			<div className={styles.top}>
+				<div
+					className={[
+						styles.heading,
+						part === 'both' ? '' : styles.wide,
+						hideHeading ? styles.hidden : '',
+					].join(' ')}
+					aria-hidden={hideHeading || undefined}
+				>
+					{heading}
+				</div>
+				<div
+					className={`${styles.miniMonth} ${hideMiniMonth ? styles.hidden : ''}`}
+					aria-hidden={hideMiniMonth || undefined}
+				>
+					<MiniMonth
+						month={miniMonth}
+						name={monthNames[miniMonth.month]}
+						weekdays={miniWeekdays}
+						highlightWeekends={miniMonthHighlight}
+						showWeekNumbers={miniMonthWeekNumbers}
+						markedWeek={days[0].key}
+						size="small"
+					/>
+				</div>
 			</div>
-		</div>
-	) : (
-		heading
-	)
+		)
+	}
 
 	if (!twoPages) {
 		return (
 			<Page setup={setup}>
 				<div className={styles.layout}>
-					{header}
+					{header('both')}
 					<WeekGrid cells={cells} {...gridProps} />
 				</div>
 			</Page>
@@ -225,16 +254,13 @@ export const WeekPage = memo(function WeekPage({
 		<>
 			<Page setup={setup}>
 				<div className={styles.layout}>
-					{header}
+					{header('heading')}
 					<WeekGrid cells={firstCells} {...gridProps} />
 				</div>
 			</Page>
 			<Page setup={setup}>
 				<div className={styles.layout}>
-					{/* An invisible copy of the heading, so both pages' cells start at the same height. */}
-					<div className={styles.headerSpace} aria-hidden="true">
-						{header}
-					</div>
+					{header('miniMonth')}
 					<WeekGrid cells={secondCells} {...gridProps} />
 				</div>
 			</Page>

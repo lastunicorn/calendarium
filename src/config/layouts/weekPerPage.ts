@@ -46,7 +46,7 @@ export interface WeekPerPageConfig extends CommonConfig, HourSchedule {
 	weekPageLines: WeekPageLines
 	/**
 	 * Whether each week takes two pages: its first three days on the first, under a heading set
-	 * to the left, and the rest on the second, which leaves the heading's space empty.
+	 * to the left, and the rest on the second, under the mini month (if shown) in the top right.
 	 */
 	twoPagesPerWeek: boolean
 	/** Whether the days are columns or rows (`stacksDays`). */
