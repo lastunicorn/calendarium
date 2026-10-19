@@ -47,7 +47,7 @@ describe('parseConfig', () => {
 				'week-per-page': {
 					...common,
 					year: 2033,
-					weekendDisplay: 'collapsed',
+					weekendDisplay: 'reduced',
 					weekPageLines: 'hours',
 					hourFormat: '12h',
 					firstHour: 8,
@@ -88,7 +88,7 @@ describe('parseConfig', () => {
 				'month-per-page': invalidCommon,
 				'week-per-page': {
 					...invalidCommon,
-					weekendDisplay: 'hidden',
+					weekendDisplay: 'off',
 					weekPageLines: 'ruled',
 					hourFormat: 12,
 					firstHour: -1,

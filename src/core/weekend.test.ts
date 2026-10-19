@@ -59,7 +59,7 @@ describe('isHighlightedColumn', () => {
 
 describe('weekCells', () => {
 	/** Each cell as the weekdays it holds, 0 = Sunday. */
-	function cellWeekdays(weekStart: 0 | 1 | 6, display: 'full' | 'collapsed' | 'off') {
+	function cellWeekdays(weekStart: 0 | 1 | 6, display: 'full' | 'reduced' | 'hidden') {
 		return weekCells(weeksOfYear(2026, weekStart)[1], display).map((cell) =>
 			cell.map((day) => day.weekday),
 		)
@@ -69,17 +69,17 @@ describe('weekCells', () => {
 		expect(cellWeekdays(1, 'full')).toEqual([[1], [2], [3], [4], [5], [6], [0]])
 	})
 
-	it('puts Saturday and Sunday in one cell when collapsed', () => {
-		expect(cellWeekdays(1, 'collapsed')).toEqual([[1], [2], [3], [4], [5], [6, 0]])
-		expect(cellWeekdays(6, 'collapsed')).toEqual([[6, 0], [1], [2], [3], [4], [5]])
+	it('puts Saturday and Sunday in one cell when reduced', () => {
+		expect(cellWeekdays(1, 'reduced')).toEqual([[1], [2], [3], [4], [5], [6, 0]])
+		expect(cellWeekdays(6, 'reduced')).toEqual([[6, 0], [1], [2], [3], [4], [5]])
 	})
 
 	it('falls back to full when the week starts on Sunday', () => {
-		expect(cellWeekdays(0, 'collapsed')).toEqual(cellWeekdays(0, 'full'))
+		expect(cellWeekdays(0, 'reduced')).toEqual(cellWeekdays(0, 'full'))
 	})
 
-	it('leaves the weekend out when off', () => {
-		expect(cellWeekdays(1, 'off')).toEqual([[1], [2], [3], [4], [5]])
-		expect(cellWeekdays(0, 'off')).toEqual([[1], [2], [3], [4], [5]])
+	it('leaves the weekend out when hidden', () => {
+		expect(cellWeekdays(1, 'hidden')).toEqual([[1], [2], [3], [4], [5]])
+		expect(cellWeekdays(0, 'hidden')).toEqual([[1], [2], [3], [4], [5]])
 	})
 })

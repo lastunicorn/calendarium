@@ -20,15 +20,16 @@ export interface WeekPerPageConfig extends CommonConfig, HourSchedule {
 }
 
 export const WEEK_PER_PAGE_SPEC: LayoutSpec<WeekPerPageConfig> = {
-	// Seven columns side by side fit landscape; week numbers show as "Week N" in the heading.
+	// Columns side by side fit landscape; week numbers show as "Week N" in the heading. The weekend
+	// shares a cell, leaving the weekdays room for an hourly schedule.
 	defaults: () => {
 		const common = commonDefaults()
 		return {
 			...common,
 			weekdayFormat: 'short',
 			showWeekNumbers: true,
-			weekendDisplay: 'full',
-			weekPageLines: 'none',
+			weekendDisplay: 'reduced',
+			weekPageLines: 'hours',
 			...scheduleDefaults(),
 			page: { ...common.page, orientation: 'landscape', margins: margins(10) },
 		}

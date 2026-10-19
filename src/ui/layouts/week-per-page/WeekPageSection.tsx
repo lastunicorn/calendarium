@@ -12,8 +12,8 @@ import { type ConfigSectionProps, Section } from '../../sidebar/Section'
 
 const WEEKEND_DISPLAY_OPTIONS = optionsFrom(WEEKEND_DISPLAYS, {
 	full: 'Full',
-	collapsed: 'Reduced (One shared cell)',
-	off: 'Hidden',
+	reduced: 'Reduced (One shared cell)',
+	hidden: 'Hidden',
 })
 
 const WEEK_PAGE_LINES_OPTIONS = optionsFrom(WEEK_PAGE_LINES, {
@@ -42,7 +42,7 @@ export function WeekPageSection({ config, onUpdate }: ConfigSectionProps<WeekPer
 			<RadioField
 				label="Hours"
 				description={
-					config.weekPageLines === 'hours' && config.weekendDisplay === 'collapsed'
+					config.weekPageLines === 'hours' && config.weekendDisplay === 'reduced'
 						? 'Not drawn for Saturday and Sunday while they share a cell: there is no room.'
 						: undefined
 				}

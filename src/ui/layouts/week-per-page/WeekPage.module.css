@@ -13,7 +13,7 @@
 	border-left: 0.2mm solid var(--color-cell-border);
 }
 
-/* As many cells as the page has: 7, 6 with the weekend collapsed, 5 without it. */
+/* As many cells as the page has: 7, 6 with the weekend reduced, 5 without it. */
 .columns {
 	grid-auto-flow: column;
 	grid-auto-columns: 1fr;

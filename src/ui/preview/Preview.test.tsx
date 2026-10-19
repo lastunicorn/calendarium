@@ -47,7 +47,7 @@ describe('Preview', () => {
 		// 2022 starts on a Saturday: its first Monday week holds only January 1 and 2.
 		const config = configFor('week-per-page', 2022)
 		expect(pageCount('week-per-page', 2022)).toBe(53)
-		config.layouts['week-per-page'].weekendDisplay = 'off'
+		config.layouts['week-per-page'].weekendDisplay = 'hidden'
 		const { container } = render(<Preview config={config} onResetLayout={noop} />)
 		expect(container.querySelectorAll('section')).toHaveLength(52)
 	})
@@ -55,6 +55,7 @@ describe('Preview', () => {
 	it('draws an hourly schedule in each day of the year, except in a shared weekend cell', () => {
 		const config = configFor('week-per-page', 2025)
 		Object.assign(config.layouts['week-per-page'], {
+			weekendDisplay: 'full',
 			weekPageLines: 'hours',
 			hourFormat: '24h',
 			firstHour: 7,
@@ -66,10 +67,10 @@ describe('Preview', () => {
 		expect(hourLabels()).toHaveLength(365)
 		cleanup()
 		// Its 104 weekend days share cells.
-		config.layouts['week-per-page'].weekendDisplay = 'collapsed'
+		config.layouts['week-per-page'].weekendDisplay = 'reduced'
 		expect(hourLabels()).toHaveLength(261)
 		cleanup()
-		// A week starting on Sunday can't collapse its weekend, so its cells keep the schedule.
+		// A week starting on Sunday can't reduce its weekend, so its cells keep the schedule.
 		config.layouts['week-per-page'].weekStart = 0
 		expect(hourLabels()).toHaveLength(365)
 	})
