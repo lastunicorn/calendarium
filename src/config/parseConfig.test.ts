@@ -44,7 +44,7 @@ describe('parseConfig', () => {
 			layouts: {
 				'year-per-page': { ...common, title: 'Family', subtitle: 'Birthdays' },
 				'month-per-page': { ...common, year: 2031 },
-				'week-per-page': { ...common, year: 2033 },
+				'week-per-page': { ...common, year: 2033, weekendDisplay: 'collapsed' },
 				'day-per-page': {
 					...common,
 					year: 2032,
@@ -78,7 +78,7 @@ describe('parseConfig', () => {
 			layouts: {
 				'year-per-page': { ...invalidCommon, title: 7, subtitle: null },
 				'month-per-page': invalidCommon,
-				'week-per-page': invalidCommon,
+				'week-per-page': { ...invalidCommon, weekendDisplay: 'hidden' },
 				'day-per-page': {
 					...invalidCommon,
 					dayPageTitle: 'month',

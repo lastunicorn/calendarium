@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { buildMonth, type CalendarDay, weeksOfYear } from './calendar'
-import { isHighlightedColumn, isHighlightedDay, isHighlightedWeekDay } from './weekend'
+import { isHighlightedColumn, isHighlightedDay, isHighlightedWeekDay, weekCells } from './weekend'
 
 // January 2026 starting on Monday: the first row is Dec 29 – Jan 4, so it holds
 // in-month weekend days (Jan 3, 4); the last row is Feb 2 – 8, all outside the month.
@@ -54,5 +54,32 @@ describe('isHighlightedColumn', () => {
 		expect(isHighlightedColumn(saturday, 'days')).toBe(true)
 		expect(isHighlightedColumn(saturday, 'columns')).toBe(true)
 		expect(isHighlightedColumn(weekday, 'columns')).toBe(false)
+	})
+})
+
+describe('weekCells', () => {
+	/** Each cell as the weekdays it holds, 0 = Sunday. */
+	function cellWeekdays(weekStart: 0 | 1 | 6, display: 'full' | 'collapsed' | 'off') {
+		return weekCells(weeksOfYear(2026, weekStart)[1], display).map((cell) =>
+			cell.map((day) => day.weekday),
+		)
+	}
+
+	it('gives every day its own cell when full', () => {
+		expect(cellWeekdays(1, 'full')).toEqual([[1], [2], [3], [4], [5], [6], [0]])
+	})
+
+	it('puts Saturday and Sunday in one cell when collapsed', () => {
+		expect(cellWeekdays(1, 'collapsed')).toEqual([[1], [2], [3], [4], [5], [6, 0]])
+		expect(cellWeekdays(6, 'collapsed')).toEqual([[6, 0], [1], [2], [3], [4], [5]])
+	})
+
+	it('falls back to full when the week starts on Sunday', () => {
+		expect(cellWeekdays(0, 'collapsed')).toEqual(cellWeekdays(0, 'full'))
+	})
+
+	it('leaves the weekend out when off', () => {
+		expect(cellWeekdays(1, 'off')).toEqual([[1], [2], [3], [4], [5]])
+		expect(cellWeekdays(0, 'off')).toEqual([[1], [2], [3], [4], [5]])
 	})
 })

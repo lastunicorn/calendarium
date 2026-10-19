@@ -13,12 +13,30 @@
 	border-left: 0.2mm solid var(--color-cell-border);
 }
 
+/* As many cells as the page has: 7, 6 with the weekend collapsed, 5 without it. */
 .columns {
-	grid-template-columns: repeat(7, 1fr);
+	grid-auto-flow: column;
+	grid-auto-columns: 1fr;
 }
 
 .rows {
-	grid-template-rows: repeat(7, 1fr);
+	grid-auto-rows: 1fr;
+}
+
+/* Two days sharing a cell, each drawing its own borders: one above the other in a column, side by
+   side in a row. */
+.pair {
+	display: grid;
+	min-width: 0;
+	min-height: 0;
+}
+
+.columns .pair {
+	grid-template-rows: 1fr 1fr;
+}
+
+.rows .pair {
+	grid-template-columns: 1fr 1fr;
 }
 
 /* The day's label in the top-left corner; the rest of the cell is space to write in. */

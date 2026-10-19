@@ -43,6 +43,15 @@ describe('Preview', () => {
 		expect(container.querySelectorAll('section')).toHaveLength(54)
 	})
 
+	it('skips a week whose only days of the year are a hidden weekend', () => {
+		// 2022 starts on a Saturday: its first Monday week holds only January 1 and 2.
+		const config = configFor('week-per-page', 2022)
+		expect(pageCount('week-per-page', 2022)).toBe(53)
+		config.layouts['week-per-page'].weekendDisplay = 'off'
+		const { container } = render(<Preview config={config} onResetLayout={noop} />)
+		expect(container.querySelectorAll('section')).toHaveLength(52)
+	})
+
 	it('draws a page per day, with February 29 in a leap year', () => {
 		expect(pageCount('day-per-page', 2025)).toBe(365)
 		expect(pageCount('day-per-page', 2024)).toBe(366)

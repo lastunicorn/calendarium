@@ -98,7 +98,7 @@ export function AppearanceSection({ config, onUpdate }: ConfigSectionProps<Commo
 				onChange={handleHighlightWeekendsChange}
 			/>
 			<CheckboxField
-				label="Week numbers"
+				label="Show week numbers"
 				checked={config.showWeekNumbers}
 				onChange={handleShowWeekNumbersChange}
 			/>

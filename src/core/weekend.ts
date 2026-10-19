@@ -24,3 +24,27 @@ function isHighlighted(isWeekend: boolean, inPeriod: boolean, mode: WeekendHighl
 export function isHighlightedColumn(day: CalendarDay, mode: WeekendHighlight): boolean {
 	return mode !== 'off' && day.isWeekend
 }
+
+/**
+ * How a week page draws Saturday and Sunday: `full` a cell each like the other days, `collapsed`
+ * one cell split between them, `off` not at all.
+ */
+export const WEEKEND_DISPLAYS = ['full', 'collapsed', 'off'] as const
+export type WeekendDisplay = (typeof WEEKEND_DISPLAYS)[number]
+
+/**
+ * The cells of a week page, in order, each holding the days drawn in it: one day, or Saturday then
+ * Sunday when `collapsed`. Collapsing needs Sunday right after Saturday, so a week starting on
+ * Sunday falls back to `full`.
+ */
+export function weekCells(week: WeekDay[], display: WeekendDisplay): WeekDay[][] {
+	if (display === 'off') return week.filter((day) => !day.isWeekend).map((day) => [day])
+	const saturday = week.findIndex((day) => day.weekday === 6)
+	const collapse = display === 'collapsed' && week[saturday + 1]?.weekday === 0
+	const cells: WeekDay[][] = []
+	week.forEach((day, index) => {
+		if (collapse && index === saturday + 1) cells.at(-1)!.push(day)
+		else cells.push([day])
+	})
+	return cells
+}

@@ -39,8 +39,14 @@ describe('ConfigForm', () => {
 		])
 	})
 
-	it('shows the shared sections only on the week layout', () => {
-		expect(sectionTitles('week-per-page')).toEqual(['Layout', 'Calendar', 'Appearance', 'Page'])
+	it('shows the week page options only on the week layout', () => {
+		expect(sectionTitles('week-per-page')).toEqual([
+			'Layout',
+			'Calendar',
+			'Appearance',
+			'Week page',
+			'Page',
+		])
 	})
 
 	it('shows the day page options only on the day layout', () => {
