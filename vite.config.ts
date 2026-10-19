@@ -5,6 +5,8 @@ import { defineConfig } from 'vite'
 // https://vite.dev/config/
 export default defineConfig({
 	plugins: [react()],
+	// Relative asset URLs, so the build works under any path (e.g. GitHub Pages' /calendarium/).
+	base: './',
 	// Lets tooling (e.g. the Claude preview) pick the port; Vite's default is used otherwise.
 	server: { port: Number(process.env.PORT) || undefined },
 	test: {

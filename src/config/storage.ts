@@ -1,7 +1,7 @@
 import { type AppConfig, defaultAppConfig } from './CalendarConfig'
 import { parseConfig, toStoredConfig } from './parseConfig'
 
-const STORAGE_KEY = 'calendar-config'
+const STORAGE_KEY = 'calendarium-config'
 
 export function loadConfig(): AppConfig {
 	try {
