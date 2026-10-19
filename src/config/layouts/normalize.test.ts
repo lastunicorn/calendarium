@@ -12,6 +12,14 @@ describe('normalizeLayout', () => {
 		})
 	})
 
+	it('puts a reversed week schedule in order', () => {
+		const config = { ...defaultLayoutConfig('week-per-page'), firstHour: 18, lastHour: 9 }
+		expect(normalizeLayout('week-per-page', config)).toMatchObject({
+			firstHour: 9,
+			lastHour: 18,
+		})
+	})
+
 	it('returns a config that already follows the rules as is', () => {
 		const day = { ...defaultLayoutConfig('day-per-page'), firstHour: 9, lastHour: 9 }
 		expect(normalizeLayout('day-per-page', day)).toBe(day)

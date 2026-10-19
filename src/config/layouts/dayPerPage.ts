@@ -1,6 +1,6 @@
-import { HOUR_FORMATS, type HourFormat } from '../../core/locale'
 import { type CommonConfig, commonDefaults } from '../CalendarConfig'
 import { COMMON_VALIDATORS, isBoolean, oneOf } from '../validators'
+import { type HourSchedule, orderHours, SCHEDULE_VALIDATORS, scheduleDefaults } from './hours'
 import type { LayoutSpec } from './LayoutSpec'
 
 /** What fills a `day-per-page` page under its header: an hourly schedule or plain ruled lines. */
@@ -11,24 +11,11 @@ export type DayPageLines = (typeof DAY_PAGE_LINES)[number]
 export const DAY_PAGE_TITLES = ['weekday', 'date'] as const
 export type DayPageTitle = (typeof DAY_PAGE_TITLES)[number]
 
-export const MIN_HOUR = 0
-export const MAX_HOUR = 23
-
-/** A whole hour of the day, 0–23. */
-export function isHour(value: unknown): value is number {
-	return Number.isInteger(value) && (value as number) >= MIN_HOUR && (value as number) <= MAX_HOUR
-}
-
-export interface DayPerPageConfig extends CommonConfig {
+export interface DayPerPageConfig extends CommonConfig, HourSchedule {
 	/** Whether the heading is the weekday ("Thursday") or the date ("1 January 2026"). */
 	dayPageTitle: DayPageTitle
-	/** What fills the page under its header. */
+	/** What fills the page under its header; the schedule's hours come from `HourSchedule`. */
 	dayPageLines: DayPageLines
-	/** Clock of the hour labels on the schedule. */
-	hourFormat: HourFormat
-	/** First and last rows of the schedule, as hours 0–23; both rows are shown. */
-	firstHour: number
-	lastHour: number
 	/** Whether the day's month is drawn small in the top right corner, with the day marked. */
 	showMiniMonth: boolean
 	/** Whether the header's details line shows the ISO week ("Week 1"). */
@@ -44,9 +31,7 @@ export const DAY_PER_PAGE_SPEC: LayoutSpec<DayPerPageConfig> = {
 		showWeekNumbers: true,
 		dayPageTitle: 'weekday',
 		dayPageLines: 'hours',
-		hourFormat: 'auto',
-		firstHour: 7,
-		lastHour: 21,
+		...scheduleDefaults(),
 		showMiniMonth: true,
 		showHeaderWeek: true,
 		showHeaderDayOfYear: true,
@@ -55,18 +40,10 @@ export const DAY_PER_PAGE_SPEC: LayoutSpec<DayPerPageConfig> = {
 		...COMMON_VALIDATORS,
 		dayPageTitle: oneOf(DAY_PAGE_TITLES),
 		dayPageLines: oneOf(DAY_PAGE_LINES),
-		hourFormat: oneOf(HOUR_FORMATS),
-		firstHour: isHour,
-		lastHour: isHour,
+		...SCHEDULE_VALIDATORS,
 		showMiniMonth: isBoolean,
 		showHeaderWeek: isBoolean,
 		showHeaderDayOfYear: isBoolean,
 	},
-	// The schedule runs from `firstHour` to `lastHour`: a reversed range is put in order.
-	normalize: (config) => {
-		const { firstHour, lastHour } = config
-		return firstHour <= lastHour
-			? config
-			: { ...config, firstHour: lastHour, lastHour: firstHour }
-	},
+	normalize: orderHours,
 }

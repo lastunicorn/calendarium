@@ -39,11 +39,13 @@
 	grid-template-columns: 1fr 1fr;
 }
 
-/* The day's label in the top-left corner; the rest of the cell is space to write in. */
+/* The day's label in the top-left corner; the rest of the cell is space to write in, or the
+   schedule, which reaches the cell's edges. */
 .day {
+	display: flex;
+	flex-direction: column;
 	min-width: 0;
 	min-height: 0;
-	padding: 1.5mm 2mm;
 	overflow: hidden;
 	border-right: 0.2mm solid var(--color-cell-border);
 	border-bottom: 0.2mm solid var(--color-cell-border);
@@ -51,6 +53,7 @@
 
 .label {
 	display: flex;
+	padding: 1.5mm 2mm;
 	flex-wrap: wrap;
 	align-items: baseline;
 	gap: 0 2mm;
@@ -86,6 +89,66 @@
 
 .otherYear .number {
 	font-weight: 400;
+}
+
+/*
+ * The hourly schedule: one row per hour down a side-by-side cell, one column per hour across a
+ * stacked one, sharing the space under the label (the count is set inline). Each hour draws the line
+ * before it; the cell's own borders close the last one.
+ */
+.schedule {
+	flex: 1;
+	display: grid;
+	min-width: 0;
+	min-height: 0;
+}
+
+.across {
+	border-top: 0.2mm solid var(--color-cell-border);
+}
+
+.hour {
+	position: relative;
+	min-width: 0;
+	min-height: 0;
+}
+
+.down .hour {
+	border-top: 0.2mm solid var(--color-cell-border);
+}
+
+.across .hour + .hour {
+	border-left: 0.2mm solid var(--color-cell-border);
+}
+
+/* The light half-hour line, clear of the label. */
+.hour::after {
+	content: '';
+	position: absolute;
+}
+
+.down .hour::after {
+	top: 50%;
+	right: 0;
+	left: 0;
+	border-top: 0.2mm solid var(--color-rule-light);
+}
+
+.across .hour::after {
+	top: 3.5mm;
+	bottom: 0;
+	left: 50%;
+	border-left: 0.2mm solid var(--color-rule-light);
+}
+
+.hourLabel {
+	display: block;
+	padding: 0.4mm 1mm;
+	overflow: hidden;
+	font-size: 6.5pt;
+	line-height: 1.1;
+	white-space: nowrap;
+	color: var(--color-text-muted);
 }
 
 @media print {

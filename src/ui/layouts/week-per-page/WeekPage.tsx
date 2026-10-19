@@ -18,6 +18,11 @@ interface WeekPageProps {
 	weekdays: string[]
 	weekStart: WeekStart
 	monthNames: string[]
+	/**
+	 * Labels of the hourly schedule drawn in each day's own cell, one row each; days sharing a cell
+	 * get none. None leaves every cell blank.
+	 */
+	hours?: string[]
 	/** Language of the date range and of the week line. */
 	locale: Locale
 	highlightWeekends: WeekendHighlight
@@ -31,10 +36,14 @@ interface WeekDayCellProps {
 	/** Shown next to the weekday when given. */
 	monthName?: string
 	highlighted: boolean
+	/** Labels of the cell's hourly schedule; none leaves the cell blank. */
+	hours?: string[]
+	/** Whether the schedule runs down the cell (side-by-side cells) or across it (stacked ones). */
+	stacked: boolean
 }
 
-/** A day's cell: its label in the top-left corner, the rest space to write in. */
-function WeekDayCell({ day, weekday, monthName, highlighted }: WeekDayCellProps) {
+/** A day's cell: its label in the top-left corner, the rest space to write in, maybe by the hour. */
+function WeekDayCell({ day, weekday, monthName, highlighted, hours, stacked }: WeekDayCellProps) {
 	return (
 		<div
 			className={[
@@ -48,20 +57,38 @@ function WeekDayCell({ day, weekday, monthName, highlighted }: WeekDayCellProps)
 				<span className={styles.weekday}>{weekday}</span>
 				{monthName && <span className={styles.month}>{monthName}</span>}
 			</div>
+			{hours && (
+				<div
+					className={`${styles.schedule} ${stacked ? styles.across : styles.down}`}
+					style={
+						stacked
+							? { gridTemplateColumns: `repeat(${hours.length}, 1fr)` }
+							: { gridTemplateRows: `repeat(${hours.length}, 1fr)` }
+					}
+				>
+					{hours.map((hour) => (
+						<div key={hour} className={styles.hour}>
+							<span className={styles.hourLabel}>{hour}</span>
+						</div>
+					))}
+				</div>
+			)}
 		</div>
 	)
 }
 
 /**
  * One week's sheet: a cell to write in for each day, side by side on landscape paper and stacked
- * on portrait; Saturday and Sunday may share a cell, split in half. Memoized because a year has 53 of them and most config changes leave each page's
- * props unchanged.
+ * on portrait; Saturday and Sunday may share a cell, split in half. Each unshared cell may hold an
+ * hourly schedule, running down side-by-side cells and across stacked ones. Memoized because a year has
+ * 53 of them and most config changes leave each page's props unchanged.
  */
 export const WeekPage = memo(function WeekPage({
 	cells,
 	weekdays,
 	weekStart,
 	monthNames,
+	hours,
 	locale,
 	highlightWeekends,
 	showWeekNumbers,
@@ -70,13 +97,16 @@ export const WeekPage = memo(function WeekPage({
 	const stacked = setup.orientation === 'portrait'
 	const days = cells.flat()
 
-	function cellProps(day: WeekDay): WeekDayCellProps {
+	/** `shared` for a day sharing its cell, which has no room for the schedule. */
+	function cellProps(day: WeekDay, shared: boolean): WeekDayCellProps {
 		return {
 			day,
 			weekday: weekdays[(day.weekday - weekStart + 7) % 7],
 			// The month is named where it changes, and on the page's first day for context.
 			monthName: day === days[0] || day.day === 1 ? monthNames[day.month] : undefined,
 			highlighted: isHighlightedWeekDay(day, highlightWeekends),
+			hours: shared ? undefined : hours,
+			stacked,
 		}
 	}
 
@@ -93,11 +123,11 @@ export const WeekPage = memo(function WeekPage({
 				<div className={`${styles.week} ${stacked ? styles.rows : styles.columns}`}>
 					{cells.map((cell) =>
 						cell.length === 1 ? (
-							<WeekDayCell key={cell[0].key} {...cellProps(cell[0])} />
+							<WeekDayCell key={cell[0].key} {...cellProps(cell[0], false)} />
 						) : (
 							<div key={cell[0].key} className={styles.pair}>
 								{cell.map((day) => (
-									<WeekDayCell key={day.key} {...cellProps(day)} />
+									<WeekDayCell key={day.key} {...cellProps(day, true)} />
 								))}
 							</div>
 						),

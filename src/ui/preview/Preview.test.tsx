@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react'
+import { cleanup, render } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import type { AppConfig, LayoutId } from '../../config/CalendarConfig'
 import { defaultAppConfig } from '../../config/layouts'
@@ -50,6 +50,26 @@ describe('Preview', () => {
 		config.layouts['week-per-page'].weekendDisplay = 'off'
 		const { container } = render(<Preview config={config} onResetLayout={noop} />)
 		expect(container.querySelectorAll('section')).toHaveLength(52)
+	})
+
+	it('draws an hourly schedule in each day of a week, except in a shared weekend cell', () => {
+		const config = configFor('week-per-page', 2025)
+		Object.assign(config.layouts['week-per-page'], {
+			weekPageLines: 'hours',
+			hourFormat: '24h',
+			firstHour: 7,
+			lastHour: 7,
+		})
+		const hourLabels = () =>
+			render(<Preview config={config} onResetLayout={noop} />).queryAllByText('07:00')
+		expect(hourLabels()).toHaveLength(53 * 7)
+		cleanup()
+		config.layouts['week-per-page'].weekendDisplay = 'collapsed'
+		expect(hourLabels()).toHaveLength(53 * 5)
+		cleanup()
+		// A week starting on Sunday can't collapse its weekend, so its cells keep the schedule.
+		config.layouts['week-per-page'].weekStart = 0
+		expect(hourLabels()).toHaveLength(53 * 7)
 	})
 
 	it('draws a page per day, with February 29 in a leap year', () => {

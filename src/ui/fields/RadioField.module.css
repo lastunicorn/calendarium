@@ -21,3 +21,10 @@
 	gap: 8px;
 	font-size: 0.875rem;
 }
+
+.description {
+	margin: 0;
+	font-size: 0.6875rem;
+	line-height: 1.4;
+	color: var(--color-text-faint);
+}

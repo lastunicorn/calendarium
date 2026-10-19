@@ -4,6 +4,8 @@ import type { Option } from './options'
 
 interface RadioFieldProps<T extends string | number> {
 	label: string
+	/** A short note shown under the options, in a smaller, dimmer font. */
+	description?: string
 	value: T
 	options: readonly Option<T>[]
 	onChange: (value: T) => void
@@ -12,6 +14,7 @@ interface RadioFieldProps<T extends string | number> {
 /** A group of radio buttons whose options carry typed values, like `SelectField` for short lists. */
 export function RadioField<T extends string | number>({
 	label,
+	description,
 	value,
 	options,
 	onChange,
@@ -38,6 +41,7 @@ export function RadioField<T extends string | number>({
 					{option.label}
 				</label>
 			))}
+			{description !== undefined && <p className={styles.description}>{description}</p>}
 		</fieldset>
 	)
 }
