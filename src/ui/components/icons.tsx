@@ -61,3 +61,70 @@ export function ResetIcon() {
 		</Icon>
 	)
 }
+
+/** Four tiles: the layout section. */
+export function LayoutIcon() {
+	return (
+		<Icon>
+			<rect x="3" y="3" width="7" height="7" rx="1" />
+			<rect x="14" y="3" width="7" height="7" rx="1" />
+			<rect x="3" y="14" width="7" height="7" rx="1" />
+			<rect x="14" y="14" width="7" height="7" rx="1" />
+		</Icon>
+	)
+}
+
+/** A calendar sheet with rings: the calendar section. */
+export function CalendarIcon() {
+	return (
+		<Icon>
+			<rect x="3" y="4" width="18" height="18" rx="2" />
+			<path d="M16 2v4" />
+			<path d="M8 2v4" />
+			<path d="M3 10h18" />
+		</Icon>
+	)
+}
+
+/** A capital T: the header text section. */
+export function HeaderIcon() {
+	return (
+		<Icon>
+			<path d="M4 7V4h16v3" />
+			<path d="M12 4v16" />
+			<path d="M9 20h6" />
+		</Icon>
+	)
+}
+
+/** A painter's palette: the appearance section. */
+export function AppearanceIcon() {
+	return (
+		<Icon>
+			<path d="M12 21a9 9 0 1 1 9-9c0 2.5-2 3.5-4 3.5h-1.5a1.5 1.5 0 0 0-1 2.6c.6.6.4 2.9-2.5 2.9z" />
+			<circle cx="7.5" cy="11" r="1" />
+			<circle cx="10.5" cy="7" r="1" />
+			<circle cx="15" cy="7.5" r="1" />
+		</Icon>
+	)
+}
+
+/** A sheet of paper with a folded corner: the page section. */
+export function PageIcon() {
+	return (
+		<Icon>
+			<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+			<path d="M14 2v6h6" />
+		</Icon>
+	)
+}
+
+/** A clock face: the day page section, with its hourly schedule. */
+export function DayPageIcon() {
+	return (
+		<Icon>
+			<circle cx="12" cy="12" r="9" />
+			<path d="M12 7v5l3 2" />
+		</Icon>
+	)
+}

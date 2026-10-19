@@ -1,4 +1,5 @@
 import type { YearPerPageConfig } from '../../../config/layouts/yearPerPage'
+import { HeaderIcon } from '../../components/icons'
 import { TextField } from '../../fields/TextField'
 import { type ConfigSectionProps, Section } from '../../sidebar/Section'
 
@@ -13,7 +14,7 @@ export function HeaderSection({ config, onUpdate }: ConfigSectionProps<YearPerPa
 	}
 
 	return (
-		<Section title="Header">
+		<Section title="Header" icon={<HeaderIcon />}>
 			<TextField
 				label="Title"
 				value={config.title}

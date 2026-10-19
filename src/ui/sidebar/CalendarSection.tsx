@@ -1,4 +1,5 @@
 import { type CommonConfig, isYear, MAX_YEAR, MIN_YEAR } from '../../config/CalendarConfig'
+import { CalendarIcon } from '../components/icons'
 import { NumberField } from '../fields/NumberField'
 import { type ConfigSectionProps, Section } from './Section'
 
@@ -11,7 +12,7 @@ export function CalendarSection({ config, onUpdate }: ConfigSectionProps<CommonC
 	}
 
 	return (
-		<Section title="Calendar">
+		<Section title="Calendar" icon={<CalendarIcon />}>
 			<NumberField
 				label="Year"
 				description={YEAR_DESCRIPTION}

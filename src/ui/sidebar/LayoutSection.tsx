@@ -1,4 +1,5 @@
 import { LAYOUT_IDS, type LayoutId } from '../../config/CalendarConfig'
+import { LayoutIcon } from '../components/icons'
 import { SelectField } from '../fields/SelectField'
 import { LAYOUT_VIEWS } from '../layouts/registry'
 import { Section } from './Section'
@@ -17,7 +18,7 @@ interface LayoutSectionProps {
 /** How the calendar is spread over pages; each layout keeps its own options. */
 export function LayoutSection({ layout, onSelect }: LayoutSectionProps) {
 	return (
-		<Section title="Layout">
+		<Section title="Layout" icon={<LayoutIcon />}>
 			<SelectField label="" value={layout} options={LAYOUT_OPTIONS} onChange={onSelect} />
 		</Section>
 	)

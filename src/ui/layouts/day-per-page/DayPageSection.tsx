@@ -7,6 +7,7 @@ import {
 	MIN_HOUR,
 } from '../../../config/layouts/dayPerPage'
 import { HOUR_FORMATS, type HourFormat } from '../../../core/locale'
+import { DayPageIcon } from '../../components/icons'
 import { NumberField } from '../../fields/NumberField'
 import { optionsFrom } from '../../fields/options'
 import { SelectField } from '../../fields/SelectField'
@@ -52,7 +53,7 @@ export function DayPageSection({ config, onUpdate }: ConfigSectionProps<DayPerPa
 	}
 
 	return (
-		<Section title="Day page">
+		<Section title="Day page" icon={<DayPageIcon />}>
 			<SelectField
 				label="Fill"
 				value={config.dayPageLines}

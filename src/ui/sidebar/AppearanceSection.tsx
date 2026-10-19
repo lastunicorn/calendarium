@@ -7,6 +7,7 @@ import {
 	type WeekStartSetting,
 } from '../../core/locale'
 import { WEEKEND_HIGHLIGHTS, type WeekendHighlight } from '../../core/weekend'
+import { AppearanceIcon } from '../components/icons'
 import { CheckboxField } from '../fields/CheckboxField'
 import { type Option, optionsFrom } from '../fields/options'
 import { RadioField } from '../fields/RadioField'
@@ -71,7 +72,7 @@ export function AppearanceSection({ config, onUpdate }: ConfigSectionProps<Commo
 	}
 
 	return (
-		<Section title="Appearance">
+		<Section title="Appearance" icon={<AppearanceIcon />}>
 			<SelectField
 				label="Language"
 				value={config.locale}

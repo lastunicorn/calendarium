@@ -7,14 +7,26 @@
 	border: none;
 }
 
+/* A band across the whole sidebar: the negative margins cancel the form's side padding. */
 .title {
-	margin-bottom: 8px;
-	padding: 0;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	width: calc(100% + 32px);
+	margin: 0 -16px 8px;
+	padding: 6px 16px;
+	background: var(--color-section-title-background);
 	font-size: 0.75rem;
 	font-weight: 700;
 	letter-spacing: 0.05em;
 	text-transform: uppercase;
 	color: var(--color-text-muted);
+}
+
+.title svg {
+	width: 14px;
+	height: 14px;
+	flex-shrink: 0;
 }
 
 /* Pulled up toward the title, which it belongs to more than to the fields below. */

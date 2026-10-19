@@ -1,7 +1,9 @@
 import type { CommonConfig, Margins } from '../../config/CalendarConfig'
 import { type Orientation, ORIENTATIONS, PAPER_SIZES, type PaperSize } from '../../core/paper'
+import { PageIcon } from '../components/icons'
 import { MarginsField } from '../fields/MarginsField'
 import { optionsFrom } from '../fields/options'
+import { RadioField } from '../fields/RadioField'
 import { SelectField } from '../fields/SelectField'
 import { type ConfigSectionProps, Section } from './Section'
 
@@ -34,14 +36,14 @@ export function PageSection({ config, onUpdate }: ConfigSectionProps<CommonConfi
 	}
 
 	return (
-		<Section title="Page">
+		<Section title="Page" icon={<PageIcon />}>
 			<SelectField
 				label="Paper size"
 				value={page.paperSize}
 				options={PAPER_SIZE_OPTIONS}
 				onChange={handlePaperSizeChange}
 			/>
-			<SelectField
+			<RadioField
 				label="Orientation"
 				value={page.orientation}
 				options={ORIENTATION_OPTIONS}
