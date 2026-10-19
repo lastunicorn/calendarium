@@ -26,8 +26,8 @@ interface DayPageProps {
 	day: CalendarDay
 	/** 365 or 366, for the "Day 42 / 365" line. */
 	daysInYear: number
-	/** The month `day` belongs to, drawn small with the day marked. */
-	month: CalendarMonth
+	/** The month `day` belongs to, drawn small with the day marked; none hides it. */
+	month?: CalendarMonth
 	monthName: string
 	/** Weekday labels, already ordered by week start. */
 	weekdays: string[]
@@ -81,16 +81,18 @@ export const DayPage = memo(function DayPage({
 						/>
 						<p className={styles.details}>{details}</p>
 					</div>
-					<div className={styles.miniMonth}>
-						<MiniMonth
-							month={month}
-							name={monthName}
-							weekdays={weekdays}
-							highlightWeekends={highlightWeekends}
-							showWeekNumbers={showWeekNumbers}
-							markedDay={day.day}
-						/>
-					</div>
+					{month && (
+						<div className={styles.miniMonth}>
+							<MiniMonth
+								month={month}
+								name={monthName}
+								weekdays={weekdays}
+								highlightWeekends={highlightWeekends}
+								showWeekNumbers={showWeekNumbers}
+								markedDay={day.day}
+							/>
+						</div>
+					)}
 				</div>
 				{lines === 'ruled' ? (
 					<div

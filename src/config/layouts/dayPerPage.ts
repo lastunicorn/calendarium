@@ -1,6 +1,6 @@
 import { HOUR_FORMATS, type HourFormat } from '../../core/locale'
 import { type CommonConfig, commonDefaults } from '../CalendarConfig'
-import { COMMON_VALIDATORS, oneOf } from '../validators'
+import { COMMON_VALIDATORS, isBoolean, oneOf } from '../validators'
 import type { LayoutSpec } from './LayoutSpec'
 
 /** What fills a `day-per-page` page under its header: an hourly schedule or plain ruled lines. */
@@ -23,6 +23,8 @@ export interface DayPerPageConfig extends CommonConfig {
 	/** First and last rows of the schedule, as hours 0–23; both rows are shown. */
 	firstHour: number
 	lastHour: number
+	/** Whether the day's month is drawn small in the top right corner, with the day marked. */
+	showMiniMonth: boolean
 }
 
 export const DAY_PER_PAGE_SPEC: LayoutSpec<DayPerPageConfig> = {
@@ -34,6 +36,7 @@ export const DAY_PER_PAGE_SPEC: LayoutSpec<DayPerPageConfig> = {
 		hourFormat: 'auto',
 		firstHour: 7,
 		lastHour: 21,
+		showMiniMonth: true,
 	}),
 	validators: {
 		...COMMON_VALIDATORS,
@@ -41,6 +44,7 @@ export const DAY_PER_PAGE_SPEC: LayoutSpec<DayPerPageConfig> = {
 		hourFormat: oneOf(HOUR_FORMATS),
 		firstHour: isHour,
 		lastHour: isHour,
+		showMiniMonth: isBoolean,
 	},
 	// The schedule runs from `firstHour` to `lastHour`: a reversed range is put in order.
 	normalize: (config) => {

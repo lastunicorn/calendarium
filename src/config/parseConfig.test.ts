@@ -52,6 +52,7 @@ describe('parseConfig', () => {
 					hourFormat: '24h',
 					firstHour: 0,
 					lastHour: 23,
+					showMiniMonth: false,
 				},
 			},
 		}
@@ -81,6 +82,7 @@ describe('parseConfig', () => {
 					hourFormat: '25h',
 					firstHour: 24,
 					lastHour: 7.5,
+					showMiniMonth: 'no',
 				},
 			},
 		})

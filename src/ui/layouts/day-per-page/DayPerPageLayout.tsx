@@ -9,13 +9,14 @@ interface DayPerPageLayoutProps {
 	config: DayPerPageConfig
 }
 
-/** A page for every day of the year: the date, a small month for context, and an hourly schedule or ruled lines. */
+/** A page for every day of the year: the date, an optional small month for context, and an hourly schedule or ruled lines. */
 export function DayPerPageLayout({ config }: DayPerPageLayoutProps) {
 	const {
 		dayPageLines,
 		hourFormat,
 		firstHour,
 		lastHour,
+		showMiniMonth,
 		locale,
 		highlightWeekends,
 		showWeekNumbers,
@@ -37,7 +38,7 @@ export function DayPerPageLayout({ config }: DayPerPageLayoutProps) {
 				key={day.key}
 				day={day}
 				daysInYear={days.length}
-				month={months[month]}
+				month={showMiniMonth ? months[month] : undefined}
 				monthName={monthNames[month]}
 				weekdays={weekdays}
 				hours={hours}

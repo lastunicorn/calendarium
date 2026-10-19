@@ -8,6 +8,7 @@ import {
 } from '../../../config/layouts/dayPerPage'
 import { HOUR_FORMATS, type HourFormat } from '../../../core/locale'
 import { DayPageIcon } from '../../components/icons'
+import { CheckboxField } from '../../fields/CheckboxField'
 import { NumberField } from '../../fields/NumberField'
 import { optionsFrom } from '../../fields/options'
 import { RadioField } from '../../fields/RadioField'
@@ -42,6 +43,10 @@ export function DayPageSection({ config, onUpdate }: ConfigSectionProps<DayPerPa
 		onUpdate({ lastHour })
 	}
 
+	function handleShowMiniMonthChange(showMiniMonth: boolean) {
+		onUpdate({ showMiniMonth })
+	}
+
 	// Each bound stops at the other, so the range can't be turned around while typing; the config
 	// would put a reversed range in order anyway (`normalize` in `config/layouts/dayPerPage.ts`).
 	function isValidFirstHour(hour: number) {
@@ -54,6 +59,11 @@ export function DayPageSection({ config, onUpdate }: ConfigSectionProps<DayPerPa
 
 	return (
 		<Section title="Day page" icon={<DayPageIcon />}>
+			<CheckboxField
+				label="Show mini calendar"
+				checked={config.showMiniMonth}
+				onChange={handleShowMiniMonthChange}
+			/>
 			<RadioField
 				label="Fill"
 				value={config.dayPageLines}
