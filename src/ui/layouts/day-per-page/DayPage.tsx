@@ -38,7 +38,11 @@ interface DayPageProps {
 	/** Language of the date names and of the week and day-of-year line. */
 	locale: Locale
 	highlightWeekends: WeekendHighlight
+	/** Week numbers column of the small month. */
 	showWeekNumbers: boolean
+	/** Parts of the details line under the heading: "Week N" and "Day N / 365". */
+	showWeek: boolean
+	showDayOfYear: boolean
 	setup: PageSetup
 }
 
@@ -57,12 +61,14 @@ export const DayPage = memo(function DayPage({
 	locale,
 	highlightWeekends,
 	showWeekNumbers,
+	showWeek,
+	showDayOfYear,
 	setup,
 }: DayPageProps) {
 	const messages = PRINT_MESSAGES[locale]
 	const details = [
-		showWeekNumbers ? messages.week(isoWeek(day)) : '',
-		messages.dayOfYear(dayOfYear(day), daysInYear),
+		showWeek ? messages.week(isoWeek(day)) : '',
+		showDayOfYear ? messages.dayOfYear(dayOfYear(day), daysInYear) : '',
 	]
 		.filter(Boolean)
 		.join(' · ')
@@ -79,7 +85,7 @@ export const DayPage = memo(function DayPage({
 							align="start"
 							highlight={isHighlightedDay(day, highlightWeekends)}
 						/>
-						<p className={styles.details}>{details}</p>
+						{details && <p className={styles.details}>{details}</p>}
 					</div>
 					{month && (
 						<div className={styles.miniMonth}>

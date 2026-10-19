@@ -47,6 +47,14 @@ export function DayPageSection({ config, onUpdate }: ConfigSectionProps<DayPerPa
 		onUpdate({ showMiniMonth })
 	}
 
+	function handleShowHeaderWeekChange(showHeaderWeek: boolean) {
+		onUpdate({ showHeaderWeek })
+	}
+
+	function handleShowHeaderDayOfYearChange(showHeaderDayOfYear: boolean) {
+		onUpdate({ showHeaderDayOfYear })
+	}
+
 	// Each bound stops at the other, so the range can't be turned around while typing; the config
 	// would put a reversed range in order anyway (`normalize` in `config/layouts/dayPerPage.ts`).
 	function isValidFirstHour(hour: number) {
@@ -63,6 +71,16 @@ export function DayPageSection({ config, onUpdate }: ConfigSectionProps<DayPerPa
 				label="Show mini calendar"
 				checked={config.showMiniMonth}
 				onChange={handleShowMiniMonthChange}
+			/>
+			<CheckboxField
+				label="Week number in header"
+				checked={config.showHeaderWeek}
+				onChange={handleShowHeaderWeekChange}
+			/>
+			<CheckboxField
+				label="Day of year in header"
+				checked={config.showHeaderDayOfYear}
+				onChange={handleShowHeaderDayOfYearChange}
 			/>
 			<RadioField
 				label="Fill"

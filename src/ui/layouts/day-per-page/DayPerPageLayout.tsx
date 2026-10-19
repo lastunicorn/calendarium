@@ -17,6 +17,8 @@ export function DayPerPageLayout({ config }: DayPerPageLayoutProps) {
 		firstHour,
 		lastHour,
 		showMiniMonth,
+		showHeaderWeek,
+		showHeaderDayOfYear,
 		locale,
 		highlightWeekends,
 		showWeekNumbers,
@@ -46,6 +48,8 @@ export function DayPerPageLayout({ config }: DayPerPageLayoutProps) {
 				locale={locale}
 				highlightWeekends={highlightWeekends}
 				showWeekNumbers={showWeekNumbers}
+				showWeek={showHeaderWeek}
+				showDayOfYear={showHeaderDayOfYear}
 				setup={page}
 			/>
 		)

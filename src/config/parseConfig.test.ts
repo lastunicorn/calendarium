@@ -53,6 +53,8 @@ describe('parseConfig', () => {
 					firstHour: 0,
 					lastHour: 23,
 					showMiniMonth: false,
+					showHeaderWeek: false,
+					showHeaderDayOfYear: false,
 				},
 			},
 		}
@@ -83,6 +85,8 @@ describe('parseConfig', () => {
 					firstHour: 24,
 					lastHour: 7.5,
 					showMiniMonth: 'no',
+					showHeaderWeek: 1,
+					showHeaderDayOfYear: null,
 				},
 			},
 		})

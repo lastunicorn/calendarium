@@ -25,10 +25,14 @@ export interface DayPerPageConfig extends CommonConfig {
 	lastHour: number
 	/** Whether the day's month is drawn small in the top right corner, with the day marked. */
 	showMiniMonth: boolean
+	/** Whether the header's details line shows the ISO week ("Week 1"). */
+	showHeaderWeek: boolean
+	/** Whether the header's details line shows the day of the year ("Day 1 / 365"). */
+	showHeaderDayOfYear: boolean
 }
 
 export const DAY_PER_PAGE_SPEC: LayoutSpec<DayPerPageConfig> = {
-	// A tall schedule fits portrait; week numbers show as "Week N" in the heading.
+	// A tall schedule fits portrait.
 	defaults: () => ({
 		...commonDefaults(),
 		showWeekNumbers: true,
@@ -37,6 +41,8 @@ export const DAY_PER_PAGE_SPEC: LayoutSpec<DayPerPageConfig> = {
 		firstHour: 7,
 		lastHour: 21,
 		showMiniMonth: true,
+		showHeaderWeek: true,
+		showHeaderDayOfYear: true,
 	}),
 	validators: {
 		...COMMON_VALIDATORS,
@@ -45,6 +51,8 @@ export const DAY_PER_PAGE_SPEC: LayoutSpec<DayPerPageConfig> = {
 		firstHour: isHour,
 		lastHour: isHour,
 		showMiniMonth: isBoolean,
+		showHeaderWeek: isBoolean,
+		showHeaderDayOfYear: isBoolean,
 	},
 	// The schedule runs from `firstHour` to `lastHour`: a reversed range is put in order.
 	normalize: (config) => {
