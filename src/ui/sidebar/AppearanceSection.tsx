@@ -36,6 +36,23 @@ const LOCALE_OPTIONS = optionsFrom(LOCALES, {
 	'es-ES': 'Spanish (Español)',
 	'it-IT': 'Italian (Italiano)',
 	'ja-JP': 'Japanese (日本語)',
+	'pt-BR': 'Portuguese (Português)',
+	'nl-NL': 'Dutch (Nederlands)',
+	'pl-PL': 'Polish (Polski)',
+	'cs-CZ': 'Czech (Čeština)',
+	'sk-SK': 'Slovak (Slovenčina)',
+	'hu-HU': 'Hungarian (Magyar)',
+	'hr-HR': 'Croatian (Hrvatski)',
+	'bg-BG': 'Bulgarian (Български)',
+	'tr-TR': 'Turkish (Türkçe)',
+	'uk-UA': 'Ukrainian (Українська)',
+	'ru-RU': 'Russian (Русский)',
+	'sv-SE': 'Swedish (Svenska)',
+	'da-DK': 'Danish (Dansk)',
+	'nb-NO': 'Norwegian (Norsk bokmål)',
+	'fi-FI': 'Finnish (Suomi)',
+	'zh-CN': 'Chinese (中文, 简体)',
+	'ko-KR': 'Korean (한국어)',
 })
 
 const WEEKDAY_FORMAT_OPTIONS = optionsFrom(WEEKDAY_FORMATS, {

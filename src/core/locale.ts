@@ -10,6 +10,23 @@ export const LOCALES = [
 	'es-ES',
 	'it-IT',
 	'ja-JP',
+	'pt-BR',
+	'nl-NL',
+	'pl-PL',
+	'cs-CZ',
+	'sk-SK',
+	'hu-HU',
+	'hr-HR',
+	'bg-BG',
+	'tr-TR',
+	'uk-UA',
+	'ru-RU',
+	'sv-SE',
+	'da-DK',
+	'nb-NO',
+	'fi-FI',
+	'zh-CN',
+	'ko-KR',
 ] as const
 export type Locale = (typeof LOCALES)[number]
 

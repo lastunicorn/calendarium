@@ -48,7 +48,7 @@ describe('default locale', () => {
 	})
 
 	it('falls back to British English', () => {
-		expect(defaultLocalesFor('zh-CN')).toEqual(LAYOUT_IDS.map(() => 'en-GB'))
+		expect(defaultLocalesFor('th-TH')).toEqual(LAYOUT_IDS.map(() => 'en-GB'))
 	})
 })
 
