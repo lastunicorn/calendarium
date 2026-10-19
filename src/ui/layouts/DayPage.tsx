@@ -1,7 +1,8 @@
 import { memo } from 'react'
 import type { DayPageLines, PageSetup } from '../../config/CalendarConfig'
 import { type CalendarDay, type CalendarMonth, dayOfYear, isoWeek } from '../../core/calendar'
-import { fullDateName, weekdayName } from '../../core/locale'
+import { fullDateName, type Locale, weekdayName } from '../../core/locale'
+import { PRINT_MESSAGES } from '../../core/messages'
 import { contentBox } from '../../core/paper'
 import { isHighlightedDay, type WeekendHighlight } from '../../core/weekend'
 import { CalendarHeader } from './CalendarHeader'
@@ -33,7 +34,8 @@ interface DayPageProps {
 	hours: string[]
 	/** What fills the page under the header. */
 	lines: DayPageLines
-	locale: string
+	/** Language of the date names and of the week and day-of-year line. */
+	locale: Locale
 	highlightWeekends: WeekendHighlight
 	showWeekNumbers: boolean
 	setup: PageSetup
@@ -56,9 +58,10 @@ export const DayPage = memo(function DayPage({
 	showWeekNumbers,
 	setup,
 }: DayPageProps) {
+	const messages = PRINT_MESSAGES[locale]
 	const details = [
-		showWeekNumbers ? `Week ${isoWeek(day.date)}` : '',
-		`Day ${dayOfYear(day.date)} / ${daysInYear}`,
+		showWeekNumbers ? messages.week(isoWeek(day.date)) : '',
+		messages.dayOfYear(dayOfYear(day.date), daysInYear),
 	]
 		.filter(Boolean)
 		.join(' · ')

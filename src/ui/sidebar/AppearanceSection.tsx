@@ -1,6 +1,6 @@
-import { type CommonConfig, type Locale, LOCALES } from '../../config/CalendarConfig'
+import type { CommonConfig } from '../../config/CalendarConfig'
 import type { WeekStart } from '../../core/calendar'
-import { WEEKDAY_FORMATS, type WeekdayFormat } from '../../core/locale'
+import { type Locale, LOCALES, WEEKDAY_FORMATS, type WeekdayFormat } from '../../core/locale'
 import { WEEKEND_HIGHLIGHTS, type WeekendHighlight } from '../../core/weekend'
 import { CheckboxField } from '../fields/CheckboxField'
 import { type Option, optionsFrom } from '../fields/options'
@@ -22,12 +22,12 @@ const WEEK_START_OPTIONS: Option<WeekStart>[] = [
 const LOCALE_OPTIONS = optionsFrom(LOCALES, {
 	'en-US': 'English (US)',
 	'en-GB': 'English (UK)',
-	'ro-RO': 'Română',
-	'de-DE': 'Deutsch',
-	'fr-FR': 'Français',
-	'es-ES': 'Español',
-	'it-IT': 'Italiano',
-	'ja-JP': '日本語',
+	'ro-RO': 'Romanian (Română)',
+	'de-DE': 'German (Deutsch)',
+	'fr-FR': 'French (Français)',
+	'es-ES': 'Spanish (Español)',
+	'it-IT': 'Italian (Italiano)',
+	'ja-JP': 'Japanese (日本語)',
 })
 
 const WEEKDAY_FORMAT_OPTIONS = optionsFrom(WEEKDAY_FORMATS, {

@@ -3,6 +3,8 @@ import {
 	dateFormatter,
 	fullDateName,
 	hourNames,
+	LOCALES,
+	localeWeekStart,
 	monthNames,
 	monthYearName,
 	weekdayName,
@@ -102,5 +104,17 @@ describe('hourNames', () => {
 			'1:00 PM',
 		])
 		expect(hourNames('de-DE', 7, 8, 'auto')).toEqual(['07:00', '08:00'])
+	})
+})
+
+describe('localeWeekStart', () => {
+	it('gives each language its own first day of the week', () => {
+		expect(localeWeekStart('en-US')).toBe(0) // Sunday
+		expect(localeWeekStart('en-GB')).toBe(1) // Monday
+		expect(localeWeekStart('de-DE')).toBe(1)
+	})
+
+	it('knows the first day of every supported language', () => {
+		for (const locale of LOCALES) expect(localeWeekStart(locale)).toBeTypeOf('number')
 	})
 })

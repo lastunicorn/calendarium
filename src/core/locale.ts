@@ -1,5 +1,18 @@
 import type { WeekStart } from './calendar'
 
+/** BCP 47 tags of the languages month and weekday names, and the printed text, can be shown in. */
+export const LOCALES = [
+	'en-US',
+	'en-GB',
+	'ro-RO',
+	'de-DE',
+	'fr-FR',
+	'es-ES',
+	'it-IT',
+	'ja-JP',
+] as const
+export type Locale = (typeof LOCALES)[number]
+
 export const WEEKDAY_FORMATS = ['short', 'narrow'] as const
 
 /** How weekday names are written: `short` = "Mon", `narrow` = "M". */
@@ -27,6 +40,23 @@ export function dateFormatter(
 		formatters.set(key, format)
 	}
 	return format
+}
+
+/** `Intl.Locale`'s week data: `getWeekInfo()` in current browsers, the `weekInfo` getter in older Chromium. */
+interface WeekInfoLocale {
+	getWeekInfo?: () => { firstDay: number }
+	weekInfo?: { firstDay: number }
+}
+
+/**
+ * The day weeks start on in `locale` (Sunday in en-US, Monday in de-DE), or `undefined` when the
+ * browser has no week data (Firefox).
+ */
+export function localeWeekStart(locale: string): WeekStart | undefined {
+	const intlLocale = new Intl.Locale(locale) as Intl.Locale & WeekInfoLocale
+	const firstDay = (intlLocale.getWeekInfo?.() ?? intlLocale.weekInfo)?.firstDay
+	// `firstDay` counts 1 = Monday … 7 = Sunday; `WeekStart` counts 0 = Sunday … 6 = Saturday.
+	return firstDay === undefined ? undefined : ((firstDay % 7) as WeekStart)
 }
 
 function capitalize(text: string, locale: string): string {

@@ -1,11 +1,18 @@
 import type { WeekStart } from '../core/calendar'
-import type { HourFormat, WeekdayFormat } from '../core/locale'
+import {
+	type HourFormat,
+	type Locale,
+	LOCALES,
+	localeWeekStart,
+	type WeekdayFormat,
+} from '../core/locale'
 import type { Orientation, PaperSize } from '../core/paper'
 import type { WeekendHighlight } from '../core/weekend'
 
 // Each set of allowed values is listed once; the type and the validation in `parseConfig`
 // derive from the array, and the UI labels are keyed by the type. Sets used by `core/` logic live
-// there: paper sizes and orientations in `core/paper.ts`, weekend highlights in `core/weekend.ts`.
+// there: locales in `core/locale.ts`, paper sizes and orientations in `core/paper.ts`, weekend
+// highlights in `core/weekend.ts`.
 
 /** Ids of the page layouts; each maps to a component in `ui/layouts/registry.ts`. */
 export const LAYOUT_IDS = ['year-per-page', 'month-per-page', 'day-per-page'] as const
@@ -14,19 +21,6 @@ export type LayoutId = (typeof LAYOUT_IDS)[number]
 /** What fills a `day-per-page` page under its header: an hourly schedule or plain ruled lines. */
 export const DAY_PAGE_LINES = ['hours', 'ruled'] as const
 export type DayPageLines = (typeof DAY_PAGE_LINES)[number]
-
-/** BCP 47 tags of the languages month and weekday names can be shown in. */
-export const LOCALES = [
-	'en-US',
-	'en-GB',
-	'ro-RO',
-	'de-DE',
-	'fr-FR',
-	'es-ES',
-	'it-IT',
-	'ja-JP',
-] as const
-export type Locale = (typeof LOCALES)[number]
 
 export const MARGIN_SIDES = ['top', 'right', 'bottom', 'left'] as const
 export type MarginSide = (typeof MARGIN_SIDES)[number]
@@ -136,10 +130,12 @@ function margins(mm: number): Margins {
 
 /** The options shared by every layout, with the values all layouts start from. */
 function commonDefaults(): CommonConfig {
+	const locale = defaultLocale()
 	return {
 		year: new Date().getFullYear(),
-		locale: defaultLocale(),
-		weekStart: 1,
+		locale,
+		// The language's own first day (Sunday in en-US), or Monday when the browser can't tell.
+		weekStart: localeWeekStart(locale) ?? 1,
 		weekdayFormat: 'narrow',
 		highlightWeekends: 'days',
 		showWeekNumbers: false,

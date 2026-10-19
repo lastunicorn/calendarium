@@ -1,5 +1,5 @@
 import { isWeekStart } from '../core/calendar'
-import { HOUR_FORMATS, WEEKDAY_FORMATS } from '../core/locale'
+import { HOUR_FORMATS, LOCALES, WEEKDAY_FORMATS } from '../core/locale'
 import { ORIENTATIONS, PAPER_SIZES } from '../core/paper'
 import { WEEKEND_HIGHLIGHTS } from '../core/weekend'
 import {
@@ -14,7 +14,6 @@ import {
 	LAYOUT_IDS,
 	type LayoutConfigs,
 	type LayoutId,
-	LOCALES,
 	MARGIN_SIDES,
 	type PageSetup,
 } from './CalendarConfig'
