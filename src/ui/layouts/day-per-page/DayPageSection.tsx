@@ -10,7 +10,7 @@ import { HOUR_FORMATS, type HourFormat } from '../../../core/locale'
 import { DayPageIcon } from '../../components/icons'
 import { NumberField } from '../../fields/NumberField'
 import { optionsFrom } from '../../fields/options'
-import { SelectField } from '../../fields/SelectField'
+import { RadioField } from '../../fields/RadioField'
 import { type ConfigSectionProps, Section } from '../../sidebar/Section'
 
 const DAY_PAGE_LINES_OPTIONS = optionsFrom(DAY_PAGE_LINES, {
@@ -54,7 +54,7 @@ export function DayPageSection({ config, onUpdate }: ConfigSectionProps<DayPerPa
 
 	return (
 		<Section title="Day page" icon={<DayPageIcon />}>
-			<SelectField
+			<RadioField
 				label="Fill"
 				value={config.dayPageLines}
 				options={DAY_PAGE_LINES_OPTIONS}
@@ -62,7 +62,7 @@ export function DayPageSection({ config, onUpdate }: ConfigSectionProps<DayPerPa
 			/>
 			{config.dayPageLines === 'hours' && (
 				<>
-					<SelectField
+					<RadioField
 						label="Hour format"
 						value={config.hourFormat}
 						options={HOUR_FORMAT_OPTIONS}
