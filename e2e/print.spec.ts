@@ -14,10 +14,12 @@ interface PrintCase {
 	height: number
 }
 
-// Each layout with its default settings: A4, portrait except for the month layout.
+// Each layout with its default settings: A4, portrait except for the month and week layouts.
+// 2024 starts on a Monday and ends on a Tuesday, so it has 53 Monday weeks.
 const CASES: PrintCase[] = [
 	{ layout: 'year-per-page', pages: 1, width: 210, height: 297 },
 	{ layout: 'month-per-page', pages: 12, width: 297, height: 210 },
+	{ layout: 'week-per-page', pages: 53, width: 297, height: 210 },
 	{ layout: 'day-per-page', pages: 366, width: 210, height: 297 },
 ]
 

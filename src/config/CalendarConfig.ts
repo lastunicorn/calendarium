@@ -3,6 +3,7 @@ import type { Orientation, PaperSize } from '../core/paper'
 import type { WeekendHighlight } from '../core/weekend'
 import type { DayPerPageConfig } from './layouts/dayPerPage'
 import type { MonthPerPageConfig } from './layouts/monthPerPage'
+import type { WeekPerPageConfig } from './layouts/weekPerPage'
 import type { YearPerPageConfig } from './layouts/yearPerPage'
 
 // Each set of allowed values is listed once; the type and the validation in `parseConfig`
@@ -14,7 +15,12 @@ import type { YearPerPageConfig } from './layouts/yearPerPage'
  * Ids of the page layouts. Each has a spec in `config/layouts/` (defaults, validators, rules) and
  * a view in `ui/layouts/` (component, form, labels).
  */
-export const LAYOUT_IDS = ['year-per-page', 'month-per-page', 'day-per-page'] as const
+export const LAYOUT_IDS = [
+	'year-per-page',
+	'month-per-page',
+	'week-per-page',
+	'day-per-page',
+] as const
 export type LayoutId = (typeof LAYOUT_IDS)[number]
 
 export const MARGIN_SIDES = ['top', 'right', 'bottom', 'left'] as const
@@ -64,6 +70,7 @@ export interface CommonConfig {
 export interface LayoutConfigs {
 	'year-per-page': YearPerPageConfig
 	'month-per-page': MonthPerPageConfig
+	'week-per-page': WeekPerPageConfig
 	'day-per-page': DayPerPageConfig
 }
 

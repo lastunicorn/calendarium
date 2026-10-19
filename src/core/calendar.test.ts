@@ -12,6 +12,7 @@ import {
 	WEEKS_PER_MONTH,
 	visibleWeeks,
 	weekNumber,
+	weeksOfYear,
 } from './calendar'
 
 const WEEK_STARTS: WeekStart[] = [0, 1, 2, 3, 4, 5, 6]
@@ -248,5 +249,57 @@ describe('visibleWeeks', () => {
 				expect(days).toHaveLength(daysInMonth(2026, month))
 			}
 		}
+	})
+})
+
+describe('weeksOfYear', () => {
+	it('covers the year from the week of January 1 to the week of December 31', () => {
+		// 2026 starts and ends on a Thursday: Monday weeks run from Dec 29, 2025 to Jan 3, 2027.
+		const weeks = weeksOfYear(2026, 1)
+		expect(weeks).toHaveLength(53)
+		expect(weeks[0][0].key).toBe('2025-12-29')
+		expect(weeks.at(-1)!.at(-1)!.key).toBe('2027-01-03')
+	})
+
+	it('marks only the days of the previous and next year as outside it', () => {
+		const days = weeksOfYear(2026, 1).flat()
+		expect(days.filter((day) => day.inYear)).toHaveLength(365)
+		expect(days.filter((day) => !day.inYear).map((day) => day.key)).toEqual([
+			'2025-12-29',
+			'2025-12-30',
+			'2025-12-31',
+			'2027-01-01',
+			'2027-01-02',
+			'2027-01-03',
+		])
+	})
+
+	it('has no week outside the year, for any week start', () => {
+		for (const year of [2024, 2025, 2026, 2028]) {
+			for (const weekStart of WEEK_STARTS) {
+				const weeks = weeksOfYear(year, weekStart)
+				for (const week of weeks) {
+					expect(week).toHaveLength(7)
+					expect(week[0].weekday).toBe(weekStart)
+					expect(week.some((day) => day.inYear)).toBe(true)
+				}
+				expect(weeks.flat().filter((day) => day.inYear)).toHaveLength(
+					isLeapYear(year) ? 366 : 365,
+				)
+			}
+		}
+	})
+
+	it('has a 54th week when a leap year starts on the week’s last day', () => {
+		// 2028 starts on a Saturday, the last day of a Sunday week.
+		expect(weeksOfYear(2028, 0)).toHaveLength(54)
+		expect(weeksOfYear(2028, 1)).toHaveLength(53)
+	})
+
+	it('starts with January 1 when the year starts on the week start', () => {
+		// 2024 starts on a Monday.
+		const weeks = weeksOfYear(2024, 1)
+		expect(weeks[0].every((day) => day.inYear)).toBe(true)
+		expect(weeks[0][0].key).toBe('2024-01-01')
 	})
 })

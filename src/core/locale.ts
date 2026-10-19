@@ -103,6 +103,15 @@ export function fullDateName(locale: string, date: PlainDate): string {
 	return capitalize(dateFormatter(locale, { dateStyle: 'long' }).format(toDate(date)), locale)
 }
 
+/**
+ * Localized range of long dates, sharing what the ends have in common: "October 19 – 25, 2026",
+ * "29 decembrie 2025 – 4 ianuarie 2026".
+ */
+export function dateRangeName(locale: string, start: PlainDate, end: PlainDate): string {
+	const format = dateFormatter(locale, { dateStyle: 'long' })
+	return capitalize(format.formatRange(toDate(start), toDate(end)), locale)
+}
+
 function toDate(date: PlainDate): Date {
 	return utcDate(date.year, date.month, date.day)
 }

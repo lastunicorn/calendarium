@@ -44,6 +44,7 @@ describe('parseConfig', () => {
 			layouts: {
 				'year-per-page': { ...common, title: 'Family', subtitle: 'Birthdays' },
 				'month-per-page': { ...common, year: 2031 },
+				'week-per-page': { ...common, year: 2033 },
 				'day-per-page': {
 					...common,
 					year: 2032,
@@ -69,10 +70,11 @@ describe('parseConfig', () => {
 		}
 		const config = parseConfig({
 			version: CONFIG_VERSION,
-			layout: 'week-per-page',
+			layout: 'quarter-per-page',
 			layouts: {
 				'year-per-page': { ...invalidCommon, title: 7, subtitle: null },
 				'month-per-page': invalidCommon,
+				'week-per-page': invalidCommon,
 				'day-per-page': {
 					...invalidCommon,
 					dayPageLines: 'dotted',

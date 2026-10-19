@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { buildMonth, type CalendarDay } from './calendar'
-import { isHighlightedColumn, isHighlightedDay } from './weekend'
+import { buildMonth, type CalendarDay, weeksOfYear } from './calendar'
+import { isHighlightedColumn, isHighlightedDay, isHighlightedWeekDay } from './weekend'
 
 // January 2026 starting on Monday: the first row is Dec 29 – Jan 4, so it holds
 // in-month weekend days (Jan 3, 4); the last row is Feb 2 – 8, all outside the month.
@@ -29,6 +29,22 @@ describe('isHighlightedDay', () => {
 	it('highlights weekend days outside the month only in columns mode', () => {
 		expect(outsideSaturday.inMonth).toBe(false)
 		expect(check(outsideSaturday)).toEqual({ off: false, days: false, columns: true })
+	})
+})
+
+describe('isHighlightedWeekDay', () => {
+	// 2027 starts on a Friday: its first Monday week holds Saturday, January 2, and its last
+	// holds Saturday, January 1, 2028.
+	const weeks = weeksOfYear(2027, 1)
+	const inYear = weeks[0][5]
+	const nextYear = weeks.at(-1)![5]
+
+	it('highlights weekend days of another year only in columns mode', () => {
+		expect(nextYear.inYear).toBe(false)
+		expect(isHighlightedWeekDay(inYear, 'days')).toBe(true)
+		expect(isHighlightedWeekDay(nextYear, 'days')).toBe(false)
+		expect(isHighlightedWeekDay(nextYear, 'columns')).toBe(true)
+		expect(isHighlightedWeekDay(inYear, 'off')).toBe(false)
 	})
 })
 

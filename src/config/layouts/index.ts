@@ -8,6 +8,7 @@ import {
 import { DAY_PER_PAGE_SPEC } from './dayPerPage'
 import type { LayoutSpec } from './LayoutSpec'
 import { MONTH_PER_PAGE_SPEC } from './monthPerPage'
+import { WEEK_PER_PAGE_SPEC } from './weekPerPage'
 import { YEAR_PER_PAGE_SPEC } from './yearPerPage'
 
 /**
@@ -17,6 +18,7 @@ import { YEAR_PER_PAGE_SPEC } from './yearPerPage'
 const LAYOUT_SPECS: { [K in LayoutId]: LayoutSpec<LayoutConfigs[K]> } = {
 	'year-per-page': YEAR_PER_PAGE_SPEC,
 	'month-per-page': MONTH_PER_PAGE_SPEC,
+	'week-per-page': WEEK_PER_PAGE_SPEC,
 	'day-per-page': DAY_PER_PAGE_SPEC,
 }
 

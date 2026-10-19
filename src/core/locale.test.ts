@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { plainDate } from './calendar'
 import {
+	dateRangeName,
 	dateFormatter,
 	fullDateName,
 	hourNames,
@@ -80,6 +81,18 @@ describe('fullDateName', () => {
 		expect(fullDateName('en-US', date)).toBe('October 19, 2026')
 		expect(fullDateName('ro-RO', date)).toBe('19 octombrie 2026')
 		expect(fullDateName('ja-JP', date)).toBe('2026年10月19日')
+	})
+})
+
+describe('dateRangeName', () => {
+	it('writes the range in the locale, sharing what both ends have in common', () => {
+		// `Intl` sets the dash between thin spaces.
+		const start = plainDate(2026, 9, 19)
+		const end = plainDate(2026, 9, 25)
+		expect(dateRangeName('en-US', start, end)).toBe('October 19\u2009–\u200925, 2026')
+		expect(dateRangeName('en-GB', plainDate(2025, 11, 29), plainDate(2026, 0, 4))).toBe(
+			'29 December 2025\u2009–\u20094 January 2026',
+		)
 	})
 })
 

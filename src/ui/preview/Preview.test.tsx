@@ -11,6 +11,7 @@ function configFor(layout: LayoutId, year: number): AppConfig {
 	const config = defaultAppConfig()
 	config.layout = layout
 	config.layouts[layout].year = year
+	config.layouts[layout].weekStart = 1
 	return config
 }
 
@@ -27,6 +28,19 @@ describe('Preview', () => {
 
 	it('draws a page per month', () => {
 		expect(pageCount('month-per-page', 2025)).toBe(12)
+	})
+
+	it('draws a page per week holding a day of the year', () => {
+		// Monday weeks: 2025 runs from Dec 30, 2024 to Jan 4, 2026.
+		expect(pageCount('week-per-page', 2025)).toBe(53)
+	})
+
+	it('draws 54 week pages when a leap year starts on the last day of a week', () => {
+		// 2028 starts on a Saturday: Sunday weeks run from Dec 26, 2027 to Jan 6, 2029.
+		const config = configFor('week-per-page', 2028)
+		config.layouts['week-per-page'].weekStart = 0
+		const { container } = render(<Preview config={config} onResetLayout={noop} />)
+		expect(container.querySelectorAll('section')).toHaveLength(54)
 	})
 
 	it('draws a page per day, with February 29 in a leap year', () => {

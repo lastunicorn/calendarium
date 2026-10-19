@@ -28,6 +28,13 @@ export interface CalendarDay extends PlainDate {
 	isWeekend: boolean
 }
 
+/** A day on a week page, which can reach into the previous or next year. */
+export interface WeekDay extends PlainDate {
+	/** False for the days of the first and last week that belong to the previous/next year. */
+	inYear: boolean
+	isWeekend: boolean
+}
+
 export interface CalendarMonth {
 	year: number
 	/** 0 = January … 11 = December. */
@@ -105,7 +112,7 @@ function dayNumber(date: PlainDate): number {
  * ISO week number for a calendar row. A row that does not start on Monday spans two ISO weeks;
  * it gets the number of the week holding most of its days, i.e. the one containing its Thursday.
  */
-export function weekNumber(week: CalendarDay[]): number {
+export function weekNumber(week: PlainDate[]): number {
 	const thursday = week.find((day) => day.weekday === 4) ?? week[0]
 	return isoWeek(thursday)
 }
@@ -141,4 +148,24 @@ export function buildYear(year: number, weekStart: WeekStart): CalendarMonth[] {
 /** Every day of the year in order, taken from `buildYear`'s months without adjacent-month days. */
 export function daysOfYear(months: CalendarMonth[]): CalendarDay[] {
 	return months.flatMap((month) => month.weeks.flat().filter((day) => day.inMonth))
+}
+
+/**
+ * Every week holding at least one day of `year`, each 7 days from `weekStart`: the first starts on
+ * or before January 1, the last ends on or after December 31. 53 weeks, or 54 when a leap year starts on the last day of a week.
+ */
+export function weeksOfYear(year: number, weekStart: WeekStart): WeekDay[][] {
+	const leadingDays = (plainDate(year, 0, 1).weekday - weekStart + 7) % 7
+	const weeks: WeekDay[][] = []
+
+	for (let first = 1 - leadingDays; plainDate(year, 0, first).year <= year; first += 7) {
+		const days: WeekDay[] = []
+		for (let column = 0; column < 7; column++) {
+			const date = plainDate(year, 0, first + column)
+			days.push({ ...date, inYear: date.year === year, isWeekend: isWeekend(date) })
+		}
+		weeks.push(days)
+	}
+
+	return weeks
 }
