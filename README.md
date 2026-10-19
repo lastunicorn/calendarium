@@ -1,4 +1,4 @@
-# Printable Calendar
+# Calendarium
 
 [![GitHub Build](https://img.shields.io/github/actions/workflow/status/lastunicorn/bcr-toolkit/build-master.yml?logo=github)](https://github.com/lastunicorn/calendarium/actions/workflows/build-master.yml)
 
