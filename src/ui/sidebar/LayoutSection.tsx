@@ -20,7 +20,7 @@ export function LayoutSection({ layout, onSelect }: LayoutSectionProps) {
 	return (
 		<Section title="Layout">
 			<SelectField
-				label="Pages"
+				label=""
 				value={layout}
 				options={LAYOUT_OPTIONS}
 				onChange={onSelect}
