@@ -155,48 +155,82 @@ const PAGE_VALIDATORS: Validators<PageSetup, Exclude<keyof PageSetup, 'margins'>
 
 const isLayoutId = oneOf(LAYOUT_IDS)
 
-/** Copies each field of `source` that passes its validator onto `target`. */
+/**
+ * Copies each field of `source` that passes its validator onto `target`. A field that is present
+ * but invalid is added to `ignored`, as `prefix` + its name.
+ */
 function copyValid<T, K extends keyof T>(
 	target: T,
 	source: StoredData,
 	validators: Validators<T, K>,
+	ignored: string[],
+	prefix = '',
 ) {
 	for (const key of Object.keys(validators) as K[]) {
 		const value = source[key as string]
 		if (validators[key](value)) target[key] = value
+		else if (value !== undefined) ignored.push(prefix + String(key))
 	}
 }
 
-/** Copies the valid fields of stored page data onto `target`. */
-function copyValidPage(target: PageSetup, data: unknown) {
+/** Copies the valid fields of stored page data onto `target`, adding the invalid ones to `ignored`. */
+function copyValidPage(target: PageSetup, data: unknown, ignored: string[]) {
+	if (data === undefined) return
 	const page = asObject(data)
-	if (page === null) return
-	copyValid(target, page, PAGE_VALIDATORS)
+	if (page === null) {
+		ignored.push('page')
+		return
+	}
+	copyValid(target, page, PAGE_VALIDATORS, ignored, 'page.')
+	if (page.margins === undefined) return
 	const margins = asObject(page.margins)
-	if (margins !== null) {
-		for (const side of MARGIN_SIDES) {
-			if (isMargin(margins[side])) target.margins[side] = margins[side]
-		}
+	if (margins === null) {
+		ignored.push('page.margins')
+		return
+	}
+	for (const side of MARGIN_SIDES) {
+		const value = margins[side]
+		if (isMargin(value)) target.margins[side] = value
+		else if (value !== undefined) ignored.push(`page.margins.${side}`)
 	}
 }
 
 /**
  * Keeps only the valid fields of one layout's options, falling back to that layout's defaults,
- * then applies the layout's cross-field rules.
+ * then applies the layout's cross-field rules. Invalid fields are added to `ignored`.
  */
-function parseCurrentLayoutConfig<K extends LayoutId>(layout: K, data: unknown): LayoutConfigs[K] {
+function parseCurrentLayoutConfig<K extends LayoutId>(
+	layout: K,
+	data: unknown,
+	ignored: string[] = [],
+): LayoutConfigs[K] {
 	const config = DEFAULTS[layout]()
 	const stored = asObject(data)
 	if (stored === null) return config
-	copyValid(config, stored, LAYOUT_VALIDATORS[layout])
-	copyValidPage(config.page, stored.page)
+	copyValid(config, stored, LAYOUT_VALIDATORS[layout], ignored)
+	copyValidPage(config.page, stored.page, ignored)
 	return normalizeLayout(layout, config)
 }
 
+/** One layout's options parsed from untrusted data, with the fields that were dropped. */
+export interface ParsedLayoutConfig<K extends LayoutId> {
+	config: LayoutConfigs[K]
+	/**
+	 * Fields that were present but invalid, and kept their defaults: `firstHour`,
+	 * `page.margins.top`. Fields the layout doesn't have are left out silently.
+	 */
+	ignored: string[]
+}
+
 /** Keeps only the valid fields of untrusted flat data (an imported file) for one layout. */
-export function parseLayoutConfig<K extends LayoutId>(layout: K, data: unknown): LayoutConfigs[K] {
+export function parseLayoutConfig<K extends LayoutId>(
+	layout: K,
+	data: unknown,
+): ParsedLayoutConfig<K> {
 	const raw = asObject(data)
-	return parseCurrentLayoutConfig(layout, raw === null ? null : upgradeFlat(raw))
+	const ignored: string[] = []
+	const config = parseCurrentLayoutConfig(layout, raw === null ? null : upgradeFlat(raw), ignored)
+	return { config, ignored }
 }
 
 /**

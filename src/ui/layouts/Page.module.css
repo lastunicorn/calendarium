@@ -1,5 +1,7 @@
 /* Width, height and padding (the page margins) are set inline from the config. */
 .page {
+	/* Positions the overflow badge. */
+	position: relative;
 	flex-shrink: 0;
 	overflow: hidden;
 	background: var(--color-surface);
@@ -22,8 +24,28 @@
 	}
 }
 
+/* Screen-only warning, over the top of the page. */
+.overflowBadge {
+	position: absolute;
+	top: 3mm;
+	left: 50%;
+	max-width: 90%;
+	margin: 0;
+	padding: 1mm 3mm;
+	transform: translateX(-50%);
+	font-size: 9pt;
+	font-weight: 600;
+	color: var(--color-surface);
+	background: var(--color-error);
+	border-radius: 1mm;
+}
+
 @media print {
 	.page {
 		box-shadow: none;
+	}
+
+	.overflowBadge {
+		display: none;
 	}
 }

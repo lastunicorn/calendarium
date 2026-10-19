@@ -138,9 +138,10 @@ describe('parseConfig', () => {
 	it('gives each layout defaults that pass its own validation', () => {
 		for (const layout of LAYOUT_IDS) {
 			const defaults = DEFAULTS[layout]()
-			expect(parseLayoutConfig(layout, { version: CONFIG_VERSION, ...defaults })).toEqual(
-				defaults,
-			)
+			expect(parseLayoutConfig(layout, { version: CONFIG_VERSION, ...defaults })).toEqual({
+				config: defaults,
+				ignored: [],
+			})
 		}
 	})
 

@@ -19,6 +19,13 @@ interface ToolbarProps {
 	onImport: (imported: ImportedLayoutConfig) => void
 }
 
+/** What to tell the user about an imported file's invalid fields; empty when there were none. */
+function ignoredFieldsNotice(fileName: string, ignored: string[]): string {
+	if (ignored.length === 0) return ''
+	const settings = ignored.length === 1 ? '1 setting was' : `${ignored.length} settings were`
+	return `Imported ${fileName}; ${settings} invalid and kept the default: ${ignored.join(', ')}.`
+}
+
 function handlePrintClick() {
 	window.print()
 }
@@ -30,6 +37,7 @@ export function Toolbar({ config, onReset, onImport }: ToolbarProps) {
 
 	const fileInput = useRef<HTMLInputElement>(null)
 	const [importError, setImportError] = useState('')
+	const [importNotice, setImportNotice] = useState('')
 
 	function handleExportClick() {
 		downloadFile(
@@ -46,6 +54,7 @@ export function Toolbar({ config, onReset, onImport }: ToolbarProps) {
 	function handleResetClick() {
 		if (!window.confirm(`Reset ${LAYOUT_NAMES[layout]} settings to their defaults?`)) return
 		setImportError('')
+		setImportNotice('')
 		onReset(layout)
 	}
 
@@ -59,9 +68,11 @@ export function Toolbar({ config, onReset, onImport }: ToolbarProps) {
 		const imported = parseConfigFile(await file.text(), layout)
 		if (imported === null) {
 			setImportError(`${file.name} is not a valid configuration file.`)
+			setImportNotice('')
 			return
 		}
 		setImportError('')
+		setImportNotice(ignoredFieldsNotice(file.name, imported.ignored))
 		onImport(imported)
 	}
 
@@ -96,6 +107,11 @@ export function Toolbar({ config, onReset, onImport }: ToolbarProps) {
 			{importError && (
 				<p className={styles.error} role="alert">
 					{importError}
+				</p>
+			)}
+			{importNotice && (
+				<p className={styles.notice} role="status">
+					{importNotice}
 				</p>
 			)}
 		</>

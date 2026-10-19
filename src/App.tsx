@@ -14,7 +14,7 @@ export default function App() {
 				<Toolbar config={config} onReset={resetLayout} onImport={importLayout} />
 				<ConfigForm config={config} onSelectLayout={selectLayout} onUpdate={update} />
 			</Sidebar>
-			<Preview config={config} />
+			<Preview config={config} onResetLayout={resetLayout} />
 		</div>
 	)
 }

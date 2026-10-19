@@ -13,7 +13,11 @@ describe('config files', () => {
 			page: { ...defaults.page, paperSize: 'a3' as const },
 		}
 		const text = serializeLayoutConfig('day-per-page', config)
-		expect(parseConfigFile(text, 'year-per-page')).toEqual({ layout: 'day-per-page', config })
+		expect(parseConfigFile(text, 'year-per-page')).toEqual({
+			layout: 'day-per-page',
+			config,
+			ignored: [],
+		})
 	})
 
 	it('writes the version, the layout and only that layout’s options', () => {
@@ -67,10 +71,36 @@ describe('config files', () => {
 
 	it('falls back to the layout’s defaults for invalid fields', () => {
 		for (const layout of LAYOUT_IDS) {
-			expect(parseConfigFile('{"year": 2030, "orientation": "up"}', layout)).toEqual({
+			const file = JSON.stringify({
+				version: CONFIG_VERSION,
+				year: 2030,
+				page: { orientation: 'up' },
+			})
+			expect(parseConfigFile(file, layout)).toEqual({
 				layout,
 				config: { ...DEFAULTS[layout](), year: 2030 },
+				ignored: ['page.orientation'],
 			})
 		}
+	})
+
+	it('lists the fields that were present but invalid', () => {
+		const file = JSON.stringify({
+			version: CONFIG_VERSION,
+			layout: 'day-per-page',
+			year: 2030,
+			firstHour: 25,
+			hourFormat: 'sundial',
+			title: 'Not a day-per-page field',
+			page: { paperSize: 'a4', margins: { top: 99, left: 5, right: 'wide' } },
+		})
+		expect(parseConfigFile(file, 'year-per-page')?.ignored).toEqual([
+			'hourFormat',
+			'firstHour',
+			'page.margins.top',
+			'page.margins.right',
+		])
+		const badPage = JSON.stringify({ version: CONFIG_VERSION, page: 'big' })
+		expect(parseConfigFile(badPage, 'year-per-page')?.ignored).toEqual(['page'])
 	})
 })

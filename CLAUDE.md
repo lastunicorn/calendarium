@@ -37,6 +37,7 @@ Stored and exported configs are tagged with `CONFIG_VERSION`. Bump it only for a
 ### Printing
 
 - Paper sizes are defined once in `src/core/paper.ts` (`PAPERS`: CSS name and mm dimensions). `Page` sizes its box in mm from it (`contentBox` gives the area inside the margins, for layouts that size content from the page), so the screen preview matches print, and `Preview` renders a `<style>` with the matching `@page { size }` rule. A new paper size is one entry there plus its label in `PageSection`.
+- `Page` clips content to the paper, so on screen it shows a badge when its content doesn't fit inside the margins (`useOverflow`, checked only while the page is visible, so it doesn't undo `content-visibility`). `Preview` wraps the layout in `PreviewErrorBoundary`, which offers a reset of the layout's settings instead of a blank screen.
 - Printing targets Chrome/Chromium: Save as PDF, paper size matching the selection, Margins: None, Scale: 100%.
 
 ## Code style

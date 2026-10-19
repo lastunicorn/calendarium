@@ -9,13 +9,16 @@ export function serializeLayoutConfig<K extends LayoutId>(
 	return JSON.stringify(toStoredLayoutConfig(layout, config), null, '\t') + '\n'
 }
 
-/** One layout's options read from a file, with the layout they belong to. */
+/**
+ * One layout's options read from a file, with the layout they belong to and the fields that
+ * were invalid (see `ParsedLayoutConfig`).
+ */
 export type ImportedLayoutConfig = {
-	[K in LayoutId]: { layout: K; config: LayoutConfigs[K] }
+	[K in LayoutId]: { layout: K; config: LayoutConfigs[K]; ignored: string[] }
 }[LayoutId]
 
 function imported<K extends LayoutId>(layout: K, data: unknown) {
-	return { layout, config: parseLayoutConfig(layout, data) } as ImportedLayoutConfig
+	return { layout, ...parseLayoutConfig(layout, data) } as ImportedLayoutConfig
 }
 
 /**
