@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+	dateFormatter,
 	fullDateName,
 	hourNames,
 	monthNames,
@@ -7,6 +8,15 @@ import {
 	weekdayName,
 	weekdayNames,
 } from './locale'
+
+describe('dateFormatter', () => {
+	it('reuses one formatter per locale and options', () => {
+		const format = dateFormatter('de-DE', { month: 'long' })
+		expect(dateFormatter('de-DE', { month: 'long' })).toBe(format)
+		expect(dateFormatter('de-DE', { month: 'short' })).not.toBe(format)
+		expect(dateFormatter('fr-FR', { month: 'long' })).not.toBe(format)
+	})
+})
 
 describe('monthNames', () => {
 	it('returns 12 capitalized names', () => {

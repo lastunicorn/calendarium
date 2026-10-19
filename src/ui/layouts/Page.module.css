@@ -11,6 +11,17 @@
 	break-before: page;
 }
 
+/*
+ * The browser skips layout and paint of pages outside the viewport: the day layout has 366.
+ * No `contain-intrinsic-size` is needed because the page's width and height are set inline,
+ * so a skipped page keeps its size. Screen only: printing lays out every page anyway.
+ */
+@media screen {
+	.page {
+		content-visibility: auto;
+	}
+}
+
 @media print {
 	.page {
 		box-shadow: none;
