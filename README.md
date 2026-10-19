@@ -1,5 +1,7 @@
 # Printable Calendar
 
+[![GitHub Build](https://img.shields.io/github/actions/workflow/status/lastunicorn/bcr-toolkit/build-master.yml?logo=github)](https://github.com/lastunicorn/calendarium/actions/workflows/build-master.yml)
+
 A browser app that generates a calendar to print on paper: a configuration panel on the left and a WYSIWYG page preview (A4, A3 or Letter, portrait or landscape) on the right.
 
 ## Requirements
