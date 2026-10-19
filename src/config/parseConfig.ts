@@ -1,16 +1,7 @@
-import { ORIENTATIONS, PAPER_SIZES } from '../core/paper'
-import {
-	type AppConfig,
-	isMargin,
-	LAYOUT_IDS,
-	type LayoutConfigs,
-	type LayoutId,
-	MARGIN_SIDES,
-	type PageSetup,
-} from './CalendarConfig'
+import { type AppConfig, LAYOUT_IDS, type LayoutConfigs, type LayoutId } from './CalendarConfig'
 import { defaultAppConfig, layoutSpec, mapLayouts } from './layouts'
 import { asObject, type StoredData, upgradeStorage } from './migrations'
-import { isBoolean, oneOf, type Validators } from './validators'
+import { oneOf, type Validator } from './validators'
 import { APP_VERSION, CONFIG_VERSION } from './version'
 
 /** The app config as written to storage: tagged with its config version and the app version. */
@@ -18,52 +9,37 @@ export function toStoredConfig(config: AppConfig) {
 	return { version: CONFIG_VERSION, app: APP_VERSION, ...config }
 }
 
-/** Margins are validated per side instead, so one bad side keeps the others. */
-const PAGE_VALIDATORS: Validators<PageSetup, Exclude<keyof PageSetup, 'margins'>> = {
-	paperSize: oneOf(PAPER_SIZES),
-	orientation: oneOf(ORIENTATIONS),
-	mirrorMargins: isBoolean,
-}
+/** A validator table seen field by field, whatever object it checks. */
+type AnyValidators = { [field: string]: Validator<unknown> | AnyValidators }
 
 const isLayoutId = oneOf(LAYOUT_IDS)
 
 /**
- * Copies each field of `source` that passes its validator onto `target`. A field that is present
- * but invalid is added to `ignored`, as `prefix` + its name.
+ * Copies each field of `source` that passes its validator onto `target`. A nested table checks an
+ * object field by field, copying onto the object `target` already holds there. A field that is
+ * present but invalid, or a nested object that is not an object, is added to `ignored` as its path:
+ * `prefix` + its name (`page.margins.top`).
  */
-function copyValid<T, K extends keyof T>(
-	target: T,
+function copyValid(
+	target: object,
 	source: StoredData,
-	validators: Validators<T, K>,
+	validators: AnyValidators,
 	ignored: string[],
 	prefix = '',
 ) {
-	for (const key of Object.keys(validators) as K[]) {
-		const value = source[key as string]
-		if (validators[key](value)) target[key] = value
-		else if (value !== undefined) ignored.push(prefix + String(key))
-	}
-}
-
-/** Copies the valid fields of stored page data onto `target`, adding the invalid ones to `ignored`. */
-function copyValidPage(target: PageSetup, data: unknown, ignored: string[]) {
-	if (data === undefined) return
-	const page = asObject(data)
-	if (page === null) {
-		ignored.push('page')
-		return
-	}
-	copyValid(target, page, PAGE_VALIDATORS, ignored, 'page.')
-	if (page.margins === undefined) return
-	const margins = asObject(page.margins)
-	if (margins === null) {
-		ignored.push('page.margins')
-		return
-	}
-	for (const side of MARGIN_SIDES) {
-		const value = margins[side]
-		if (isMargin(value)) target.margins[side] = value
-		else if (value !== undefined) ignored.push(`page.margins.${side}`)
+	const fields = target as StoredData
+	for (const [key, check] of Object.entries(validators)) {
+		const value = source[key]
+		const path = prefix + key
+		if (typeof check === 'function') {
+			if (check(value)) fields[key] = value
+			else if (value !== undefined) ignored.push(path)
+			continue
+		}
+		if (value === undefined) continue
+		const nested = asObject(value)
+		if (nested === null) ignored.push(path)
+		else copyValid(fields[key] as object, nested, check, ignored, `${path}.`)
 	}
 }
 
@@ -81,7 +57,6 @@ function parseCurrentLayoutConfig<K extends LayoutId>(
 	const stored = asObject(data)
 	if (stored === null) return config
 	copyValid(config, stored, spec.validators, ignored)
-	copyValidPage(config.page, stored.page, ignored)
 	return spec.normalize(config)
 }
 

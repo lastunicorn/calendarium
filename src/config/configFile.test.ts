@@ -141,10 +141,10 @@ describe('config files', () => {
 			page: { paperSize: 'a4', margins: { top: 99, left: 5, right: 'wide' } },
 		})
 		expect(parseConfigFile(file, 'year-per-page')?.ignored).toEqual([
-			'hourFormat',
-			'firstHour',
 			'page.margins.top',
 			'page.margins.right',
+			'hourFormat',
+			'firstHour',
 		])
 		const badPage = JSON.stringify({
 			format: FILE_FORMAT,

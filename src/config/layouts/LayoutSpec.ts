@@ -7,7 +7,7 @@ import type { ConfigValidators } from '../validators'
 export interface LayoutSpec<C> {
 	/** A fresh copy of the layout's default options, picked for how it is drawn. */
 	defaults: () => C
-	/** One validator per field except `page`, applied field by field when parsing. */
+	/** One check per field, a nested table for an object like `page`, applied field by field when parsing. */
 	validators: ConfigValidators<C>
 	/**
 	 * `config` with the rules that tie several fields together applied, which field validators
