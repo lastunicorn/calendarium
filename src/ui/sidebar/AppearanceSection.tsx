@@ -9,6 +9,7 @@ import {
 import { WEEKEND_HIGHLIGHTS, type WeekendHighlight } from '../../core/weekend'
 import { CheckboxField } from '../fields/CheckboxField'
 import { type Option, optionsFrom } from '../fields/options'
+import { RadioField } from '../fields/RadioField'
 import { SelectField } from '../fields/SelectField'
 import { type ConfigSectionProps, Section } from './Section'
 
@@ -83,13 +84,13 @@ export function AppearanceSection({ config, onUpdate }: ConfigSectionProps<Commo
 				options={WEEK_START_OPTIONS}
 				onChange={handleWeekStartChange}
 			/>
-			<SelectField
+			<RadioField
 				label="Weekday names"
 				value={config.weekdayFormat}
 				options={WEEKDAY_FORMAT_OPTIONS}
 				onChange={handleWeekdayFormatChange}
 			/>
-			<SelectField
+			<RadioField
 				label="Highlight weekends"
 				value={config.highlightWeekends}
 				options={WEEKEND_HIGHLIGHT_OPTIONS}
