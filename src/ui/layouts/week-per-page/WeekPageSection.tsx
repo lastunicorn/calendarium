@@ -1,5 +1,7 @@
 import {
+	WEEK_DAY_DIRECTIONS,
 	WEEK_PAGE_LINES,
+	type WeekDayDirection,
 	type WeekPageLines,
 	type WeekPerPageConfig,
 } from '../../../config/layouts/weekPerPage'
@@ -17,6 +19,12 @@ const WEEKEND_DISPLAY_OPTIONS = optionsFrom(WEEKEND_DISPLAYS, {
 	hidden: 'Hidden',
 })
 
+const WEEK_DAY_DIRECTION_OPTIONS = optionsFrom(WEEK_DAY_DIRECTIONS, {
+	auto: 'Automatic (by orientation)',
+	vertical: 'Vertical (columns, left to right)',
+	horizontal: 'Horizontal (rows, top to bottom)',
+})
+
 const WEEK_PAGE_LINES_OPTIONS = optionsFrom(WEEK_PAGE_LINES, {
 	none: 'Off',
 	hours: 'Hourly schedule',
@@ -32,6 +40,10 @@ export function WeekPageSection({ config, onUpdate }: ConfigSectionProps<WeekPer
 		onUpdate({ weekPageLines })
 	}
 
+	function handleWeekDayDirectionChange(weekDayDirection: WeekDayDirection) {
+		onUpdate({ weekDayDirection })
+	}
+
 	function handleTwoPagesPerWeekChange(twoPagesPerWeek: boolean) {
 		onUpdate({ twoPagesPerWeek })
 	}
@@ -42,6 +54,17 @@ export function WeekPageSection({ config, onUpdate }: ConfigSectionProps<WeekPer
 				label="Two pages per week"
 				checked={config.twoPagesPerWeek}
 				onChange={handleTwoPagesPerWeekChange}
+			/>
+			<RadioField
+				label="Days"
+				description={
+					config.weekDayDirection === 'auto'
+						? 'Columns on landscape paper or over two pages, rows on portrait.'
+						: undefined
+				}
+				value={config.weekDayDirection}
+				options={WEEK_DAY_DIRECTION_OPTIONS}
+				onChange={handleWeekDayDirectionChange}
 			/>
 			<RadioField
 				label="Weekend"

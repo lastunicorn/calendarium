@@ -1,5 +1,6 @@
 import { memo } from 'react'
 import type { PageSetup } from '../../../config/CalendarConfig'
+import { stacksDays, type WeekDayDirection } from '../../../config/layouts/weekPerPage'
 import { type WeekDay, type WeekStart, weekNumber } from '../../../core/calendar'
 import { dateRangeName, type Locale } from '../../../core/locale'
 import { PRINT_MESSAGES } from '../../../core/messages'
@@ -28,6 +29,8 @@ interface WeekPageProps {
 	 * on the first only, its space left empty on the second.
 	 */
 	twoPages: boolean
+	/** Whether the days are columns or rows, with the orientation and `twoPages` (`stacksDays`). */
+	direction: WeekDayDirection
 	/** Language of the date range and of the week line. */
 	locale: Locale
 	highlightWeekends: WeekendHighlight
@@ -139,10 +142,10 @@ function WeekGrid({
 }
 
 /**
- * One week's sheet: a cell to write in for each day, side by side on landscape paper and stacked
- * on portrait; Saturday and Sunday may share a cell, split in half. Each unshared cell may hold an
- * hourly schedule, running down side-by-side cells and across stacked ones. With `twoPages`, the
- * week spreads over two sheets. Memoized because a year has 53 of them and most config changes
+ * One week's sheet: a cell to write in for each day, side by side or stacked per `direction`;
+ * Saturday and Sunday may share a cell, split in half. Each unshared cell may hold an hourly
+ * schedule, running down side-by-side cells and across stacked ones. With `twoPages`, the week
+ * spreads over two sheets. Memoized because a year has 53 of them and most config changes
  * leave each page's props unchanged.
  */
 export const WeekPage = memo(function WeekPage({
@@ -152,12 +155,13 @@ export const WeekPage = memo(function WeekPage({
 	monthNames,
 	hours,
 	twoPages,
+	direction,
 	locale,
 	highlightWeekends,
 	showWeekNumbers,
 	setup,
 }: WeekPageProps) {
-	const stacked = setup.orientation === 'portrait'
+	const stacked = stacksDays(direction, setup.orientation, twoPages)
 	const days = cells.flat()
 	const gridProps = { weekdays, weekStart, monthNames, hours, highlightWeekends, stacked }
 	const header = (

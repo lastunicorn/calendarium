@@ -26,6 +26,7 @@ export function WeekPerPageLayout({ config }: WeekPerPageLayoutProps) {
 		weekendDisplay,
 		weekPageLines,
 		twoPagesPerWeek,
+		weekDayDirection,
 		hourFormat,
 		firstHour,
 		lastHour,
@@ -56,6 +57,7 @@ export function WeekPerPageLayout({ config }: WeekPerPageLayoutProps) {
 			cells={cells}
 			hours={hours}
 			twoPages={twoPagesPerWeek}
+			direction={weekDayDirection}
 			weekdays={weekdays}
 			weekStart={weekStart}
 			monthNames={monthNames}
