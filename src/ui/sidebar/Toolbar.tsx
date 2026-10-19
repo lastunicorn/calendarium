@@ -8,7 +8,7 @@ import {
 import { IconButton } from '../components/IconButton'
 import { ExportIcon, ImportIcon, PrintIcon, ResetIcon } from '../components/icons'
 import { downloadFile } from '../download'
-import { LAYOUT_NAMES } from './layoutNames'
+import { LAYOUT_VIEWS } from '../layouts/registry'
 import styles from './Toolbar.module.css'
 
 interface ToolbarProps {
@@ -66,7 +66,8 @@ export function Toolbar({ config, onReset, onImport }: ToolbarProps) {
 	}
 
 	function handleResetClick() {
-		if (!window.confirm(`Reset ${LAYOUT_NAMES[layout]} settings to their defaults?`)) return
+		if (!window.confirm(`Reset ${LAYOUT_VIEWS[layout].name} settings to their defaults?`))
+			return
 		setImportError('')
 		setImportNotice('')
 		onReset(layout)

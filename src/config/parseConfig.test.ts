@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { DEFAULTS, defaultAppConfig, LAYOUT_IDS } from './CalendarConfig'
+import { LAYOUT_IDS } from './CalendarConfig'
+import { defaultAppConfig, defaultLayoutConfig } from './layouts'
 import { parseConfig, parseLayoutConfig, toStoredConfig } from './parseConfig'
 import { CONFIG_VERSION } from './version'
 
@@ -98,7 +99,7 @@ describe('parseConfig', () => {
 			version: CONFIG_VERSION,
 			layouts: { 'year-per-page': 'broken', 'day-per-page': { year: 2040 } },
 		})
-		expect(config.layouts['year-per-page']).toEqual(DEFAULTS['year-per-page']())
+		expect(config.layouts['year-per-page']).toEqual(defaultLayoutConfig('year-per-page'))
 		expect(config.layouts['day-per-page'].year).toBe(2040)
 	})
 
@@ -107,7 +108,9 @@ describe('parseConfig', () => {
 			version: CONFIG_VERSION,
 			layouts: { 'month-per-page': { page: 'a4' } },
 		})
-		expect(config.layouts['month-per-page'].page).toEqual(DEFAULTS['month-per-page']().page)
+		expect(config.layouts['month-per-page'].page).toEqual(
+			defaultLayoutConfig('month-per-page').page,
+		)
 	})
 
 	it('validates each margin separately', () => {
@@ -120,7 +123,7 @@ describe('parseConfig', () => {
 			},
 		})
 		expect(config.layouts['year-per-page'].page.margins).toEqual({
-			...DEFAULTS['year-per-page']().page.margins,
+			...defaultLayoutConfig('year-per-page').page.margins,
 			top: 20,
 		})
 	})
@@ -153,7 +156,7 @@ describe('parseConfig', () => {
 
 	it('gives each layout defaults that pass its own validation', () => {
 		for (const layout of LAYOUT_IDS) {
-			const defaults = DEFAULTS[layout]()
+			const defaults = defaultLayoutConfig(layout)
 			expect(parseLayoutConfig(layout, defaults)).toEqual({
 				config: defaults,
 				ignored: [],
@@ -162,8 +165,8 @@ describe('parseConfig', () => {
 	})
 
 	it('gives the layouts different defaults', () => {
-		expect(DEFAULTS['month-per-page']().page.orientation).toBe('landscape')
-		expect(DEFAULTS['year-per-page']().page.orientation).toBe('portrait')
+		expect(defaultLayoutConfig('month-per-page').page.orientation).toBe('landscape')
+		expect(defaultLayoutConfig('year-per-page').page.orientation).toBe('portrait')
 	})
 })
 

@@ -1,13 +1,12 @@
 import { LAYOUT_IDS, type LayoutId } from '../../config/CalendarConfig'
-import { optionsFrom } from '../fields/options'
 import { SelectField } from '../fields/SelectField'
+import { LAYOUT_VIEWS } from '../layouts/registry'
 import { Section } from './Section'
 
-const LAYOUT_OPTIONS = optionsFrom(LAYOUT_IDS, {
-	'year-per-page': 'Year (Whole year on one page)',
-	'month-per-page': 'Month (One month per page)',
-	'day-per-page': 'Day (One day per page)',
-})
+const LAYOUT_OPTIONS = LAYOUT_IDS.map((layout) => ({
+	value: layout,
+	label: LAYOUT_VIEWS[layout].label,
+}))
 
 interface LayoutSectionProps {
 	layout: LayoutId

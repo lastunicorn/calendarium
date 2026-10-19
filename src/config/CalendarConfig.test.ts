@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { buildMonth } from '../core/calendar'
-import { DEFAULTS, isYear, LAYOUT_IDS, MAX_YEAR, MIN_YEAR } from './CalendarConfig'
+import { isYear, LAYOUT_IDS, MAX_YEAR, MIN_YEAR } from './CalendarConfig'
+import { defaultLayoutConfig } from './layouts'
 
 describe('isYear', () => {
 	it('accepts the Gregorian years from MIN_YEAR to MAX_YEAR', () => {
@@ -33,7 +34,7 @@ describe('default locale', () => {
 
 	function defaultLocalesFor(language: string) {
 		vi.stubGlobal('navigator', { language })
-		return LAYOUT_IDS.map((layout) => DEFAULTS[layout]().locale)
+		return LAYOUT_IDS.map((layout) => defaultLayoutConfig(layout).locale)
 	}
 
 	it('is British English for every layout in an English browser', () => {
@@ -53,6 +54,6 @@ describe('default locale', () => {
 
 describe('default week start', () => {
 	it('lets the language choose the first day of the week in every layout', () => {
-		for (const layout of LAYOUT_IDS) expect(DEFAULTS[layout]().weekStart).toBe('auto')
+		for (const layout of LAYOUT_IDS) expect(defaultLayoutConfig(layout).weekStart).toBe('auto')
 	})
 })

@@ -1,10 +1,8 @@
-import type { ComponentType } from 'react'
 import type { AppConfig, LayoutConfigs, LayoutId } from '../../config/CalendarConfig'
+import { layoutView } from '../layouts/registry'
 import type { UpdateLayoutConfig } from '../useCalendarConfig'
 import styles from './ConfigForm.module.css'
-import { FORMS } from './forms'
 import { LayoutSection } from './LayoutSection'
-import type { ConfigSectionProps } from './Section'
 
 interface ConfigFormProps {
 	config: AppConfig
@@ -20,7 +18,7 @@ interface LayoutFormProps<K extends LayoutId> {
 
 /** The form of `layout`'s options; generic so the form and its options stay paired. */
 function LayoutForm<K extends LayoutId>({ layout, config, onUpdate }: LayoutFormProps<K>) {
-	const Form: ComponentType<ConfigSectionProps<LayoutConfigs[K]>> = FORMS[layout]
+	const Form = layoutView(layout).Form
 
 	function handleUpdate(patch: Partial<LayoutConfigs[K]>) {
 		onUpdate(layout, patch)

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { DEFAULTS, LAYOUT_IDS } from './CalendarConfig'
+import { LAYOUT_IDS } from './CalendarConfig'
+import { defaultLayoutConfig } from './layouts'
 import { parseConfigFile, serializeLayoutConfig } from './configFile'
 import { FILE_FORMAT } from './migrations'
 import { APP_VERSION, CONFIG_VERSION } from './version'
@@ -11,7 +12,7 @@ function fileText(fields: Record<string, unknown>): string {
 
 describe('config files', () => {
 	it('round-trips one layout through serializeLayoutConfig', () => {
-		const defaults = DEFAULTS['day-per-page']()
+		const defaults = defaultLayoutConfig('day-per-page')
 		const config = {
 			...defaults,
 			year: 2031,
@@ -28,7 +29,7 @@ describe('config files', () => {
 	})
 
 	it('writes the format, the versions, the layout and only that layout’s options', () => {
-		const config = DEFAULTS['month-per-page']()
+		const config = defaultLayoutConfig('month-per-page')
 		const data = JSON.parse(serializeLayoutConfig('month-per-page', config))
 		expect(data).toEqual({
 			format: FILE_FORMAT,
@@ -85,7 +86,7 @@ describe('config files', () => {
 	it('accepts a file holding no options', () => {
 		const file = JSON.stringify({ format: FILE_FORMAT, version: CONFIG_VERSION })
 		expect(parseConfigFile(file, 'month-per-page')?.config).toEqual(
-			DEFAULTS['month-per-page'](),
+			defaultLayoutConfig('month-per-page'),
 		)
 	})
 
@@ -121,7 +122,7 @@ describe('config files', () => {
 			})
 			expect(parseConfigFile(file, layout)).toEqual({
 				layout,
-				config: { ...DEFAULTS[layout](), year: 2030 },
+				config: { ...defaultLayoutConfig(layout), year: 2030 },
 				ignored: ['page.orientation'],
 				newer: false,
 			})

@@ -1,5 +1,5 @@
 import type { AppConfig, LayoutConfigs, LayoutId } from './CalendarConfig'
-import { normalizeLayout } from './normalize'
+import { normalizeLayout } from './layouts'
 
 // The per-layout actions have one variant per layout, so a patch or config has that layout's type.
 export type ConfigAction =

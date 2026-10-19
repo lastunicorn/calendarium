@@ -1,7 +1,8 @@
 import { useEffect, useReducer, useRef } from 'react'
-import { DEFAULTS, type LayoutConfigs, type LayoutId } from '../config/CalendarConfig'
+import type { LayoutConfigs, LayoutId } from '../config/CalendarConfig'
 import type { ImportedLayoutConfig } from '../config/configFile'
 import { type ConfigAction, configReducer } from '../config/configReducer'
+import { defaultLayoutConfig } from '../config/layouts'
 import { loadConfig, saveConfig } from '../config/storage'
 
 /** Changes some of one layout's options. */
@@ -33,7 +34,11 @@ export function useCalendarConfig() {
 	}
 
 	function resetLayout(layout: LayoutId) {
-		dispatch({ type: 'replaceLayout', layout, config: DEFAULTS[layout]() } as ConfigAction)
+		dispatch({
+			type: 'replaceLayout',
+			layout,
+			config: defaultLayoutConfig(layout),
+		} as ConfigAction)
 	}
 
 	function importLayout({ layout, config }: ImportedLayoutConfig) {

@@ -1,10 +1,10 @@
-import type { MonthPerPageConfig } from '../../config/CalendarConfig'
-import { monthYearName } from '../../core/locale'
-import { CalendarHeader } from './CalendarHeader'
+import type { MonthPerPageConfig } from '../../../config/layouts/monthPerPage'
+import { monthYearName } from '../../../core/locale'
+import { CalendarHeader } from '../CalendarHeader'
 import { MonthGrid } from './MonthGrid'
 import styles from './MonthPerPageLayout.module.css'
-import { Page } from './Page'
-import { useCalendarModel } from './useCalendarModel'
+import { Page } from '../Page'
+import { useCalendarModel } from '../useCalendarModel'
 
 interface MonthPerPageLayoutProps {
 	config: MonthPerPageConfig

@@ -1,6 +1,7 @@
 import { render } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
-import { type AppConfig, defaultAppConfig, type LayoutId } from '../../config/CalendarConfig'
+import type { AppConfig, LayoutId } from '../../config/CalendarConfig'
+import { defaultAppConfig } from '../../config/layouts'
 import { Preview } from './Preview'
 
 function noop() {}

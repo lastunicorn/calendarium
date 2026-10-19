@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { DEFAULTS, defaultAppConfig } from './CalendarConfig'
 import { configReducer } from './configReducer'
+import { defaultAppConfig, defaultLayoutConfig } from './layouts'
 
 describe('configReducer', () => {
 	it('selectLayout changes only the active layout', () => {
@@ -58,7 +58,7 @@ describe('configReducer', () => {
 
 	it('replaceLayout swaps one layout’s options and keeps the active layout', () => {
 		const config = defaultAppConfig()
-		const next = { ...DEFAULTS['day-per-page'](), year: 1999 }
+		const next = { ...defaultLayoutConfig('day-per-page'), year: 1999 }
 		const replaced = configReducer(config, {
 			type: 'replaceLayout',
 			layout: 'day-per-page',
@@ -70,7 +70,7 @@ describe('configReducer', () => {
 	})
 
 	it('importLayout swaps one layout’s options and shows that layout', () => {
-		const next = { ...DEFAULTS['month-per-page'](), year: 1999 }
+		const next = { ...defaultLayoutConfig('month-per-page'), year: 1999 }
 		const imported = configReducer(defaultAppConfig(), {
 			type: 'importLayout',
 			layout: 'month-per-page',

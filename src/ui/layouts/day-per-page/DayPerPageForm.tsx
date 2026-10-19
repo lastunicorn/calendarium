@@ -1,9 +1,9 @@
-import type { DayPerPageConfig } from '../../config/CalendarConfig'
-import { AppearanceSection } from './AppearanceSection'
-import { CalendarSection } from './CalendarSection'
+import type { DayPerPageConfig } from '../../../config/layouts/dayPerPage'
+import { AppearanceSection } from '../../sidebar/AppearanceSection'
+import { CalendarSection } from '../../sidebar/CalendarSection'
 import { DayPageSection } from './DayPageSection'
-import { PageSection } from './PageSection'
-import type { ConfigSectionProps } from './Section'
+import { PageSection } from '../../sidebar/PageSection'
+import type { ConfigSectionProps } from '../../sidebar/Section'
 
 /** The `day-per-page` options, including what fills each day. */
 export function DayPerPageForm({ config, onUpdate }: ConfigSectionProps<DayPerPageConfig>) {

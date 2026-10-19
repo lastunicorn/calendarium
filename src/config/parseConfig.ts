@@ -1,74 +1,21 @@
-import { HOUR_FORMATS, isWeekStartSetting, LOCALES, WEEKDAY_FORMATS } from '../core/locale'
 import { ORIENTATIONS, PAPER_SIZES } from '../core/paper'
-import { WEEKEND_HIGHLIGHTS } from '../core/weekend'
 import {
 	type AppConfig,
-	type CommonConfig,
-	DAY_PAGE_LINES,
-	DEFAULTS,
-	defaultAppConfig,
-	isHour,
 	isMargin,
-	isYear,
 	LAYOUT_IDS,
 	type LayoutConfigs,
 	type LayoutId,
 	MARGIN_SIDES,
 	type PageSetup,
 } from './CalendarConfig'
+import { defaultAppConfig, layoutSpec, mapLayouts } from './layouts'
 import { asObject, type StoredData, upgradeStorage } from './migrations'
-import { normalizeLayout } from './normalize'
+import { oneOf, type Validators } from './validators'
 import { APP_VERSION, CONFIG_VERSION } from './version'
 
 /** The app config as written to storage: tagged with its config version and the app version. */
 export function toStoredConfig(config: AppConfig) {
 	return { version: CONFIG_VERSION, app: APP_VERSION, ...config }
-}
-
-function oneOf<T>(values: readonly T[]) {
-	return (value: unknown): value is T => values.includes(value as T)
-}
-
-function isString(value: unknown): value is string {
-	return typeof value === 'string'
-}
-
-function isBoolean(value: unknown): value is boolean {
-	return typeof value === 'boolean'
-}
-
-type Validator<T> = (value: unknown) => value is T
-
-/** One validator per listed field of `T`. As a mapped type, a missing one is a compile error. */
-type Validators<T, K extends keyof T> = { [P in K]: Validator<T[P]> }
-
-/** `page` is an object, validated by its own fields below. */
-const COMMON_VALIDATORS: Validators<CommonConfig, Exclude<keyof CommonConfig, 'page'>> = {
-	year: isYear,
-	locale: oneOf(LOCALES),
-	weekStart: isWeekStartSetting,
-	weekdayFormat: oneOf(WEEKDAY_FORMATS),
-	highlightWeekends: oneOf(WEEKEND_HIGHLIGHTS),
-	showWeekNumbers: isBoolean,
-}
-
-/** Each layout's validators: the common ones plus its own fields. */
-const LAYOUT_VALIDATORS: {
-	[K in LayoutId]: Validators<LayoutConfigs[K], Exclude<keyof LayoutConfigs[K], 'page'>>
-} = {
-	'year-per-page': {
-		...COMMON_VALIDATORS,
-		title: isString,
-		subtitle: isString,
-	},
-	'month-per-page': COMMON_VALIDATORS,
-	'day-per-page': {
-		...COMMON_VALIDATORS,
-		dayPageLines: oneOf(DAY_PAGE_LINES),
-		hourFormat: oneOf(HOUR_FORMATS),
-		firstHour: isHour,
-		lastHour: isHour,
-	},
 }
 
 /** Margins are validated per side instead, so one bad side keeps the others. */
@@ -128,12 +75,13 @@ function parseCurrentLayoutConfig<K extends LayoutId>(
 	data: unknown,
 	ignored: string[] = [],
 ): LayoutConfigs[K] {
-	const config = DEFAULTS[layout]()
+	const spec = layoutSpec(layout)
+	const config = spec.defaults()
 	const stored = asObject(data)
 	if (stored === null) return config
-	copyValid(config, stored, LAYOUT_VALIDATORS[layout], ignored)
+	copyValid(config, stored, spec.validators, ignored)
 	copyValidPage(config.page, stored.page, ignored)
-	return normalizeLayout(layout, config)
+	return spec.normalize(config)
 }
 
 /** One layout's options parsed from untrusted data, with the fields that were dropped. */
@@ -177,10 +125,6 @@ export function parseConfig(data: unknown): AppConfig {
 
 	if (isLayoutId(stored.layout)) config.layout = stored.layout
 	const layouts = asObject(stored.layouts) ?? {}
-	config.layouts = {
-		'year-per-page': parseCurrentLayoutConfig('year-per-page', layouts['year-per-page']),
-		'month-per-page': parseCurrentLayoutConfig('month-per-page', layouts['month-per-page']),
-		'day-per-page': parseCurrentLayoutConfig('day-per-page', layouts['day-per-page']),
-	}
+	config.layouts = mapLayouts((layout) => parseCurrentLayoutConfig(layout, layouts[layout]))
 	return config
 }

@@ -1,8 +1,8 @@
-import type { MonthPerPageConfig } from '../../config/CalendarConfig'
-import { AppearanceSection } from './AppearanceSection'
-import { CalendarSection } from './CalendarSection'
-import { PageSection } from './PageSection'
-import type { ConfigSectionProps } from './Section'
+import type { MonthPerPageConfig } from '../../../config/layouts/monthPerPage'
+import { AppearanceSection } from '../../sidebar/AppearanceSection'
+import { CalendarSection } from '../../sidebar/CalendarSection'
+import { PageSection } from '../../sidebar/PageSection'
+import type { ConfigSectionProps } from '../../sidebar/Section'
 
 /** The `month-per-page` options. */
 export function MonthPerPageForm({ config, onUpdate }: ConfigSectionProps<MonthPerPageConfig>) {

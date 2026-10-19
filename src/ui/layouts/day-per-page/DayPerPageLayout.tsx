@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
-import type { DayPerPageConfig } from '../../config/CalendarConfig'
-import { daysOfYear } from '../../core/calendar'
-import { hourNames } from '../../core/locale'
+import type { DayPerPageConfig } from '../../../config/layouts/dayPerPage'
+import { daysOfYear } from '../../../core/calendar'
+import { hourNames } from '../../../core/locale'
 import { DayPage } from './DayPage'
-import { useCalendarModel } from './useCalendarModel'
+import { useCalendarModel } from '../useCalendarModel'
 
 interface DayPerPageLayoutProps {
 	config: DayPerPageConfig

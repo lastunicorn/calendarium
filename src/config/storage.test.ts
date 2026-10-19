@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { defaultAppConfig } from './CalendarConfig'
+import { defaultAppConfig } from './layouts'
 import { loadConfig, saveConfig } from './storage'
 import { APP_VERSION, CONFIG_VERSION } from './version'
 

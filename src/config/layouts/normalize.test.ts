@@ -1,12 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { DEFAULTS, defaultAppConfig } from './CalendarConfig'
-import { configReducer } from './configReducer'
-import { normalizeLayout } from './normalize'
-import { parseConfig, toStoredConfig } from './parseConfig'
+import { configReducer } from '../configReducer'
+import { parseConfig, toStoredConfig } from '../parseConfig'
+import { defaultAppConfig, defaultLayoutConfig, normalizeLayout } from './index'
 
 describe('normalizeLayout', () => {
 	it('puts a reversed day schedule in order', () => {
-		const config = { ...DEFAULTS['day-per-page'](), firstHour: 20, lastHour: 8 }
+		const config = { ...defaultLayoutConfig('day-per-page'), firstHour: 20, lastHour: 8 }
 		expect(normalizeLayout('day-per-page', config)).toMatchObject({
 			firstHour: 8,
 			lastHour: 20,
@@ -14,9 +13,9 @@ describe('normalizeLayout', () => {
 	})
 
 	it('returns a config that already follows the rules as is', () => {
-		const day = { ...DEFAULTS['day-per-page'](), firstHour: 9, lastHour: 9 }
+		const day = { ...defaultLayoutConfig('day-per-page'), firstHour: 9, lastHour: 9 }
 		expect(normalizeLayout('day-per-page', day)).toBe(day)
-		const year = DEFAULTS['year-per-page']()
+		const year = defaultLayoutConfig('year-per-page')
 		expect(normalizeLayout('year-per-page', year)).toBe(year)
 	})
 
@@ -44,7 +43,7 @@ describe('normalizeLayout', () => {
 		const imported = configReducer(defaultAppConfig(), {
 			type: 'importLayout',
 			layout: 'day-per-page',
-			config: { ...DEFAULTS['day-per-page'](), firstHour: 18, lastHour: 10 },
+			config: { ...defaultLayoutConfig('day-per-page'), firstHour: 18, lastHour: 10 },
 		})
 		expect(imported.layouts['day-per-page']).toMatchObject({ firstHour: 10, lastHour: 18 })
 	})

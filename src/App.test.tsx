@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import App from './App'
-import { DEFAULTS } from './config/CalendarConfig'
+import { defaultLayoutConfig } from './config/layouts'
 import { serializeLayoutConfig } from './config/configFile'
 
 /** Chooses `file` in the toolbar's hidden file input, as the import button's dialog would. */
@@ -20,7 +20,7 @@ describe('App import', () => {
 		const { container } = render(<App />)
 		expect(layoutSelect().value).toBe('year-per-page')
 
-		const options = { ...DEFAULTS['month-per-page'](), year: 2030 }
+		const options = { ...defaultLayoutConfig('month-per-page'), year: 2030 }
 		const text = serializeLayoutConfig('month-per-page', options)
 		chooseImportFile(container, new File([text], 'month.json', { type: 'application/json' }))
 

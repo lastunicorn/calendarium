@@ -1,6 +1,6 @@
 import { Fragment } from 'react'
-import { type CalendarMonth, visibleWeeks, weekNumber } from '../../core/calendar'
-import { isHighlightedColumn, isHighlightedDay, type WeekendHighlight } from '../../core/weekend'
+import { type CalendarMonth, visibleWeeks, weekNumber } from '../../../core/calendar'
+import { isHighlightedColumn, isHighlightedDay, type WeekendHighlight } from '../../../core/weekend'
 import styles from './MonthGrid.module.css'
 
 interface MonthGridProps {

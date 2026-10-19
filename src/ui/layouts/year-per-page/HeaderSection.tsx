@@ -1,6 +1,6 @@
-import type { YearPerPageConfig } from '../../config/CalendarConfig'
-import { TextField } from '../fields/TextField'
-import { type ConfigSectionProps, Section } from './Section'
+import type { YearPerPageConfig } from '../../../config/layouts/yearPerPage'
+import { TextField } from '../../fields/TextField'
+import { type ConfigSectionProps, Section } from '../../sidebar/Section'
 
 /** The heading printed above the calendar. */
 export function HeaderSection({ config, onUpdate }: ConfigSectionProps<YearPerPageConfig>) {

@@ -1,16 +1,20 @@
-import type { ComponentType } from 'react'
 import type { LayoutConfigs, LayoutId } from '../../config/CalendarConfig'
-import { DayPerPageLayout } from './DayPerPageLayout'
-import { MonthPerPageLayout } from './MonthPerPageLayout'
-import { YearPerPageLayout } from './YearPerPageLayout'
+import { DAY_PER_PAGE_VIEW } from './day-per-page'
+import type { LayoutView } from './LayoutView'
+import { MONTH_PER_PAGE_VIEW } from './month-per-page'
+import { YEAR_PER_PAGE_VIEW } from './year-per-page'
 
 /**
- * The component that draws each layout from that layout's options. A layout renders its own
- * `Page`s, so it decides how many pages there are. Keyed by every `LayoutId`, so a new id without
- * a component won't compile.
+ * Each layout's component, form and labels. Keyed by every `LayoutId`, so a new id without a view
+ * won't compile. The config side (defaults, validators, rules) is in `config/layouts/`.
  */
-export const LAYOUTS: { [K in LayoutId]: ComponentType<{ config: LayoutConfigs[K] }> } = {
-	'year-per-page': YearPerPageLayout,
-	'month-per-page': MonthPerPageLayout,
-	'day-per-page': DayPerPageLayout,
+export const LAYOUT_VIEWS: { [K in LayoutId]: LayoutView<LayoutConfigs[K]> } = {
+	'year-per-page': YEAR_PER_PAGE_VIEW,
+	'month-per-page': MONTH_PER_PAGE_VIEW,
+	'day-per-page': DAY_PER_PAGE_VIEW,
+}
+
+/** `layout`'s view, typed by its own options, so its component and form stay paired with them. */
+export function layoutView<K extends LayoutId>(layout: K): LayoutView<LayoutConfigs[K]> {
+	return LAYOUT_VIEWS[layout]
 }

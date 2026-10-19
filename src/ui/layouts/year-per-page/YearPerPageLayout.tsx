@@ -1,8 +1,8 @@
-import type { YearPerPageConfig } from '../../config/CalendarConfig'
-import { CalendarHeader } from './CalendarHeader'
-import { MiniMonth } from './MiniMonth'
-import { Page } from './Page'
-import { useCalendarModel } from './useCalendarModel'
+import type { YearPerPageConfig } from '../../../config/layouts/yearPerPage'
+import { CalendarHeader } from '../CalendarHeader'
+import { MiniMonth } from '../MiniMonth'
+import { Page } from '../Page'
+import { useCalendarModel } from '../useCalendarModel'
 import styles from './YearPerPageLayout.module.css'
 
 interface YearPerPageLayoutProps {

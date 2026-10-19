@@ -1,7 +1,6 @@
-import type { ComponentType } from 'react'
 import type { AppConfig, LayoutConfigs, LayoutId } from '../../config/CalendarConfig'
 import { pageSizeCss } from '../../core/paper'
-import { LAYOUTS } from '../layouts/registry'
+import { layoutView } from '../layouts/registry'
 import styles from './Preview.module.css'
 import { PreviewErrorBoundary } from './PreviewErrorBoundary'
 
@@ -18,7 +17,7 @@ interface ActiveLayoutProps<K extends LayoutId> {
 
 /** Draws `layout` with its own options; generic so the component and its options stay paired. */
 function ActiveLayout<K extends LayoutId>({ layout, config }: ActiveLayoutProps<K>) {
-	const Layout: ComponentType<{ config: LayoutConfigs[K] }> = LAYOUTS[layout]
+	const Layout = layoutView(layout).Component
 	return <Layout config={config} />
 }
 

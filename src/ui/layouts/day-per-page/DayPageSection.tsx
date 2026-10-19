@@ -5,12 +5,12 @@ import {
 	isHour,
 	MAX_HOUR,
 	MIN_HOUR,
-} from '../../config/CalendarConfig'
-import { HOUR_FORMATS, type HourFormat } from '../../core/locale'
-import { NumberField } from '../fields/NumberField'
-import { optionsFrom } from '../fields/options'
-import { SelectField } from '../fields/SelectField'
-import { type ConfigSectionProps, Section } from './Section'
+} from '../../../config/layouts/dayPerPage'
+import { HOUR_FORMATS, type HourFormat } from '../../../core/locale'
+import { NumberField } from '../../fields/NumberField'
+import { optionsFrom } from '../../fields/options'
+import { SelectField } from '../../fields/SelectField'
+import { type ConfigSectionProps, Section } from '../../sidebar/Section'
 
 const DAY_PAGE_LINES_OPTIONS = optionsFrom(DAY_PAGE_LINES, {
 	hours: 'Hourly schedule',
@@ -42,7 +42,7 @@ export function DayPageSection({ config, onUpdate }: ConfigSectionProps<DayPerPa
 	}
 
 	// Each bound stops at the other, so the range can't be turned around while typing; the config
-	// would put a reversed range in order anyway (`config/normalize.ts`).
+	// would put a reversed range in order anyway (`normalize` in `config/layouts/dayPerPage.ts`).
 	function isValidFirstHour(hour: number) {
 		return isHour(hour) && hour <= config.lastHour
 	}
