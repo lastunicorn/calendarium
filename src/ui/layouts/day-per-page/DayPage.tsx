@@ -22,6 +22,39 @@ function ruledLineCount(setup: PageSetup): number {
 	return Math.ceil(contentBox(setup).height / RULED_LINE_SPACING)
 }
 
+interface DayLinesProps {
+	lines: DayPageLines
+	/** Labels of the hours drawn here, one row each. */
+	hours: string[]
+	setup: PageSetup
+}
+
+/** The writing area filling a day's page under its header, or all of its second page. */
+function DayLines({ lines, hours, setup }: DayLinesProps) {
+	if (lines === 'ruled') {
+		return (
+			<div className={styles.ruled} style={{ gridAutoRows: `${RULED_LINE_SPACING}mm` }}>
+				{Array.from({ length: ruledLineCount(setup) }, (_, index) => (
+					// The lines are identical and never reorder, so the index is the key.
+					<div key={index} className={styles.ruledLine} />
+				))}
+			</div>
+		)
+	}
+	return (
+		<div
+			className={styles.schedule}
+			style={{ gridTemplateRows: `repeat(${hours.length}, 1fr)` }}
+		>
+			{hours.map((hour) => (
+				<div key={hour} className={styles.hour}>
+					<span className={styles.hourLabel}>{hour}</span>
+				</div>
+			))}
+		</div>
+	)
+}
+
 interface DayPageProps {
 	day: CalendarDay
 	/** 365 or 366, for the "Day 42 / 365" line. */
@@ -37,6 +70,8 @@ interface DayPageProps {
 	title: DayPageTitle
 	/** What fills the page under the header. */
 	lines: DayPageLines
+	/** Whether a second page, without a header, continues the lines or the schedule's hours. */
+	twoPages: boolean
 	/** Language of the date names and of the week and day-of-year line. */
 	locale: Locale
 	highlightWeekends: WeekendHighlight
@@ -49,8 +84,8 @@ interface DayPageProps {
 }
 
 /**
- * One day's sheet. Memoized because a year has 366 of them and most config changes leave
- * each page's props unchanged.
+ * One day's sheet, or two when the day spans a second page. Memoized because a year has 366 of
+ * them and most config changes leave each page's props unchanged.
  */
 export const DayPage = memo(function DayPage({
 	day,
@@ -61,6 +96,7 @@ export const DayPage = memo(function DayPage({
 	hours,
 	title,
 	lines,
+	twoPages,
 	locale,
 	highlightWeekends,
 	showWeekNumbers,
@@ -78,7 +114,10 @@ export const DayPage = memo(function DayPage({
 		.filter(Boolean)
 		.join(' · ')
 
-	return (
+	// Over two pages, each gets half of the hours, the first one the extra hour of an odd count.
+	const split = twoPages ? Math.ceil(hours.length / 2) : hours.length
+
+	const firstPage = (
 		<Page setup={setup}>
 			<div className={styles.layout}>
 				<div className={styles.top}>
@@ -106,29 +145,19 @@ export const DayPage = memo(function DayPage({
 						</div>
 					)}
 				</div>
-				{lines === 'ruled' ? (
-					<div
-						className={styles.ruled}
-						style={{ gridAutoRows: `${RULED_LINE_SPACING}mm` }}
-					>
-						{Array.from({ length: ruledLineCount(setup) }, (_, index) => (
-							// The lines are identical and never reorder, so the index is the key.
-							<div key={index} className={styles.ruledLine} />
-						))}
-					</div>
-				) : (
-					<div
-						className={styles.schedule}
-						style={{ gridTemplateRows: `repeat(${hours.length}, 1fr)` }}
-					>
-						{hours.map((hour) => (
-							<div key={hour} className={styles.hour}>
-								<span className={styles.hourLabel}>{hour}</span>
-							</div>
-						))}
-					</div>
-				)}
+				<DayLines lines={lines} hours={hours.slice(0, split)} setup={setup} />
 			</div>
 		</Page>
+	)
+	if (!twoPages) return firstPage
+	return (
+		<>
+			{firstPage}
+			<Page setup={setup}>
+				<div className={styles.layout}>
+					<DayLines lines={lines} hours={hours.slice(split)} setup={setup} />
+				</div>
+			</Page>
+		</>
 	)
 })

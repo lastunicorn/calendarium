@@ -16,6 +16,11 @@ export interface DayPerPageConfig extends CommonConfig, HourSchedule {
 	dayPageTitle: DayPageTitle
 	/** What fills the page under its header; the schedule's hours come from `HourSchedule`. */
 	dayPageLines: DayPageLines
+	/**
+	 * Whether each day takes two pages: the second, without a header, continues the ruled lines or
+	 * holds the second half of the schedule's hours.
+	 */
+	twoPagesPerDay: boolean
 	/** Whether the day's month is drawn small in the top right corner, with the day marked. */
 	showMiniMonth: boolean
 	/** Whether the header's details line shows the ISO week ("Week 1"). */
@@ -31,6 +36,7 @@ export const DAY_PER_PAGE_SPEC: LayoutSpec<DayPerPageConfig> = {
 		showWeekNumbers: true,
 		dayPageTitle: 'weekday',
 		dayPageLines: 'hours',
+		twoPagesPerDay: false,
 		...scheduleDefaults(),
 		showMiniMonth: true,
 		showHeaderWeek: true,
@@ -40,6 +46,7 @@ export const DAY_PER_PAGE_SPEC: LayoutSpec<DayPerPageConfig> = {
 		...COMMON_VALIDATORS,
 		dayPageTitle: oneOf(DAY_PAGE_TITLES),
 		dayPageLines: oneOf(DAY_PAGE_LINES),
+		twoPagesPerDay: isBoolean,
 		...SCHEDULE_VALIDATORS,
 		showMiniMonth: isBoolean,
 		showHeaderWeek: isBoolean,

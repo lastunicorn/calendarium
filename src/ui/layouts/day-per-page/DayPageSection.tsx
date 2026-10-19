@@ -22,7 +22,7 @@ const DAY_PAGE_LINES_OPTIONS = optionsFrom(DAY_PAGE_LINES, {
 	ruled: 'Ruled lines',
 })
 
-/** What fills a day's page: an hourly schedule and its hours, or ruled lines. */
+/** What fills a day's page: an hourly schedule and its hours, or ruled lines, on one page or two. */
 export function DayPageSection({ config, onUpdate }: ConfigSectionProps<DayPerPageConfig>) {
 	function handleDayPageTitleChange(dayPageTitle: DayPageTitle) {
 		onUpdate({ dayPageTitle })
@@ -30,6 +30,10 @@ export function DayPageSection({ config, onUpdate }: ConfigSectionProps<DayPerPa
 
 	function handleDayPageLinesChange(dayPageLines: DayPageLines) {
 		onUpdate({ dayPageLines })
+	}
+
+	function handleTwoPagesPerDayChange(twoPagesPerDay: boolean) {
+		onUpdate({ twoPagesPerDay })
 	}
 
 	function handleShowMiniMonthChange(showMiniMonth: boolean) {
@@ -72,6 +76,11 @@ export function DayPageSection({ config, onUpdate }: ConfigSectionProps<DayPerPa
 				value={config.dayPageLines}
 				options={DAY_PAGE_LINES_OPTIONS}
 				onChange={handleDayPageLinesChange}
+			/>
+			<CheckboxField
+				label="Two pages per day"
+				checked={config.twoPagesPerDay}
+				onChange={handleTwoPagesPerDayChange}
 			/>
 			{config.dayPageLines === 'hours' && (
 				<ScheduleFields config={config} onUpdate={onUpdate} />

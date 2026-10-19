@@ -80,6 +80,29 @@ describe('Preview', () => {
 		expect(pageCount('day-per-page', 2024)).toBe(366)
 	})
 
+	it('draws two pages per day, splitting the hours evenly between them', () => {
+		const config = configFor('day-per-page', 2025)
+		Object.assign(config.layouts['day-per-page'], {
+			twoPagesPerDay: true,
+			dayPageLines: 'hours',
+			hourFormat: '24h',
+			firstHour: 8,
+			lastHour: 13,
+		})
+		const { container, getAllByText } = render(<Preview config={config} onResetLayout={noop} />)
+		const pages = container.querySelectorAll('section')
+		expect(pages).toHaveLength(730)
+		// 08:00–10:00 under the header, 11:00–13:00 on the next page, which has no heading.
+		expect(pages[0].textContent).toContain('10:00')
+		expect(pages[0].textContent).not.toContain('11:00')
+		expect(pages[1].textContent).toContain('11:00')
+		expect(pages[1].textContent).toContain('13:00')
+		expect(pages[1].textContent).not.toContain('10:00')
+		expect(pages[1].querySelector('h1, h2, h3')).toBeNull()
+		expect(getAllByText('08:00')).toHaveLength(365)
+		expect(getAllByText('13:00')).toHaveLength(365)
+	})
+
 	it('sets the printed paper size from the layout', () => {
 		const { container } = render(
 			<Preview config={configFor('month-per-page', 2025)} onResetLayout={noop} />,

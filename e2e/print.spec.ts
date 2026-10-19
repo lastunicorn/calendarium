@@ -82,3 +82,11 @@ for (const { layout, pages, width, height } of CASES) {
 		expect(clipped, 'pages whose content is cut off').toEqual([])
 	})
 }
+
+test('day-per-page prints two pages per day when asked', async ({ page }) => {
+	await showLayout(page, 'day-per-page', YEAR)
+	await page.getByRole('checkbox', { name: 'Two pages per day' }).check()
+
+	const sizes = pdfPageSizes(await page.pdf({ preferCSSPageSize: true, printBackground: true }))
+	expect(sizes).toHaveLength(2 * 366)
+})
