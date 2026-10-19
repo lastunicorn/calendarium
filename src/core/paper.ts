@@ -1,4 +1,4 @@
-export const PAPER_SIZES = ['a4', 'a5', 'a3', 'letter'] as const
+export const PAPER_SIZES = ['a3', 'a4', 'a5', 'letter'] as const
 export type PaperSize = (typeof PAPER_SIZES)[number]
 
 export const ORIENTATIONS = ['portrait', 'landscape'] as const
@@ -14,9 +14,9 @@ interface Paper {
 
 /** The single source of paper dimensions: preview boxes and the printed `@page` size use it. */
 export const PAPERS: Record<PaperSize, Paper> = {
+	a3: { cssName: 'A3', width: 297, height: 420 },
 	a4: { cssName: 'A4', width: 210, height: 297 },
 	a5: { cssName: 'A5', width: 148, height: 210 },
-	a3: { cssName: 'A3', width: 297, height: 420 },
 	letter: { cssName: 'letter', width: 215.9, height: 279.4 },
 }
 
