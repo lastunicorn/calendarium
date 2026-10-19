@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from 'react'
+import { useEffect, useReducer, useRef } from 'react'
 import { DEFAULTS, type LayoutConfigs, type LayoutId } from '../config/CalendarConfig'
 import type { ImportedLayoutConfig } from '../config/configFile'
 import { type ConfigAction, configReducer } from '../config/configReducer'
@@ -13,8 +13,13 @@ export type UpdateLayoutConfig = <K extends LayoutId>(
 /** The app's single config state: loaded from and saved to `localStorage`. */
 export function useCalendarConfig() {
 	const [config, dispatch] = useReducer(configReducer, undefined, loadConfig)
+	// Saved only after a change, not on mount: the loaded config is already stored, and writing
+	// it back would drop the fields a newer version stored that this one doesn't know.
+	const saved = useRef(config)
 
 	useEffect(() => {
+		if (config === saved.current) return
+		saved.current = config
 		saveConfig(config)
 	}, [config])
 

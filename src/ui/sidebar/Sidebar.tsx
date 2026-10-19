@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { APP_VERSION } from '../../config/version'
 import styles from './Sidebar.module.css'
 
 interface SidebarProps {
@@ -9,7 +10,9 @@ interface SidebarProps {
 export function Sidebar({ children }: SidebarProps) {
 	return (
 		<aside className={styles.sidebar}>
-			<h1 className={styles.heading}>Calendar</h1>
+			<h1 className={styles.heading}>
+				Calendarium <span className={styles.version}>v{APP_VERSION}</span>
+			</h1>
 			{children}
 		</aside>
 	)

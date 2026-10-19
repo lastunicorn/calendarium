@@ -19,11 +19,25 @@ interface ToolbarProps {
 	onImport: (imported: ImportedLayoutConfig) => void
 }
 
-/** What to tell the user about an imported file's invalid fields; empty when there were none. */
-function ignoredFieldsNotice(fileName: string, ignored: string[]): string {
-	if (ignored.length === 0) return ''
-	const settings = ignored.length === 1 ? '1 setting was' : `${ignored.length} settings were`
-	return `Imported ${fileName}; ${settings} invalid and kept the default: ${ignored.join(', ')}.`
+/**
+ * What to tell the user about an imported file made by a newer version, or with invalid fields;
+ * empty when there is nothing to report.
+ */
+function describeImport(fileName: string, { ignored, newer }: ImportedLayoutConfig): string {
+	const notices = []
+	if (newer) {
+		notices.push(`Imported ${fileName}, made by a newer version; some settings may be ignored.`)
+	}
+	if (ignored.length > 0) {
+		const settings = ignored.length === 1 ? '1 setting was' : `${ignored.length} settings were`
+		const fields = ignored.join(', ')
+		notices.push(
+			newer
+				? `${settings} invalid and kept the default: ${fields}.`
+				: `Imported ${fileName}; ${settings} invalid and kept the default: ${fields}.`,
+		)
+	}
+	return notices.join(' ')
 }
 
 function handlePrintClick() {
@@ -72,7 +86,7 @@ export function Toolbar({ config, onReset, onImport }: ToolbarProps) {
 			return
 		}
 		setImportError('')
-		setImportNotice(ignoredFieldsNotice(file.name, imported.ignored))
+		setImportNotice(describeImport(file.name, imported))
 		onImport(imported)
 	}
 

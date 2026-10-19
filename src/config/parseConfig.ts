@@ -16,88 +16,13 @@ import {
 	MARGIN_SIDES,
 	type PageSetup,
 } from './CalendarConfig'
+import { asObject, type StoredData, upgradeStorage } from './migrations'
 import { normalizeLayout } from './normalize'
+import { APP_VERSION, CONFIG_VERSION } from './version'
 
-/**
- * Version of the stored and exported config format. Bump it when a change would misread older
- * data (a renamed or restructured field), and migrate the older shape in `upgrade`.
- *
- * - 1: flat; data without a version also has this shape.
- * - 2: `paperSize`, `orientation` and `margins` grouped under `page`.
- * - 3: one set of options per layout. Storage holds `{ version, layout, layouts: { <id>: {...} } }`;
- *   a file holds one layout's set, flat: `{ version, layout, ...options }` (the version 2 shape).
- */
-export const CONFIG_VERSION = 3
-
-/** The app config as written to storage: tagged with its format version. */
+/** The app config as written to storage: tagged with its config version and the app version. */
 export function toStoredConfig(config: AppConfig) {
-	return { version: CONFIG_VERSION, ...config }
-}
-
-/** One layout's options as written to a file: tagged with the format version and the layout. */
-export function toStoredLayoutConfig<K extends LayoutId>(layout: K, config: LayoutConfigs[K]) {
-	return { version: CONFIG_VERSION, layout, ...config }
-}
-
-type StoredData = Record<string, unknown>
-
-/** `value` as an object whose fields can be read, or `null` when it is not a plain object. */
-function asObject(value: unknown): StoredData | null {
-	return typeof value === 'object' && value !== null && !Array.isArray(value)
-		? (value as StoredData)
-		: null
-}
-
-/** Moves the version 1 top-level page fields under `page`. */
-function migrateFromV1({ paperSize, orientation, margins, ...rest }: StoredData): StoredData {
-	return { ...rest, page: { paperSize, orientation, margins } }
-}
-
-/** Values that were once stored under another name, mapped per field to the current one. */
-const RENAMED_VALUES: Record<string, Record<string, string>> = {
-	// British English was briefly stored as `en-UK`, which is not a valid BCP 47 region.
-	locale: { 'en-UK': 'en-GB' },
-	layout: { 'year-one-page': 'year-per-page' },
-}
-
-/** Replaces each renamed value in `data` with its current name. */
-function renameValues(data: StoredData): StoredData {
-	const renamed = { ...data }
-	for (const [field, names] of Object.entries(RENAMED_VALUES)) {
-		const value = renamed[field]
-		if (typeof value === 'string' && Object.hasOwn(names, value)) renamed[field] = names[value]
-	}
-	return renamed
-}
-
-function isFlat(stored: StoredData): boolean {
-	return stored.version === undefined || stored.version === 1 || stored.version === 2
-}
-
-/** Brings flat data (a file, or storage before version 3) of any older version to the current flat shape. */
-function upgradeFlat(stored: StoredData): StoredData {
-	const current =
-		stored.version === undefined || stored.version === 1 ? migrateFromV1(stored) : stored
-	return renameValues(current)
-}
-
-/** Gives every layout the version 2 flat config; each layout then keeps only its own fields. */
-function migrateFromV2(flat: StoredData): StoredData {
-	const layouts = Object.fromEntries(LAYOUT_IDS.map((id) => [id, flat]))
-	return { layout: flat.layout, layouts }
-}
-
-/** Brings stored app data of any older version to the current shape. */
-function upgradeApp(stored: StoredData): StoredData {
-	if (isFlat(stored)) return migrateFromV2(upgradeFlat(stored))
-	const layouts = asObject(stored.layouts) ?? {}
-	const renamed = Object.fromEntries(
-		Object.entries(layouts).map(([id, data]) => {
-			const layout = asObject(data)
-			return [id, layout === null ? data : renameValues(layout)]
-		}),
-	)
-	return { ...renameValues(stored), layouts: renamed }
+	return { version: CONFIG_VERSION, app: APP_VERSION, ...config }
 }
 
 function oneOf<T>(values: readonly T[]) {
@@ -221,33 +146,34 @@ export interface ParsedLayoutConfig<K extends LayoutId> {
 	ignored: string[]
 }
 
-/** Keeps only the valid fields of untrusted flat data (an imported file) for one layout. */
+/**
+ * Keeps only the valid fields of untrusted flat data in the current file shape (an imported
+ * file, after `upgradeFile`) for one layout.
+ */
 export function parseLayoutConfig<K extends LayoutId>(
 	layout: K,
 	data: unknown,
 ): ParsedLayoutConfig<K> {
-	const raw = asObject(data)
 	const ignored: string[] = []
-	const config = parseCurrentLayoutConfig(layout, raw === null ? null : upgradeFlat(raw), ignored)
+	const config = parseCurrentLayoutConfig(layout, data, ignored)
 	return { config, ignored }
 }
 
-/**
- * The layout named by untrusted flat data, after renaming old ids; `null` when it names none.
- */
-export function parseLayoutId(data: unknown): LayoutId | null {
-	const raw = asObject(data)
-	if (raw === null) return null
-	const { layout } = upgradeFlat(raw)
-	return isLayoutId(layout) ? layout : null
+/** The layout named by flat data in the current file shape; `null` when it names none. */
+export function parseLayoutId(data: StoredData): LayoutId | null {
+	return isLayoutId(data.layout) ? data.layout : null
 }
 
-/** Keeps only valid fields from untrusted stored data, falling back to defaults. */
+/**
+ * Keeps only valid fields from untrusted stored data of any version, falling back to defaults.
+ * Data from a later version is read as the current shape, as far as it matches; data without a
+ * valid version is not read at all.
+ */
 export function parseConfig(data: unknown): AppConfig {
 	const config = defaultAppConfig()
 	const raw = asObject(data)
-	if (raw === null) return config
-	const stored = upgradeApp(raw)
+	const stored = raw === null ? null : upgradeStorage(raw)
+	if (stored === null) return config
 
 	if (isLayoutId(stored.layout)) config.layout = stored.layout
 	const layouts = asObject(stored.layouts) ?? {}

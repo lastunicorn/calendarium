@@ -163,6 +163,12 @@ itself. Add `contentBox(setup): { width, height }` to `core/paper.ts` next to
 
 ### 4.3 Persistence: two formats, ordered migrations, and respect newer data — medium value, medium effort
 
+> **Update (implemented):** before the first release, the format history was reset: version 3
+> is the first config version, and the earlier ones and their migrations were removed. Storage
+> and files share one `CONFIG_VERSION`, the major part of the app version in `package.json`
+> (released as 3.0.0), and are also tagged with the full app version to detect data from a later
+> minor release. See `config/version.ts` and `config/migrations.ts`.
+
 `CONFIG_VERSION` versions two different formats: the stored app config
 (`{ version, layout, layouts }`) and the exported file (`{ version, layout, ...flat }`). They
 already differ in shape, and they will change for different reasons (a file is a public

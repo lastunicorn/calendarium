@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { DEFAULTS, defaultAppConfig, LAYOUT_IDS } from './CalendarConfig'
-import { CONFIG_VERSION, parseConfig, parseLayoutConfig, toStoredConfig } from './parseConfig'
+import { parseConfig, parseLayoutConfig, toStoredConfig } from './parseConfig'
+import { CONFIG_VERSION } from './version'
 
 describe('parseConfig', () => {
 	it('keeps a language-chosen week start', () => {
@@ -135,22 +136,25 @@ describe('parseConfig', () => {
 		expect(parseConfig(toStoredConfig(config))).toEqual(config)
 	})
 
-	it('does not copy unknown fields, including the version tag', () => {
+	it('does not copy unknown fields, including the version tags', () => {
 		const config = parseConfig({
 			version: CONFIG_VERSION,
+			app: '3.0.0',
 			extra: 'x',
-			layouts: { 'year-per-page': { version: 1, extra: 'x' } },
+			layouts: { 'year-per-page': { version: CONFIG_VERSION, app: '3.0.0', extra: 'x' } },
 		})
 		expect(config).not.toHaveProperty('version')
+		expect(config).not.toHaveProperty('app')
 		expect(config).not.toHaveProperty('extra')
 		expect(config.layouts['year-per-page']).not.toHaveProperty('extra')
 		expect(config.layouts['year-per-page']).not.toHaveProperty('version')
+		expect(config.layouts['year-per-page']).not.toHaveProperty('app')
 	})
 
 	it('gives each layout defaults that pass its own validation', () => {
 		for (const layout of LAYOUT_IDS) {
 			const defaults = DEFAULTS[layout]()
-			expect(parseLayoutConfig(layout, { version: CONFIG_VERSION, ...defaults })).toEqual({
+			expect(parseLayoutConfig(layout, defaults)).toEqual({
 				config: defaults,
 				ignored: [],
 			})
@@ -163,89 +167,24 @@ describe('parseConfig', () => {
 	})
 })
 
-describe('parseConfig migration', () => {
-	const page = {
-		paperSize: 'letter',
-		orientation: 'landscape',
-		margins: { top: 5, right: 12.5, bottom: 0, left: 50 },
-	}
-	// Version 2 was one flat config shared by every layout.
-	const v2 = {
-		version: 2,
-		layout: 'day-per-page',
-		year: 2030,
-		locale: 'de-DE',
-		title: 'Family',
-		subtitle: 'Birthdays',
-		firstHour: 6,
-		page,
-	}
-
-	it('copies a version 2 config into every layout', () => {
-		const config = parseConfig(v2)
-		expect(config.layout).toBe('day-per-page')
-		for (const layout of LAYOUT_IDS) {
-			expect(config.layouts[layout]).toMatchObject({ year: 2030, locale: 'de-DE', page })
+describe('parseConfig versions', () => {
+	it('ignores data without a version this app knows', () => {
+		const layouts = { 'year-per-page': { year: 2040 } }
+		for (const version of [undefined, 1, 2, '3', 3.5]) {
+			expect(parseConfig({ version, layout: 'day-per-page', layouts })).toEqual(
+				defaultAppConfig(),
+			)
 		}
 	})
 
-	it('keeps each version 2 field only on the layouts that have it', () => {
-		const { layouts } = parseConfig(v2)
-		expect(layouts['year-per-page']).toMatchObject({ title: 'Family', subtitle: 'Birthdays' })
-		expect(layouts['month-per-page']).not.toHaveProperty('title')
-		expect(layouts['day-per-page']).not.toHaveProperty('title')
-		expect(layouts['day-per-page'].firstHour).toBe(6)
-	})
-
-	it('keeps layout defaults for fields version 2 did not store', () => {
-		const { layouts } = parseConfig({ version: 2, year: 2030 })
-		expect(layouts['month-per-page']).toEqual({ ...DEFAULTS['month-per-page'](), year: 2030 })
-	})
-
-	// Version 1 kept the page fields at the top level.
-	const v1 = {
-		year: 2030,
-		paperSize: 'letter',
-		orientation: 'landscape',
-		margins: { top: 5, right: 12.5, bottom: 0, left: 50 },
-	}
-
-	it('moves version 1 page fields under `page` in every layout', () => {
-		const config = parseConfig({ version: 1, ...v1 })
-		for (const layout of LAYOUT_IDS) {
-			expect(config.layouts[layout].year).toBe(2030)
-			expect(config.layouts[layout].page).toEqual(page)
-			expect(config.layouts[layout]).not.toHaveProperty('paperSize')
-		}
-	})
-
-	it('treats data without a version as version 1', () => {
-		expect(parseConfig(v1).layouts['year-per-page'].page).toEqual(page)
-	})
-
-	it('renames the old `en-UK` locale to `en-GB`', () => {
-		expect(parseConfig({ locale: 'en-UK' }).layouts['day-per-page'].locale).toBe('en-GB')
-		expect(
-			parseConfig({
-				version: CONFIG_VERSION,
-				layouts: { 'day-per-page': { locale: 'en-UK' } },
-			}).layouts['day-per-page'].locale,
-		).toBe('en-GB')
-	})
-
-	it('renames the old `year-one-page` layout to `year-per-page`', () => {
-		const stored = { layout: 'year-one-page' }
-		expect(parseConfig(stored).layout).toBe('year-per-page')
-		expect(parseConfig({ version: 2, layout: 'month-per-page' }).layout).toBe('month-per-page')
-		expect(parseConfig({ version: CONFIG_VERSION, ...stored }).layout).toBe('year-per-page')
-	})
-
-	it('still validates migrated fields', () => {
-		const config = parseConfig({ paperSize: 'a5', margins: { top: 20, left: -1 } })
-		const defaults = DEFAULTS['month-per-page']().page
-		expect(config.layouts['month-per-page'].page).toEqual({
-			...defaults,
-			margins: { ...defaults.margins, top: 20 },
+	it('reads data from a later version as the current shape', () => {
+		const config = parseConfig({
+			version: CONFIG_VERSION + 1,
+			layout: 'day-per-page',
+			layouts: { 'day-per-page': { year: 2040, futureOption: true } },
 		})
+		expect(config.layout).toBe('day-per-page')
+		expect(config.layouts['day-per-page'].year).toBe(2040)
+		expect(config.layouts['day-per-page']).not.toHaveProperty('futureOption')
 	})
 })
