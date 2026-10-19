@@ -1,6 +1,6 @@
 import { WEEKEND_DISPLAYS, type WeekendDisplay } from '../../core/weekend'
 import { type CommonConfig, commonDefaults, margins } from '../CalendarConfig'
-import { COMMON_VALIDATORS, oneOf } from '../validators'
+import { COMMON_VALIDATORS, isBoolean, oneOf } from '../validators'
 import { type HourSchedule, orderHours, SCHEDULE_VALIDATORS, scheduleDefaults } from './hours'
 import type { LayoutSpec } from './LayoutSpec'
 
@@ -17,6 +17,11 @@ export interface WeekPerPageConfig extends CommonConfig, HourSchedule {
 	 * the previous and next year never do.
 	 */
 	weekPageLines: WeekPageLines
+	/**
+	 * Whether each week takes two pages: its first three days on the first, under a heading set
+	 * to the left, and the rest on the second, which leaves the heading's space empty.
+	 */
+	twoPagesPerWeek: boolean
 }
 
 export const WEEK_PER_PAGE_SPEC: LayoutSpec<WeekPerPageConfig> = {
@@ -30,6 +35,7 @@ export const WEEK_PER_PAGE_SPEC: LayoutSpec<WeekPerPageConfig> = {
 			showWeekNumbers: true,
 			weekendDisplay: 'reduced',
 			weekPageLines: 'hours',
+			twoPagesPerWeek: false,
 			...scheduleDefaults(),
 			page: { ...common.page, orientation: 'landscape', margins: margins(10) },
 		}
@@ -38,6 +44,7 @@ export const WEEK_PER_PAGE_SPEC: LayoutSpec<WeekPerPageConfig> = {
 		...COMMON_VALIDATORS,
 		weekendDisplay: oneOf(WEEKEND_DISPLAYS),
 		weekPageLines: oneOf(WEEK_PAGE_LINES),
+		twoPagesPerWeek: isBoolean,
 		...SCHEDULE_VALIDATORS,
 	},
 	normalize: orderHours,

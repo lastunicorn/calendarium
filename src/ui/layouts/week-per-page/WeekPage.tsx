@@ -3,7 +3,7 @@ import type { PageSetup } from '../../../config/CalendarConfig'
 import { type WeekDay, type WeekStart, weekNumber } from '../../../core/calendar'
 import { dateRangeName, type Locale } from '../../../core/locale'
 import { PRINT_MESSAGES } from '../../../core/messages'
-import { isHighlightedWeekDay, type WeekendHighlight } from '../../../core/weekend'
+import { isHighlightedWeekDay, splitWeekCells, type WeekendHighlight } from '../../../core/weekend'
 import { CalendarHeader } from '../CalendarHeader'
 import { Page } from '../Page'
 import styles from './WeekPage.module.css'
@@ -23,6 +23,11 @@ interface WeekPageProps {
 	 * sharing a cell get none. None leaves every cell blank.
 	 */
 	hours?: string[]
+	/**
+	 * Whether the week spreads over two pages (`splitWeekCells`): the heading, set to the left,
+	 * on the first only, its space left empty on the second.
+	 */
+	twoPages: boolean
 	/** Language of the date range and of the week line. */
 	locale: Locale
 	highlightWeekends: WeekendHighlight
@@ -77,25 +82,28 @@ function WeekDayCell({ day, weekday, monthName, highlighted, hours, stacked }: W
 	)
 }
 
-/**
- * One week's sheet: a cell to write in for each day, side by side on landscape paper and stacked
- * on portrait; Saturday and Sunday may share a cell, split in half. Each unshared cell may hold an
- * hourly schedule, running down side-by-side cells and across stacked ones. Memoized because a year has
- * 53 of them and most config changes leave each page's props unchanged.
- */
-export const WeekPage = memo(function WeekPage({
+interface WeekGridProps {
+	/** The cells drawn on this page, in order. */
+	cells: WeekDay[][]
+	weekdays: string[]
+	weekStart: WeekStart
+	monthNames: string[]
+	hours?: string[]
+	highlightWeekends: WeekendHighlight
+	stacked: boolean
+}
+
+/** One page's cells: side by side, or stacked; a shared weekend cell split in half. */
+function WeekGrid({
 	cells,
 	weekdays,
 	weekStart,
 	monthNames,
 	hours,
-	locale,
 	highlightWeekends,
-	showWeekNumbers,
-	setup,
-}: WeekPageProps) {
-	const stacked = setup.orientation === 'portrait'
-	const days = cells.flat()
+	stacked,
+}: WeekGridProps) {
+	const firstDay = cells[0][0]
 
 	/**
 	 * `shared` for a day sharing its cell, which has no room for the schedule; days of another year
@@ -106,7 +114,7 @@ export const WeekPage = memo(function WeekPage({
 			day,
 			weekday: weekdays[(day.weekday - weekStart + 7) % 7],
 			// The month is named where it changes, and on the page's first day for context.
-			monthName: day === days[0] || day.day === 1 ? monthNames[day.month] : undefined,
+			monthName: day === firstDay || day.day === 1 ? monthNames[day.month] : undefined,
 			highlighted: isHighlightedWeekDay(day, highlightWeekends),
 			hours: shared || !day.inYear ? undefined : hours,
 			stacked,
@@ -114,29 +122,81 @@ export const WeekPage = memo(function WeekPage({
 	}
 
 	return (
-		<Page setup={setup}>
-			<div className={styles.layout}>
-				<CalendarHeader
-					heading={dateRangeName(locale, days[0], days.at(-1)!)}
-					subheading={
-						showWeekNumbers ? PRINT_MESSAGES[locale].week(weekNumber(days)) : ''
-					}
-					size="compact"
-				/>
-				<div className={`${styles.week} ${stacked ? styles.rows : styles.columns}`}>
-					{cells.map((cell) =>
-						cell.length === 1 ? (
-							<WeekDayCell key={cell[0].key} {...cellProps(cell[0], false)} />
-						) : (
-							<div key={cell[0].key} className={styles.pair}>
-								{cell.map((day) => (
-									<WeekDayCell key={day.key} {...cellProps(day, true)} />
-								))}
-							</div>
-						),
-					)}
+		<div className={`${styles.week} ${stacked ? styles.rows : styles.columns}`}>
+			{cells.map((cell) =>
+				cell.length === 1 ? (
+					<WeekDayCell key={cell[0].key} {...cellProps(cell[0], false)} />
+				) : (
+					<div key={cell[0].key} className={styles.pair}>
+						{cell.map((day) => (
+							<WeekDayCell key={day.key} {...cellProps(day, true)} />
+						))}
+					</div>
+				),
+			)}
+		</div>
+	)
+}
+
+/**
+ * One week's sheet: a cell to write in for each day, side by side on landscape paper and stacked
+ * on portrait; Saturday and Sunday may share a cell, split in half. Each unshared cell may hold an
+ * hourly schedule, running down side-by-side cells and across stacked ones. With `twoPages`, the
+ * week spreads over two sheets. Memoized because a year has 53 of them and most config changes
+ * leave each page's props unchanged.
+ */
+export const WeekPage = memo(function WeekPage({
+	cells,
+	weekdays,
+	weekStart,
+	monthNames,
+	hours,
+	twoPages,
+	locale,
+	highlightWeekends,
+	showWeekNumbers,
+	setup,
+}: WeekPageProps) {
+	const stacked = setup.orientation === 'portrait'
+	const days = cells.flat()
+	const gridProps = { weekdays, weekStart, monthNames, hours, highlightWeekends, stacked }
+	const header = (
+		<CalendarHeader
+			heading={dateRangeName(locale, days[0], days.at(-1)!)}
+			subheading={showWeekNumbers ? PRINT_MESSAGES[locale].week(weekNumber(days)) : ''}
+			size="compact"
+			align={twoPages ? 'start' : 'center'}
+		/>
+	)
+
+	if (!twoPages) {
+		return (
+			<Page setup={setup}>
+				<div className={styles.layout}>
+					{header}
+					<WeekGrid cells={cells} {...gridProps} />
 				</div>
-			</div>
-		</Page>
+			</Page>
+		)
+	}
+	const [firstCells, secondCells] = splitWeekCells(cells)
+	return (
+		<>
+			<Page setup={setup}>
+				<div className={styles.layout}>
+					{header}
+					<WeekGrid cells={firstCells} {...gridProps} />
+				</div>
+			</Page>
+			<Page setup={setup}>
+				<div className={styles.layout}>
+					{/* An invisible copy of the heading, so both pages' cells start at the same height. */}
+					<div className={styles.headerSpace} aria-hidden="true">
+						{header}
+					</div>
+					<WeekGrid cells={secondCells} {...gridProps} />
+				</div>
+			</Page>
+		</>
 	)
 })

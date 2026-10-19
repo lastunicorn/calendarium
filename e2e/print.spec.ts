@@ -90,3 +90,11 @@ test('day-per-page prints two pages per day when asked', async ({ page }) => {
 	const sizes = pdfPageSizes(await page.pdf({ preferCSSPageSize: true, printBackground: true }))
 	expect(sizes).toHaveLength(2 * 366)
 })
+
+test('week-per-page prints two pages per week when asked', async ({ page }) => {
+	await showLayout(page, 'week-per-page', YEAR)
+	await page.getByRole('checkbox', { name: 'Two pages per week' }).check()
+
+	const sizes = pdfPageSizes(await page.pdf({ preferCSSPageSize: true, printBackground: true }))
+	expect(sizes).toHaveLength(2 * 53)
+})

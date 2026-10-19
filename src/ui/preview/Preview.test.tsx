@@ -52,6 +52,26 @@ describe('Preview', () => {
 		expect(container.querySelectorAll('section')).toHaveLength(52)
 	})
 
+	it('spreads each week over two pages, with the heading on the first only', () => {
+		const config = configFor('week-per-page', 2025)
+		Object.assign(config.layouts['week-per-page'], {
+			weekendDisplay: 'full',
+			twoPagesPerWeek: true,
+		})
+		const { container } = render(<Preview config={config} onResetLayout={noop} />)
+		const pages = container.querySelectorAll('section')
+		expect(pages).toHaveLength(2 * 53)
+		// Monday to Wednesday, then Thursday to Sunday.
+		expect(pages[0].textContent).toContain('Wed')
+		expect(pages[0].textContent).not.toContain('Thu')
+		expect(pages[1].textContent).toContain('Thu')
+		expect(pages[1].textContent).toContain('Sun')
+		expect(pages[1].textContent).not.toContain('Wed')
+		// The second page keeps the heading's space, hidden from assistive technology.
+		expect(pages[0].querySelector('[aria-hidden] h1')).toBeNull()
+		expect(pages[1].querySelector('h1')?.closest('[aria-hidden]')).not.toBeNull()
+	})
+
 	it('draws an hourly schedule in each day of the year, except in a shared weekend cell', () => {
 		const config = configFor('week-per-page', 2025)
 		Object.assign(config.layouts['week-per-page'], {

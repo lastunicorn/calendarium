@@ -4,6 +4,11 @@
 	flex-direction: column;
 }
 
+/* Keeps the heading's space on a week's second page, so its cells line up with the first page's. */
+.headerSpace {
+	visibility: hidden;
+}
+
 /* A ruled table: the grid draws the top and left edges, each cell its right and bottom. */
 .week {
 	flex: 1;

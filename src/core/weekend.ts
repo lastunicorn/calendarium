@@ -48,3 +48,17 @@ export function weekCells(week: WeekDay[], display: WeekendDisplay): WeekDay[][]
 	})
 	return cells
 }
+
+/** How many days of a week the first of its two pages holds. */
+const FIRST_PAGE_DAYS = 3
+
+/**
+ * A week's cells split over two pages: the cells holding its first three days, then the rest. A
+ * shared weekend cell is never split, so the first page may hold one more day.
+ */
+export function splitWeekCells(cells: WeekDay[][]): [WeekDay[][], WeekDay[][]] {
+	let days = 0
+	let split = 0
+	while (split < cells.length && days < FIRST_PAGE_DAYS) days += cells[split++].length
+	return [cells.slice(0, split), cells.slice(split)]
+}

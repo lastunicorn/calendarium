@@ -15,6 +15,7 @@ interface WeekPerPageLayoutProps {
  * December 31; their days of the previous and next year are grayed out. The weekend gets a cell
  * per day, one shared cell, or none, per `weekendDisplay`. Each day of the year in its own cell
  * may hold an hourly schedule, per `weekPageLines`; a shared weekend cell has no room for one.
+ * With `twoPagesPerWeek`, each week spreads over two pages.
  */
 export function WeekPerPageLayout({ config }: WeekPerPageLayoutProps) {
 	const {
@@ -24,6 +25,7 @@ export function WeekPerPageLayout({ config }: WeekPerPageLayoutProps) {
 		showWeekNumbers,
 		weekendDisplay,
 		weekPageLines,
+		twoPagesPerWeek,
 		hourFormat,
 		firstHour,
 		lastHour,
@@ -53,6 +55,7 @@ export function WeekPerPageLayout({ config }: WeekPerPageLayoutProps) {
 			key={cells[0][0].key}
 			cells={cells}
 			hours={hours}
+			twoPages={twoPagesPerWeek}
 			weekdays={weekdays}
 			weekStart={weekStart}
 			monthNames={monthNames}

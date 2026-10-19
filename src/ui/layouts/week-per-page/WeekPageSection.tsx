@@ -5,6 +5,7 @@ import {
 } from '../../../config/layouts/weekPerPage'
 import { WEEKEND_DISPLAYS, type WeekendDisplay } from '../../../core/weekend'
 import { DayPageIcon } from '../../components/icons'
+import { CheckboxField } from '../../fields/CheckboxField'
 import { optionsFrom } from '../../fields/options'
 import { RadioField } from '../../fields/RadioField'
 import { ScheduleFields } from '../../sidebar/ScheduleFields'
@@ -21,7 +22,7 @@ const WEEK_PAGE_LINES_OPTIONS = optionsFrom(WEEK_PAGE_LINES, {
 	hours: 'Hourly schedule',
 })
 
-/** How a week's page is divided between its days, and what fills each day's cell. */
+/** How a week's page (or two) is divided between its days, and what fills each day's cell. */
 export function WeekPageSection({ config, onUpdate }: ConfigSectionProps<WeekPerPageConfig>) {
 	function handleWeekendDisplayChange(weekendDisplay: WeekendDisplay) {
 		onUpdate({ weekendDisplay })
@@ -31,8 +32,17 @@ export function WeekPageSection({ config, onUpdate }: ConfigSectionProps<WeekPer
 		onUpdate({ weekPageLines })
 	}
 
+	function handleTwoPagesPerWeekChange(twoPagesPerWeek: boolean) {
+		onUpdate({ twoPagesPerWeek })
+	}
+
 	return (
 		<Section title="Week page" icon={<DayPageIcon />}>
+			<CheckboxField
+				label="Two pages per week"
+				checked={config.twoPagesPerWeek}
+				onChange={handleTwoPagesPerWeekChange}
+			/>
 			<RadioField
 				label="Weekend"
 				value={config.weekendDisplay}
