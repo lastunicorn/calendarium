@@ -39,7 +39,7 @@ export function MiniMonth({
 					</div>
 				))}
 				{month.weeks.map((week) => (
-					<Fragment key={week[0].date.toISOString()}>
+					<Fragment key={week[0].key}>
 						{showWeekNumbers && (
 							<div className={styles.weekNumber}>
 								{/* Trailing rows made only of next-month days stay blank. */}
@@ -48,7 +48,7 @@ export function MiniMonth({
 						)}
 						{week.map((day) => (
 							<div
-								key={day.date.toISOString()}
+								key={day.key}
 								className={[
 									styles.day,
 									isHighlightedDay(day, highlightWeekends) ? styles.weekend : '',

@@ -31,10 +31,10 @@ export function DayPerPageLayout({ config }: DayPerPageLayoutProps) {
 	)
 
 	return days.map((day) => {
-		const month = day.date.getMonth()
+		const month = day.month
 		return (
 			<DayPage
-				key={day.date.toISOString()}
+				key={day.key}
 				day={day}
 				daysInYear={days.length}
 				month={months[month]}

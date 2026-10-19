@@ -10,7 +10,7 @@ describe('isYear', () => {
 		expect(isYear(MAX_YEAR)).toBe(true)
 	})
 
-	it('rejects years that Date would misread or that predate the Gregorian calendar', () => {
+	it('rejects years that predate the Gregorian calendar', () => {
 		expect(isYear(50)).toBe(false)
 		expect(isYear(99)).toBe(false)
 		expect(isYear(1582)).toBe(false)
@@ -21,7 +21,7 @@ describe('isYear', () => {
 		for (const year of [MIN_YEAR, MAX_YEAR]) {
 			const days = buildMonth(year, 5, 1).weeks.flat()
 			for (const day of days) {
-				expect(day.date.getFullYear()).toBe(year)
+				expect(day.year).toBe(year)
 			}
 		}
 	})

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { plainDate } from './calendar'
 import {
 	dateFormatter,
 	fullDateName,
@@ -66,7 +67,7 @@ describe('weekdayNames', () => {
 
 describe('weekdayName', () => {
 	it('writes the full weekday name in the locale, capitalized', () => {
-		const date = new Date(2026, 9, 19)
+		const date = plainDate(2026, 9, 19)
 		expect(weekdayName('en-US', date)).toBe('Monday')
 		expect(weekdayName('ro-RO', date)).toBe('Luni')
 		expect(weekdayName('ja-JP', date)).toBe('月曜日')
@@ -75,7 +76,7 @@ describe('weekdayName', () => {
 
 describe('fullDateName', () => {
 	it('writes the long date in the locale', () => {
-		const date = new Date(2026, 9, 19)
+		const date = plainDate(2026, 9, 19)
 		expect(fullDateName('en-US', date)).toBe('October 19, 2026')
 		expect(fullDateName('ro-RO', date)).toBe('19 octombrie 2026')
 		expect(fullDateName('ja-JP', date)).toBe('2026年10月19日')

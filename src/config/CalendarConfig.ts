@@ -23,10 +23,7 @@ export type MarginSide = (typeof MARGIN_SIDES)[number]
 /** Blank space between the paper edge and the calendar, in mm. */
 export type Margins = Record<MarginSide, number>
 
-/**
- * The first full year of the Gregorian calendar, which the printed weekdays and leap days follow.
- * It also keeps years 0–99 out: `new Date(year, …)` reads them as 1900–1999.
- */
+/** The first full year of the Gregorian calendar, which the printed weekdays and leap days follow. */
 export const MIN_YEAR = 1583
 export const MAX_YEAR = 9999
 export const MAX_MARGIN = 50

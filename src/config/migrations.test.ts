@@ -42,17 +42,18 @@ describe('isFromLaterVersion', () => {
 		expect(isFromLaterVersion({ version: CONFIG_VERSION + 1 })).toBe(true)
 	})
 
+	// Derived from `APP_VERSION`, so the test holds whatever version `package.json` is at.
+	const [major, minor, patch] = APP_VERSION.split('.').map(Number)
+
 	it('is true for a later app version of the same config version', () => {
-		expect(isFromLaterVersion({ version: CONFIG_VERSION, app: `${CONFIG_VERSION}.0.1` })).toBe(
-			APP_VERSION !== `${CONFIG_VERSION}.0.1`,
-		)
-		expect(isFromLaterVersion({ version: CONFIG_VERSION, app: `${CONFIG_VERSION}.99.0` })).toBe(
-			true,
-		)
+		for (const app of [`${major}.${minor}.${patch + 1}`, `${major}.${minor + 1}.0`]) {
+			expect(isFromLaterVersion({ version: CONFIG_VERSION, app })).toBe(true)
+		}
 	})
 
 	it('is false for this app’s version, an earlier one, or none', () => {
 		expect(isFromLaterVersion({ version: CONFIG_VERSION, app: APP_VERSION })).toBe(false)
+		expect(isFromLaterVersion({ version: CONFIG_VERSION, app: `${major}.0.0` })).toBe(false)
 		expect(isFromLaterVersion({ version: CONFIG_VERSION, app: '0.9.9' })).toBe(false)
 		expect(isFromLaterVersion({ version: CONFIG_VERSION })).toBe(false)
 		expect(isFromLaterVersion({ version: CONFIG_VERSION, app: 'latest' })).toBe(false)

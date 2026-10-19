@@ -5,10 +5,24 @@ export function isWeekStart(value: unknown): value is WeekStart {
 	return Number.isInteger(value) && (value as number) >= 0 && (value as number) <= 6
 }
 
-export interface CalendarDay {
-	date: Date
+/**
+ * A calendar date: no time of day, no time zone. What a calendar cell stands for, unlike a
+ * `Date`, which is an instant. When `Temporal.PlainDate` is available in the print target,
+ * `plainDate` and `utcDate` are the only places to change.
+ */
+export interface PlainDate {
+	year: number
+	/** 0 = January … 11 = December. */
+	month: number
 	/** Day of the month, 1–31. */
 	day: number
+	/** Day of the week, as in `Date.getDay()`: 0 = Sunday … 6 = Saturday. */
+	weekday: number
+	/** `YYYY-MM-DD`, unique per date: a React key. */
+	key: string
+}
+
+export interface CalendarDay extends PlainDate {
 	/** False for leading/trailing days that belong to the previous/next month. */
 	inMonth: boolean
 	isWeekend: boolean
@@ -28,36 +42,63 @@ export function isLeapYear(year: number): boolean {
 	return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0
 }
 
-export function daysInMonth(year: number, month: number): number {
-	return new Date(year, month + 1, 0).getDate()
+/**
+ * The `Date` at UTC midnight (plus `hours`) of a calendar date: the only place a `Date` is built.
+ * UTC has no DST, and `setUTCFullYear` takes years 0–99 as written, where the `Date` constructor
+ * reads them as 1900–1999. Out-of-range components roll over: day 0 is the previous month's last
+ * day. Format it in UTC, as `dateFormatter` does.
+ */
+export function utcDate(year: number, month: number, day: number, hours = 0): Date {
+	const date = new Date(0)
+	date.setUTCFullYear(year, month, day)
+	date.setUTCHours(hours)
+	return date
 }
 
-export function isWeekend(date: Date): boolean {
-	const weekday = date.getDay()
-	return weekday === 0 || weekday === 6
+/** The calendar date of `year`, `month`, `day`, rolling over out-of-range components like `utcDate`. */
+export function plainDate(year: number, month: number, day: number): PlainDate {
+	const date = utcDate(year, month, day)
+	const fullYear = date.getUTCFullYear()
+	const monthIndex = date.getUTCMonth()
+	const dayOfMonth = date.getUTCDate()
+	return {
+		year: fullYear,
+		month: monthIndex,
+		day: dayOfMonth,
+		weekday: date.getUTCDay(),
+		key: `${pad(fullYear, 4)}-${pad(monthIndex + 1, 2)}-${pad(dayOfMonth, 2)}`,
+	}
+}
+
+function pad(value: number, length: number): string {
+	return String(value).padStart(length, '0')
+}
+
+export function daysInMonth(year: number, month: number): number {
+	return plainDate(year, month + 1, 0).day
+}
+
+export function isWeekend(date: PlainDate): boolean {
+	return date.weekday === 0 || date.weekday === 6
 }
 
 /** ISO 8601 week number (weeks start on Monday; week 1 contains the year's first Thursday). */
-export function isoWeek(date: Date): number {
+export function isoWeek(date: PlainDate): number {
 	// The Thursday of the date's ISO week decides which year the week belongs to.
-	const thursday = new Date(
-		date.getFullYear(),
-		date.getMonth(),
-		date.getDate() + 3 - ((date.getDay() + 6) % 7),
-	)
-	const firstThursday = new Date(thursday.getFullYear(), 0, 4)
-	firstThursday.setDate(4 - ((firstThursday.getDay() + 6) % 7) + 3)
-	return 1 + Math.round((dayNumber(thursday) - dayNumber(firstThursday)) / 7)
+	const thursday = plainDate(date.year, date.month, date.day + 3 - ((date.weekday + 6) % 7))
+	const january4 = plainDate(thursday.year, 0, 4)
+	const firstThursday = plainDate(thursday.year, 0, 4 + 3 - ((january4.weekday + 6) % 7))
+	return 1 + (dayNumber(thursday) - dayNumber(firstThursday)) / 7
 }
 
 /** Position of `date` in its year: 1 for January 1 … 365 or 366 for December 31. */
-export function dayOfYear(date: Date): number {
-	return dayNumber(date) - dayNumber(new Date(date.getFullYear(), 0, 1)) + 1
+export function dayOfYear(date: PlainDate): number {
+	return dayNumber(date) - dayNumber(plainDate(date.year, 0, 1)) + 1
 }
 
-/** Days since the epoch, ignoring the time of day and DST. */
-function dayNumber(date: Date): number {
-	return Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 86_400_000
+/** Days since the epoch. */
+function dayNumber(date: PlainDate): number {
+	return utcDate(date.year, date.month, date.day).getTime() / 86_400_000
 }
 
 /**
@@ -65,26 +106,19 @@ function dayNumber(date: Date): number {
  * it gets the number of the week holding most of its days, i.e. the one containing its Thursday.
  */
 export function weekNumber(week: CalendarDay[]): number {
-	const thursday = week.find((day) => day.date.getDay() === 4) ?? week[0]
-	return isoWeek(thursday.date)
+	const thursday = week.find((day) => day.weekday === 4) ?? week[0]
+	return isoWeek(thursday)
 }
 
 export function buildMonth(year: number, month: number, weekStart: WeekStart): CalendarMonth {
-	const first = new Date(year, month, 1)
-	const leadingDays = (first.getDay() - weekStart + 7) % 7
+	const leadingDays = (plainDate(year, month, 1).weekday - weekStart + 7) % 7
 	const weeks: CalendarDay[][] = []
 
 	for (let week = 0; week < WEEKS_PER_MONTH; week++) {
 		const days: CalendarDay[] = []
-		for (let weekday = 0; weekday < 7; weekday++) {
-			// Building dates from components (not by adding ms) keeps DST changes harmless.
-			const date = new Date(year, month, 1 - leadingDays + week * 7 + weekday)
-			days.push({
-				date,
-				day: date.getDate(),
-				inMonth: date.getMonth() === month,
-				isWeekend: isWeekend(date),
-			})
+		for (let column = 0; column < 7; column++) {
+			const date = plainDate(year, month, 1 - leadingDays + week * 7 + column)
+			days.push({ ...date, inMonth: date.month === month, isWeekend: isWeekend(date) })
 		}
 		weeks.push(days)
 	}

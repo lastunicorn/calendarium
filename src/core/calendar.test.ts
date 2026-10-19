@@ -7,6 +7,7 @@ import {
 	daysOfYear,
 	isLeapYear,
 	isoWeek,
+	plainDate,
 	type WeekStart,
 	WEEKS_PER_MONTH,
 	visibleWeeks,
@@ -28,6 +29,28 @@ describe('isLeapYear', () => {
 		expect(isLeapYear(1900)).toBe(false)
 		expect(isLeapYear(2000)).toBe(true)
 		expect(isLeapYear(2100)).toBe(false)
+	})
+})
+
+describe('plainDate', () => {
+	it('holds the date’s components, weekday and key', () => {
+		expect(plainDate(2026, 9, 19)).toEqual({
+			year: 2026,
+			month: 9,
+			day: 19,
+			weekday: 1,
+			key: '2026-10-19',
+		})
+	})
+
+	it('rolls over out-of-range components', () => {
+		expect(plainDate(2026, 0, 0)).toMatchObject({ year: 2025, month: 11, day: 31 })
+		expect(plainDate(2024, 1, 30)).toMatchObject({ year: 2024, month: 2, day: 1 })
+		expect(plainDate(2026, 12, 1)).toMatchObject({ year: 2027, month: 0, day: 1 })
+	})
+
+	it('takes years below 100 as written', () => {
+		expect(plainDate(50, 1, 10)).toMatchObject({ year: 50, key: '0050-02-10' })
 	})
 })
 
@@ -76,7 +99,7 @@ describe('buildMonth', () => {
 	it('starts every week on the week start day', () => {
 		for (const weekStart of WEEK_STARTS) {
 			for (const week of buildMonth(2026, 2, weekStart).weeks)
-				expect(week[0].date.getDay()).toBe(weekStart)
+				expect(week[0].weekday).toBe(weekStart)
 		}
 	})
 
@@ -88,12 +111,8 @@ describe('buildMonth', () => {
 
 	it('flags leading and trailing days from neighbouring months', () => {
 		const { weeks } = buildMonth(2026, 0, 1)
-		expect(weeks[0][0]).toMatchObject({ day: 29, inMonth: false })
-		expect(weeks[0][0].date.getMonth()).toBe(11)
-		expect(weeks[0][0].date.getFullYear()).toBe(2025)
-		const last = weeks[5][6]
-		expect(last).toMatchObject({ day: 8, inMonth: false })
-		expect(last.date.getMonth()).toBe(1)
+		expect(weeks[0][0]).toMatchObject({ year: 2025, month: 11, day: 29, inMonth: false })
+		expect(weeks[5][6]).toMatchObject({ year: 2026, month: 1, day: 8, inMonth: false })
 	})
 
 	it('flags Saturdays and Sundays as weekend', () => {
@@ -107,6 +126,13 @@ describe('buildMonth', () => {
 			true,
 			true,
 		])
+	})
+
+	it('builds years below 100 as written', () => {
+		const days = buildMonth(50, 1, 1).weeks.flat()
+		expect(days.filter((day) => day.inMonth).every((day) => day.year === 50)).toBe(true)
+		// 1 February 50 was a Tuesday; 1 February 1950 a Wednesday.
+		expect(days.find((day) => day.inMonth)?.weekday).toBe(2)
 	})
 
 	it('keeps consecutive days across a DST change', () => {
@@ -139,7 +165,7 @@ describe('daysOfYear', () => {
 			const days = daysOfYear(buildYear(year, 1))
 			expect(days).toHaveLength(isLeapYear(year) ? 366 : 365)
 			days.forEach((day, index) => {
-				expect(day.date).toEqual(new Date(year, 0, 1 + index))
+				expect(day).toMatchObject(plainDate(year, 0, 1 + index))
 				expect(day.inMonth).toBe(true)
 			})
 		}
@@ -148,42 +174,42 @@ describe('daysOfYear', () => {
 
 describe('dayOfYear', () => {
 	it('counts from 1 on January 1', () => {
-		expect(dayOfYear(new Date(2026, 0, 1))).toBe(1)
-		expect(dayOfYear(new Date(2026, 1, 1))).toBe(32)
-		expect(dayOfYear(new Date(2026, 11, 31))).toBe(365)
+		expect(dayOfYear(plainDate(2026, 0, 1))).toBe(1)
+		expect(dayOfYear(plainDate(2026, 1, 1))).toBe(32)
+		expect(dayOfYear(plainDate(2026, 11, 31))).toBe(365)
 	})
 
 	it('counts February 29 in leap years', () => {
-		expect(dayOfYear(new Date(2024, 1, 29))).toBe(60)
-		expect(dayOfYear(new Date(2024, 11, 31))).toBe(366)
+		expect(dayOfYear(plainDate(2024, 1, 29))).toBe(60)
+		expect(dayOfYear(plainDate(2024, 11, 31))).toBe(366)
 	})
 
-	it('ignores DST changes and the time of day', () => {
-		expect(dayOfYear(new Date(2026, 2, 30))).toBe(89)
-		expect(dayOfYear(new Date(2026, 9, 26, 23, 30))).toBe(299)
+	it('ignores DST changes', () => {
+		expect(dayOfYear(plainDate(2026, 2, 30))).toBe(89)
+		expect(dayOfYear(plainDate(2026, 9, 26))).toBe(299)
 	})
 })
 
 describe('isoWeek', () => {
 	it('numbers weeks from the one containing the first Thursday', () => {
-		expect(isoWeek(new Date(2026, 0, 1))).toBe(1) // Thursday
-		expect(isoWeek(new Date(2026, 0, 5))).toBe(2)
-		expect(isoWeek(new Date(2026, 9, 18))).toBe(42)
+		expect(isoWeek(plainDate(2026, 0, 1))).toBe(1) // Thursday
+		expect(isoWeek(plainDate(2026, 0, 5))).toBe(2)
+		expect(isoWeek(plainDate(2026, 9, 18))).toBe(42)
 	})
 
 	it('puts early January days in the previous year’s last week', () => {
-		expect(isoWeek(new Date(2021, 0, 3))).toBe(53) // Sunday after 2020-W53
-		expect(isoWeek(new Date(2023, 0, 1))).toBe(52)
+		expect(isoWeek(plainDate(2021, 0, 3))).toBe(53) // Sunday after 2020-W53
+		expect(isoWeek(plainDate(2023, 0, 1))).toBe(52)
 	})
 
 	it('puts late December days in the next year’s first week', () => {
-		expect(isoWeek(new Date(2024, 11, 30))).toBe(1)
-		expect(isoWeek(new Date(2025, 11, 31))).toBe(1)
+		expect(isoWeek(plainDate(2024, 11, 30))).toBe(1)
+		expect(isoWeek(plainDate(2025, 11, 31))).toBe(1)
 	})
 
 	it('reaches week 53 in long years', () => {
-		expect(isoWeek(new Date(2026, 11, 31))).toBe(53)
-		expect(isoWeek(new Date(2020, 11, 31))).toBe(53)
+		expect(isoWeek(plainDate(2026, 11, 31))).toBe(53)
+		expect(isoWeek(plainDate(2020, 11, 31))).toBe(53)
 	})
 })
 

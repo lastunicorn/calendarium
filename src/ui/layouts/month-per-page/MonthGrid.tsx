@@ -33,11 +33,11 @@ export function MonthGrid({ month, weekdays, highlightWeekends, showWeekNumbers 
 				</div>
 			))}
 			{weeks.map((week) => (
-				<Fragment key={week[0].date.toISOString()}>
+				<Fragment key={week[0].key}>
 					{showWeekNumbers && <div className={styles.weekNumber}>{weekNumber(week)}</div>}
 					{week.map((day) => (
 						<div
-							key={day.date.toISOString()}
+							key={day.key}
 							className={[
 								styles.day,
 								isHighlightedDay(day, highlightWeekends) ? styles.weekend : '',

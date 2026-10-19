@@ -61,8 +61,8 @@ export const DayPage = memo(function DayPage({
 }: DayPageProps) {
 	const messages = PRINT_MESSAGES[locale]
 	const details = [
-		showWeekNumbers ? messages.week(isoWeek(day.date)) : '',
-		messages.dayOfYear(dayOfYear(day.date), daysInYear),
+		showWeekNumbers ? messages.week(isoWeek(day)) : '',
+		messages.dayOfYear(dayOfYear(day), daysInYear),
 	]
 		.filter(Boolean)
 		.join(' · ')
@@ -73,8 +73,8 @@ export const DayPage = memo(function DayPage({
 				<div className={styles.top}>
 					<div className={styles.heading}>
 						<CalendarHeader
-							heading={weekdayName(locale, day.date)}
-							subheading={fullDateName(locale, day.date)}
+							heading={weekdayName(locale, day)}
+							subheading={fullDateName(locale, day)}
 							size="compact"
 							align="start"
 							highlight={isHighlightedDay(day, highlightWeekends)}
