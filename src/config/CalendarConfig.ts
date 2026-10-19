@@ -1,10 +1,9 @@
-import type { WeekStart } from '../core/calendar'
 import {
 	type HourFormat,
 	type Locale,
 	LOCALES,
-	localeWeekStart,
 	type WeekdayFormat,
+	type WeekStartSetting,
 } from '../core/locale'
 import type { Orientation, PaperSize } from '../core/paper'
 import type { WeekendHighlight } from '../core/weekend'
@@ -63,7 +62,8 @@ export interface CommonConfig {
 	year: number
 	/** Language of month and weekday names. */
 	locale: Locale
-	weekStart: WeekStart
+	/** A fixed first day of the week, or `auto` for the language's own. */
+	weekStart: WeekStartSetting
 	weekdayFormat: WeekdayFormat
 	highlightWeekends: WeekendHighlight
 	/** ISO week numbers in a column before each week. */
@@ -135,12 +135,10 @@ function margins(mm: number): Margins {
 
 /** The options shared by every layout, with the values all layouts start from. */
 function commonDefaults(): CommonConfig {
-	const locale = defaultLocale()
 	return {
 		year: new Date().getFullYear(),
-		locale,
-		// The language's own first day (Sunday in en-US), or Monday when the browser can't tell.
-		weekStart: localeWeekStart(locale) ?? 1,
+		locale: defaultLocale(),
+		weekStart: 'auto',
 		weekdayFormat: 'narrow',
 		highlightWeekends: 'days',
 		showWeekNumbers: false,

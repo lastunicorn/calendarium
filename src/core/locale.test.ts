@@ -3,10 +3,12 @@ import {
 	dateFormatter,
 	fullDateName,
 	hourNames,
+	isWeekStartSetting,
 	LOCALES,
 	localeWeekStart,
 	monthNames,
 	monthYearName,
+	resolveWeekStart,
 	weekdayName,
 	weekdayNames,
 } from './locale'
@@ -116,5 +118,27 @@ describe('localeWeekStart', () => {
 
 	it('knows the first day of every supported language', () => {
 		for (const locale of LOCALES) expect(localeWeekStart(locale)).toBeTypeOf('number')
+	})
+})
+
+describe('resolveWeekStart', () => {
+	it('lets the language choose with auto', () => {
+		expect(resolveWeekStart('auto', 'en-US')).toBe(0)
+		expect(resolveWeekStart('auto', 'en-GB')).toBe(1)
+	})
+
+	it('keeps a fixed day whatever the language', () => {
+		expect(resolveWeekStart(6, 'en-US')).toBe(6)
+		expect(resolveWeekStart(0, 'de-DE')).toBe(0)
+	})
+})
+
+describe('isWeekStartSetting', () => {
+	it('accepts auto and the days of the week', () => {
+		expect(isWeekStartSetting('auto')).toBe(true)
+		expect(isWeekStartSetting(0)).toBe(true)
+		expect(isWeekStartSetting(6)).toBe(true)
+		expect(isWeekStartSetting(7)).toBe(false)
+		expect(isWeekStartSetting('monday')).toBe(false)
 	})
 })

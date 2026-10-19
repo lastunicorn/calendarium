@@ -1,4 +1,4 @@
-import type { WeekStart } from './calendar'
+import { isWeekStart, type WeekStart } from './calendar'
 
 /** BCP 47 tags of the languages month and weekday names, and the printed text, can be shown in. */
 export const LOCALES = [
@@ -57,6 +57,21 @@ export function localeWeekStart(locale: string): WeekStart | undefined {
 	const firstDay = (intlLocale.getWeekInfo?.() ?? intlLocale.weekInfo)?.firstDay
 	// `firstDay` counts 1 = Monday … 7 = Sunday; `WeekStart` counts 0 = Sunday … 6 = Saturday.
 	return firstDay === undefined ? undefined : ((firstDay % 7) as WeekStart)
+}
+
+/** The first day of the week as chosen: a fixed day, or `auto` for the language's own. */
+export type WeekStartSetting = WeekStart | 'auto'
+
+export function isWeekStartSetting(value: unknown): value is WeekStartSetting {
+	return value === 'auto' || isWeekStart(value)
+}
+
+/**
+ * The day weeks start on for `setting`: with `auto`, the language decides (Sunday in en-US,
+ * Monday in en-GB), or Monday when the browser has no week data.
+ */
+export function resolveWeekStart(setting: WeekStartSetting, locale: string): WeekStart {
+	return setting === 'auto' ? (localeWeekStart(locale) ?? 1) : setting
 }
 
 function capitalize(text: string, locale: string): string {

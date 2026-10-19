@@ -1,5 +1,4 @@
-import { isWeekStart } from '../core/calendar'
-import { HOUR_FORMATS, LOCALES, WEEKDAY_FORMATS } from '../core/locale'
+import { HOUR_FORMATS, isWeekStartSetting, LOCALES, WEEKDAY_FORMATS } from '../core/locale'
 import { ORIENTATIONS, PAPER_SIZES } from '../core/paper'
 import { WEEKEND_HIGHLIGHTS } from '../core/weekend'
 import {
@@ -122,7 +121,7 @@ type Validators<T, K extends keyof T> = { [P in K]: Validator<T[P]> }
 const COMMON_VALIDATORS: Validators<CommonConfig, Exclude<keyof CommonConfig, 'page'>> = {
 	year: isYear,
 	locale: oneOf(LOCALES),
-	weekStart: isWeekStart,
+	weekStart: isWeekStartSetting,
 	weekdayFormat: oneOf(WEEKDAY_FORMATS),
 	highlightWeekends: oneOf(WEEKEND_HIGHLIGHTS),
 	showWeekNumbers: isBoolean,

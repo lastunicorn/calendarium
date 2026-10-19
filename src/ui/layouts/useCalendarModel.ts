@@ -1,10 +1,12 @@
 import { useMemo } from 'react'
 import type { CommonConfig } from '../../config/CalendarConfig'
 import { buildYear } from '../../core/calendar'
-import { monthNames, weekdayNames } from '../../core/locale'
+import { monthNames, resolveWeekStart, weekdayNames } from '../../core/locale'
 
 /** The year's months and localized names that every layout draws from, memoized per input. */
-export function useCalendarModel({ year, locale, weekStart, weekdayFormat }: CommonConfig) {
+export function useCalendarModel(config: CommonConfig) {
+	const { year, locale, weekdayFormat } = config
+	const weekStart = resolveWeekStart(config.weekStart, locale)
 	const months = useMemo(() => buildYear(year, weekStart), [year, weekStart])
 	const names = useMemo(() => monthNames(locale), [locale])
 	const weekdays = useMemo(

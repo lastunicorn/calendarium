@@ -49,9 +49,10 @@ describe('default locale', () => {
 	it('falls back to British English', () => {
 		expect(defaultLocalesFor('zh-CN')).toEqual(LAYOUT_IDS.map(() => 'en-GB'))
 	})
+})
 
-	it('starts weeks on Monday in British English', () => {
-		vi.stubGlobal('navigator', { language: 'en-US' })
-		expect(DEFAULTS['year-per-page']().weekStart).toBe(1)
+describe('default week start', () => {
+	it('lets the language choose the first day of the week in every layout', () => {
+		for (const layout of LAYOUT_IDS) expect(DEFAULTS[layout]().weekStart).toBe('auto')
 	})
 })

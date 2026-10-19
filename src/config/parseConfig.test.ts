@@ -3,6 +3,18 @@ import { DEFAULTS, defaultAppConfig, LAYOUT_IDS } from './CalendarConfig'
 import { CONFIG_VERSION, parseConfig, parseLayoutConfig, toStoredConfig } from './parseConfig'
 
 describe('parseConfig', () => {
+	it('keeps a language-chosen week start', () => {
+		const stored = toStoredConfig(defaultAppConfig())
+		stored.layouts['month-per-page'] = {
+			...stored.layouts['month-per-page'],
+			weekStart: 'auto',
+		}
+		stored.layouts['day-per-page'] = { ...stored.layouts['day-per-page'], weekStart: 0 }
+		const { layouts } = parseConfig(stored)
+		expect(layouts['month-per-page'].weekStart).toBe('auto')
+		expect(layouts['day-per-page'].weekStart).toBe(0)
+	})
+
 	it('returns defaults for missing or malformed data', () => {
 		expect(parseConfig(null)).toEqual(defaultAppConfig())
 		expect(parseConfig('nope')).toEqual(defaultAppConfig())
