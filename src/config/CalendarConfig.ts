@@ -119,9 +119,14 @@ export interface AppConfig {
 	layouts: LayoutConfigs
 }
 
+/**
+ * The browser's language when the calendar has it, so a German browser starts in German.
+ * English, of any region, and unsupported languages start in British English.
+ */
 function defaultLocale(): Locale {
 	const language = globalThis.navigator?.language.slice(0, 2)
-	return LOCALES.find((locale) => locale.startsWith(language)) ?? 'en-US'
+	if (language === undefined || language === 'en') return 'en-GB'
+	return LOCALES.find((locale) => locale.startsWith(language)) ?? 'en-GB'
 }
 
 function margins(mm: number): Margins {

@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { buildMonth } from '../core/calendar'
-import { isYear, MAX_YEAR, MIN_YEAR } from './CalendarConfig'
+import { DEFAULTS, isYear, LAYOUT_IDS, MAX_YEAR, MIN_YEAR } from './CalendarConfig'
 
 describe('isYear', () => {
 	it('accepts the Gregorian years from MIN_YEAR to MAX_YEAR', () => {
@@ -23,5 +23,35 @@ describe('isYear', () => {
 				expect(day.date.getFullYear()).toBe(year)
 			}
 		}
+	})
+})
+
+describe('default locale', () => {
+	afterEach(() => {
+		vi.unstubAllGlobals()
+	})
+
+	function defaultLocalesFor(language: string) {
+		vi.stubGlobal('navigator', { language })
+		return LAYOUT_IDS.map((layout) => DEFAULTS[layout]().locale)
+	}
+
+	it('is British English for every layout in an English browser', () => {
+		for (const language of ['en-US', 'en-GB', 'en']) {
+			expect(defaultLocalesFor(language)).toEqual(LAYOUT_IDS.map(() => 'en-GB'))
+		}
+	})
+
+	it('follows the browser when the calendar has its language', () => {
+		expect(defaultLocalesFor('de-AT')).toEqual(LAYOUT_IDS.map(() => 'de-DE'))
+	})
+
+	it('falls back to British English', () => {
+		expect(defaultLocalesFor('zh-CN')).toEqual(LAYOUT_IDS.map(() => 'en-GB'))
+	})
+
+	it('starts weeks on Monday in British English', () => {
+		vi.stubGlobal('navigator', { language: 'en-US' })
+		expect(DEFAULTS['year-per-page']().weekStart).toBe(1)
 	})
 })
