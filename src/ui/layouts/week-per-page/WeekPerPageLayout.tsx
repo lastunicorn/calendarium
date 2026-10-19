@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import type { WeekPerPageConfig } from '../../../config/layouts/weekPerPage'
-import { weeksOfYear } from '../../../core/calendar'
+import { weekMonth, weeksOfYear } from '../../../core/calendar'
 import { hourNames } from '../../../core/locale'
 import { weekCells } from '../../../core/weekend'
 import { useCalendarModel, useWeekdayNames } from '../useCalendarModel'
@@ -15,7 +15,8 @@ interface WeekPerPageLayoutProps {
  * December 31; their days of the previous and next year are grayed out. The weekend gets a cell
  * per day, one shared cell, or none, per `weekendDisplay`. Each day of the year in its own cell
  * may hold an hourly schedule, per `weekPageLines`; a shared weekend cell has no room for one.
- * With `twoPagesPerWeek`, each week spreads over two pages.
+ * With `twoPagesPerWeek`, each week spreads over two pages. The week's month may be drawn small
+ * beside the heading, per `miniMonth`.
  */
 export function WeekPerPageLayout({ config }: WeekPerPageLayoutProps) {
 	const {
@@ -30,10 +31,12 @@ export function WeekPerPageLayout({ config }: WeekPerPageLayoutProps) {
 		hourFormat,
 		firstHour,
 		lastHour,
+		miniMonth,
 		page,
 	} = config
-	const { weekStart, monthNames } = useCalendarModel(config)
+	const { weekStart, months, monthNames } = useCalendarModel(config)
 	const weekdays = useWeekdayNames(locale, weekStart, config.weekdayFormat)
+	const miniWeekdays = useWeekdayNames(locale, weekStart, miniMonth.weekdayFormat)
 	// A week whose only days of the year are a left-out weekend gets no page.
 	const pages = useMemo(
 		() =>
@@ -64,6 +67,10 @@ export function WeekPerPageLayout({ config }: WeekPerPageLayoutProps) {
 			locale={locale}
 			highlightWeekendDays={highlightWeekendDays}
 			showHeaderWeek={showHeaderWeek}
+			miniMonth={miniMonth.show ? months[weekMonth(cells.flat())] : undefined}
+			miniWeekdays={miniWeekdays}
+			miniMonthHighlight={miniMonth.highlightWeekends}
+			miniMonthWeekNumbers={miniMonth.showWeekNumbers}
 			setup={page}
 		/>
 	))

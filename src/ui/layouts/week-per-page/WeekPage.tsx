@@ -1,11 +1,17 @@
 import { memo } from 'react'
 import type { PageSetup } from '../../../config/CalendarConfig'
 import { stacksDays, type WeekDayDirection } from '../../../config/layouts/weekPerPage'
-import { type WeekDay, type WeekStart, weekNumber } from '../../../core/calendar'
+import {
+	type CalendarMonth,
+	type WeekDay,
+	type WeekStart,
+	weekNumber,
+} from '../../../core/calendar'
 import { dateRangeName, type Locale } from '../../../core/locale'
 import { PRINT_MESSAGES } from '../../../core/messages'
-import { isHighlightedWeekDay, splitWeekCells } from '../../../core/weekend'
+import { isHighlightedWeekDay, splitWeekCells, type WeekendHighlight } from '../../../core/weekend'
 import { CalendarHeader } from '../CalendarHeader'
+import { MiniMonth } from '../MiniMonth'
 import { Page } from '../Page'
 import styles from './WeekPage.module.css'
 
@@ -37,6 +43,12 @@ interface WeekPageProps {
 	highlightWeekendDays: boolean
 	/** Whether the heading shows "Week N". */
 	showHeaderWeek: boolean
+	/** The week's month, drawn small beside the heading with the week marked; none leaves it out. */
+	miniMonth?: CalendarMonth
+	/** The small month's weekday labels, its weekend highlight and its week numbers column. */
+	miniWeekdays: string[]
+	miniMonthHighlight: WeekendHighlight
+	miniMonthWeekNumbers: boolean
 	setup: PageSetup
 }
 
@@ -161,18 +173,41 @@ export const WeekPage = memo(function WeekPage({
 	locale,
 	highlightWeekendDays,
 	showHeaderWeek,
+	miniMonth,
+	miniWeekdays,
+	miniMonthHighlight,
+	miniMonthWeekNumbers,
 	setup,
 }: WeekPageProps) {
 	const stacked = stacksDays(direction, setup.orientation, twoPages)
 	const days = cells.flat()
 	const gridProps = { weekdays, weekStart, monthNames, hours, highlightWeekendDays, stacked }
-	const header = (
+	const heading = (
 		<CalendarHeader
 			heading={dateRangeName(locale, days[0], days.at(-1)!)}
 			subheading={showHeaderWeek ? PRINT_MESSAGES[locale].week(weekNumber(days)) : ''}
 			size="compact"
-			align={twoPages ? 'start' : 'center'}
+			align={twoPages || miniMonth ? 'start' : 'center'}
 		/>
+	)
+	// With the mini month, the heading is set to its left, as on a day page.
+	const header = miniMonth ? (
+		<div className={styles.top}>
+			<div className={styles.heading}>{heading}</div>
+			<div className={styles.miniMonth}>
+				<MiniMonth
+					month={miniMonth}
+					name={monthNames[miniMonth.month]}
+					weekdays={miniWeekdays}
+					highlightWeekends={miniMonthHighlight}
+					showWeekNumbers={miniMonthWeekNumbers}
+					markedWeek={days[0].key}
+					size="small"
+				/>
+			</div>
+		</div>
+	) : (
+		heading
 	)
 
 	if (!twoPages) {

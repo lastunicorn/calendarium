@@ -65,6 +65,21 @@
 	background: var(--color-text);
 }
 
+/* A marked week's row is framed: each day draws the top and bottom, the row's ends the sides. */
+.day.markedWeek {
+	font-weight: 700;
+	border-top: 0.3mm solid var(--color-text);
+	border-bottom: 0.3mm solid var(--color-text);
+}
+
+.day.markedWeekStart {
+	border-left: 0.3mm solid var(--color-text);
+}
+
+.day.markedWeekEnd {
+	border-right: 0.3mm solid var(--color-text);
+}
+
 /* Smaller text, for a mini month in the corner of a page. */
 .small .name {
 	margin-bottom: 1mm;

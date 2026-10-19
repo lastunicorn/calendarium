@@ -4,6 +4,26 @@
 	flex-direction: column;
 }
 
+/* The heading beside the mini month, which keeps a fixed box (a grid, so the month stretches to it). */
+.top {
+	display: flex;
+	gap: 6mm;
+	align-items: flex-start;
+	margin-bottom: 3mm;
+}
+
+.heading {
+	flex: 1;
+	min-width: 0;
+}
+
+.miniMonth {
+	display: grid;
+	flex-shrink: 0;
+	width: 44mm;
+	height: 32mm;
+}
+
 /* Keeps the heading's space on a week's second page, so its cells line up with the first page's. */
 .headerSpace {
 	visibility: hidden;

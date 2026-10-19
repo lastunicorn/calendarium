@@ -117,6 +117,25 @@ export function weekNumber(week: PlainDate[]): number {
 	return isoWeek(thursday)
 }
 
+/**
+ * The month (0–11) a week of the year is mostly in: the one holding the most of its days of the
+ * year, the earlier on a tie. `days` must hold at least one day of the year.
+ */
+export function weekMonth(days: WeekDay[]): number {
+	const counts = new Map<number, number>()
+	for (const day of days) if (day.inYear) counts.set(day.month, (counts.get(day.month) ?? 0) + 1)
+	let month = -1
+	let most = 0
+	// A map keeps insertion order, so months come in order and a tie keeps the earlier one.
+	for (const [candidate, count] of counts) {
+		if (count > most) {
+			month = candidate
+			most = count
+		}
+	}
+	return month
+}
+
 export function buildMonth(year: number, month: number, weekStart: WeekStart): CalendarMonth {
 	const leadingDays = (plainDate(year, month, 1).weekday - weekStart + 7) % 7
 	const weeks: CalendarDay[][] = []

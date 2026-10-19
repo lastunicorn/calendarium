@@ -5,6 +5,7 @@ import { type CommonConfig, commonDefaults, margins } from '../CalendarConfig'
 import { COMMON_VALIDATORS, isBoolean, oneOf } from '../validators'
 import { type HourSchedule, orderHours, SCHEDULE_VALIDATORS, scheduleDefaults } from './hours'
 import type { LayoutSpec } from './LayoutSpec'
+import { MINI_MONTH_VALIDATORS, type MiniMonthOptions, miniMonthDefaults } from './monthGrid'
 
 /** What fills each day's cell on a `week-per-page` page under its label: nothing, or an hourly schedule. */
 export const WEEK_PAGE_LINES = ['none', 'hours'] as const
@@ -50,6 +51,8 @@ export interface WeekPerPageConfig extends CommonConfig, HourSchedule {
 	twoPagesPerWeek: boolean
 	/** Whether the days are columns or rows (`stacksDays`). */
 	weekDayDirection: WeekDayDirection
+	/** The week's month (`weekMonth`), drawn small beside the heading with the week marked. */
+	miniMonth: MiniMonthOptions
 }
 
 export const WEEK_PER_PAGE_SPEC: LayoutSpec<WeekPerPageConfig> = {
@@ -67,6 +70,8 @@ export const WEEK_PER_PAGE_SPEC: LayoutSpec<WeekPerPageConfig> = {
 			twoPagesPerWeek: false,
 			weekDayDirection: 'auto',
 			...scheduleDefaults(),
+			// Hidden, so the days keep the page's height.
+			miniMonth: { ...miniMonthDefaults(), show: false },
 			page: { ...common.page, orientation: 'landscape', margins: margins(10) },
 		}
 	},
@@ -80,6 +85,7 @@ export const WEEK_PER_PAGE_SPEC: LayoutSpec<WeekPerPageConfig> = {
 		twoPagesPerWeek: isBoolean,
 		weekDayDirection: oneOf(WEEK_DAY_DIRECTIONS),
 		...SCHEDULE_VALIDATORS,
+		miniMonth: MINI_MONTH_VALIDATORS,
 	},
 	normalize: orderHours,
 }

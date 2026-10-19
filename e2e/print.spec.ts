@@ -49,6 +49,21 @@ function pdfPageSizes(pdf: Buffer): { width: number; height: number }[] {
 	})
 }
 
+/** The numbers of the pages whose content doesn't fit inside them, as printed. */
+async function clippedPages(page: Page): Promise<number[]> {
+	// Print media turns off `content-visibility`, so every page is laid out as it prints.
+	await page.emulateMedia({ media: 'print' })
+	return page.locator('main section').evaluateAll((sections) =>
+		sections.flatMap((section, index) =>
+			// The same test as `useOverflow`, which only runs on screen, for visible pages.
+			section.scrollHeight > section.clientHeight + 1 ||
+			section.scrollWidth > section.clientWidth + 1
+				? [index + 1]
+				: [],
+		),
+	)
+}
+
 for (const { layout, pages, width, height } of CASES) {
 	test(`${layout} prints ${pages} page(s) of ${width} × ${height} mm`, async ({ page }) => {
 		await showLayout(page, layout, YEAR)
@@ -67,19 +82,7 @@ for (const { layout, pages, width, height } of CASES) {
 
 	test(`${layout} fits its content on every page`, async ({ page }) => {
 		await showLayout(page, layout, YEAR)
-		// Print media turns off `content-visibility`, so every page is laid out as it prints.
-		await page.emulateMedia({ media: 'print' })
-
-		const clipped = await page.locator('main section').evaluateAll((sections) =>
-			sections.flatMap((section, index) =>
-				// The same test as `useOverflow`, which only runs on screen, for visible pages.
-				section.scrollHeight > section.clientHeight + 1 ||
-				section.scrollWidth > section.clientWidth + 1
-					? [index + 1]
-					: [],
-			),
-		)
-		expect(clipped, 'pages whose content is cut off').toEqual([])
+		expect(await clippedPages(page), 'pages whose content is cut off').toEqual([])
 	})
 }
 
@@ -97,4 +100,16 @@ test('week-per-page prints two pages per week when asked', async ({ page }) => {
 
 	const sizes = pdfPageSizes(await page.pdf({ preferCSSPageSize: true, printBackground: true }))
 	expect(sizes).toHaveLength(2 * 53)
+})
+
+test('week-per-page fits its content with the mini calendar, on one page or two', async ({
+	page,
+}) => {
+	await showLayout(page, 'week-per-page', YEAR)
+	await page.getByRole('checkbox', { name: 'Show mini calendar' }).check()
+	expect(await clippedPages(page), 'pages whose content is cut off').toEqual([])
+
+	await page.emulateMedia({ media: 'screen' })
+	await page.getByRole('checkbox', { name: 'Two pages per week' }).check()
+	expect(await clippedPages(page), 'pages whose content is cut off').toEqual([])
 })

@@ -24,7 +24,7 @@ function weekendDaysHighlighted(value: unknown): unknown {
 /**
  * One layout's options from 3 to 4. The week and day layouts lost the month grid options: the
  * week's `highlightWeekends` became `highlightWeekendDays`, on or off, and its `showWeekNumbers`
- * (the heading's "Week N") `showHeaderWeek`; the day's grid options and `showMiniMonth` moved
+ * (the heading's "Week N") `showHeaderWeek`, and its new `miniMonth` starts from its defaults; the day's grid options and `showMiniMonth` moved
  * under `miniMonth`, its `highlightWeekends` (for the heading) became `highlightWeekendDays`.
  * Values are moved as they are; parsing checks them afterwards.
  */

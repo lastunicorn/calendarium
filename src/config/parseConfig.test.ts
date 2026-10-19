@@ -56,6 +56,7 @@ describe('parseConfig', () => {
 					hourFormat: '12h',
 					firstHour: 8,
 					lastHour: 18,
+					miniMonth: { ...grid, show: true },
 				},
 				'day-per-page': {
 					...common,

@@ -11,6 +11,7 @@ import {
 	type WeekStart,
 	WEEKS_PER_MONTH,
 	visibleWeeks,
+	weekMonth,
 	weekNumber,
 	weeksOfYear,
 } from './calendar'
@@ -227,6 +228,29 @@ describe('weekNumber', () => {
 		expect(weekNumber(buildMonth(2026, 0, 5).weeks[1])).toBe(2)
 		// Saturday-first row 27 Dec 2025 – 2 Jan 2026 contains 1 January (W01).
 		expect(weekNumber(buildMonth(2026, 0, 6).weeks[0])).toBe(1)
+	})
+})
+
+describe('weekMonth', () => {
+	// Monday-first weeks of 2026: 29 Dec 2025 – 4 Jan, …, 26 Jan – 1 Feb, …, 28 Dec – 3 Jan 2027.
+	const weeks = weeksOfYear(2026, 1)
+
+	it('is the month holding most of the week’s days', () => {
+		expect(weekMonth(weeks[4])).toBe(0)
+		// Thursday 29 January to Wednesday 4 February: four days in February.
+		expect(weekMonth(weeksOfYear(2026, 4)[5])).toBe(1)
+	})
+
+	it('counts only the days of the year', () => {
+		expect(weekMonth(weeks[0])).toBe(0)
+		expect(weekMonth(weeks.at(-1)!)).toBe(11)
+	})
+
+	it('keeps the earlier month on a tie', () => {
+		// Two days of the week of 29 June – 5 July 2026, one in each month.
+		const week = weeks.find((days) => days[0].key === '2026-06-29')!
+		const tie = week.filter((day) => day.key === '2026-06-30' || day.key === '2026-07-01')
+		expect(weekMonth(tie)).toBe(5)
 	})
 })
 
