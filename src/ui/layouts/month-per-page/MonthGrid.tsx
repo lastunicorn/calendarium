@@ -1,8 +1,24 @@
 import { Fragment } from 'react'
 import { weekNumber } from '../../../core/calendar'
 import { isHighlightedColumn, isHighlightedDay } from '../../../core/weekend'
+import type {
+	DayNumberHorizontalAlignment,
+	DayNumberVerticalAlignment,
+} from '../../../layouts/month-per-page/options'
 import type { MonthGridPlan } from '../../../layouts/month-per-page/pages'
 import styles from './MonthGrid.module.css'
+
+const HORIZONTAL_ALIGN_CLASSES: Record<DayNumberHorizontalAlignment, string> = {
+	left: styles.alignLeft,
+	center: styles.alignCenter,
+	right: styles.alignRight,
+}
+
+const VERTICAL_ALIGN_CLASSES: Record<DayNumberVerticalAlignment, string> = {
+	top: styles.alignTop,
+	center: styles.alignMiddle,
+	bottom: styles.alignBottom,
+}
 
 /**
  * A full-page month (`MonthGridPlan`): large cells with room to write, adjacent-month days in gray
@@ -14,7 +30,10 @@ export function MonthGrid({
 	highlightWeekends,
 	showWeekNumbers,
 	showAdjacentMonthDays,
+	dayNumberHorizontalAlignment,
+	dayNumberVerticalAlignment,
 }: MonthGridPlan) {
+	const dayAlignClasses = `${HORIZONTAL_ALIGN_CLASSES[dayNumberHorizontalAlignment]} ${VERTICAL_ALIGN_CLASSES[dayNumberVerticalAlignment]}`
 	const weekendColumns = weeks[0].map((day) => isHighlightedColumn(day, highlightWeekends))
 
 	return (
@@ -41,17 +60,24 @@ export function MonthGrid({
 							key={day.key}
 							className={[
 								styles.day,
+								dayAlignClasses,
 								isHighlightedDay(day, highlightWeekends) ? styles.weekend : '',
 								day.inMonth ? '' : styles.adjacent,
 							].join(' ')}
 						>
-							{(day.inMonth || showAdjacentMonthDays) && day.day}
-							{day.events.map((name, index) => (
-								// Two events may share a name, and they never reorder.
-								<span key={index} className={styles.event}>
-									{name}
-								</span>
-							))}
+							{(day.inMonth || showAdjacentMonthDays) && (
+								<span className={styles.number}>{day.day}</span>
+							)}
+							{day.events.length > 0 && (
+								<div className={styles.events}>
+									{day.events.map((name, index) => (
+										// Two events may share a name, and they never reorder.
+										<span key={index} className={styles.event}>
+											{name}
+										</span>
+									))}
+								</div>
+							)}
 						</div>
 					))}
 				</Fragment>

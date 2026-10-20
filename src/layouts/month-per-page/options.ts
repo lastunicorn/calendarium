@@ -28,6 +28,17 @@ const ADJACENT_MONTHS_VALIDATORS: Validators<AdjacentMonthsOptions> = {
 	...MONTH_GRID_VALIDATORS,
 }
 
+/** Where a day's number sits across its grid cell, its events' names following it. */
+export const DAY_NUMBER_HORIZONTAL_ALIGNMENTS = ['left', 'center', 'right'] as const
+export type DayNumberHorizontalAlignment = (typeof DAY_NUMBER_HORIZONTAL_ALIGNMENTS)[number]
+
+/**
+ * Where a day's number sits down its grid cell: its events' names stay below it at the top and
+ * middle, above it at the bottom.
+ */
+export const DAY_NUMBER_VERTICAL_ALIGNMENTS = ['top', 'center', 'bottom'] as const
+export type DayNumberVerticalAlignment = (typeof DAY_NUMBER_VERTICAL_ALIGNMENTS)[number]
+
 export interface MonthPerPageConfig extends CommonConfig, MonthGridOptions {
 	/**
 	 * Shown above the grid on every page, the month and year then below it; when empty, the month
@@ -41,6 +52,8 @@ export interface MonthPerPageConfig extends CommonConfig, MonthGridOptions {
 	monthHeadingAlignment: HeadingAlign
 	/** Whether the grid's grayed days of the previous and next month show their numbers. */
 	showAdjacentMonthDays: boolean
+	dayNumberHorizontalAlignment: DayNumberHorizontalAlignment
+	dayNumberVerticalAlignment: DayNumberVerticalAlignment
 	adjacentMonths: AdjacentMonthsOptions
 }
 
@@ -57,6 +70,8 @@ export const MONTH_PER_PAGE_SPEC: LayoutSpec<MonthPerPageConfig> = {
 			showWeekNumbers: true,
 			monthHeadingAlignment: 'center',
 			showAdjacentMonthDays: true,
+			dayNumberHorizontalAlignment: 'left',
+			dayNumberVerticalAlignment: 'top',
 			adjacentMonths: adjacentMonthsDefaults(),
 			page: { ...common.page, orientation: 'landscape', margins: margins(10) },
 		}
@@ -69,6 +84,8 @@ export const MONTH_PER_PAGE_SPEC: LayoutSpec<MonthPerPageConfig> = {
 		title: isString,
 		monthHeadingAlignment: oneOf(HEADING_ALIGNS),
 		showAdjacentMonthDays: isBoolean,
+		dayNumberHorizontalAlignment: oneOf(DAY_NUMBER_HORIZONTAL_ALIGNMENTS),
+		dayNumberVerticalAlignment: oneOf(DAY_NUMBER_VERTICAL_ALIGNMENTS),
 		adjacentMonths: ADJACENT_MONTHS_VALIDATORS,
 	},
 	normalize: unchanged,

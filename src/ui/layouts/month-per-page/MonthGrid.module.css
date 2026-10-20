@@ -40,8 +40,15 @@
 	color: var(--color-week-number);
 }
 
-/* Day number in the top-left corner; the rest of the cell is space to write in. */
+/*
+ * The day number, its events' names below it, set in the cell per the alignment classes below;
+ * the rest of the cell is space to write in.
+ */
 .day {
+	display: flex;
+	flex-direction: column;
+	gap: 1mm;
+	min-width: 0;
 	min-height: 0;
 	padding: 1.5mm 2mm;
 	font-size: 14pt;
@@ -50,10 +57,9 @@
 	overflow: hidden;
 }
 
-/* An event's name under the day number, one line each, cut short when the cell is too narrow. */
+/* An event's name, one line each, cut short when the cell is too narrow. */
 .event {
 	display: block;
-	margin-top: 1mm;
 	overflow: hidden;
 	font-size: 8pt;
 	font-weight: 400;
@@ -65,6 +71,32 @@
 
 .event + .event {
 	margin-top: 0.5mm;
+}
+
+.alignLeft {
+	text-align: left;
+}
+
+.alignCenter {
+	text-align: center;
+}
+
+.alignRight {
+	text-align: right;
+}
+
+.alignTop {
+	justify-content: flex-start;
+}
+
+.alignMiddle {
+	justify-content: center;
+}
+
+/* Reversed, so the number sits in the bottom row and its events' names just above it. */
+.alignBottom {
+	flex-direction: column-reverse;
+	justify-content: flex-start;
 }
 
 .weekend {

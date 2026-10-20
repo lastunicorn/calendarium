@@ -54,6 +54,22 @@ describe('planMonthPages', () => {
 		)
 	})
 
+	it('sets the day numbers top left unless told where', () => {
+		expect(plan(2026)[0].grid).toMatchObject({
+			dayNumberHorizontalAlignment: 'left',
+			dayNumberVerticalAlignment: 'top',
+		})
+		expect(
+			plan(2026, {
+				dayNumberHorizontalAlignment: 'right',
+				dayNumberVerticalAlignment: 'bottom',
+			})[0].grid,
+		).toMatchObject({
+			dayNumberHorizontalAlignment: 'right',
+			dayNumberVerticalAlignment: 'bottom',
+		})
+	})
+
 	it('writes the weekday names in full when asked', () => {
 		expect(plan(2026, { weekdayFormat: 'full' })[0].grid.weekdays[2]).toBe('Wednesday')
 	})

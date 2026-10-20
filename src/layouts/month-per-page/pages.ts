@@ -5,7 +5,11 @@ import type { WeekendHighlight } from '../../core/weekend'
 import type { CalendarModel } from '../common'
 import type { HeadingAlign } from '../heading'
 import type { MiniMonthPlan } from '../monthGrid'
-import type { MonthPerPageConfig } from './options'
+import type {
+	DayNumberHorizontalAlignment,
+	DayNumberVerticalAlignment,
+	MonthPerPageConfig,
+} from './options'
 
 /** A day's cell in a month grid. */
 export interface MonthGridDay extends CalendarDay {
@@ -23,6 +27,10 @@ export interface MonthGridPlan {
 	showWeekNumbers: boolean
 	/** Whether the days of the previous and next month show their numbers, or leave their cells blank. */
 	showAdjacentMonthDays: boolean
+	/** Where each day's number sits across its cell. */
+	dayNumberHorizontalAlignment: DayNumberHorizontalAlignment
+	/** Where each day's number sits down its cell. */
+	dayNumberVerticalAlignment: DayNumberVerticalAlignment
 }
 
 /** One month's page. */
@@ -83,6 +91,8 @@ export function planMonthPages(config: MonthPerPageConfig, model: CalendarModel)
 				highlightWeekends: config.highlightWeekends,
 				showWeekNumbers: config.showWeekNumbers,
 				showAdjacentMonthDays: config.showAdjacentMonthDays,
+				dayNumberHorizontalAlignment: config.dayNumberHorizontalAlignment,
+				dayNumberVerticalAlignment: config.dayNumberVerticalAlignment,
 			},
 			previousMonth: adjacentMonths.showPreviousMonth
 				? planMiniMonth(month.month, -1)
