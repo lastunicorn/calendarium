@@ -111,7 +111,11 @@ export type SameFieldTypesCheck = Assert<
 /** The options of any one layout. */
 export type LayoutConfig = LayoutConfigs[LayoutId]
 
-/** The app's whole config: which layout is shown, and a remembered set of options per layout. */
+/**
+ * The app's whole config: which layout is shown, and a remembered set of options per layout.
+ * The aggregate root of the settings: changed only by `configReducer`'s commands, which keep every
+ * layout's options normalized, and loaded and saved by `storage.ts`, its repository.
+ */
 export interface AppConfig {
 	/** The active layout, whose options the sidebar edits and the preview shows. */
 	layout: LayoutId
