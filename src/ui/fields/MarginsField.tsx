@@ -1,12 +1,19 @@
-import { isMargin, MARGIN_SIDES, type Margins, type MarginSide, MAX_MARGIN } from '../../core/paper'
+import {
+	isMargin,
+	MARGIN_SIDES,
+	type Margins,
+	type MarginSide,
+	MAX_MARGIN,
+	type Orientation,
+} from '../../core/paper'
 import styles from './MarginsField.module.css'
 import { NumberInput } from './NumberInput'
 
 const MARGIN_LABELS: Record<MarginSide, string> = {
-	top: 'Top',
-	right: 'Right',
-	bottom: 'Bottom',
-	left: 'Left',
+	top: 'Top margin',
+	right: 'Right margin',
+	bottom: 'Bottom margin',
+	left: 'Left margin',
 }
 
 interface MarginInputProps {
@@ -21,27 +28,29 @@ function MarginInput({ side, value, onChange }: MarginInputProps) {
 	}
 
 	return (
-		<label className={styles.margin}>
-			{MARGIN_LABELS[side]}
+		<div className={`${styles.margin} ${styles[side]}`}>
 			<NumberInput
 				value={value}
 				min={0}
 				max={MAX_MARGIN}
 				step={0.5}
+				label={MARGIN_LABELS[side]}
 				isValid={isMargin}
 				onChange={handleInputChange}
 			/>
-		</label>
+		</div>
 	)
 }
 
 interface MarginsFieldProps {
 	value: Margins
+	/** The shape of the page drawn between the inputs. */
+	orientation: Orientation
 	onChange: (margins: Margins) => void
 }
 
-/** The four page margins in mm, as a 2×2 grid. */
-export function MarginsField({ value, onChange }: MarginsFieldProps) {
+/** The four page margins in mm, each input placed by its side of a drawn page. */
+export function MarginsField({ value, orientation, onChange }: MarginsFieldProps) {
 	function handleMarginChange(side: MarginSide, margin: number) {
 		onChange({ ...value, [side]: margin })
 	}
@@ -49,14 +58,19 @@ export function MarginsField({ value, onChange }: MarginsFieldProps) {
 	return (
 		<fieldset className={styles.margins}>
 			<legend>Margins (mm)</legend>
-			{MARGIN_SIDES.map((side) => (
-				<MarginInput
-					key={side}
-					side={side}
-					value={value[side]}
-					onChange={handleMarginChange}
-				/>
-			))}
+			<div className={styles.layout}>
+				<div className={`${styles.page} ${styles[orientation]}`} aria-hidden="true">
+					<div className={styles.contentBox} />
+				</div>
+				{MARGIN_SIDES.map((side) => (
+					<MarginInput
+						key={side}
+						side={side}
+						value={value[side]}
+						onChange={handleMarginChange}
+					/>
+				))}
+			</div>
 		</fieldset>
 	)
 }

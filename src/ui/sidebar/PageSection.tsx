@@ -60,7 +60,11 @@ export function PageSection({ config, onUpdate }: ConfigSectionProps<CommonConfi
 				options={ORIENTATION_OPTIONS}
 				onChange={handleOrientationChange}
 			/>
-			<MarginsField value={page.margins} onChange={handleMarginsChange} />
+			<MarginsField
+				value={page.margins}
+				orientation={page.orientation}
+				onChange={handleMarginsChange}
+			/>
 			<CheckboxField
 				label="Use mirror margins"
 				checked={page.mirrorMargins}

@@ -5,6 +5,8 @@ interface NumberInputProps {
 	min: number
 	max: number
 	step?: number
+	/** The input's accessible name, for an input that has no visible label. */
+	label?: string
 	/** Whether a typed number may be committed; defaults to finite and within `min`–`max`. */
 	isValid?: (value: number) => boolean
 	onChange: (value: number) => void
@@ -15,7 +17,7 @@ interface NumberInputProps {
  * cleared or hold an intermediate value without snapping back. Only valid numbers reach
  * `onChange`; leaving the field shows the committed value again.
  */
-export function NumberInput({ value, min, max, step, isValid, onChange }: NumberInputProps) {
+export function NumberInput({ value, min, max, step, label, isValid, onChange }: NumberInputProps) {
 	const [draft, setDraft] = useState(String(value))
 	const [shownValue, setShownValue] = useState(value)
 
@@ -45,6 +47,7 @@ export function NumberInput({ value, min, max, step, isValid, onChange }: Number
 			min={min}
 			max={max}
 			step={step}
+			aria-label={label}
 			value={draft}
 			onChange={handleInputChange}
 			onBlur={handleInputBlur}
