@@ -20,8 +20,8 @@ export function WeekPerPageForm({ config, onUpdate }: ConfigSectionProps<WeekPer
 		<>
 			<CalendarSection config={config} onUpdate={onUpdate} />
 			<HeaderSection config={config} onUpdate={onUpdate} />
-			<WeekPageSection config={config} onUpdate={onUpdate} />
 			<MiniMonthSection config={config.miniMonth} onUpdate={handleMiniMonthUpdate} />
+			<WeekPageSection config={config} onUpdate={onUpdate} />
 			<PageSection config={config} onUpdate={onUpdate} />
 		</>
 	)

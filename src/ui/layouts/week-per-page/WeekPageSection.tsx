@@ -66,6 +66,22 @@ export function WeekPageSection({ config, onUpdate }: ConfigSectionProps<WeekPer
 
 	return (
 		<Section title="Week page" icon={<DayPageIcon />}>
+			<CheckboxField
+				label="Two pages per week"
+				checked={config.twoPagesPerWeek}
+				onChange={handleTwoPagesPerWeekChange}
+			/>
+			<RadioField
+				label="Days direction"
+				description={
+					config.weekDayDirection === 'auto'
+						? 'Columns on landscape paper or over two pages, rows on portrait.'
+						: undefined
+				}
+				value={config.weekDayDirection}
+				options={WEEK_DAY_DIRECTION_OPTIONS}
+				onChange={handleWeekDayDirectionChange}
+			/>
 			<RadioField
 				label="Weekday names"
 				value={config.weekdayFormat}
@@ -76,22 +92,6 @@ export function WeekPageSection({ config, onUpdate }: ConfigSectionProps<WeekPer
 				label="Highlight weekends"
 				checked={config.highlightWeekendDays}
 				onChange={handleHighlightWeekendDaysChange}
-			/>
-			<CheckboxField
-				label="Two pages per week"
-				checked={config.twoPagesPerWeek}
-				onChange={handleTwoPagesPerWeekChange}
-			/>
-			<RadioField
-				label="Days"
-				description={
-					config.weekDayDirection === 'auto'
-						? 'Columns on landscape paper or over two pages, rows on portrait.'
-						: undefined
-				}
-				value={config.weekDayDirection}
-				options={WEEK_DAY_DIRECTION_OPTIONS}
-				onChange={handleWeekDayDirectionChange}
 			/>
 			<RadioField
 				label="Weekend"

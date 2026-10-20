@@ -44,8 +44,8 @@ describe('ConfigForm', () => {
 			'Layout',
 			'Calendar',
 			'Header',
-			'Week page',
 			'Mini calendar',
+			'Week page',
 			'Page',
 		])
 	})
@@ -55,8 +55,8 @@ describe('ConfigForm', () => {
 			'Layout',
 			'Calendar',
 			'Header',
-			'Day page',
 			'Mini calendar',
+			'Day page',
 			'Page',
 		])
 		expect(screen.queryByLabelText('Title')).toBeNull()

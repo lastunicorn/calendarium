@@ -17,8 +17,8 @@ export function DayPerPageForm({ config, onUpdate }: ConfigSectionProps<DayPerPa
 		<>
 			<CalendarSection config={config} onUpdate={onUpdate} />
 			<HeaderSection config={config} onUpdate={onUpdate} />
-			<DayPageSection config={config} onUpdate={onUpdate} />
 			<MiniMonthSection config={config.miniMonth} onUpdate={handleMiniMonthUpdate} />
+			<DayPageSection config={config} onUpdate={onUpdate} />
 			<PageSection config={config} onUpdate={onUpdate} />
 		</>
 	)
