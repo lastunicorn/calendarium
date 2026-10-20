@@ -3,7 +3,7 @@ import { HOUR_FORMATS, type HourFormat } from '../../core/locale'
 import { NumberField } from '../fields/NumberField'
 import { optionsFrom } from '../fields/options'
 import { RadioField } from '../fields/RadioField'
-import type { ConfigSectionProps } from './Section'
+import type { ConfigFieldsProps } from './Section'
 
 const HOUR_FORMAT_OPTIONS = optionsFrom(HOUR_FORMATS, {
 	auto: 'Language default',
@@ -12,7 +12,7 @@ const HOUR_FORMAT_OPTIONS = optionsFrom(HOUR_FORMATS, {
 })
 
 /** The hours of a layout's hourly schedule and the clock they are labeled in. */
-export function ScheduleFields({ config, onUpdate }: ConfigSectionProps<HourSchedule>) {
+export function ScheduleFields({ config, onUpdate }: ConfigFieldsProps<HourSchedule>) {
 	function handleHourFormatChange(hourFormat: HourFormat) {
 		onUpdate({ hourFormat })
 	}

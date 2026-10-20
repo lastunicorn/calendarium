@@ -8,6 +8,7 @@ import { CheckboxField } from '../../fields/CheckboxField'
 import { optionsFrom } from '../../fields/options'
 import { RadioField } from '../../fields/RadioField'
 import { DAY_WEEK_NUMBER_DESCRIPTION } from '../../sidebar/descriptions'
+import { defaultFields } from '../../sidebar/defaultFields'
 import { type ConfigSectionProps, Section } from '../../sidebar/Section'
 
 const DAY_PAGE_TITLE_OPTIONS = optionsFrom(DAY_PAGE_TITLES, {
@@ -19,7 +20,11 @@ const DAY_PAGE_TITLE_OPTIONS = optionsFrom(DAY_PAGE_TITLES, {
  * What a day's heading shows and whether it takes the weekend color, and what its details, after
  * the subheading, hold.
  */
-export function HeaderSection({ config, onUpdate }: ConfigSectionProps<DayPerPageConfig>) {
+export function HeaderSection({
+	config,
+	defaults,
+	onUpdate,
+}: ConfigSectionProps<DayPerPageConfig>) {
 	function handleDayPageTitleChange(dayPageTitle: DayPageTitle) {
 		onUpdate({ dayPageTitle })
 	}
@@ -36,8 +41,19 @@ export function HeaderSection({ config, onUpdate }: ConfigSectionProps<DayPerPag
 		onUpdate({ highlightWeekendDays })
 	}
 
+	function handleReset() {
+		onUpdate(
+			defaultFields(defaults, [
+				'dayPageTitle',
+				'showHeaderWeek',
+				'showHeaderDayOfYear',
+				'highlightWeekendDays',
+			]),
+		)
+	}
+
 	return (
-		<Section title="Header" icon={<HeaderIcon />}>
+		<Section title="Header" icon={<HeaderIcon />} onReset={handleReset}>
 			<RadioField
 				label="Title"
 				value={config.dayPageTitle}

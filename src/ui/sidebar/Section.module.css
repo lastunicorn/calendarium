@@ -75,3 +75,43 @@
 	line-height: 1.4;
 	color: var(--color-text-faint);
 }
+
+/* The reset button's row, after the fields on the right, pulled up toward them. */
+.footer {
+	display: flex;
+	justify-content: flex-end;
+	margin-top: -4px;
+	margin-bottom: -6px;
+}
+
+/* A small bare icon, faint until hovered or focused, like a field's info button. */
+.reset {
+	display: inline-flex;
+	padding: 0;
+	color: var(--color-text-faint);
+	background: none;
+	border: none;
+	border-radius: 50%;
+	cursor: pointer;
+}
+
+.reset:hover,
+.reset:focus-visible {
+	color: var(--color-text);
+}
+
+.reset svg {
+	width: 16px;
+	height: 16px;
+}
+
+.resetQuestion {
+	margin: 0;
+}
+
+/* The confirming button, under the question on the right; a click elsewhere or Escape cancels. */
+.resetActions {
+	display: flex;
+	justify-content: flex-end;
+	margin-top: 8px;
+}

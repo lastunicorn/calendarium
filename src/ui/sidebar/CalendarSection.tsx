@@ -5,6 +5,7 @@ import { CalendarIcon } from '../components/icons'
 import { NumberField } from '../fields/NumberField'
 import { type Option, optionsFrom } from '../fields/options'
 import { SelectField } from '../fields/SelectField'
+import { defaultFields } from './defaultFields'
 import { type ConfigSectionProps, Section } from './Section'
 
 /** Week start options in panel order: the language's own day, then Monday to Sunday. */
@@ -54,7 +55,7 @@ const YEAR_DESCRIPTION = [
 ]
 
 /** Which year the calendar shows, in which language, and the day its weeks start on. */
-export function CalendarSection({ config, onUpdate }: ConfigSectionProps<CommonConfig>) {
+export function CalendarSection({ config, defaults, onUpdate }: ConfigSectionProps<CommonConfig>) {
 	function handleYearChange(year: number) {
 		onUpdate({ year })
 	}
@@ -67,8 +68,12 @@ export function CalendarSection({ config, onUpdate }: ConfigSectionProps<CommonC
 		onUpdate({ weekStart })
 	}
 
+	function handleReset() {
+		onUpdate(defaultFields(defaults, ['year', 'locale', 'weekStart']))
+	}
+
 	return (
-		<Section title="Calendar" icon={<CalendarIcon />}>
+		<Section title="Calendar" icon={<CalendarIcon />} onReset={handleReset}>
 			<NumberField
 				label="Year"
 				description={YEAR_DESCRIPTION}

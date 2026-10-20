@@ -13,6 +13,7 @@ import { NumberField } from '../../fields/NumberField'
 import { optionsFrom } from '../../fields/options'
 import { RadioField } from '../../fields/RadioField'
 import { ScheduleFields } from '../../sidebar/ScheduleFields'
+import { defaultFields } from '../../sidebar/defaultFields'
 import { type ConfigSectionProps, Section } from '../../sidebar/Section'
 
 const DAY_PAGE_LINES_OPTIONS = optionsFrom(DAY_PAGE_LINES, {
@@ -25,7 +26,11 @@ const DAY_PAGE_LINES_OPTIONS = optionsFrom(DAY_PAGE_LINES, {
  * What fills a day's page: an hourly schedule and its hours, ruled lines and their spacing, or
  * squares and their size, on one page or two.
  */
-export function DayContentSection({ config, onUpdate }: ConfigSectionProps<DayPerPageConfig>) {
+export function DayContentSection({
+	config,
+	defaults,
+	onUpdate,
+}: ConfigSectionProps<DayPerPageConfig>) {
 	function handleDayPageLinesChange(dayPageLines: DayPageLines) {
 		onUpdate({ dayPageLines })
 	}
@@ -42,8 +47,22 @@ export function DayContentSection({ config, onUpdate }: ConfigSectionProps<DayPe
 		onUpdate({ twoPagesPerDay })
 	}
 
+	function handleReset() {
+		onUpdate(
+			defaultFields(defaults, [
+				'twoPagesPerDay',
+				'dayPageLines',
+				'hourFormat',
+				'firstHour',
+				'lastHour',
+				'ruledLineSpacing',
+				'squareSize',
+			]),
+		)
+	}
+
 	return (
-		<Section title="Content" icon={<ContentIcon />}>
+		<Section title="Content" icon={<ContentIcon />} onReset={handleReset}>
 			<CheckboxField
 				label="Two pages per day"
 				description="The header goes on the first page only; an hourly schedule is split in half across the two."

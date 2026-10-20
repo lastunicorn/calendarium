@@ -16,6 +16,7 @@ import { optionsFrom } from '../../fields/options'
 import { RadioField } from '../../fields/RadioField'
 import { WEEKDAY_FORMAT_OPTIONS } from '../../sidebar/fieldOptions'
 import { ScheduleFields } from '../../sidebar/ScheduleFields'
+import { defaultFields } from '../../sidebar/defaultFields'
 import { type ConfigSectionProps, Section } from '../../sidebar/Section'
 
 const HOURS_DESCRIPTION = 'Not drawn for the grayed days of the previous or next year.'
@@ -46,7 +47,11 @@ const WEEK_PAGE_LINES_OPTIONS = optionsFrom(WEEK_PAGE_LINES, {
  * How a week's page (or two) is divided between its days, how each day is labeled,
  * and what fills its cell.
  */
-export function WeekContentSection({ config, onUpdate }: ConfigSectionProps<WeekPerPageConfig>) {
+export function WeekContentSection({
+	config,
+	defaults,
+	onUpdate,
+}: ConfigSectionProps<WeekPerPageConfig>) {
 	function handleWeekdayFormatChange(weekdayFormat: WeekdayFormat) {
 		onUpdate({ weekdayFormat })
 	}
@@ -71,8 +76,24 @@ export function WeekContentSection({ config, onUpdate }: ConfigSectionProps<Week
 		onUpdate({ twoPagesPerWeek })
 	}
 
+	function handleReset() {
+		onUpdate(
+			defaultFields(defaults, [
+				'twoPagesPerWeek',
+				'weekDayDirection',
+				'weekdayFormat',
+				'highlightWeekendDays',
+				'weekendDisplay',
+				'weekPageLines',
+				'hourFormat',
+				'firstHour',
+				'lastHour',
+			]),
+		)
+	}
+
 	return (
-		<Section title="Content" icon={<ContentIcon />}>
+		<Section title="Content" icon={<ContentIcon />} onReset={handleReset}>
 			<CheckboxField
 				label="Two pages per week"
 				description="The first three days go on the first page, under the title; the rest on the second, under the mini calendar if shown."

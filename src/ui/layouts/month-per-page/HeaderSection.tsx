@@ -4,6 +4,7 @@ import { HeaderIcon } from '../../components/icons'
 import { RadioField } from '../../fields/RadioField'
 import { TextField } from '../../fields/TextField'
 import { HEADING_ALIGN_OPTIONS } from '../../sidebar/fieldOptions'
+import { defaultFields } from '../../sidebar/defaultFields'
 import { type ConfigSectionProps, Section } from '../../sidebar/Section'
 
 const TITLE_DESCRIPTION = [
@@ -12,7 +13,11 @@ const TITLE_DESCRIPTION = [
 ]
 
 /** The title above every month, and where the heading sits above its grid. */
-export function HeaderSection({ config, onUpdate }: ConfigSectionProps<MonthPerPageConfig>) {
+export function HeaderSection({
+	config,
+	defaults,
+	onUpdate,
+}: ConfigSectionProps<MonthPerPageConfig>) {
 	function handleTitleChange(title: string) {
 		onUpdate({ title })
 	}
@@ -21,8 +26,12 @@ export function HeaderSection({ config, onUpdate }: ConfigSectionProps<MonthPerP
 		onUpdate({ monthHeadingAlignment })
 	}
 
+	function handleReset() {
+		onUpdate(defaultFields(defaults, ['title', 'monthHeadingAlignment']))
+	}
+
 	return (
-		<Section title="Header" icon={<HeaderIcon />}>
+		<Section title="Header" icon={<HeaderIcon />} onReset={handleReset}>
 			<TextField
 				label="Title"
 				description={TITLE_DESCRIPTION}

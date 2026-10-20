@@ -8,18 +8,23 @@ import type { ConfigSectionProps } from '../../sidebar/Section'
 import { HeaderSection } from './HeaderSection'
 
 /** The `month-per-page` options, including its header. */
-export function MonthPerPageForm({ config, onUpdate }: ConfigSectionProps<MonthPerPageConfig>) {
+export function MonthPerPageForm({
+	config,
+	defaults,
+	onUpdate,
+}: ConfigSectionProps<MonthPerPageConfig>) {
 	return (
 		<>
-			<CalendarSection config={config} onUpdate={onUpdate} />
-			<EventsSection config={config} onUpdate={onUpdate} />
-			<HeaderSection config={config} onUpdate={onUpdate} />
+			<CalendarSection config={config} defaults={defaults} onUpdate={onUpdate} />
+			<EventsSection config={config} defaults={defaults} onUpdate={onUpdate} />
+			<HeaderSection config={config} defaults={defaults} onUpdate={onUpdate} />
 			<ContentSection
 				config={config}
+				defaults={defaults}
 				onUpdate={onUpdate}
 				weekdayFormats={WEEKDAY_FORMAT_OPTIONS}
 			/>
-			<PageSection config={config} onUpdate={onUpdate} />
+			<PageSection config={config} defaults={defaults} onUpdate={onUpdate} />
 		</>
 	)
 }

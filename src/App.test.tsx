@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import App from './App'
 import { defaultLayoutConfig } from './layouts'
@@ -69,6 +69,33 @@ describe('App reset', () => {
 		openSection('Calendar')
 		expect(screen.getByLabelText<HTMLInputElement>('Year').value).toBe(
 			String(new Date().getFullYear()),
+		)
+	})
+
+	it('restores only an open section’s defaults from its reset balloon', async () => {
+		const { container } = render(<App />)
+		const options = {
+			...defaultLayoutConfig('month-per-page'),
+			year: 2030,
+			events: '0000-12-25 Christmas',
+		}
+		const text = serializeLayoutConfig('month-per-page', options)
+		chooseImportFile(container, new File([text], 'month.json', { type: 'application/json' }))
+		await waitFor(() => expect(layoutSelect().value).toBe('month-per-page'))
+
+		openSection('Calendar')
+		const resetButton = screen.getByRole('button', { name: 'Reset Calendar settings' })
+		const balloon = document.getElementById(resetButton.getAttribute('popovertarget')!)!
+		expect(balloon.textContent).toContain('Reset Calendar settings to their defaults?')
+		// jsdom doesn't open popovers, so the balloon's button stays hidden to it.
+		fireEvent.click(within(balloon).getByRole('button', { name: 'Reset', hidden: true }))
+		expect(screen.getByLabelText<HTMLInputElement>('Year').value).toBe(
+			String(new Date().getFullYear()),
+		)
+
+		openSection('Events')
+		expect(screen.getByLabelText<HTMLTextAreaElement>('Events').value).toBe(
+			'0000-12-25 Christmas',
 		)
 	})
 })

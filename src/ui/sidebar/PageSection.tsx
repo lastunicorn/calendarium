@@ -39,7 +39,7 @@ const SPINE_DESCRIPTION = [
 ]
 
 /** The sheet of paper: size, orientation and margins, optionally mirrored around a spine on even pages. */
-export function PageSection({ config, onUpdate }: ConfigSectionProps<CommonConfig>) {
+export function PageSection({ config, defaults, onUpdate }: ConfigSectionProps<CommonConfig>) {
 	const { page } = config
 
 	function handlePaperSizeChange(paperSize: PaperSize) {
@@ -62,8 +62,12 @@ export function PageSection({ config, onUpdate }: ConfigSectionProps<CommonConfi
 		onUpdate({ page: { ...page, spine } })
 	}
 
+	function handleReset() {
+		onUpdate({ page: defaults.page })
+	}
+
 	return (
-		<Section title="Page" icon={<PageIcon />}>
+		<Section title="Page" icon={<PageIcon />} onReset={handleReset}>
 			<SelectField
 				label="Paper size"
 				value={page.paperSize}

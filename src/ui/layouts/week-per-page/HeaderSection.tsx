@@ -5,10 +5,15 @@ import { CheckboxField } from '../../fields/CheckboxField'
 import { RadioField } from '../../fields/RadioField'
 import { WEEK_NUMBER_DESCRIPTION } from '../../sidebar/descriptions'
 import { HEADING_ALIGNMENT_OPTIONS } from '../../sidebar/fieldOptions'
+import { defaultFields } from '../../sidebar/defaultFields'
 import { type ConfigSectionProps, Section } from '../../sidebar/Section'
 
 /** What a week's heading shows besides the dates of its days, and where it sits. */
-export function HeaderSection({ config, onUpdate }: ConfigSectionProps<WeekPerPageConfig>) {
+export function HeaderSection({
+	config,
+	defaults,
+	onUpdate,
+}: ConfigSectionProps<WeekPerPageConfig>) {
 	function handleShowHeaderWeekChange(showHeaderWeek: boolean) {
 		onUpdate({ showHeaderWeek })
 	}
@@ -17,8 +22,12 @@ export function HeaderSection({ config, onUpdate }: ConfigSectionProps<WeekPerPa
 		onUpdate({ headingAlignment })
 	}
 
+	function handleReset() {
+		onUpdate(defaultFields(defaults, ['headingAlignment', 'showHeaderWeek']))
+	}
+
 	return (
-		<Section title="Header" icon={<HeaderIcon />}>
+		<Section title="Header" icon={<HeaderIcon />} onReset={handleReset}>
 			<RadioField
 				label="Title alignment"
 				description={

@@ -21,13 +21,17 @@ function eventsError(events: string): string | undefined {
 }
 
 /** The calendar's events, one per line. */
-export function EventsSection({ config, onUpdate }: ConfigSectionProps<CommonConfig>) {
+export function EventsSection({ config, defaults, onUpdate }: ConfigSectionProps<CommonConfig>) {
 	function handleEventsChange(events: string) {
 		onUpdate({ events })
 	}
 
+	function handleReset() {
+		onUpdate({ events: defaults.events })
+	}
+
 	return (
-		<Section title="Events" icon={<EventsIcon />}>
+		<Section title="Events" icon={<EventsIcon />} onReset={handleReset}>
 			<TextAreaField
 				label="Events"
 				description={EVENTS_DESCRIPTION}

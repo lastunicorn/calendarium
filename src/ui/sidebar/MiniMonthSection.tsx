@@ -5,13 +5,21 @@ import { MonthGridFields } from './MonthGridFields'
 import { type ConfigSectionProps, Section } from './Section'
 
 /** Whether a page shows a small month for context, and how it looks. */
-export function MiniMonthSection({ config, onUpdate }: ConfigSectionProps<MiniMonthOptions>) {
+export function MiniMonthSection({
+	config,
+	defaults,
+	onUpdate,
+}: ConfigSectionProps<MiniMonthOptions>) {
 	function handleShowChange(show: boolean) {
 		onUpdate({ show })
 	}
 
+	function handleReset() {
+		onUpdate(defaults)
+	}
+
 	return (
-		<Section title="Mini calendar" icon={<CalendarIcon />}>
+		<Section title="Mini calendar" icon={<CalendarIcon />} onReset={handleReset}>
 			<CheckboxField
 				label="Show mini calendar"
 				checked={config.show}

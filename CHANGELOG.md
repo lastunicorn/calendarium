@@ -4,6 +4,10 @@ The features each release brought, newest first. Versions follow the app version
 
 ## Unreleased
 
+### Added
+
+- Every sidebar section but the layout picker ends with a small reset button, at its bottom right, whose balloon restores just that section's settings to their defaults.
+
 ## 4.2.0 — 2026-10-20
 
 Settings and files from 4.1.0 are read as they are; the new options start at their defaults.

@@ -6,7 +6,7 @@ import { type Option, optionsFrom } from '../fields/options'
 import { RadioField } from '../fields/RadioField'
 import { WEEK_NUMBER_DESCRIPTION } from './descriptions'
 import { MONTH_GRID_WEEKDAY_FORMAT_OPTIONS } from './fieldOptions'
-import type { ConfigSectionProps } from './Section'
+import type { ConfigFieldsProps } from './Section'
 
 const WEEKEND_HIGHLIGHT_OPTIONS = optionsFrom(WEEKEND_HIGHLIGHTS, {
 	off: 'Off',
@@ -14,7 +14,7 @@ const WEEKEND_HIGHLIGHT_OPTIONS = optionsFrom(WEEKEND_HIGHLIGHTS, {
 	columns: 'Whole columns',
 })
 
-interface MonthGridFieldsProps extends ConfigSectionProps<MonthGridOptions> {
+interface MonthGridFieldsProps extends ConfigFieldsProps<MonthGridOptions> {
 	/** The weekday formats the grid has room for; abbreviations only unless it fills a page. */
 	weekdayFormats?: readonly Option<WeekdayFormat>[]
 }

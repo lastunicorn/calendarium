@@ -1,6 +1,7 @@
 import type { AppConfig } from '../../config/AppConfig'
 import type { ImportedLayoutConfig } from '../../config/configFile'
-import type { LayoutConfigs, LayoutId } from '../../layouts'
+import { useMemo } from 'react'
+import { defaultLayoutConfig, type LayoutConfigs, type LayoutId } from '../../layouts'
 import { layoutView } from '../layouts/registry'
 import type { UpdateLayoutConfig } from '../useCalendarConfig'
 import styles from './ConfigForm.module.css'
@@ -21,15 +22,20 @@ interface LayoutFormProps<K extends LayoutId> {
 	onUpdate: UpdateLayoutConfig
 }
 
-/** The form of `layout`'s options; generic so the form and its options stay paired. */
+/**
+ * The form of `layout`'s options, with their defaults for its sections' resets; generic so the form
+ * and its options stay paired.
+ */
 function LayoutForm<K extends LayoutId>({ layout, config, onUpdate }: LayoutFormProps<K>) {
 	const Form = layoutView(layout).Form
+	// Fresh defaults hold today's year; computed once per layout, so they don't change while shown.
+	const defaults = useMemo(() => defaultLayoutConfig(layout), [layout])
 
 	function handleUpdate(patch: Partial<LayoutConfigs[K]>) {
 		onUpdate(layout, patch)
 	}
 
-	return <Form config={config} onUpdate={handleUpdate} />
+	return <Form config={config} defaults={defaults} onUpdate={handleUpdate} />
 }
 
 /**
