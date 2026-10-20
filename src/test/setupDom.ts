@@ -14,6 +14,9 @@ class NoopIntersectionObserver {
 globalThis.IntersectionObserver ??=
 	NoopIntersectionObserver as unknown as typeof IntersectionObserver
 
+// Nor scrollIntoView, which `ComboboxField` keeps its active option in view with.
+Element.prototype.scrollIntoView ??= function () {}
+
 afterEach(() => {
 	cleanup()
 	localStorage.clear()

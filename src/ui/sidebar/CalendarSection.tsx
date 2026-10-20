@@ -2,6 +2,7 @@ import type { CommonConfig } from '../../layouts/common'
 import { isYear, MAX_YEAR, MIN_YEAR } from '../../core/calendar'
 import { type Locale, LOCALES, type WeekStartSetting } from '../../core/locale'
 import { CalendarIcon } from '../components/icons'
+import { ComboboxField } from '../fields/ComboboxField'
 import { NumberField } from '../fields/NumberField'
 import { type Option, optionsFrom } from '../fields/options'
 import { SelectField } from '../fields/SelectField'
@@ -19,6 +20,23 @@ const WEEK_START_OPTIONS: Option<WeekStartSetting>[] = [
 	{ value: 6, label: 'Saturday' },
 	{ value: 0, label: 'Sunday' },
 ]
+
+/**
+ * More words to find a language by: its code, and its language and country names in English and in
+ * itself, so "Brasil" or "Deutschland" finds it too.
+ */
+function localeKeywords(locale: Locale): string[] {
+	const { language, region } = new Intl.Locale(locale)
+	return [
+		locale,
+		...['en', locale].flatMap((displayLocale) => [
+			new Intl.DisplayNames(displayLocale, { type: 'language' }).of(language),
+			region === undefined
+				? undefined
+				: new Intl.DisplayNames(displayLocale, { type: 'region' }).of(region),
+		]),
+	].filter((name) => name !== undefined)
+}
 
 /** Each language's name in itself, so a reader can find their own, in alphabetical order. */
 const LOCALE_OPTIONS = optionsFrom(LOCALES, {
@@ -47,7 +65,9 @@ const LOCALE_OPTIONS = optionsFrom(LOCALES, {
 	'fi-FI': 'Finnish (Suomi)',
 	'zh-CN': 'Chinese (中文, 简体)',
 	'ko-KR': 'Korean (한국어)',
-}).sort((a, b) => a.label.localeCompare(b.label, 'en'))
+})
+	.map((option) => ({ ...option, keywords: localeKeywords(option.value) }))
+	.sort((a, b) => a.label.localeCompare(b.label, 'en'))
 
 const YEAR_DESCRIPTION = [
 	`From ${MIN_YEAR} to ${MAX_YEAR}.`,
@@ -83,7 +103,7 @@ export function CalendarSection({ config, defaults, onUpdate }: ConfigSectionPro
 				isValid={isYear}
 				onChange={handleYearChange}
 			/>
-			<SelectField
+			<ComboboxField
 				label="Language"
 				value={config.locale}
 				options={LOCALE_OPTIONS}
