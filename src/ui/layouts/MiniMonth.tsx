@@ -1,19 +1,11 @@
 import { Fragment } from 'react'
-import { type CalendarMonth, weekNumber } from '../../core/calendar'
-import { isHighlightedColumn, isHighlightedDay, type WeekendHighlight } from '../../core/weekend'
+import { weekNumber } from '../../core/calendar'
+import { isHighlightedColumn, isHighlightedDay } from '../../core/weekend'
+import type { MiniMonthPlan } from '../../layouts/monthGrid'
 import styles from './MiniMonth.module.css'
 
-interface MiniMonthProps {
-	month: CalendarMonth
-	name: string
-	/** Weekday labels, already ordered by week start. */
-	weekdays: string[]
-	highlightWeekends: WeekendHighlight
-	showWeekNumbers: boolean
-	/** Day of the month to mark, e.g. the day a page is about. */
-	markedDay?: number
-	/** Key of any day of the week to mark as a framed row, e.g. the week a page is about. */
-	markedWeek?: string
+/** A small month as a page plans it (`MiniMonthPlan`), drawn at a size. */
+interface MiniMonthProps extends MiniMonthPlan {
 	/** `small` shrinks the text, for a mini month in the corner of a page. */
 	size?: 'normal' | 'small'
 }

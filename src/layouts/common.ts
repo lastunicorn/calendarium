@@ -1,5 +1,12 @@
-import { isYear } from '../core/calendar'
-import { isWeekStartSetting, type Locale, LOCALES, type WeekStartSetting } from '../core/locale'
+import { buildYear, type CalendarMonth, isYear, type WeekStart } from '../core/calendar'
+import {
+	isWeekStartSetting,
+	type Locale,
+	LOCALES,
+	monthNames,
+	resolveWeekStart,
+	type WeekStartSetting,
+} from '../core/locale'
 import { margins, PAGE_VALIDATORS, type PageSetup } from '../core/paper'
 import { oneOf, type Validators } from '../core/validation'
 
@@ -44,4 +51,23 @@ export const COMMON_VALIDATORS: Validators<CommonConfig> = {
 	locale: oneOf(LOCALES),
 	weekStart: isWeekStartSetting,
 	page: PAGE_VALIDATORS,
+}
+
+/** What every layout's pages are planned from: the resolved week start, the year's months and month names. */
+export interface CalendarModel {
+	weekStart: WeekStart
+	/** January first, each 6 weeks from `weekStart` (`buildMonth`). */
+	months: CalendarMonth[]
+	/** Localized, January first. */
+	monthNames: string[]
+}
+
+/** The calendar model of a layout's options. */
+export function calendarModel(config: CommonConfig): CalendarModel {
+	const weekStart = resolveWeekStart(config.weekStart, config.locale)
+	return {
+		weekStart,
+		months: buildYear(config.year, weekStart),
+		monthNames: monthNames(config.locale),
+	}
 }

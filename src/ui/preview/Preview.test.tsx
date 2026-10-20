@@ -1,4 +1,4 @@
-import { cleanup, render } from '@testing-library/react'
+import { render } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { type AppConfig, defaultAppConfig } from '../../config/AppConfig'
 import type { LayoutId } from '../../layouts'
@@ -14,6 +14,9 @@ function configFor(layout: LayoutId, year: number): AppConfig {
 	config.layouts[layout].weekStart = 1
 	return config
 }
+
+// What each layout plans is tested in `layouts/*/pages.test.ts`; these check that the preview
+// draws the plans: a page count per layout, and what only the markup shows.
 
 /** How many sheets of paper the preview draws (each `Page` is a `<section>`). */
 function pageCount(layout: LayoutId, year: number): number {
@@ -33,23 +36,6 @@ describe('Preview', () => {
 	it('draws a page per week holding a day of the year', () => {
 		// Monday weeks: 2025 runs from Dec 30, 2024 to Jan 4, 2026.
 		expect(pageCount('week-per-page', 2025)).toBe(53)
-	})
-
-	it('draws 54 week pages when a leap year starts on the last day of a week', () => {
-		// 2028 starts on a Saturday: Sunday weeks run from Dec 26, 2027 to Jan 6, 2029.
-		const config = configFor('week-per-page', 2028)
-		config.layouts['week-per-page'].weekStart = 0
-		const { container } = render(<Preview config={config} onResetLayout={noop} />)
-		expect(container.querySelectorAll('section')).toHaveLength(54)
-	})
-
-	it('skips a week whose only days of the year are a hidden weekend', () => {
-		// 2022 starts on a Saturday: its first Monday week holds only January 1 and 2.
-		const config = configFor('week-per-page', 2022)
-		expect(pageCount('week-per-page', 2022)).toBe(53)
-		config.layouts['week-per-page'].weekendDisplay = 'hidden'
-		const { container } = render(<Preview config={config} onResetLayout={noop} />)
-		expect(container.querySelectorAll('section')).toHaveLength(52)
 	})
 
 	it('spreads each week over two pages, with the heading on the first only', () => {
@@ -87,35 +73,11 @@ describe('Preview', () => {
 		expect(second.querySelector('h1')?.closest('[aria-hidden]')).not.toBeNull()
 	})
 
-	it('draws an hourly schedule in each day of the year, except in a shared weekend cell', () => {
-		const config = configFor('week-per-page', 2025)
-		Object.assign(config.layouts['week-per-page'], {
-			weekendDisplay: 'full',
-			weekPageLines: 'hours',
-			hourFormat: '24h',
-			firstHour: 7,
-			lastHour: 7,
-		})
-		const hourLabels = () =>
-			render(<Preview config={config} onResetLayout={noop} />).queryAllByText('07:00')
-		// One schedule per day of 2025, none for the days of 2024 and 2026 on the first and last page.
-		expect(hourLabels()).toHaveLength(365)
-		cleanup()
-		// Its 104 weekend days share cells.
-		config.layouts['week-per-page'].weekendDisplay = 'reduced'
-		expect(hourLabels()).toHaveLength(261)
-		cleanup()
-		// A week starting on Sunday can't reduce its weekend, so its cells keep the schedule.
-		config.layouts['week-per-page'].weekStart = 0
-		expect(hourLabels()).toHaveLength(365)
-	})
-
-	it('draws a page per day, with February 29 in a leap year', () => {
+	it('draws a page per day', () => {
 		expect(pageCount('day-per-page', 2025)).toBe(365)
-		expect(pageCount('day-per-page', 2024)).toBe(366)
 	})
 
-	it('draws two pages per day, splitting the hours evenly between them', () => {
+	it('draws a day’s second page with the rest of its hours and no header', () => {
 		const config = configFor('day-per-page', 2025)
 		Object.assign(config.layouts['day-per-page'], {
 			twoPagesPerDay: true,
@@ -124,18 +86,12 @@ describe('Preview', () => {
 			firstHour: 8,
 			lastHour: 13,
 		})
-		const { container, getAllByText } = render(<Preview config={config} onResetLayout={noop} />)
+		const { container } = render(<Preview config={config} onResetLayout={noop} />)
 		const pages = container.querySelectorAll('section')
 		expect(pages).toHaveLength(730)
-		// 08:00–10:00 under the header, 11:00–13:00 on the next page, which has no heading.
 		expect(pages[0].textContent).toContain('10:00')
-		expect(pages[0].textContent).not.toContain('11:00')
 		expect(pages[1].textContent).toContain('11:00')
-		expect(pages[1].textContent).toContain('13:00')
-		expect(pages[1].textContent).not.toContain('10:00')
 		expect(pages[1].querySelector('h1, h2, h3')).toBeNull()
-		expect(getAllByText('08:00')).toHaveLength(365)
-		expect(getAllByText('13:00')).toHaveLength(365)
 	})
 
 	it('sets the printed paper size from the layout', () => {

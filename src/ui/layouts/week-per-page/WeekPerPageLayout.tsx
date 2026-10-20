@@ -1,77 +1,16 @@
-import { useMemo } from 'react'
 import type { WeekPerPageConfig } from '../../../layouts/week-per-page/options'
-import { weekMonth, weeksOfYear } from '../../../core/calendar'
-import { hourNames } from '../../../core/locale'
-import { weekCells } from '../../../layouts/week-per-page/cells'
-import { useCalendarModel, useWeekdayNames } from '../useCalendarModel'
+import { planWeekPages } from '../../../layouts/week-per-page/pages'
+import { usePagePlan } from '../usePagePlan'
 import { WeekPage } from './WeekPage'
 
 interface WeekPerPageLayoutProps {
 	config: WeekPerPageConfig
 }
 
-/**
- * A page for every week holding a day of the year, from the one with January 1 to the one with
- * December 31; their days of the previous and next year are grayed out. The weekend gets a cell
- * per day, one shared cell, or none, per `weekendDisplay`. Each day of the year in its own cell
- * may hold an hourly schedule, per `weekPageLines`; a shared weekend cell has no room for one.
- * With `twoPagesPerWeek`, each week spreads over two pages. The week's month may be drawn small
- * beside the heading, per `miniMonth`.
- */
+/** A page, or two, for every week holding a day of the year, as `planWeekPages` plans them. */
 export function WeekPerPageLayout({ config }: WeekPerPageLayoutProps) {
-	const {
-		year,
-		locale,
-		highlightWeekendDays,
-		showHeaderWeek,
-		weekendDisplay,
-		weekPageLines,
-		twoPagesPerWeek,
-		weekDayDirection,
-		hourFormat,
-		firstHour,
-		lastHour,
-		miniMonth,
-		page,
-	} = config
-	const { weekStart, months, monthNames } = useCalendarModel(config)
-	const weekdays = useWeekdayNames(locale, weekStart, config.weekdayFormat)
-	const miniWeekdays = useWeekdayNames(locale, weekStart, miniMonth.weekdayFormat)
-	// A week whose only days of the year are a left-out weekend gets no page.
-	const pages = useMemo(
-		() =>
-			weeksOfYear(year, weekStart)
-				.map((week) => weekCells(week, weekendDisplay))
-				.filter((cells) => cells.some((cell) => cell.some((day) => day.inYear))),
-		[year, weekStart, weekendDisplay],
-	)
-	// Built once here, not per page; the same array for every page keeps their memo working.
-	const hours = useMemo(
-		() =>
-			weekPageLines === 'hours'
-				? hourNames(locale, firstHour, lastHour, hourFormat)
-				: undefined,
-		[weekPageLines, locale, firstHour, lastHour, hourFormat],
-	)
-
-	return pages.map((cells) => (
-		<WeekPage
-			key={cells[0][0].key}
-			cells={cells}
-			hours={hours}
-			twoPages={twoPagesPerWeek}
-			direction={weekDayDirection}
-			weekdays={weekdays}
-			weekStart={weekStart}
-			monthNames={monthNames}
-			locale={locale}
-			highlightWeekendDays={highlightWeekendDays}
-			showHeaderWeek={showHeaderWeek}
-			miniMonth={miniMonth.show ? months[weekMonth(cells.flat())] : undefined}
-			miniWeekdays={miniWeekdays}
-			miniMonthHighlight={miniMonth.highlightWeekends}
-			miniMonthWeekNumbers={miniMonth.showWeekNumbers}
-			setup={page}
-		/>
+	const { hours, weeks } = usePagePlan(planWeekPages, config)
+	return weeks.map((week) => (
+		<WeekPage key={week.key} plan={week} hours={hours} setup={config.page} />
 	))
 }
