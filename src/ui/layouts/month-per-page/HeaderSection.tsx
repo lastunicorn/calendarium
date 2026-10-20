@@ -6,8 +6,10 @@ import { TextField } from '../../fields/TextField'
 import { HEADING_ALIGN_OPTIONS } from '../../sidebar/fieldOptions'
 import { type ConfigSectionProps, Section } from '../../sidebar/Section'
 
-const TITLE_DESCRIPTION =
-	'Printed at the top of every page, with the month and year below it. When empty, the month and year are the title.'
+const TITLE_DESCRIPTION = [
+	'Printed at the top of every page, with the month and year below it.',
+	'When empty, the month and year are the title.',
+]
 
 /** The title above every month, and where the heading sits above its grid. */
 export function HeaderSection({ config, onUpdate }: ConfigSectionProps<MonthPerPageConfig>) {
