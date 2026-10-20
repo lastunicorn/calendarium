@@ -15,10 +15,10 @@ interface LayoutSectionProps {
 	onSelect: (layout: LayoutId) => void
 }
 
-/** How the calendar is spread over pages; each layout keeps its own options. */
+/** How the calendar is spread over pages; each layout keeps its own options. Always open. */
 export function LayoutSection({ layout, onSelect }: LayoutSectionProps) {
 	return (
-		<Section title="Layout" icon={<LayoutIcon />}>
+		<Section title="Layout" icon={<LayoutIcon />} collapsible={false}>
 			<SelectField label="" value={layout} options={LAYOUT_OPTIONS} onChange={onSelect} />
 		</Section>
 	)

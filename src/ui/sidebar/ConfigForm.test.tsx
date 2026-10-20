@@ -63,8 +63,11 @@ describe('ConfigForm', () => {
 		expect(screen.queryByLabelText('Title')).toBeNull()
 	})
 
-	it('starts with every section collapsed, and opens one when its title is clicked', () => {
-		const titles = sectionTitles('year-per-page')
+	it('keeps the layout picker open, starts every other section collapsed, and opens one when its title is clicked', () => {
+		const [layoutTitle, ...titles] = sectionTitles('year-per-page')
+		expect(layoutTitle).toBe('Layout')
+		expect(screen.queryByRole('button', { name: 'Layout' })).toBeNull()
+		expect(screen.getByRole('group', { name: 'Layout' }).querySelector('select')).not.toBeNull()
 		const toggles = screen.getAllByRole('button', { expanded: false })
 		expect(toggles.map((button) => button.textContent)).toEqual(titles)
 		expect(screen.queryByLabelText('Year')).toBeNull()

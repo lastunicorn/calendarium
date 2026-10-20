@@ -18,18 +18,20 @@ interface SectionProps {
 	icon: ReactNode
 	/** A short note shown under the title, in a smaller, dimmer font. */
 	description?: string
+	/** Whether clicking the title hides the fields; when false, the section is always open. */
+	collapsible?: boolean
 	children: ReactNode
 }
 
 /**
  * A titled group of related fields, its title on a tinted band after an icon, optionally with a
- * short description under the title. It starts collapsed: clicking the title shows or hides the
- * fields, and the `ConfigForm` remembers which sections are open, by title.
+ * short description under the title. A collapsible section starts collapsed: clicking the title
+ * shows or hides the fields, and the `ConfigForm` remembers which sections are open, by title.
  */
-export function Section({ title, icon, description, children }: SectionProps) {
+export function Section({ title, icon, description, collapsible = true, children }: SectionProps) {
 	const descriptionId = useId()
 	const openSections = useOpenSectionsContext()
-	const expanded = openSections.isOpen(title)
+	const expanded = !collapsible || openSections.isOpen(title)
 
 	function handleTitleClick() {
 		openSections.toggle(title)
@@ -41,18 +43,25 @@ export function Section({ title, icon, description, children }: SectionProps) {
 			aria-describedby={description === undefined || !expanded ? undefined : descriptionId}
 		>
 			<legend className={styles.title}>
-				<button
-					type="button"
-					className={styles.toggle}
-					aria-expanded={expanded}
-					onClick={handleTitleClick}
-				>
-					{icon}
-					{title}
-					<span className={styles.chevron}>
-						<ChevronIcon />
+				{collapsible ? (
+					<button
+						type="button"
+						className={styles.toggle}
+						aria-expanded={expanded}
+						onClick={handleTitleClick}
+					>
+						{icon}
+						{title}
+						<span className={styles.chevron}>
+							<ChevronIcon />
+						</span>
+					</button>
+				) : (
+					<span className={styles.heading}>
+						{icon}
+						{title}
 					</span>
-				</button>
+				)}
 			</legend>
 			{expanded && description !== undefined && (
 				<p id={descriptionId} className={styles.description}>

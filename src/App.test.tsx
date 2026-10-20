@@ -15,7 +15,7 @@ function openSection(title: string) {
 	fireEvent.click(screen.getByRole('button', { name: title }))
 }
 
-/** The layout picker: the select in the "Layout" section, once that section is open. */
+/** The layout picker: the select in the always open "Layout" section. */
 function layoutSelect(): HTMLSelectElement {
 	return screen.getByRole('group', { name: 'Layout' }).querySelector('select')!
 }
@@ -23,7 +23,6 @@ function layoutSelect(): HTMLSelectElement {
 describe('App import', () => {
 	it('switches to the layout of an imported file and draws its pages', async () => {
 		const { container } = render(<App />)
-		openSection('Layout')
 		expect(layoutSelect().value).toBe('year-per-page')
 
 		const options = { ...defaultLayoutConfig('month-per-page'), year: 2030 }
@@ -39,7 +38,6 @@ describe('App import', () => {
 
 	it('shows an error for a file that is not a configuration, and keeps the settings', async () => {
 		const { container } = render(<App />)
-		openSection('Layout')
 
 		chooseImportFile(container, new File(['{"year": 2030}'], 'other.json'))
 
@@ -57,7 +55,6 @@ describe('App import', () => {
 describe('App reset', () => {
 	it('restores the shown layout’s defaults after confirming, and keeps it shown', async () => {
 		const { container } = render(<App />)
-		openSection('Layout')
 		const options = { ...defaultLayoutConfig('month-per-page'), year: 2030 }
 		const text = serializeLayoutConfig('month-per-page', options)
 		chooseImportFile(container, new File([text], 'month.json', { type: 'application/json' }))

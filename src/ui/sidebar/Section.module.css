@@ -25,8 +25,9 @@
 	margin-bottom: 12px;
 }
 
-/* The whole band toggles the section. */
-.toggle {
+/* The whole band toggles the section; a section that can't collapse shows its title alone. */
+.toggle,
+.heading {
 	display: flex;
 	align-items: center;
 	gap: 6px;
@@ -41,6 +42,9 @@
 	text-transform: uppercase;
 	text-align: left;
 	color: var(--color-text-muted);
+}
+
+.toggle {
 	cursor: pointer;
 }
 
