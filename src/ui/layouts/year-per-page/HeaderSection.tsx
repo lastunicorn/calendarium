@@ -1,4 +1,4 @@
-import type { YearPerPageConfig } from '../../../config/layouts/yearPerPage'
+import type { YearPerPageConfig } from '../../../layouts/year-per-page/options'
 import { HeaderIcon } from '../../components/icons'
 import { TextField } from '../../fields/TextField'
 import { type ConfigSectionProps, Section } from '../../sidebar/Section'

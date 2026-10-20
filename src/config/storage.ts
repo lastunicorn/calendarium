@@ -1,5 +1,4 @@
-import type { AppConfig } from './CalendarConfig'
-import { defaultAppConfig } from './layouts'
+import { type AppConfig, defaultAppConfig } from './AppConfig'
 import { asObject, isFromLaterVersion } from './migrations'
 import { parseConfig, toStoredConfig } from './parseConfig'
 
@@ -8,6 +7,10 @@ const STORAGE_KEY = 'calendarium-config'
 /** Keeps data written by a later version before this one first overwrites it. */
 const BACKUP_KEY = 'calendarium-config-backup'
 
+/**
+ * The `AppConfig` repository: one config per browser, under one key. Loads it, falling back to
+ * the defaults when there is none or storage is unavailable.
+ */
 export function loadConfig(): AppConfig {
 	try {
 		const raw = localStorage.getItem(STORAGE_KEY)

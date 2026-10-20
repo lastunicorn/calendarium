@@ -1,10 +1,4 @@
-import {
-	isMargin,
-	MARGIN_SIDES,
-	type MarginSide,
-	type Margins,
-	MAX_MARGIN,
-} from '../../config/CalendarConfig'
+import { isMargin, MARGIN_SIDES, type Margins, type MarginSide, MAX_MARGIN } from '../../core/paper'
 import styles from './MarginsField.module.css'
 import { NumberInput } from './NumberInput'
 

@@ -1,8 +1,8 @@
-import { type CommonConfig, commonDefaults } from '../CalendarConfig'
-import { COMMON_VALIDATORS, isBoolean, oneOf } from '../validators'
-import { type HourSchedule, orderHours, SCHEDULE_VALIDATORS, scheduleDefaults } from './hours'
-import type { LayoutSpec } from './LayoutSpec'
-import { MINI_MONTH_VALIDATORS, type MiniMonthOptions, miniMonthDefaults } from './monthGrid'
+import { isBoolean, oneOf } from '../../core/validation'
+import { COMMON_VALIDATORS, type CommonConfig, commonDefaults } from '../common'
+import type { LayoutSpec } from '../LayoutSpec'
+import { MINI_MONTH_VALIDATORS, type MiniMonthOptions, miniMonthDefaults } from '../monthGrid'
+import { type HourSchedule, orderHours, SCHEDULE_VALIDATORS, scheduleDefaults } from '../schedule'
 
 /** What fills a `day-per-page` page under its header: an hourly schedule or plain ruled lines. */
 export const DAY_PAGE_LINES = ['hours', 'ruled'] as const

@@ -1,9 +1,10 @@
 import { type ChangeEvent, useRef, useState } from 'react'
-import type { AppConfig, LayoutId } from '../../config/CalendarConfig'
+import type { AppConfig } from '../../config/AppConfig'
+import type { LayoutId } from '../../layouts'
 import {
+	exportLayoutFile,
 	type ImportedLayoutConfig,
 	parseConfigFile,
-	serializeLayoutConfig,
 } from '../../config/configFile'
 import { IconButton } from '../components/IconButton'
 import { ExportIcon, ImportIcon, PrintIcon, ResetIcon } from '../components/icons'
@@ -47,18 +48,14 @@ function handlePrintClick() {
 /** Export/import/reset the current layout's options, and print. */
 export function Toolbar({ config, onReset, onImport }: ToolbarProps) {
 	const { layout } = config
-	const options = config.layouts[layout]
 
 	const fileInput = useRef<HTMLInputElement>(null)
 	const [importError, setImportError] = useState('')
 	const [importNotice, setImportNotice] = useState('')
 
 	function handleExportClick() {
-		downloadFile(
-			`calendar-${layout}-${options.year}.json`,
-			serializeLayoutConfig(layout, options),
-			'application/json',
-		)
+		const file = exportLayoutFile(config)
+		downloadFile(file.fileName, file.text, 'application/json')
 	}
 
 	function handleImportClick() {

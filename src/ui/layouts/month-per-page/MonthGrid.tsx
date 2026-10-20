@@ -1,19 +1,11 @@
 import { Fragment } from 'react'
-import { type CalendarMonth, visibleWeeks, weekNumber } from '../../../core/calendar'
-import { isHighlightedColumn, isHighlightedDay, type WeekendHighlight } from '../../../core/weekend'
+import { weekNumber } from '../../../core/calendar'
+import { isHighlightedColumn, isHighlightedDay } from '../../../core/weekend'
+import type { MonthGridPlan } from '../../../layouts/month-per-page/pages'
 import styles from './MonthGrid.module.css'
 
-interface MonthGridProps {
-	month: CalendarMonth
-	/** Weekday labels, already ordered by week start. */
-	weekdays: string[]
-	highlightWeekends: WeekendHighlight
-	showWeekNumbers: boolean
-}
-
-/** A full-page month: large cells with room to write, adjacent-month days in gray. */
-export function MonthGrid({ month, weekdays, highlightWeekends, showWeekNumbers }: MonthGridProps) {
-	const weeks = visibleWeeks(month)
+/** A full-page month (`MonthGridPlan`): large cells with room to write, adjacent-month days in gray. */
+export function MonthGrid({ weeks, weekdays, highlightWeekends, showWeekNumbers }: MonthGridPlan) {
 	const weekendColumns = weeks[0].map((day) => isHighlightedColumn(day, highlightWeekends))
 
 	return (

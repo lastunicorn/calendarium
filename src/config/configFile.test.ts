@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { LAYOUT_IDS } from './CalendarConfig'
-import { defaultLayoutConfig } from './layouts'
-import { parseConfigFile, serializeLayoutConfig } from './configFile'
+import { defaultLayoutConfig, LAYOUT_IDS } from '../layouts'
+import { defaultAppConfig } from './AppConfig'
+import { exportLayoutFile, parseConfigFile, serializeLayoutConfig } from './configFile'
 import { FILE_FORMAT } from './migrations'
 import { APP_VERSION, CONFIG_VERSION } from './version'
 
@@ -26,6 +26,16 @@ describe('config files', () => {
 			ignored: [],
 			newer: false,
 		})
+	})
+
+	it('exports the active layout, named after it and its year', () => {
+		const config = { ...defaultAppConfig(), layout: 'week-per-page' as const }
+		config.layouts['week-per-page'] = { ...config.layouts['week-per-page'], year: 2031 }
+		const file = exportLayoutFile(config)
+		expect(file.fileName).toBe('calendar-week-per-page-2031.json')
+		expect(file.text).toBe(
+			serializeLayoutConfig('week-per-page', config.layouts['week-per-page']),
+		)
 	})
 
 	it('writes the format, the versions, the layout and only that layout’s options', () => {

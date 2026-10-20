@@ -1,7 +1,7 @@
-import { type AppConfig, LAYOUT_IDS, type LayoutConfigs, type LayoutId } from './CalendarConfig'
-import { defaultAppConfig, layoutSpec, mapLayouts } from './layouts'
+import { type AppConfig, defaultAppConfig } from './AppConfig'
+import { LAYOUT_IDS, type LayoutConfigs, type LayoutId, layoutSpec, mapLayouts } from '../layouts'
 import { asObject, type StoredData, upgradeStorage } from './migrations'
-import { oneOf, type Validator } from './validators'
+import { oneOf, type Validator } from '../core/validation'
 import { APP_VERSION, CONFIG_VERSION } from './version'
 
 /** The app config as written to storage: tagged with its config version and the app version. */

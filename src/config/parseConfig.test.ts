@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { LAYOUT_IDS } from './CalendarConfig'
-import { defaultAppConfig, defaultLayoutConfig } from './layouts'
+import { defaultLayoutConfig, LAYOUT_IDS } from '../layouts'
+import { defaultAppConfig } from './AppConfig'
 import { parseConfig, parseLayoutConfig, toStoredConfig } from './parseConfig'
 import { CONFIG_VERSION } from './version'
 

@@ -1,4 +1,5 @@
-import type { LayoutConfigs, LayoutId } from './CalendarConfig'
+import type { AppConfig } from './AppConfig'
+import type { LayoutConfigs, LayoutId } from '../layouts'
 import { asObject, FILE_FORMAT, isConfigFile, isFromLaterVersion, upgradeFile } from './migrations'
 import { parseLayoutConfig, parseLayoutId } from './parseConfig'
 import { APP_VERSION, CONFIG_VERSION } from './version'
@@ -16,6 +17,22 @@ export function serializeLayoutConfig<K extends LayoutId>(
 		...config,
 	}
 	return JSON.stringify(file, null, '\t') + '\n'
+}
+
+/** A file to download. */
+export interface ExportedFile {
+	fileName: string
+	text: string
+}
+
+/** The active layout's options as a file named after it and its year: `calendar-day-per-page-2026.json`. */
+export function exportLayoutFile(config: AppConfig): ExportedFile {
+	const { layout } = config
+	const options = config.layouts[layout]
+	return {
+		fileName: `calendar-${layout}-${options.year}.json`,
+		text: serializeLayoutConfig(layout, options),
+	}
 }
 
 /**

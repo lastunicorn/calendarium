@@ -1,4 +1,4 @@
-import type { LayoutConfigs, LayoutId } from '../../config/CalendarConfig'
+import type { LayoutConfigs, LayoutId } from '../../layouts'
 import { DAY_PER_PAGE_VIEW } from './day-per-page'
 import type { LayoutView } from './LayoutView'
 import { MONTH_PER_PAGE_VIEW } from './month-per-page'
@@ -7,7 +7,7 @@ import { YEAR_PER_PAGE_VIEW } from './year-per-page'
 
 /**
  * Each layout's component, form and labels. Keyed by every `LayoutId`, so a new id without a view
- * won't compile. The config side (defaults, validators, rules) is in `config/layouts/`.
+ * won't compile. The domain side (options, defaults, validators, rules) is in `layouts/`.
  */
 export const LAYOUT_VIEWS: { [K in LayoutId]: LayoutView<LayoutConfigs[K]> } = {
 	'year-per-page': YEAR_PER_PAGE_VIEW,

@@ -4,7 +4,7 @@ import {
 	type DayPageLines,
 	type DayPageTitle,
 	type DayPerPageConfig,
-} from '../../../config/layouts/dayPerPage'
+} from '../../../layouts/day-per-page/options'
 import { DayPageIcon } from '../../components/icons'
 import { CheckboxField } from '../../fields/CheckboxField'
 import { optionsFrom } from '../../fields/options'

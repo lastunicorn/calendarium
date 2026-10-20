@@ -1,4 +1,4 @@
-import type { DayPerPageConfig } from '../../../config/layouts/dayPerPage'
+import type { DayPerPageConfig } from '../../../layouts/day-per-page/options'
 import type { LayoutView } from '../LayoutView'
 import { DayPerPageForm } from './DayPerPageForm'
 import { DayPerPageLayout } from './DayPerPageLayout'

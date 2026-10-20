@@ -1,4 +1,5 @@
-import { type CommonConfig, isYear, MAX_YEAR, MIN_YEAR } from '../../config/CalendarConfig'
+import type { CommonConfig } from '../../layouts/common'
+import { isYear, MAX_YEAR, MIN_YEAR } from '../../core/calendar'
 import { type Locale, LOCALES, type WeekStartSetting } from '../../core/locale'
 import { CalendarIcon } from '../components/icons'
 import { NumberField } from '../fields/NumberField'

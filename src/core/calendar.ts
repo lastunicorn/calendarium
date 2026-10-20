@@ -1,5 +1,8 @@
-/** Day of the week a calendar week starts on, as in `Date.getDay()`: 0 = Sunday … 6 = Saturday. */
-export type WeekStart = 0 | 1 | 2 | 3 | 4 | 5 | 6
+/** A day of the week, as in `Date.getDay()`: 0 = Sunday … 6 = Saturday. */
+export type Weekday = 0 | 1 | 2 | 3 | 4 | 5 | 6
+
+/** Day of the week a calendar week starts on. */
+export type WeekStart = Weekday
 
 export function isWeekStart(value: unknown): value is WeekStart {
 	return Number.isInteger(value) && (value as number) >= 0 && (value as number) <= 6
@@ -16,8 +19,7 @@ export interface PlainDate {
 	month: number
 	/** Day of the month, 1–31. */
 	day: number
-	/** Day of the week, as in `Date.getDay()`: 0 = Sunday … 6 = Saturday. */
-	weekday: number
+	weekday: Weekday
 	/** `YYYY-MM-DD`, unique per date: a React key. */
 	key: string
 }
@@ -35,6 +37,9 @@ export interface WeekDay extends PlainDate {
 	isWeekend: boolean
 }
 
+/** Seven consecutive days of the year's weeks, from the week start (`weeksOfYear`). */
+export type Week = WeekDay[]
+
 export interface CalendarMonth {
 	year: number
 	/** 0 = January … 11 = December. */
@@ -44,6 +49,19 @@ export interface CalendarMonth {
 }
 
 export const WEEKS_PER_MONTH = 6
+
+/** The column of `weekday` in a week starting on `weekStart`: 0 for the week start … 6. */
+export function weekdayColumn(weekday: Weekday, weekStart: WeekStart): number {
+	return (weekday - weekStart + 7) % 7
+}
+
+/** The first full year of the Gregorian calendar, which the printed weekdays and leap days follow. */
+export const MIN_YEAR = 1583
+export const MAX_YEAR = 9999
+
+export function isYear(value: unknown): value is number {
+	return Number.isInteger(value) && (value as number) >= MIN_YEAR && (value as number) <= MAX_YEAR
+}
 
 export function isLeapYear(year: number): boolean {
 	return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0
@@ -72,7 +90,7 @@ export function plainDate(year: number, month: number, day: number): PlainDate {
 		year: fullYear,
 		month: monthIndex,
 		day: dayOfMonth,
-		weekday: date.getUTCDay(),
+		weekday: date.getUTCDay() as Weekday,
 		key: `${pad(fullYear, 4)}-${pad(monthIndex + 1, 2)}-${pad(dayOfMonth, 2)}`,
 	}
 }
@@ -92,9 +110,9 @@ export function isWeekend(date: PlainDate): boolean {
 /** ISO 8601 week number (weeks start on Monday; week 1 contains the year's first Thursday). */
 export function isoWeek(date: PlainDate): number {
 	// The Thursday of the date's ISO week decides which year the week belongs to.
-	const thursday = plainDate(date.year, date.month, date.day + 3 - ((date.weekday + 6) % 7))
+	const thursday = plainDate(date.year, date.month, date.day + 3 - weekdayColumn(date.weekday, 1))
 	const january4 = plainDate(thursday.year, 0, 4)
-	const firstThursday = plainDate(thursday.year, 0, 4 + 3 - ((january4.weekday + 6) % 7))
+	const firstThursday = plainDate(thursday.year, 0, 4 + 3 - weekdayColumn(january4.weekday, 1))
 	return 1 + (dayNumber(thursday) - dayNumber(firstThursday)) / 7
 }
 
@@ -137,7 +155,7 @@ export function weekMonth(days: WeekDay[]): number {
 }
 
 export function buildMonth(year: number, month: number, weekStart: WeekStart): CalendarMonth {
-	const leadingDays = (plainDate(year, month, 1).weekday - weekStart + 7) % 7
+	const leadingDays = weekdayColumn(plainDate(year, month, 1).weekday, weekStart)
 	const weeks: CalendarDay[][] = []
 
 	for (let week = 0; week < WEEKS_PER_MONTH; week++) {
@@ -173,12 +191,12 @@ export function daysOfYear(months: CalendarMonth[]): CalendarDay[] {
  * Every week holding at least one day of `year`, each 7 days from `weekStart`: the first starts on
  * or before January 1, the last ends on or after December 31. 53 weeks, or 54 when a leap year starts on the last day of a week.
  */
-export function weeksOfYear(year: number, weekStart: WeekStart): WeekDay[][] {
-	const leadingDays = (plainDate(year, 0, 1).weekday - weekStart + 7) % 7
-	const weeks: WeekDay[][] = []
+export function weeksOfYear(year: number, weekStart: WeekStart): Week[] {
+	const leadingDays = weekdayColumn(plainDate(year, 0, 1).weekday, weekStart)
+	const weeks: Week[] = []
 
 	for (let first = 1 - leadingDays; plainDate(year, 0, first).year <= year; first += 7) {
-		const days: WeekDay[] = []
+		const days: Week = []
 		for (let column = 0; column < 7; column++) {
 			const date = plainDate(year, 0, first + column)
 			days.push({ ...date, inYear: date.year === year, isWeekend: isWeekend(date) })

@@ -1,5 +1,5 @@
-import type { DayPerPageConfig } from '../../../config/layouts/dayPerPage'
-import type { MiniMonthOptions } from '../../../config/layouts/monthGrid'
+import type { DayPerPageConfig } from '../../../layouts/day-per-page/options'
+import type { MiniMonthOptions } from '../../../layouts/monthGrid'
 import { CalendarSection } from '../../sidebar/CalendarSection'
 import { MiniMonthSection } from '../../sidebar/MiniMonthSection'
 import { PageSection } from '../../sidebar/PageSection'

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { configReducer } from './configReducer'
-import { defaultAppConfig, defaultLayoutConfig } from './layouts'
+import { defaultAppConfig } from './AppConfig'
+import { defaultLayoutConfig } from '../layouts'
 
 describe('configReducer', () => {
 	it('selectLayout changes only the active layout', () => {
@@ -58,17 +59,22 @@ describe('configReducer', () => {
 		expect(config).toEqual(before)
 	})
 
-	it('replaceLayout swaps one layout’s options and keeps the active layout', () => {
-		const config = defaultAppConfig()
-		const next = { ...defaultLayoutConfig('day-per-page'), year: 1999 }
-		const replaced = configReducer(config, {
-			type: 'replaceLayout',
+	it('resetLayout restores one layout’s defaults and keeps the active layout and the others', () => {
+		let config = defaultAppConfig()
+		config = configReducer(config, {
+			type: 'update',
 			layout: 'day-per-page',
-			config: next,
+			patch: { year: 1999, firstHour: 3 },
 		})
-		expect(replaced.layouts['day-per-page']).toBe(next)
-		expect(replaced.layouts['year-per-page']).toBe(config.layouts['year-per-page'])
-		expect(replaced.layout).toBe('year-per-page')
+		config = configReducer(config, {
+			type: 'update',
+			layout: 'year-per-page',
+			patch: { title: 'Hi' },
+		})
+		const reset = configReducer(config, { type: 'resetLayout', layout: 'day-per-page' })
+		expect(reset.layouts['day-per-page']).toEqual(defaultLayoutConfig('day-per-page'))
+		expect(reset.layouts['year-per-page']).toBe(config.layouts['year-per-page'])
+		expect(reset.layout).toBe('year-per-page')
 	})
 
 	it('importLayout swaps one layout’s options and shows that layout', () => {

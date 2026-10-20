@@ -1,4 +1,4 @@
-import { LAYOUT_IDS, type LayoutId } from '../../config/CalendarConfig'
+import { LAYOUT_IDS, type LayoutId } from '../../layouts'
 import { LayoutIcon } from '../components/icons'
 import { SelectField } from '../fields/SelectField'
 import { LAYOUT_VIEWS } from '../layouts/registry'

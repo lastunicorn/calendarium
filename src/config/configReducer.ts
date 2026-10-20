@@ -1,14 +1,17 @@
-import type { AppConfig, LayoutConfigs, LayoutId } from './CalendarConfig'
-import { normalizeLayout } from './layouts'
+import type { AppConfig } from './AppConfig'
+import { defaultLayoutConfig, type LayoutConfigs, type LayoutId, normalizeLayout } from '../layouts'
 
-// The per-layout actions have one variant per layout, so a patch or config has that layout's type.
+/**
+ * The commands that change the `AppConfig` aggregate, the only way it changes. The per-layout ones
+ * have one variant per layout, so a patch or config has that layout's type.
+ */
 export type ConfigAction =
 	/** Shows another layout; every layout's options stay as they were. */
 	| { type: 'selectLayout'; layout: LayoutId }
 	/** Changes some of one layout's options, keeping the rest. */
 	| { [K in LayoutId]: { type: 'update'; layout: K; patch: Partial<LayoutConfigs[K]> } }[LayoutId]
-	/** Swaps in one layout's whole set of options (reset to defaults). */
-	| { [K in LayoutId]: { type: 'replaceLayout'; layout: K; config: LayoutConfigs[K] } }[LayoutId]
+	/** Restores one layout's default options; the active layout stays as it was. */
+	| { type: 'resetLayout'; layout: LayoutId }
 	/** Swaps in one layout's options and shows that layout (an imported file). */
 	| { [K in LayoutId]: { type: 'importLayout'; layout: K; config: LayoutConfigs[K] } }[LayoutId]
 
@@ -21,6 +24,7 @@ function withLayout<K extends LayoutId>(
 	return { ...config, layouts: { ...config.layouts, [layout]: normalizeLayout(layout, options) } }
 }
 
+/** `config` after `action`, each changed layout's options passed through its `normalize`. */
 export function configReducer(config: AppConfig, action: ConfigAction): AppConfig {
 	switch (action.type) {
 		case 'selectLayout':
@@ -30,8 +34,8 @@ export function configReducer(config: AppConfig, action: ConfigAction): AppConfi
 				...config.layouts[action.layout],
 				...action.patch,
 			})
-		case 'replaceLayout':
-			return withLayout(config, action.layout, action.config)
+		case 'resetLayout':
+			return withLayout(config, action.layout, defaultLayoutConfig(action.layout))
 		case 'importLayout':
 			return { ...withLayout(config, action.layout, action.config), layout: action.layout }
 	}

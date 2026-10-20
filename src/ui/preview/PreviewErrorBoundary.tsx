@@ -1,5 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react'
-import type { LayoutConfig, LayoutId } from '../../config/CalendarConfig'
+import type { LayoutConfig, LayoutId } from '../../layouts'
 import styles from './PreviewErrorBoundary.module.css'
 
 interface PreviewErrorBoundaryProps {

@@ -7,7 +7,11 @@ import {
 	daysOfYear,
 	isLeapYear,
 	isoWeek,
+	isYear,
+	MAX_YEAR,
+	MIN_YEAR,
 	plainDate,
+	weekdayColumn,
 	type WeekStart,
 	WEEKS_PER_MONTH,
 	visibleWeeks,
@@ -53,6 +57,22 @@ describe('plainDate', () => {
 
 	it('takes years below 100 as written', () => {
 		expect(plainDate(50, 1, 10)).toMatchObject({ year: 50, key: '0050-02-10' })
+	})
+})
+
+describe('weekdayColumn', () => {
+	it('counts from the week start, wrapping past Saturday', () => {
+		expect(weekdayColumn(1, 1)).toBe(0) // Monday in a Monday week
+		expect(weekdayColumn(0, 1)).toBe(6) // Sunday in a Monday week
+		expect(weekdayColumn(0, 0)).toBe(0) // Sunday in a Sunday week
+		expect(weekdayColumn(5, 6)).toBe(6) // Friday in a Saturday week
+	})
+
+	it('gives each weekday its own column for every week start', () => {
+		for (const weekStart of WEEK_STARTS) {
+			const columns = WEEK_STARTS.map((weekday) => weekdayColumn(weekday, weekStart))
+			expect([...columns].sort()).toEqual([0, 1, 2, 3, 4, 5, 6])
+		}
 	})
 })
 
@@ -325,5 +345,29 @@ describe('weeksOfYear', () => {
 		const weeks = weeksOfYear(2024, 1)
 		expect(weeks[0].every((day) => day.inYear)).toBe(true)
 		expect(weeks[0][0].key).toBe('2024-01-01')
+	})
+})
+
+describe('isYear', () => {
+	it('accepts the Gregorian years from MIN_YEAR to MAX_YEAR', () => {
+		expect(isYear(MIN_YEAR)).toBe(true)
+		expect(isYear(2026)).toBe(true)
+		expect(isYear(MAX_YEAR)).toBe(true)
+	})
+
+	it('rejects years that predate the Gregorian calendar', () => {
+		expect(isYear(50)).toBe(false)
+		expect(isYear(99)).toBe(false)
+		expect(isYear(1582)).toBe(false)
+		expect(isYear(MAX_YEAR + 1)).toBe(false)
+	})
+
+	it('only allows years whose dates are built in that year', () => {
+		for (const year of [MIN_YEAR, MAX_YEAR]) {
+			const days = buildMonth(year, 5, 1).weeks.flat()
+			for (const day of days) {
+				expect(day.year).toBe(year)
+			}
+		}
 	})
 })

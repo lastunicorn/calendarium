@@ -1,7 +1,7 @@
-import { type CommonConfig, commonDefaults } from '../CalendarConfig'
-import { COMMON_VALIDATORS, isString } from '../validators'
-import { type LayoutSpec, unchanged } from './LayoutSpec'
-import { MONTH_GRID_VALIDATORS, type MonthGridOptions, monthGridDefaults } from './monthGrid'
+import { isString } from '../../core/validation'
+import { COMMON_VALIDATORS, type CommonConfig, commonDefaults } from '../common'
+import { type LayoutSpec, unchanged } from '../LayoutSpec'
+import { MONTH_GRID_VALIDATORS, type MonthGridOptions, monthGridDefaults } from '../monthGrid'
 
 export interface YearPerPageConfig extends CommonConfig, MonthGridOptions {
 	/** Shown above the calendar; when empty, the year is shown instead. */

@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import App from './App'
-import { defaultLayoutConfig } from './config/layouts'
+import { defaultLayoutConfig } from './layouts'
 import { serializeLayoutConfig } from './config/configFile'
 
 /** Chooses `file` in the toolbar's hidden file input, as the import button's dialog would. */
@@ -39,6 +39,26 @@ describe('App import', () => {
 			'other.json is not a valid configuration file.',
 		)
 		expect(layoutSelect().value).toBe('year-per-page')
+		expect(screen.getByLabelText<HTMLInputElement>('Year').value).toBe(
+			String(new Date().getFullYear()),
+		)
+	})
+})
+
+describe('App reset', () => {
+	it('restores the shown layout’s defaults after confirming, and keeps it shown', async () => {
+		const { container } = render(<App />)
+		const options = { ...defaultLayoutConfig('month-per-page'), year: 2030 }
+		const text = serializeLayoutConfig('month-per-page', options)
+		chooseImportFile(container, new File([text], 'month.json', { type: 'application/json' }))
+		await waitFor(() => expect(layoutSelect().value).toBe('month-per-page'))
+
+		const confirm = vi.spyOn(window, 'confirm').mockReturnValue(true)
+		fireEvent.click(screen.getByRole('button', { name: 'Reset layout settings' }))
+		expect(confirm).toHaveBeenCalledWith('Reset Month settings to their defaults?')
+		confirm.mockRestore()
+
+		expect(layoutSelect().value).toBe('month-per-page')
 		expect(screen.getByLabelText<HTMLInputElement>('Year').value).toBe(
 			String(new Date().getFullYear()),
 		)
