@@ -33,8 +33,8 @@ const WEEKEND_DISPLAY_OPTIONS = optionsFrom(WEEKEND_DISPLAYS, {
 
 const WEEK_DAY_DIRECTION_OPTIONS = optionsFrom(WEEK_DAY_DIRECTIONS, {
 	auto: 'Automatic (by orientation)',
-	vertical: 'Vertical (columns, left to right)',
-	horizontal: 'Horizontal (rows, top to bottom)',
+	vertical: 'Vertical (columns)',
+	horizontal: 'Horizontal (rows)',
 })
 
 const WEEK_PAGE_LINES_OPTIONS = optionsFrom(WEEK_PAGE_LINES, {
