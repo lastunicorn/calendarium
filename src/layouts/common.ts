@@ -1,4 +1,5 @@
 import { buildYear, type CalendarMonth, isYear, type WeekStart } from '../core/calendar'
+import { type CalendarEvent, parseEvents } from '../core/events'
 import {
 	isWeekStartSetting,
 	type Locale,
@@ -8,7 +9,7 @@ import {
 	type WeekStartSetting,
 } from '../core/locale'
 import { margins, PAGE_VALIDATORS, type PageSetup } from '../core/paper'
-import { oneOf, type Validators } from '../core/validation'
+import { isString, oneOf, type Validators } from '../core/validation'
 
 /** Options every layout has, each with the same meaning in all of them. */
 export interface CommonConfig {
@@ -17,6 +18,11 @@ export interface CommonConfig {
 	locale: Locale
 	/** A fixed first day of the week, or `auto` for the language's own. */
 	weekStart: WeekStartSetting
+	/**
+	 * Named days, one per line: `YYYY-MM-DD` and the name, the year `0000` for every year
+	 * (`parseEvents`). Kept as typed, invalid lines too, so editing never loses text.
+	 */
+	events: string
 	page: PageSetup
 }
 
@@ -36,6 +42,7 @@ export function commonDefaults(): CommonConfig {
 		year: new Date().getFullYear(),
 		locale: defaultLocale(),
 		weekStart: 'auto',
+		events: '',
 		page: {
 			paperSize: 'a4',
 			orientation: 'portrait',
@@ -51,16 +58,22 @@ export const COMMON_VALIDATORS: Validators<CommonConfig> = {
 	year: isYear,
 	locale: oneOf(LOCALES),
 	weekStart: isWeekStartSetting,
+	events: isString,
 	page: PAGE_VALIDATORS,
 }
 
-/** What every layout's pages are planned from: the resolved week start, the year's months and month names. */
+/**
+ * What every layout's pages are planned from: the resolved week start, the year's months, month
+ * names and events.
+ */
 export interface CalendarModel {
 	weekStart: WeekStart
 	/** January first, each 6 weeks from `weekStart` (`buildMonth`). */
 	months: CalendarMonth[]
 	/** Localized, January first. */
 	monthNames: string[]
+	/** The valid lines of `events`, in order. */
+	events: CalendarEvent[]
 }
 
 /** The calendar model of a layout's options. */
@@ -70,5 +83,6 @@ export function calendarModel(config: CommonConfig): CalendarModel {
 		weekStart,
 		months: buildYear(config.year, weekStart),
 		monthNames: monthNames(config.locale),
+		events: parseEvents(config.events),
 	}
 }

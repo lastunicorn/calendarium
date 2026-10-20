@@ -1,14 +1,21 @@
 import { type CalendarDay, visibleWeeks } from '../../core/calendar'
+import { eventNames } from '../../core/events'
 import { monthYearName, weekdayNames } from '../../core/locale'
 import type { WeekendHighlight } from '../../core/weekend'
 import type { CalendarModel } from '../common'
 import type { HeadingAlign } from '../heading'
 import type { MonthPerPageConfig } from './options'
 
+/** A day's cell in a month grid. */
+export interface MonthGridDay extends CalendarDay {
+	/** The names of its events, written in the cell; none for a day of another month. */
+	events: string[]
+}
+
 /** A month drawn as a page of large writing cells: the props of the `MonthGrid` that draws it. */
 export interface MonthGridPlan {
 	/** The rows holding a day of the month: 4–6, as on a wall calendar. */
-	weeks: CalendarDay[][]
+	weeks: MonthGridDay[][]
 	/** Weekday labels, ordered from the week start. */
 	weekdays: string[]
 	highlightWeekends: WeekendHighlight
@@ -40,7 +47,12 @@ export function planMonthPages(config: MonthPerPageConfig, model: CalendarModel)
 			subheading: title ? monthYear : '',
 			headingAlign: config.monthHeadingAlignment,
 			grid: {
-				weeks: visibleWeeks(month),
+				weeks: visibleWeeks(month).map((week) =>
+					week.map((day) => ({
+						...day,
+						events: day.inMonth ? eventNames(model.events, day) : [],
+					})),
+				),
 				weekdays,
 				highlightWeekends: config.highlightWeekends,
 				showWeekNumbers: config.showWeekNumbers,

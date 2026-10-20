@@ -16,10 +16,17 @@
 	min-width: 0;
 }
 
-.details {
+/* The details line, and each of the day's events on a line of its own under it, alike. */
+.details,
+.event {
 	margin: 0;
 	font-size: 9pt;
 	color: var(--color-text-muted);
+}
+
+/* A little space between the details line and the events. */
+.details + .event {
+	margin-top: 3mm;
 }
 
 /* A grid, so the mini month stretches to this fixed box. */

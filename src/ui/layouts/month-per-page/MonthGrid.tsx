@@ -37,6 +37,12 @@ export function MonthGrid({ weeks, weekdays, highlightWeekends, showWeekNumbers 
 							].join(' ')}
 						>
 							{day.day}
+							{day.events.map((name, index) => (
+								// Two events may share a name, and they never reorder.
+								<span key={index} className={styles.event}>
+									{name}
+								</span>
+							))}
 						</div>
 					))}
 				</Fragment>

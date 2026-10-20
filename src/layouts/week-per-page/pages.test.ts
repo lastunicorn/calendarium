@@ -180,4 +180,22 @@ describe('planWeekPages', () => {
 		expect(plan(2026, { page: portrait, twoPagesPerWeek: true }).weeks[0].stacked).toBe(false)
 		expect(plan(2026).weeks[0].stacked).toBe(false)
 	})
+
+	it('lists the events of the days of the year under their labels', () => {
+		const events = '0000-01-01 New Year\n0000-12-31 Eve\n2026-01-02 Back'
+		const first = days(week(plan(2026, { events }).weeks, '2025-12-29'))
+		const named = Object.fromEntries(first.map((day) => [day.day.key, day.events]))
+		expect(named['2026-01-01']).toEqual(['New Year'])
+		expect(named['2026-01-02']).toEqual(['Back'])
+		// December 31 of the year before is gray, without its yearly event.
+		expect(named['2025-12-31']).toEqual([])
+	})
+
+	it('keeps as many event lines in every cell of a sheet as its busiest day has', () => {
+		// The first sheet holds Monday to Wednesday, the second Thursday on.
+		const events = '2026-01-01 One\n2026-01-01 Two\n2026-01-07 Three'
+		const weeks = plan(2026, { events, twoPagesPerWeek: true }).weeks
+		expect(week(weeks, '2025-12-29').sheets.map((sheet) => sheet.eventLines)).toEqual([0, 2])
+		expect(week(weeks, '2026-01-05').sheets.map((sheet) => sheet.eventLines)).toEqual([1, 0])
+	})
 })

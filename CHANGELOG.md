@@ -11,6 +11,7 @@ The features each release brought, newest first. Versions follow the app version
 - The day layout's ruled lines can be set closer or further apart, from 4 to 20 mm.
 - The day layout's pages can be filled with squares, like a math notebook, from 3 to 10 mm a side (5 mm by default).
 - Text boxes show an × button at their right end that clears them.
+- Events, in the calendar section: one per line, a date (`YYYY-MM-DD`) and a name, the year `0000` repeating it every year. The month layout writes them in the days' cells, the week layout under the days' labels and the day layout under the page's heading; the year layout doesn't show them yet. Lines that aren't an event are named under the box.
 
 ### Changed
 

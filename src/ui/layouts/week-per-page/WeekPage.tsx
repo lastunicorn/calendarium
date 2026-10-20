@@ -1,6 +1,11 @@
 import { memo } from 'react'
 import type { PageSetup } from '../../../core/paper'
-import type { WeekHeaderPart, WeekPageDay, WeekPages } from '../../../layouts/week-per-page/pages'
+import type {
+	WeekHeaderPart,
+	WeekPageDay,
+	WeekPages,
+	WeekSheet,
+} from '../../../layouts/week-per-page/pages'
 import { CalendarHeader } from '../CalendarHeader'
 import { MiniMonth } from '../MiniMonth'
 import { Page } from '../Page'
@@ -17,13 +22,15 @@ interface WeekPageProps {
 interface WeekDayCellProps {
 	plan: WeekPageDay
 	hours?: string[]
+	/** The lines kept for events under the label, blank ones after the day's own. */
+	eventLines: number
 	/** Whether the schedule runs down the cell (side-by-side cells) or across it (stacked ones). */
 	stacked: boolean
 }
 
 /** A day's cell: its label in the top-left corner, the rest space to write in, maybe by the hour. */
-function WeekDayCell({ plan, hours, stacked }: WeekDayCellProps) {
-	const { day, weekday, monthName, highlighted, schedule } = plan
+function WeekDayCell({ plan, hours, eventLines, stacked }: WeekDayCellProps) {
+	const { day, weekday, monthName, highlighted, events, schedule } = plan
 	return (
 		<div
 			className={[
@@ -37,6 +44,17 @@ function WeekDayCell({ plan, hours, stacked }: WeekDayCellProps) {
 				<span className={styles.weekday}>{weekday}</span>
 				{monthName && <span className={styles.month}>{monthName}</span>}
 			</div>
+			{eventLines > 0 && (
+				<div className={styles.events}>
+					{Array.from({ length: eventLines }, (_, index) => (
+						// Two events may share a name, and they never reorder.
+						<span key={index} className={styles.event}>
+							{/* A blank line keeps its height. */}
+							{events[index] ?? '\u00a0'}
+						</span>
+					))}
+				</div>
+			)}
 			{schedule && hours && (
 				<div
 					className={`${styles.schedule} ${stacked ? styles.across : styles.down}`}
@@ -58,14 +76,15 @@ function WeekDayCell({ plan, hours, stacked }: WeekDayCellProps) {
 }
 
 interface WeekGridProps {
-	/** The cells drawn on this sheet, in order. */
-	cells: WeekPageDay[][]
+	/** The sheet as planned: its cells, in order, and the event lines each keeps. */
+	sheet: WeekSheet
 	hours?: string[]
 	stacked: boolean
 }
 
 /** One sheet's cells: side by side, or stacked; a shared weekend cell split in half. */
-function WeekGrid({ cells, hours, stacked }: WeekGridProps) {
+function WeekGrid({ sheet, hours, stacked }: WeekGridProps) {
+	const { cells, eventLines } = sheet
 	return (
 		<div className={`${styles.week} ${stacked ? styles.rows : styles.columns}`}>
 			{cells.map((cell) =>
@@ -74,6 +93,7 @@ function WeekGrid({ cells, hours, stacked }: WeekGridProps) {
 						key={cell[0].day.key}
 						plan={cell[0]}
 						hours={hours}
+						eventLines={eventLines}
 						stacked={stacked}
 					/>
 				) : (
@@ -83,6 +103,7 @@ function WeekGrid({ cells, hours, stacked }: WeekGridProps) {
 								key={day.day.key}
 								plan={day}
 								hours={hours}
+								eventLines={eventLines}
 								stacked={stacked}
 							/>
 						))}
@@ -152,7 +173,7 @@ export const WeekPage = memo(function WeekPage({ plan, hours, setup }: WeekPageP
 		<Page key={sheet.header} setup={setup}>
 			<div className={styles.layout}>
 				{header(sheet.header)}
-				<WeekGrid cells={sheet.cells} hours={hours} stacked={stacked} />
+				<WeekGrid sheet={sheet} hours={hours} stacked={stacked} />
 			</div>
 		</Page>
 	))

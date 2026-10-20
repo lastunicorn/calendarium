@@ -1,4 +1,5 @@
 import { type CalendarDay, dayOfYear, daysOfYear, isoWeek } from '../../core/calendar'
+import { eventNames } from '../../core/events'
 import { fullDateName, hourNames, weekdayName, weekdayNames } from '../../core/locale'
 import { PRINT_MESSAGES } from '../../core/messages'
 import { contentBox } from '../../core/paper'
@@ -24,6 +25,8 @@ export interface DayPages {
 	subheading: string
 	/** "Week 1 · Day 1 / 365", each part per its option; empty when both are off. */
 	details: string
+	/** The names of the day's events, under the details line. */
+	events: string[]
 	/** Whether the heading takes the weekend color: a Saturday or Sunday, with `highlightWeekendDays`. */
 	weekend: boolean
 	/** The day's month with the day marked, in the corner; none when hidden. */
@@ -90,6 +93,7 @@ export function planDayPages(config: DayPerPageConfig, model: CalendarModel): Da
 			heading: config.dayPageTitle === 'weekday' ? weekday : date,
 			subheading: config.dayPageTitle === 'weekday' ? date : weekday,
 			details,
+			events: eventNames(model.events, day),
 			weekend: config.highlightWeekendDays && day.isWeekend,
 			miniMonth: miniMonth.show
 				? {

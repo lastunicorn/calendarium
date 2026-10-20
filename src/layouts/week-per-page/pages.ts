@@ -5,6 +5,7 @@ import {
 	weekNumber,
 	weeksOfYear,
 } from '../../core/calendar'
+import { eventNames } from '../../core/events'
 import { dateRangeName, hourNames, weekdayNames } from '../../core/locale'
 import { PRINT_MESSAGES } from '../../core/messages'
 import { isHighlightedWeekDay } from '../../core/weekend'
@@ -23,6 +24,8 @@ export interface WeekPageDay {
 	monthName?: string
 	/** In the weekend color: a weekend day of the year, with `highlightWeekendDays`. */
 	highlighted: boolean
+	/** The names of its events, under its label; none for a day of another year. */
+	events: string[]
 	/**
 	 * Whether its cell holds the hourly schedule: with `weekPageLines` set to `hours`, a day of the
 	 * year in a cell of its own. Saturday and Sunday sharing a cell have no room for one.
@@ -42,6 +45,11 @@ export interface WeekSheet {
 	header: WeekHeaderPart
 	/** Its cells in order, each holding one day, or Saturday and Sunday sharing it. */
 	cells: WeekPageDay[][]
+	/**
+	 * The lines every cell keeps for events under its label: the most any of its days has, so the
+	 * cells' schedules start at the same height.
+	 */
+	eventLines: number
 }
 
 /** Everything one week prints, on one sheet or two. */
@@ -101,17 +109,20 @@ export function planWeekPages(config: WeekPerPageConfig, model: CalendarModel): 
 			weekday: weekdays[weekdayColumn(day.weekday, weekStart)],
 			monthName: firstOnSheet || day.day === 1 ? monthNames[day.month] : undefined,
 			highlighted: isHighlightedWeekDay(day, config.highlightWeekendDays),
+			events: day.inYear ? eventNames(model.events, day) : [],
 			schedule: withSchedule && !shared && day.inYear,
 		}
 	}
 
 	function planSheet(cells: WeekCell[], header: WeekHeaderPart): WeekSheet {
 		const firstDay = cells[0][0]
+		const planned = cells.map((cell) =>
+			cell.map((day) => planDay(day, day === firstDay, cell.length > 1)),
+		)
 		return {
 			header,
-			cells: cells.map((cell) =>
-				cell.map((day) => planDay(day, day === firstDay, cell.length > 1)),
-			),
+			cells: planned,
+			eventLines: Math.max(...planned.flat().map((day) => day.events.length)),
 		}
 	}
 

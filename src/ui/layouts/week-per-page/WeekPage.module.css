@@ -115,6 +115,24 @@
 	color: var(--color-text-muted);
 }
 
+/* The day's events under its label, one line each, cut short when the cell is too narrow. */
+.events {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5mm;
+	padding: 0 2mm 1.5mm;
+	margin-top: -0.5mm;
+}
+
+.event {
+	overflow: hidden;
+	font-size: 8pt;
+	line-height: 1.15;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	color: var(--color-text);
+}
+
 .weekend {
 	color: var(--color-weekend);
 	background: var(--color-weekend-background);

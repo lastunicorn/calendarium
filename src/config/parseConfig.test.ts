@@ -36,6 +36,7 @@ describe('parseConfig', () => {
 			year: 2030,
 			locale: 'ro-RO',
 			weekStart: 6,
+			events: '0000-12-25 Christmas',
 			page,
 		}
 		const grid = { weekdayFormat: 'short', highlightWeekends: 'off', showWeekNumbers: true }

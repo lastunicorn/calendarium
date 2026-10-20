@@ -125,4 +125,12 @@ describe('planDayPages', () => {
 			expect(days[200].fills).toBe(days[0].fills)
 		})
 	})
+
+	it('lists the day’s events, yearly ones every year', () => {
+		const events = '0000-02-29 Leap day\n0000-12-25 Christmas\n2026-12-25 Snow'
+		expect(day(plan(2026, { events }), '2026-12-25').events).toEqual(['Christmas', 'Snow'])
+		expect(day(plan(2027, { events }), '2027-12-25').events).toEqual(['Christmas'])
+		expect(day(plan(2024, { events }), '2024-02-29').events).toEqual(['Leap day'])
+		expect(day(plan(2026), '2026-12-25').events).toEqual([])
+	})
 })

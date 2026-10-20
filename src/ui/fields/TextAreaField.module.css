@@ -1,0 +1,13 @@
+.textArea {
+	padding: 6px 8px;
+	font: inherit;
+	font-size: 0.875rem;
+	line-height: 1.4;
+	resize: vertical;
+}
+
+.error {
+	margin: 0;
+	font-size: 0.75rem;
+	color: var(--color-error);
+}

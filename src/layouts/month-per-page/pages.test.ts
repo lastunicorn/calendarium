@@ -57,4 +57,16 @@ describe('planMonthPages', () => {
 		expect(pages[5].grid.weekdays).toBe(pages[0].grid.weekdays)
 		expect(pages[0].grid.showWeekNumbers).toBe(false)
 	})
+
+	it('writes the events in their days of the month, yearly ones every year', () => {
+		const events = '0000-01-01 New Year\n2026-01-01 Holiday\n2027-01-01 Later\nnot an event'
+		const days = plan(2026, { events }).flatMap((page) => page.grid.weeks.flat())
+		const newYear = days.find((day) => day.key === '2026-01-01' && day.inMonth)!
+		expect(newYear.events).toEqual(['New Year', 'Holiday'])
+		// January 1 also shows in December's grid, as a day of another month, without events.
+		expect(days.filter((day) => !day.inMonth).every((day) => day.events.length === 0)).toBe(
+			true,
+		)
+		expect(days.find((day) => day.key === '2026-01-02')!.events).toEqual([])
+	})
 })
