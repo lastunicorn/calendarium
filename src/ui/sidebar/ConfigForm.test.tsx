@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, within } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import type { LayoutId } from '../../layouts'
 import { defaultAppConfig } from '../../config/AppConfig'
 import { ConfigForm } from './ConfigForm'
@@ -221,5 +221,60 @@ describe('ConfigForm', () => {
 
 		fireEvent.focus(screen.getByRole('button', { name: 'Export settings to a file' }))
 		expect(hint.textContent).toBe('Export settings to a file')
+	})
+
+	it('asks before resetting a section, and resets only that section’s fields', () => {
+		const onUpdate = vi.fn()
+		const config = defaultAppConfig()
+		render(
+			<ConfigForm
+				config={config}
+				onSelectLayout={noop}
+				onUpdate={onUpdate}
+				onResetLayout={noop}
+				onImportLayout={noop}
+			/>,
+		)
+		fireEvent.click(screen.getByRole('button', { name: 'Calendar' }))
+		fireEvent.click(screen.getByRole('button', { name: 'Reset Calendar settings' }))
+		expect(onUpdate).not.toHaveBeenCalled()
+
+		const question = screen.getByRole('alertdialog')
+		expect(document.activeElement).toBe(within(question).getByRole('button', { name: 'Reset' }))
+		fireEvent.click(within(question).getByRole('button', { name: 'Reset' }))
+		const { year, locale, weekStart } = config.layouts[config.layout]
+		expect(onUpdate).toHaveBeenCalledWith(config.layout, { year, locale, weekStart })
+		expect(screen.queryByRole('alertdialog')).toBeNull()
+	})
+
+	it('cancels a section’s reset on a click outside it, on Escape, or when it collapses', () => {
+		const onUpdate = vi.fn()
+		render(
+			<ConfigForm
+				config={defaultAppConfig()}
+				onSelectLayout={noop}
+				onUpdate={onUpdate}
+				onResetLayout={noop}
+				onImportLayout={noop}
+			/>,
+		)
+		fireEvent.click(screen.getByRole('button', { name: 'Calendar' }))
+		const reset = screen.getByRole('button', { name: 'Reset Calendar settings' })
+
+		fireEvent.click(reset)
+		fireEvent.pointerDown(screen.getByLabelText('Year'))
+		expect(screen.getByRole('alertdialog')).not.toBeNull()
+		fireEvent.pointerDown(screen.getByRole('group', { name: 'Layout' }))
+		expect(screen.queryByRole('alertdialog')).toBeNull()
+
+		fireEvent.click(reset)
+		fireEvent.keyDown(document, { key: 'Escape' })
+		expect(screen.queryByRole('alertdialog')).toBeNull()
+
+		fireEvent.click(reset)
+		fireEvent.click(screen.getByRole('button', { name: 'Calendar' }))
+		fireEvent.click(screen.getByRole('button', { name: 'Calendar' }))
+		expect(screen.queryByRole('alertdialog')).toBeNull()
+		expect(onUpdate).not.toHaveBeenCalled()
 	})
 })

@@ -1,5 +1,4 @@
-import { type ReactNode, useId } from 'react'
-import { Balloon } from '../components/Balloon'
+import { type ReactNode, useEffect, useId, useRef, useState } from 'react'
 import { ChevronIcon, ResetIcon } from '../components/icons'
 import styles from './Section.module.css'
 import { useOpenSectionsContext } from './useOpenSections'
@@ -27,7 +26,7 @@ interface SectionProps {
 	description?: string
 	/** Whether clicking the title hides the fields; when false, the section is always open. */
 	collapsible?: boolean
-	/** Restores the section's fields to their defaults, from a button under them, once confirmed in a balloon. */
+	/** Restores the section's fields to their defaults, from a button under them, once confirmed. */
 	onReset?: () => void
 	children: ReactNode
 }
@@ -36,8 +35,10 @@ interface SectionProps {
  * A titled group of related fields, its title on a tinted band after an icon, optionally with a
  * short description under the title. A collapsible section starts collapsed: clicking the title
  * shows or hides the fields, closing any other open section, and the `ConfigForm` remembers which
- * one is open, by title. With `onReset`, an open section ends with a small reset button on the right, styled like a
- * field's info button, whose balloon asks before resetting.
+ * one is open, by title. With `onReset`, an open section ends with a small reset button on the
+ * right, styled like a field's info button. It covers the fields with a veil asking to confirm,
+ * which keeps them out of reach; a click outside the section, Escape or collapsing the section
+ * cancels.
  */
 export function Section({
 	title,
@@ -48,16 +49,47 @@ export function Section({
 	children,
 }: SectionProps) {
 	const descriptionId = useId()
-	const resetBalloonId = useId()
+	const questionId = useId()
+	const section = useRef<HTMLFieldSetElement>(null)
+	const [confirmingReset, setConfirmingReset] = useState(false)
 	const openSections = useOpenSectionsContext()
 	const expanded = !collapsible || openSections.isOpen(title)
+
+	// Collapsing the section, e.g. by opening another one, cancels its reset.
+	if (confirmingReset && !expanded) setConfirmingReset(false)
+
+	useEffect(() => {
+		if (!confirmingReset) return
+		function handleDocumentPointerDown(event: PointerEvent) {
+			if (!section.current?.contains(event.target as Node)) setConfirmingReset(false)
+		}
+		function handleDocumentKeyDown(event: KeyboardEvent) {
+			if (event.key === 'Escape') setConfirmingReset(false)
+		}
+		document.addEventListener('pointerdown', handleDocumentPointerDown, true)
+		document.addEventListener('keydown', handleDocumentKeyDown)
+		return () => {
+			document.removeEventListener('pointerdown', handleDocumentPointerDown, true)
+			document.removeEventListener('keydown', handleDocumentKeyDown)
+		}
+	}, [confirmingReset])
 
 	function handleTitleClick() {
 		openSections.toggle(title)
 	}
 
+	function handleResetClick() {
+		setConfirmingReset(true)
+	}
+
+	function handleResetConfirmClick() {
+		setConfirmingReset(false)
+		onReset?.()
+	}
+
 	return (
 		<fieldset
+			ref={section}
 			className={`${styles.section} ${expanded ? styles.open : ''}`}
 			aria-describedby={description === undefined || !expanded ? undefined : descriptionId}
 		>
@@ -82,38 +114,36 @@ export function Section({
 					</span>
 				)}
 			</legend>
-			{expanded && description !== undefined && (
-				<p id={descriptionId} className={styles.description}>
-					{description}
-				</p>
-			)}
-			{expanded && children}
-			{expanded && onReset && (
-				<div className={styles.footer}>
-					<button
-						type="button"
-						className={styles.reset}
-						title={`Reset ${title} settings`}
-						aria-label={`Reset ${title} settings`}
-						popoverTarget={resetBalloonId}
-					>
-						<ResetIcon />
+			{/* Holds no box of its own, so the fields stay spaced by the section. */}
+			<div className={styles.body} inert={confirmingReset}>
+				{expanded && description !== undefined && (
+					<p id={descriptionId} className={styles.description}>
+						{description}
+					</p>
+				)}
+				{expanded && children}
+				{expanded && onReset && (
+					<div className={styles.footer}>
+						<button
+							type="button"
+							className={styles.reset}
+							title={`Reset ${title} settings`}
+							aria-label={`Reset ${title} settings`}
+							onClick={handleResetClick}
+						>
+							<ResetIcon />
+						</button>
+					</div>
+				)}
+			</div>
+			{confirmingReset && (
+				<div className={styles.veil} role="alertdialog" aria-labelledby={questionId}>
+					<p id={questionId} className={styles.resetQuestion}>
+						Reset {title} settings to their defaults?
+					</p>
+					<button type="button" autoFocus onClick={handleResetConfirmClick}>
+						Reset
 					</button>
-					<Balloon id={resetBalloonId}>
-						<p className={styles.resetQuestion}>
-							Reset {title} settings to their defaults?
-						</p>
-						<div className={styles.resetActions}>
-							<button
-								type="button"
-								popoverTarget={resetBalloonId}
-								popoverTargetAction="hide"
-								onClick={onReset}
-							>
-								Reset
-							</button>
-						</div>
-					</Balloon>
 				</div>
 			)}
 		</fieldset>

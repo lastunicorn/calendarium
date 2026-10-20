@@ -72,7 +72,7 @@ describe('App reset', () => {
 		)
 	})
 
-	it('restores only an open section’s defaults from its reset balloon', async () => {
+	it('restores only an open section’s defaults once its reset is confirmed', async () => {
 		const { container } = render(<App />)
 		const options = {
 			...defaultLayoutConfig('month-per-page'),
@@ -84,11 +84,12 @@ describe('App reset', () => {
 		await waitFor(() => expect(layoutSelect().value).toBe('month-per-page'))
 
 		openSection('Calendar')
-		const resetButton = screen.getByRole('button', { name: 'Reset Calendar settings' })
-		const balloon = document.getElementById(resetButton.getAttribute('popovertarget')!)!
-		expect(balloon.textContent).toContain('Reset Calendar settings to their defaults?')
-		// jsdom doesn't open popovers, so the balloon's button stays hidden to it.
-		fireEvent.click(within(balloon).getByRole('button', { name: 'Reset', hidden: true }))
+		fireEvent.click(screen.getByRole('button', { name: 'Reset Calendar settings' }))
+		const question = screen.getByRole('alertdialog', {
+			name: 'Reset Calendar settings to their defaults?',
+		})
+		fireEvent.click(within(question).getByRole('button', { name: 'Reset' }))
+		expect(screen.queryByRole('alertdialog')).toBeNull()
 		expect(screen.getByLabelText<HTMLInputElement>('Year').value).toBe(
 			String(new Date().getFullYear()),
 		)

@@ -1,4 +1,5 @@
 .section {
+	position: relative;
 	display: flex;
 	flex-direction: column;
 	gap: 16px;
@@ -10,6 +11,11 @@
 /* Collapsed sections stack their bands flush; an open one keeps room below its fields. */
 .open {
 	padding-bottom: 16px;
+}
+
+/* Its children lay out as the section's own. */
+.body {
+	display: contents;
 }
 
 /* A band across the whole sidebar: the negative margins cancel the form's side padding. */
@@ -105,13 +111,25 @@
 	height: 16px;
 }
 
-.resetQuestion {
-	margin: 0;
+/*
+ * Covers the section's fields, from under the title band, while a reset waits to be confirmed;
+ * the fieldset's box starts below its legend, so the top reaches up over the band's margin.
+ */
+.veil {
+	position: absolute;
+	inset: -12px -16px 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
+	padding: 16px;
+	background: var(--color-veil);
+	text-align: center;
 }
 
-/* The confirming button, under the question on the right; a click elsewhere or Escape cancels. */
-.resetActions {
-	display: flex;
-	justify-content: flex-end;
-	margin-top: 8px;
+.resetQuestion {
+	margin: 0;
+	font-size: 0.875rem;
+	color: var(--color-text);
 }
