@@ -65,7 +65,7 @@ interface DayPageProps {
  * year has 366 of them and an unchanged plan keeps its page objects.
  */
 export const DayPage = memo(function DayPage({ plan, setup }: DayPageProps) {
-	const { miniMonth, details, events } = plan
+	const { miniMonth, events } = plan
 	const [firstFill, ...nextFills] = plan.fills
 	return (
 		<>
@@ -80,7 +80,6 @@ export const DayPage = memo(function DayPage({ plan, setup }: DayPageProps) {
 								align="left"
 								highlight={plan.weekend}
 							/>
-							{details && <p className={styles.details}>{details}</p>}
 							{events.map((name, index) => (
 								// Two events may share a name, and they never reorder.
 								<p key={index} className={styles.event}>

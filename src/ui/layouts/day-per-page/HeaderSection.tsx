@@ -16,8 +16,8 @@ const DAY_PAGE_TITLE_OPTIONS = optionsFrom(DAY_PAGE_TITLES, {
 })
 
 /**
- * What a day's heading shows and whether it takes the weekend color, and what its details line below
- * it holds.
+ * What a day's heading shows and whether it takes the weekend color, and what its details, after
+ * the subheading, hold.
  */
 export function HeaderSection({ config, onUpdate }: ConfigSectionProps<DayPerPageConfig>) {
 	function handleDayPageTitleChange(dayPageTitle: DayPageTitle) {

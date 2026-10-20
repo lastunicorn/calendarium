@@ -30,19 +30,23 @@ describe('planDayPages', () => {
 	})
 
 	it('heads a day with its weekday or its date, the other one below', () => {
-		const byWeekday = day(plan(2026), '2026-01-01')
+		const noDetails = { showHeaderWeek: false, showHeaderDayOfYear: false }
+		const byWeekday = day(plan(2026, noDetails), '2026-01-01')
 		expect([byWeekday.heading, byWeekday.subheading]).toEqual(['Thursday', '1 January 2026'])
-		const byDate = day(plan(2026, { dayPageTitle: 'date' }), '2026-01-01')
+		const byDate = day(plan(2026, { ...noDetails, dayPageTitle: 'date' }), '2026-01-01')
 		expect([byDate.heading, byDate.subheading]).toEqual(['1 January 2026', 'Thursday'])
 	})
 
-	it('details the ISO week and the day of the year, each when asked', () => {
-		const details = (showHeaderWeek: boolean, showHeaderDayOfYear: boolean) =>
-			day(plan(2026, { showHeaderWeek, showHeaderDayOfYear }), '2026-02-10').details
-		expect(details(true, true)).toBe('Week 7 · Day 41 / 365')
-		expect(details(true, false)).toBe('Week 7')
-		expect(details(false, true)).toBe('Day 41 / 365')
-		expect(details(false, false)).toBe('')
+	it('details the ISO week and the day of the year after the subheading, each when asked', () => {
+		const subheading = (showHeaderWeek: boolean, showHeaderDayOfYear: boolean) =>
+			day(plan(2026, { showHeaderWeek, showHeaderDayOfYear }), '2026-02-10').subheading
+		// The dots have en spaces (U+2002) either side.
+		expect(subheading(true, true)).toBe(
+			'10 February 2026\u2002·\u2002Week 7\u2002·\u2002Day 41 / 365',
+		)
+		expect(subheading(true, false)).toBe('10 February 2026\u2002·\u2002Week 7')
+		expect(subheading(false, true)).toBe('10 February 2026\u2002·\u2002Day 41 / 365')
+		expect(subheading(false, false)).toBe('10 February 2026')
 	})
 
 	it('heads a weekend day in the weekend color, when asked', () => {

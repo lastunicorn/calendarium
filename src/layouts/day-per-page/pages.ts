@@ -7,6 +7,9 @@ import type { CalendarModel } from '../common'
 import type { MiniMonthPlan } from '../monthGrid'
 import type { DayPerPageConfig } from './options'
 
+/** The dot between the subheading's parts, with en spaces either side for more room than plain ones. */
+const SUBHEADING_SEPARATOR = '\u2002·\u2002'
+
 /** What fills a day's sheet under its header, or all of its second sheet. */
 export type DayFill =
 	/** One row per hour, labeled. */
@@ -21,11 +24,12 @@ export interface DayPages {
 	day: CalendarDay
 	/** The weekday or the date, per `dayPageTitle`. */
 	heading: string
-	/** The other one of the two. */
+	/**
+	 * The other one of the two, then the details "Week 1 · Day 1 / 365", each part per its option,
+	 * all separated by dots.
+	 */
 	subheading: string
-	/** "Week 1 · Day 1 / 365", each part per its option; empty when both are off. */
-	details: string
-	/** The names of the day's events, under the details line. */
+	/** The names of the day's events, under the heading. */
 	events: string[]
 	/** Whether the heading takes the weekend color: a Saturday or Sunday, with `highlightWeekendDays`. */
 	weekend: boolean
@@ -82,17 +86,17 @@ export function planDayPages(config: DayPerPageConfig, model: CalendarModel): Da
 	return days.map((day) => {
 		const weekday = weekdayName(locale, day)
 		const date = fullDateName(locale, day)
-		const details = [
+		const subheading = [
+			config.dayPageTitle === 'weekday' ? date : weekday,
 			config.showHeaderWeek ? messages.week(isoWeek(day)) : '',
 			config.showHeaderDayOfYear ? messages.dayOfYear(dayOfYear(day), days.length) : '',
 		]
 			.filter(Boolean)
-			.join(' · ')
+			.join(SUBHEADING_SEPARATOR)
 		return {
 			day,
 			heading: config.dayPageTitle === 'weekday' ? weekday : date,
-			subheading: config.dayPageTitle === 'weekday' ? date : weekday,
-			details,
+			subheading,
 			events: eventNames(model.events, day),
 			weekend: config.highlightWeekendDays && day.isWeekend,
 			miniMonth: miniMonth.show
