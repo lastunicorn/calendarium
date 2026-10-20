@@ -2,7 +2,7 @@ import type { MonthGridOptions } from '../../layouts/monthGrid'
 import type { WeekdayFormat } from '../../core/locale'
 import { WEEKEND_HIGHLIGHTS, type WeekendHighlight } from '../../core/weekend'
 import { CheckboxField } from '../fields/CheckboxField'
-import { optionsFrom } from '../fields/options'
+import { type Option, optionsFrom } from '../fields/options'
 import { RadioField } from '../fields/RadioField'
 import { MONTH_GRID_WEEKDAY_FORMAT_OPTIONS } from './fieldOptions'
 import type { ConfigSectionProps } from './Section'
@@ -13,8 +13,17 @@ const WEEKEND_HIGHLIGHT_OPTIONS = optionsFrom(WEEKEND_HIGHLIGHTS, {
 	columns: 'Whole columns',
 })
 
+interface MonthGridFieldsProps extends ConfigSectionProps<MonthGridOptions> {
+	/** The weekday formats the grid has room for; abbreviations only unless it fills a page. */
+	weekdayFormats?: readonly Option<WeekdayFormat>[]
+}
+
 /** How a month grid names its weekdays, marks its weekends, and whether it numbers its weeks. */
-export function MonthGridFields({ config, onUpdate }: ConfigSectionProps<MonthGridOptions>) {
+export function MonthGridFields({
+	config,
+	onUpdate,
+	weekdayFormats = MONTH_GRID_WEEKDAY_FORMAT_OPTIONS,
+}: MonthGridFieldsProps) {
 	function handleWeekdayFormatChange(weekdayFormat: WeekdayFormat) {
 		onUpdate({ weekdayFormat })
 	}
@@ -32,7 +41,7 @@ export function MonthGridFields({ config, onUpdate }: ConfigSectionProps<MonthGr
 			<RadioField
 				label="Weekday names"
 				value={config.weekdayFormat}
-				options={MONTH_GRID_WEEKDAY_FORMAT_OPTIONS}
+				options={weekdayFormats}
 				onChange={handleWeekdayFormatChange}
 			/>
 			<RadioField

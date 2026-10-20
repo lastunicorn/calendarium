@@ -1,13 +1,13 @@
-import type { MonthGridOptions } from '../../layouts/monthGrid'
+import type { ComponentProps } from 'react'
 import { AppearanceIcon } from '../components/icons'
 import { MonthGridFields } from './MonthGridFields'
-import { type ConfigSectionProps, Section } from './Section'
+import { Section } from './Section'
 
 /** How the layout's month grids look. */
-export function AppearanceSection({ config, onUpdate }: ConfigSectionProps<MonthGridOptions>) {
+export function AppearanceSection(props: ComponentProps<typeof MonthGridFields>) {
 	return (
 		<Section title="Appearance" icon={<AppearanceIcon />}>
-			<MonthGridFields config={config} onUpdate={onUpdate} />
+			<MonthGridFields {...props} />
 		</Section>
 	)
 }

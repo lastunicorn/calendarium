@@ -35,6 +35,10 @@ describe('planMonthPages', () => {
 		expect(pages[4].grid.weeks).toHaveLength(6)
 	})
 
+	it('writes the weekday names in full when asked', () => {
+		expect(plan(2026, { weekdayFormat: 'full' })[0].grid.weekdays[2]).toBe('Wednesday')
+	})
+
 	it('shares the weekday labels and the grid options between the pages', () => {
 		const pages = plan(2026, { weekdayFormat: 'narrow', showWeekNumbers: false })
 		expect(pages[0].grid.weekdays).toEqual(['M', 'T', 'W', 'T', 'F', 'S', 'S'])

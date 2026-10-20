@@ -150,20 +150,33 @@ describe('parseConfig', () => {
 		expect(config).toEqual(defaultAppConfig())
 	})
 
-	it('keeps full weekday names on week pages only, not in a month grid', () => {
+	it('keeps full weekday names on week and month pages only, not in a small month grid', () => {
 		const stored = toStoredConfig(defaultAppConfig())
-		stored.layouts['week-per-page'] = {
-			...stored.layouts['week-per-page'],
+		const { layouts: storedLayouts } = stored
+		storedLayouts['year-per-page'] = {
+			...storedLayouts['year-per-page'],
 			weekdayFormat: 'full',
 		}
-		stored.layouts['month-per-page'] = {
-			...stored.layouts['month-per-page'],
+		storedLayouts['month-per-page'] = {
+			...storedLayouts['month-per-page'],
 			weekdayFormat: 'full',
+		}
+		storedLayouts['week-per-page'] = {
+			...storedLayouts['week-per-page'],
+			weekdayFormat: 'full',
+		}
+		stored.layouts['day-per-page'] = {
+			...stored.layouts['day-per-page'],
+			miniMonth: { ...stored.layouts['day-per-page'].miniMonth, weekdayFormat: 'full' },
 		}
 		const { layouts } = parseConfig(stored)
 		expect(layouts['week-per-page'].weekdayFormat).toBe('full')
-		expect(layouts['month-per-page'].weekdayFormat).toBe(
-			defaultLayoutConfig('month-per-page').weekdayFormat,
+		expect(layouts['month-per-page'].weekdayFormat).toBe('full')
+		expect(layouts['year-per-page'].weekdayFormat).toBe(
+			defaultLayoutConfig('year-per-page').weekdayFormat,
+		)
+		expect(layouts['day-per-page'].miniMonth.weekdayFormat).toBe(
+			defaultLayoutConfig('day-per-page').miniMonth.weekdayFormat,
 		)
 	})
 

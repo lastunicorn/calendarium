@@ -1,3 +1,4 @@
+import { WEEKDAY_FORMATS } from '../../core/locale'
 import { margins } from '../../core/paper'
 import { oneOf } from '../../core/validation'
 import { COMMON_VALIDATORS, type CommonConfig, commonDefaults } from '../common'
@@ -30,6 +31,8 @@ export const MONTH_PER_PAGE_SPEC: LayoutSpec<MonthPerPageConfig> = {
 	validators: {
 		...COMMON_VALIDATORS,
 		...MONTH_GRID_VALIDATORS,
+		// A page-wide grid has room for full weekday names, unlike a small one.
+		weekdayFormat: oneOf(WEEKDAY_FORMATS),
 		monthHeadingAlignment: oneOf(HEADING_ALIGNS),
 	},
 	normalize: unchanged,

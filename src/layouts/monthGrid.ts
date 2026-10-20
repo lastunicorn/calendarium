@@ -4,8 +4,9 @@ import { WEEKEND_HIGHLIGHTS, type WeekendHighlight } from '../core/weekend'
 import { isBoolean, oneOf, type Validators } from '../core/validation'
 
 /**
- * The weekday formats a month grid's columns have room for: not `full`. The field keeps the
- * `WeekdayFormat` type, as `weekdayFormat` has one type in every layout.
+ * The weekday formats a month grid's columns have room for: not `full`, except on a page of its
+ * own (`month-per-page`, whose validator allows it). The field keeps the `WeekdayFormat` type, as
+ * `weekdayFormat` has one type in every layout.
  */
 export const MONTH_GRID_WEEKDAY_FORMATS = ['short', 'narrow'] as const satisfies WeekdayFormat[]
 
