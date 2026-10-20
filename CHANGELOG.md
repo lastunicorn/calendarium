@@ -4,6 +4,10 @@ The features each release brought, newest first. Versions follow the app version
 
 ## Unreleased
 
+## 4.3.0 — 2026-10-21
+
+Settings and files from 4.2.0 are read as they are; the new options start at their defaults, and saved settings keep the values whose default changed.
+
 ### Added
 
 - Month layout: the previous and the next month are drawn small at the top left and top right of each page, titled with their month and year, each shown by default and hidden by its own option in the Mini calendar section, without week numbers by default.
