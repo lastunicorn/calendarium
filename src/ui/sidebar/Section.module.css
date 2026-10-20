@@ -7,20 +7,55 @@
 	border: none;
 }
 
+/* Collapsed sections stack their bands flush; an open one keeps room below its fields. */
+.open {
+	padding-bottom: 28px;
+}
+
 /* A band across the whole sidebar: the negative margins cancel the form's side padding. */
 .title {
+	width: calc(100% + 32px);
+	margin: 0 -16px;
+	padding: 0;
+	background: var(--color-section-title-background);
+}
+
+/* Spaced from the fields only while they show. */
+.open > .title {
+	margin-bottom: 12px;
+}
+
+/* The whole band toggles the section. */
+.toggle {
 	display: flex;
 	align-items: center;
 	gap: 6px;
-	width: calc(100% + 32px);
-	margin: 0 -16px 12px;
-	padding: 6px 16px;
-	background: var(--color-section-title-background);
+	width: 100%;
+	padding: 9px 16px;
+	border: none;
+	background: none;
+	font: inherit;
 	font-size: 0.75rem;
 	font-weight: 700;
 	letter-spacing: 0.05em;
 	text-transform: uppercase;
+	text-align: left;
 	color: var(--color-text-muted);
+	cursor: pointer;
+}
+
+.toggle:hover {
+	color: var(--color-text);
+}
+
+.chevron {
+	display: flex;
+	margin-left: auto;
+	transition: transform 0.15s;
+}
+
+.toggle[aria-expanded='true'] .chevron {
+	transform: rotate(90deg);
 }
 
 .title svg {

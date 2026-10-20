@@ -139,3 +139,12 @@ export function InfoIcon() {
 		</Icon>
 	)
 }
+
+/** A chevron pointing right; turned down when the section it toggles is open. */
+export function ChevronIcon() {
+	return (
+		<Icon>
+			<path d="M9 6l6 6-6 6" />
+		</Icon>
+	)
+}

@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import type { LayoutId } from '../../layouts'
 import { defaultAppConfig } from '../../config/AppConfig'
@@ -63,11 +63,51 @@ describe('ConfigForm', () => {
 		expect(screen.queryByLabelText('Title')).toBeNull()
 	})
 
+	it('starts with every section collapsed, and opens one when its title is clicked', () => {
+		const titles = sectionTitles('year-per-page')
+		const toggles = screen.getAllByRole('button', { expanded: false })
+		expect(toggles.map((button) => button.textContent)).toEqual(titles)
+		expect(screen.queryByLabelText('Year')).toBeNull()
+
+		const calendar = screen.getByRole('button', { name: 'Calendar' })
+		fireEvent.click(calendar)
+		expect(calendar.getAttribute('aria-expanded')).toBe('true')
+		expect(screen.getByLabelText('Year')).not.toBeNull()
+
+		fireEvent.click(calendar)
+		expect(screen.queryByLabelText('Year')).toBeNull()
+	})
+
+	it('keeps a section open on another layout and after a reload', () => {
+		const config = defaultAppConfig()
+		const { rerender, unmount } = render(
+			<ConfigForm config={config} onSelectLayout={noop} onUpdate={noop} />,
+		)
+		fireEvent.click(screen.getByRole('button', { name: 'Calendar' }))
+
+		rerender(
+			<ConfigForm
+				config={{ ...config, layout: 'day-per-page' }}
+				onSelectLayout={noop}
+				onUpdate={noop}
+			/>,
+		)
+		expect(screen.getByLabelText('Year')).not.toBeNull()
+		expect(screen.getByRole('button', { name: 'Day page' }).getAttribute('aria-expanded')).toBe(
+			'false',
+		)
+
+		unmount()
+		render(<ConfigForm config={config} onSelectLayout={noop} onUpdate={noop} />)
+		expect(screen.getByLabelText('Year')).not.toBeNull()
+	})
+
 	it('shows the spine only with mirrored margins', () => {
 		const config = defaultAppConfig()
 		const { rerender } = render(
 			<ConfigForm config={config} onSelectLayout={noop} onUpdate={noop} />,
 		)
+		fireEvent.click(screen.getByRole('button', { name: 'Page' }))
 		expect(screen.queryByRole('group', { name: 'Spine' })).toBeNull()
 
 		const layout = config.layouts[config.layout]

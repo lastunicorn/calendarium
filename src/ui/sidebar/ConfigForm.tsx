@@ -4,6 +4,7 @@ import { layoutView } from '../layouts/registry'
 import type { UpdateLayoutConfig } from '../useCalendarConfig'
 import styles from './ConfigForm.module.css'
 import { LayoutSection } from './LayoutSection'
+import { OpenSectionsContext, useOpenSections } from './useOpenSections'
 
 interface ConfigFormProps {
 	config: AppConfig
@@ -28,19 +29,25 @@ function LayoutForm<K extends LayoutId>({ layout, config, onUpdate }: LayoutForm
 	return <Form config={config} onUpdate={handleUpdate} />
 }
 
-/** The layout picker and the chosen layout's options, grouped by what they affect. */
+/**
+ * The layout picker and the chosen layout's options, grouped by what they affect, in sections
+ * that stay open or closed across layouts and reloads.
+ */
 export function ConfigForm({ config, onSelectLayout, onUpdate }: ConfigFormProps) {
 	const { layout } = config
+	const openSections = useOpenSections()
 	return (
-		<div className={styles.form}>
-			<LayoutSection layout={layout} onSelect={onSelectLayout} />
-			{/* Keyed so half-typed field drafts don't carry over to another layout. */}
-			<LayoutForm
-				key={layout}
-				layout={layout}
-				config={config.layouts[layout]}
-				onUpdate={onUpdate}
-			/>
-		</div>
+		<OpenSectionsContext value={openSections}>
+			<div className={styles.form}>
+				<LayoutSection layout={layout} onSelect={onSelectLayout} />
+				{/* Keyed so half-typed field drafts don't carry over to another layout. */}
+				<LayoutForm
+					key={layout}
+					layout={layout}
+					config={config.layouts[layout]}
+					onUpdate={onUpdate}
+				/>
+			</div>
+		</OpenSectionsContext>
 	)
 }

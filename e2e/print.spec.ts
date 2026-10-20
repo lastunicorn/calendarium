@@ -23,10 +23,17 @@ const CASES: PrintCase[] = [
 	{ layout: 'day-per-page', pages: 366, width: 210, height: 297 },
 ]
 
+/** Expands the sidebar section titled `title`, which starts collapsed. */
+async function openSection(page: Page, title: string) {
+	await page.getByRole('button', { name: title, exact: true }).click()
+}
+
 /** Shows `layout` for `year` through the sidebar, as a user would. */
 async function showLayout(page: Page, layout: string, year: number) {
 	await page.goto('/')
+	await openSection(page, 'Layout')
 	await page.getByRole('group', { name: 'Layout' }).locator('select').selectOption(layout)
+	await openSection(page, 'Calendar')
 	const yearField = page.getByRole('spinbutton', { name: 'Year' })
 	await yearField.fill(String(year))
 	await expect(yearField).toHaveValue(String(year))
@@ -88,6 +95,7 @@ for (const { layout, pages, width, height } of CASES) {
 
 test('day-per-page prints two pages per day when asked', async ({ page }) => {
 	await showLayout(page, 'day-per-page', YEAR)
+	await openSection(page, 'Day page')
 	await page.getByRole('checkbox', { name: 'Two pages per day' }).check()
 
 	const sizes = pdfPageSizes(await page.pdf({ preferCSSPageSize: true, printBackground: true }))
@@ -96,6 +104,7 @@ test('day-per-page prints two pages per day when asked', async ({ page }) => {
 
 test('week-per-page prints two pages per week when asked', async ({ page }) => {
 	await showLayout(page, 'week-per-page', YEAR)
+	await openSection(page, 'Week page')
 	await page.getByRole('checkbox', { name: 'Two pages per week' }).check()
 
 	const sizes = pdfPageSizes(await page.pdf({ preferCSSPageSize: true, printBackground: true }))
@@ -106,6 +115,8 @@ test('week-per-page fits its content with the mini calendar, on one page or two'
 	page,
 }) => {
 	await showLayout(page, 'week-per-page', YEAR)
+	await openSection(page, 'Mini calendar')
+	await openSection(page, 'Week page')
 	await page.getByRole('checkbox', { name: 'Show mini calendar' }).check()
 	expect(await clippedPages(page), 'pages whose content is cut off').toEqual([])
 
