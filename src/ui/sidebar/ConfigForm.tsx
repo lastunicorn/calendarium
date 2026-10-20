@@ -31,7 +31,7 @@ function LayoutForm<K extends LayoutId>({ layout, config, onUpdate }: LayoutForm
 
 /**
  * The layout picker and the chosen layout's options, grouped by what they affect, in sections
- * that stay open or closed across layouts and reloads.
+ * of which one at a time is open, staying open across layouts and reloads.
  */
 export function ConfigForm({ config, onSelectLayout, onUpdate }: ConfigFormProps) {
 	const { layout } = config

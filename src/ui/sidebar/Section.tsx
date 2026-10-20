@@ -26,7 +26,8 @@ interface SectionProps {
 /**
  * A titled group of related fields, its title on a tinted band after an icon, optionally with a
  * short description under the title. A collapsible section starts collapsed: clicking the title
- * shows or hides the fields, and the `ConfigForm` remembers which sections are open, by title.
+ * shows or hides the fields, closing any other open section, and the `ConfigForm` remembers which
+ * one is open, by title.
  */
 export function Section({ title, icon, description, collapsible = true, children }: SectionProps) {
 	const descriptionId = useId()

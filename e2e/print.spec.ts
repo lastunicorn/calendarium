@@ -115,11 +115,11 @@ test('week-per-page fits its content with the mini calendar, on one page or two'
 }) => {
 	await showLayout(page, 'week-per-page', YEAR)
 	await openSection(page, 'Mini calendar')
-	await openSection(page, 'Week page')
 	await page.getByRole('checkbox', { name: 'Show mini calendar' }).check()
 	expect(await clippedPages(page), 'pages whose content is cut off').toEqual([])
 
 	await page.emulateMedia({ media: 'screen' })
+	await openSection(page, 'Week page')
 	await page.getByRole('checkbox', { name: 'Two pages per week' }).check()
 	expect(await clippedPages(page), 'pages whose content is cut off').toEqual([])
 })

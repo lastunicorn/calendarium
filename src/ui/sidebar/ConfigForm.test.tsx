@@ -81,6 +81,19 @@ describe('ConfigForm', () => {
 		expect(screen.queryByLabelText('Year')).toBeNull()
 	})
 
+	it('closes the open section when another one is opened', () => {
+		sectionTitles('year-per-page')
+		const calendar = screen.getByRole('button', { name: 'Calendar' })
+		const page = screen.getByRole('button', { name: 'Page' })
+		fireEvent.click(calendar)
+
+		fireEvent.click(page)
+		expect(page.getAttribute('aria-expanded')).toBe('true')
+		expect(calendar.getAttribute('aria-expanded')).toBe('false')
+		expect(screen.queryByLabelText('Year')).toBeNull()
+		expect(screen.getByRole('group', { name: 'Layout' }).querySelector('select')).not.toBeNull()
+	})
+
 	it('keeps a section open on another layout and after a reload', () => {
 		const config = defaultAppConfig()
 		const { rerender, unmount } = render(

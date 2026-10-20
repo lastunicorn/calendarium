@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useRef, useState } from 'react'
 
 const STORAGE_KEY = 'calendarium-open-sections'
 
-/** Which sidebar sections are open, by title, and a way to open or close one. */
+/** Which sidebar section is open, by title, and a way to open or close one. */
 export interface OpenSections {
 	isOpen: (title: string) => boolean
 	toggle: (title: string) => void
@@ -18,47 +18,44 @@ export function useOpenSectionsContext(): OpenSections {
 	return sections
 }
 
-function loadTitles(): ReadonlySet<string> {
+/** The stored open title: a list of at most one, as earlier builds kept several. */
+function loadTitle(): string | null {
 	try {
 		const stored: unknown = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '[]')
-		return new Set(
-			Array.isArray(stored) ? stored.filter((title) => typeof title === 'string') : [],
-		)
+		const title: unknown = Array.isArray(stored) ? stored[0] : undefined
+		return typeof title === 'string' ? title : null
 	} catch {
-		return new Set()
+		return null
 	}
 }
 
 /**
- * The open sidebar sections, all closed at first, remembered by title in `localStorage` (a viewer
+ * The open sidebar section, none at first: opening one closes the one open before, so the sidebar
+ * shows one group of fields at a time. Remembered by title in `localStorage` (a viewer
  * preference, not part of the calendar config). Layouts share titles, so a section open on one
  * layout, like "Calendar", is open on the others too.
  */
 export function useOpenSections(): OpenSections {
-	const [titles, setTitles] = useState(loadTitles)
+	const [openTitle, setOpenTitle] = useState(loadTitle)
 	// Saved only after a change, so merely opening the app writes nothing.
-	const saved = useRef(titles)
+	const saved = useRef(openTitle)
 
 	useEffect(() => {
-		if (titles === saved.current) return
-		saved.current = titles
+		if (openTitle === saved.current) return
+		saved.current = openTitle
 		try {
-			localStorage.setItem(STORAGE_KEY, JSON.stringify([...titles]))
+			localStorage.setItem(STORAGE_KEY, JSON.stringify(openTitle === null ? [] : [openTitle]))
 		} catch {
-			// Storage may be unavailable (private mode, quota); the sections then close on reload.
+			// Storage may be unavailable (private mode, quota); the section then closes on reload.
 		}
-	}, [titles])
+	}, [openTitle])
 
 	function isOpen(title: string) {
-		return titles.has(title)
+		return title === openTitle
 	}
 
 	function toggle(title: string) {
-		setTitles((current) => {
-			const next = new Set(current)
-			if (!next.delete(title)) next.add(title)
-			return next
-		})
+		setOpenTitle((current) => (current === title ? null : title))
 	}
 
 	return { isOpen, toggle }
