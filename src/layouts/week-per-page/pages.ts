@@ -62,7 +62,7 @@ export interface WeekPages {
 	subheading: string
 	/** Where the heading and subheading sit across the header row (`headingAlign`). */
 	headingAlign: HeadingAlign
-	/** The month holding most of the week's days, the week framed; none when hidden. */
+	/** The month holding most of the week's days, the week marked; none when hidden. */
 	miniMonth?: MiniMonthPlan
 	/** Whether the days are stacked rows rather than columns side by side (`stacksDays`). */
 	stacked: boolean

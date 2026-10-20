@@ -58,26 +58,12 @@
 	background: var(--color-weekend-background);
 }
 
-/* After `.day.weekend`, so a marked weekend day is marked too. */
-.day.marked {
+/* After `.day.weekend`, so a marked weekend day is marked too; a marked week fills its row. */
+.day.marked,
+.day.markedWeek {
 	font-weight: 700;
 	color: var(--color-surface);
 	background: var(--color-text);
-}
-
-/* A marked week's row is framed: each day draws the top and bottom, the row's ends the sides. */
-.day.markedWeek {
-	font-weight: 700;
-	border-top: 0.3mm solid var(--color-text);
-	border-bottom: 0.3mm solid var(--color-text);
-}
-
-.day.markedWeekStart {
-	border-left: 0.3mm solid var(--color-text);
-}
-
-.day.markedWeekEnd {
-	border-right: 0.3mm solid var(--color-text);
 }
 
 /* A day with an event: its number circled, as large as the cell's height allows. */

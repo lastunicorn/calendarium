@@ -27,6 +27,7 @@ The features each release brought, newest first. Versions follow the app version
 - The month layout writes weekday names in full by default.
 - Info buttons explain more options (mirror margins, week numbers, two pages per week or day, a hidden weekend), and their notes are clearer, split into short paragraphs.
 - The mini calendar on week and day pages is a little smaller.
+- The week layout's mini calendar marks the week like the day layout's marks the day: white on black, no longer framed.
 
 ## 4.1.0 — 2026-10-20
 

@@ -47,7 +47,7 @@ export function MiniMonth({
 									{week.some((day) => day.inMonth) ? weekNumber(week) : ''}
 								</div>
 							)}
-							{week.map((day, index) => (
+							{week.map((day) => (
 								<div
 									key={day.key}
 									className={[
@@ -57,10 +57,6 @@ export function MiniMonth({
 											: '',
 										day.inMonth && day.day === markedDay ? styles.marked : '',
 										marked ? styles.markedWeek : '',
-										marked && index === 0 ? styles.markedWeekStart : '',
-										marked && index === week.length - 1
-											? styles.markedWeekEnd
-											: '',
 									].join(' ')}
 								>
 									{day.inMonth &&
