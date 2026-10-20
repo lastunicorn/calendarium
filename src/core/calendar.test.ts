@@ -8,6 +8,7 @@ import {
 	isLeapYear,
 	isoWeek,
 	plainDate,
+	weekdayColumn,
 	type WeekStart,
 	WEEKS_PER_MONTH,
 	visibleWeeks,
@@ -53,6 +54,22 @@ describe('plainDate', () => {
 
 	it('takes years below 100 as written', () => {
 		expect(plainDate(50, 1, 10)).toMatchObject({ year: 50, key: '0050-02-10' })
+	})
+})
+
+describe('weekdayColumn', () => {
+	it('counts from the week start, wrapping past Saturday', () => {
+		expect(weekdayColumn(1, 1)).toBe(0) // Monday in a Monday week
+		expect(weekdayColumn(0, 1)).toBe(6) // Sunday in a Monday week
+		expect(weekdayColumn(0, 0)).toBe(0) // Sunday in a Sunday week
+		expect(weekdayColumn(5, 6)).toBe(6) // Friday in a Saturday week
+	})
+
+	it('gives each weekday its own column for every week start', () => {
+		for (const weekStart of WEEK_STARTS) {
+			const columns = WEEK_STARTS.map((weekday) => weekdayColumn(weekday, weekStart))
+			expect([...columns].sort()).toEqual([0, 1, 2, 3, 4, 5, 6])
+		}
 	})
 })
 

@@ -4,12 +4,18 @@ import { stacksDays, type WeekDayDirection } from '../../../config/layouts/weekP
 import {
 	type CalendarMonth,
 	type WeekDay,
+	weekdayColumn,
 	type WeekStart,
 	weekNumber,
 } from '../../../core/calendar'
 import { dateRangeName, type Locale } from '../../../core/locale'
 import { PRINT_MESSAGES } from '../../../core/messages'
-import { isHighlightedWeekDay, splitWeekCells, type WeekendHighlight } from '../../../core/weekend'
+import {
+	isHighlightedWeekDay,
+	splitWeekCells,
+	type WeekCell,
+	type WeekendHighlight,
+} from '../../../core/weekend'
 import { CalendarHeader } from '../CalendarHeader'
 import { MiniMonth } from '../MiniMonth'
 import { Page } from '../Page'
@@ -20,7 +26,7 @@ interface WeekPageProps {
 	 * The page's cells from the week start (`weekCells`), each holding one day, or two sharing it;
 	 * the first and last week reach into other years.
 	 */
-	cells: WeekDay[][]
+	cells: WeekCell[]
 	/** Weekday labels, ordered from `weekStart`. */
 	weekdays: string[]
 	weekStart: WeekStart
@@ -101,7 +107,7 @@ function WeekDayCell({ day, weekday, monthName, highlighted, hours, stacked }: W
 
 interface WeekGridProps {
 	/** The cells drawn on this page, in order. */
-	cells: WeekDay[][]
+	cells: WeekCell[]
 	weekdays: string[]
 	weekStart: WeekStart
 	monthNames: string[]
@@ -129,7 +135,7 @@ function WeekGrid({
 	function cellProps(day: WeekDay, shared: boolean): WeekDayCellProps {
 		return {
 			day,
-			weekday: weekdays[(day.weekday - weekStart + 7) % 7],
+			weekday: weekdays[weekdayColumn(day.weekday, weekStart)],
 			// The month is named where it changes, and on the page's first day for context.
 			monthName: day === firstDay || day.day === 1 ? monthNames[day.month] : undefined,
 			highlighted: isHighlightedWeekDay(day, highlightWeekendDays),
