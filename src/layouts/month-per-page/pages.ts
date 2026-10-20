@@ -19,25 +19,32 @@ export interface MonthGridPlan {
 export interface MonthPage {
 	/** The month, 0–11, unique per page. */
 	key: number
-	/** E.g. "January 2026". */
+	/** The title, or the month and year, e.g. "January 2026", when the title is empty. */
 	heading: string
+	/** The month and year below the title; empty when they are the heading. */
+	subheading: string
 	/** Where the heading sits above the grid. */
 	headingAlign: HeadingAlign
 	grid: MonthGridPlan
 }
 
-/** Twelve pages, one per month. */
+/** Twelve pages, one per month, headed by the title, if any, above the month and year. */
 export function planMonthPages(config: MonthPerPageConfig, model: CalendarModel): MonthPage[] {
 	const weekdays = weekdayNames(config.locale, model.weekStart, config.weekdayFormat)
-	return model.months.map((month) => ({
-		key: month.month,
-		heading: monthYearName(config.locale, config.year, month.month),
-		headingAlign: config.monthHeadingAlignment,
-		grid: {
-			weeks: visibleWeeks(month),
-			weekdays,
-			highlightWeekends: config.highlightWeekends,
-			showWeekNumbers: config.showWeekNumbers,
-		},
-	}))
+	const title = config.title.trim()
+	return model.months.map((month) => {
+		const monthYear = monthYearName(config.locale, config.year, month.month)
+		return {
+			key: month.month,
+			heading: title || monthYear,
+			subheading: title ? monthYear : '',
+			headingAlign: config.monthHeadingAlignment,
+			grid: {
+				weeks: visibleWeeks(month),
+				weekdays,
+				highlightWeekends: config.highlightWeekends,
+				showWeekNumbers: config.showWeekNumbers,
+			},
+		}
+	})
 }

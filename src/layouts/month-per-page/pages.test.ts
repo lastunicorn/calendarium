@@ -23,6 +23,18 @@ describe('planMonthPages', () => {
 		expect(pages[0].heading).toBe('January 2026')
 	})
 
+	it('heads every page with the title, the month and year below it, when there is one', () => {
+		const pages = plan(2026, { title: ' Family ' })
+		expect(pages[0].heading).toBe('Family')
+		expect(pages[0].subheading).toBe('January 2026')
+		expect(pages[11].heading).toBe('Family')
+		expect(pages[11].subheading).toBe('December 2026')
+		expect(plan(2026, { title: '  ' })[0]).toMatchObject({
+			heading: 'January 2026',
+			subheading: '',
+		})
+	})
+
 	it('centers the heading unless told where to set it', () => {
 		expect(plan(2026)[0].headingAlign).toBe('center')
 		expect(plan(2026, { monthHeadingAlignment: 'right' })[3].headingAlign).toBe('right')

@@ -43,7 +43,13 @@ describe('parseConfig', () => {
 			layout: 'month-per-page',
 			layouts: {
 				'year-per-page': { ...common, ...grid, title: 'Family', subtitle: 'Birthdays' },
-				'month-per-page': { ...common, ...grid, year: 2031, monthHeadingAlignment: 'left' },
+				'month-per-page': {
+					...common,
+					...grid,
+					year: 2031,
+					title: 'Office',
+					monthHeadingAlignment: 'left',
+				},
 				'week-per-page': {
 					...common,
 					year: 2033,
@@ -187,9 +193,9 @@ describe('parseConfig', () => {
 	it('ignores fields a layout does not have', () => {
 		const config = parseConfig({
 			version: CONFIG_VERSION,
-			layouts: { 'month-per-page': { title: 'Office', firstHour: 3 } },
+			layouts: { 'month-per-page': { subtitle: 'Office', firstHour: 3 } },
 		})
-		expect(config.layouts['month-per-page']).not.toHaveProperty('title')
+		expect(config.layouts['month-per-page']).not.toHaveProperty('subtitle')
 		expect(config.layouts['month-per-page']).not.toHaveProperty('firstHour')
 	})
 

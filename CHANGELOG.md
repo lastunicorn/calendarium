@@ -6,6 +6,7 @@ The features each release brought, newest first. Versions follow the app version
 
 ### Added
 
+- Month layout: a title printed on every page, the month and year then below it.
 - The day layout's ruled lines can be set closer or further apart, from 4 to 20 mm.
 - The day layout's pages can be filled with squares, like a math notebook, from 3 to 10 mm a side (5 mm by default).
 

@@ -48,7 +48,7 @@ describe('config files', () => {
 			layout: 'month-per-page',
 			...config,
 		})
-		expect(data).not.toHaveProperty('title')
+		expect(data).not.toHaveProperty('subtitle')
 		expect(data).not.toHaveProperty('layouts')
 	})
 
@@ -63,10 +63,10 @@ describe('config files', () => {
 
 	it('keeps only the fields of the layout it imports into', () => {
 		const imported = parseConfigFile(
-			fileText({ layout: 'month-per-page', title: 'Office' }),
+			fileText({ layout: 'month-per-page', subtitle: 'Office' }),
 			'year-per-page',
 		)
-		expect(imported?.config).not.toHaveProperty('title')
+		expect(imported?.config).not.toHaveProperty('subtitle')
 	})
 
 	it('rejects files that are not a JSON object', () => {
