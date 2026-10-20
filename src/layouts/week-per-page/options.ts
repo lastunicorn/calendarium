@@ -67,8 +67,7 @@ export const WEEK_PER_PAGE_SPEC: LayoutSpec<WeekPerPageConfig> = {
 			twoPagesPerWeek: false,
 			weekDayDirection: 'auto',
 			...scheduleDefaults(),
-			// Hidden, so the days keep the page's height.
-			miniMonth: { ...miniMonthDefaults(), show: false },
+			miniMonth: miniMonthDefaults(),
 			page: { ...common.page, orientation: 'landscape', margins: margins(10) },
 		}
 	},
