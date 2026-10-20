@@ -46,6 +46,7 @@ export function DayContentSection({ config, onUpdate }: ConfigSectionProps<DayPe
 		<Section title="Content" icon={<ContentIcon />}>
 			<CheckboxField
 				label="Two pages per day"
+				description="The header goes on the first page only; an hourly schedule is split in half across the two."
 				checked={config.twoPagesPerDay}
 				onChange={handleTwoPagesPerDayChange}
 			/>

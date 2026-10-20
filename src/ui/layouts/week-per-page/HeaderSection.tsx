@@ -3,6 +3,7 @@ import type { WeekPerPageConfig } from '../../../layouts/week-per-page/options'
 import { HeaderIcon } from '../../components/icons'
 import { CheckboxField } from '../../fields/CheckboxField'
 import { RadioField } from '../../fields/RadioField'
+import { WEEK_NUMBER_DESCRIPTION } from '../../sidebar/descriptions'
 import { HEADING_ALIGNMENT_OPTIONS } from '../../sidebar/fieldOptions'
 import { type ConfigSectionProps, Section } from '../../sidebar/Section'
 
@@ -22,7 +23,7 @@ export function HeaderSection({ config, onUpdate }: ConfigSectionProps<WeekPerPa
 				label="Title alignment"
 				description={
 					config.headingAlignment === 'auto'
-						? 'Aligned left beside the mini calendar or over two pages, centered otherwise.'
+						? 'Left beside the mini calendar or over two pages, centered otherwise.'
 						: undefined
 				}
 				value={config.headingAlignment}
@@ -31,6 +32,7 @@ export function HeaderSection({ config, onUpdate }: ConfigSectionProps<WeekPerPa
 			/>
 			<CheckboxField
 				label="Show week number"
+				description={WEEK_NUMBER_DESCRIPTION}
 				checked={config.showHeaderWeek}
 				onChange={handleShowHeaderWeekChange}
 			/>

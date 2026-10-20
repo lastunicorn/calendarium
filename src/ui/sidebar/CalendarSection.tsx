@@ -48,7 +48,10 @@ const LOCALE_OPTIONS = optionsFrom(LOCALES, {
 	'ko-KR': 'Korean (한국어)',
 }).sort((a, b) => a.label.localeCompare(b.label, 'en'))
 
-const YEAR_DESCRIPTION = `Min value: ${MIN_YEAR} - This is the first full year of the Gregorian calendar.`
+const YEAR_DESCRIPTION = [
+	`From ${MIN_YEAR} to ${MAX_YEAR}.`,
+	`${MIN_YEAR} is the first full year of the Gregorian calendar.`,
+]
 
 /** Which year the calendar shows, in which language, and the day its weeks start on. */
 export function CalendarSection({ config, onUpdate }: ConfigSectionProps<CommonConfig>) {

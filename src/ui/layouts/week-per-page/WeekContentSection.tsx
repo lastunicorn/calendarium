@@ -18,6 +18,13 @@ import { WEEKDAY_FORMAT_OPTIONS } from '../../sidebar/fieldOptions'
 import { ScheduleFields } from '../../sidebar/ScheduleFields'
 import { type ConfigSectionProps, Section } from '../../sidebar/Section'
 
+const HOURS_DESCRIPTION = 'Not drawn for the grayed days of the previous or next year.'
+
+const HOURS_SHARED_WEEKEND_DESCRIPTION = [
+	HOURS_DESCRIPTION,
+	'Nor for Saturday and Sunday while they share a cell: there is no room.',
+]
+
 const WEEKEND_DISPLAY_OPTIONS = optionsFrom(WEEKEND_DISPLAYS, {
 	full: 'Full',
 	reduced: 'Reduced (One shared cell)',
@@ -68,6 +75,7 @@ export function WeekContentSection({ config, onUpdate }: ConfigSectionProps<Week
 		<Section title="Content" icon={<ContentIcon />}>
 			<CheckboxField
 				label="Two pages per week"
+				description="The first three days go on the first page, under the title; the rest on the second, under the mini calendar if shown."
 				checked={config.twoPagesPerWeek}
 				onChange={handleTwoPagesPerWeekChange}
 			/>
@@ -95,6 +103,11 @@ export function WeekContentSection({ config, onUpdate }: ConfigSectionProps<Week
 			/>
 			<RadioField
 				label="Weekend"
+				description={
+					config.weekendDisplay === 'hidden'
+						? 'A week whose only days in this year are its weekend gets no page.'
+						: undefined
+				}
 				value={config.weekendDisplay}
 				options={WEEKEND_DISPLAY_OPTIONS}
 				onChange={handleWeekendDisplayChange}
@@ -102,9 +115,11 @@ export function WeekContentSection({ config, onUpdate }: ConfigSectionProps<Week
 			<RadioField
 				label="Hours"
 				description={
-					config.weekPageLines === 'hours' && config.weekendDisplay === 'reduced'
-						? 'Not drawn for Saturday and Sunday while they share a cell: there is no room.'
-						: undefined
+					config.weekPageLines !== 'hours'
+						? undefined
+						: config.weekendDisplay === 'reduced'
+							? HOURS_SHARED_WEEKEND_DESCRIPTION
+							: HOURS_DESCRIPTION
 				}
 				value={config.weekPageLines}
 				options={WEEK_PAGE_LINES_OPTIONS}

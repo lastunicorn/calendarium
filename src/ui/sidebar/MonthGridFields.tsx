@@ -4,6 +4,7 @@ import { WEEKEND_HIGHLIGHTS, type WeekendHighlight } from '../../core/weekend'
 import { CheckboxField } from '../fields/CheckboxField'
 import { type Option, optionsFrom } from '../fields/options'
 import { RadioField } from '../fields/RadioField'
+import { WEEK_NUMBER_DESCRIPTION } from './descriptions'
 import { MONTH_GRID_WEEKDAY_FORMAT_OPTIONS } from './fieldOptions'
 import type { ConfigSectionProps } from './Section'
 
@@ -52,6 +53,7 @@ export function MonthGridFields({
 			/>
 			<CheckboxField
 				label="Show week numbers"
+				description={WEEK_NUMBER_DESCRIPTION}
 				checked={config.showWeekNumbers}
 				onChange={handleShowWeekNumbersChange}
 			/>

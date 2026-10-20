@@ -7,6 +7,7 @@ import { HeaderIcon } from '../../components/icons'
 import { CheckboxField } from '../../fields/CheckboxField'
 import { optionsFrom } from '../../fields/options'
 import { RadioField } from '../../fields/RadioField'
+import { DAY_WEEK_NUMBER_DESCRIPTION } from '../../sidebar/descriptions'
 import { type ConfigSectionProps, Section } from '../../sidebar/Section'
 
 const DAY_PAGE_TITLE_OPTIONS = optionsFrom(DAY_PAGE_TITLES, {
@@ -45,6 +46,7 @@ export function HeaderSection({ config, onUpdate }: ConfigSectionProps<DayPerPag
 			/>
 			<CheckboxField
 				label="Show week number"
+				description={DAY_WEEK_NUMBER_DESCRIPTION}
 				checked={config.showHeaderWeek}
 				onChange={handleShowHeaderWeekChange}
 			/>

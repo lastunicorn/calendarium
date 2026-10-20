@@ -33,6 +33,11 @@ const SPINE_OPTIONS = optionsFrom(SPINES, {
 	top: 'Top (flip calendar)',
 })
 
+const SPINE_DESCRIPTION = [
+	'The bound edge of the first page.',
+	'Even pages swap the left and right margins with a left spine, the top and bottom ones with a top spine.',
+]
+
 /** The sheet of paper: size, orientation and margins, optionally mirrored around a spine on even pages. */
 export function PageSection({ config, onUpdate }: ConfigSectionProps<CommonConfig>) {
 	const { page } = config
@@ -79,13 +84,14 @@ export function PageSection({ config, onUpdate }: ConfigSectionProps<CommonConfi
 			/>
 			<CheckboxField
 				label="Use mirror margins"
+				description="For double-sided printing: even pages swap the margins on either side of the spine, so the inner margin stays on the bound edge."
 				checked={page.mirrorMargins}
 				onChange={handleMirrorMarginsChange}
 			/>
 			{page.mirrorMargins && (
 				<RadioField
 					label="Spine"
-					description="The bound edge of the first page; even pages swap the margins on either side of it."
+					description={SPINE_DESCRIPTION}
 					value={page.spine}
 					options={SPINE_OPTIONS}
 					onChange={handleSpineChange}
