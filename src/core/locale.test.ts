@@ -57,6 +57,19 @@ describe('weekdayNames', () => {
 		expect(weekdayNames('ro-RO', 1, 'narrow')).toEqual(['L', 'M', 'M', 'J', 'V', 'S', 'D'])
 	})
 
+	it('writes whole names in the full format', () => {
+		expect(weekdayNames('en-US', 1, 'full')).toEqual([
+			'Monday',
+			'Tuesday',
+			'Wednesday',
+			'Thursday',
+			'Friday',
+			'Saturday',
+			'Sunday',
+		])
+		expect(weekdayNames('ro-RO', 1, 'full')[0]).toBe('Luni')
+	})
+
 	it('strips abbreviation dots', () => {
 		expect(weekdayNames('ro-RO', 1)[0]).toBe('Lun')
 	})

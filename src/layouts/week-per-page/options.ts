@@ -24,7 +24,7 @@ export const HEADING_ALIGNMENTS = ['auto', 'left', 'center', 'right'] as const
 export type HeadingAlignment = (typeof HEADING_ALIGNMENTS)[number]
 
 export interface WeekPerPageConfig extends CommonConfig, HourSchedule {
-	/** How the weekday name in each day's cell is abbreviated. */
+	/** How the weekday name in each day's cell is written: in full or abbreviated. */
 	weekdayFormat: WeekdayFormat
 	/** Whether the weekend days of the year get the weekend color; other years' days stay gray. */
 	highlightWeekendDays: boolean

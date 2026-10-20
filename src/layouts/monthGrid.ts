@@ -1,11 +1,17 @@
 import type { CalendarMonth } from '../core/calendar'
-import { WEEKDAY_FORMATS, type WeekdayFormat } from '../core/locale'
+import type { WeekdayFormat } from '../core/locale'
 import { WEEKEND_HIGHLIGHTS, type WeekendHighlight } from '../core/weekend'
 import { isBoolean, oneOf, type Validators } from '../core/validation'
 
+/**
+ * The weekday formats a month grid's columns have room for: not `full`. The field keeps the
+ * `WeekdayFormat` type, as `weekdayFormat` has one type in every layout.
+ */
+export const MONTH_GRID_WEEKDAY_FORMATS = ['short', 'narrow'] as const satisfies WeekdayFormat[]
+
 /** The options of a month drawn as a grid of weeks, shared by the layouts that draw one. */
 export interface MonthGridOptions {
-	/** How the weekday names above the columns are abbreviated. */
+	/** How the weekday names above the columns are abbreviated, one of `MONTH_GRID_WEEKDAY_FORMATS`. */
 	weekdayFormat: WeekdayFormat
 	highlightWeekends: WeekendHighlight
 	/** ISO week numbers in a column before each week. */
@@ -22,7 +28,7 @@ export function monthGridDefaults(): MonthGridOptions {
 }
 
 export const MONTH_GRID_VALIDATORS: Validators<MonthGridOptions> = {
-	weekdayFormat: oneOf(WEEKDAY_FORMATS),
+	weekdayFormat: oneOf(MONTH_GRID_WEEKDAY_FORMATS),
 	highlightWeekends: oneOf(WEEKEND_HIGHLIGHTS),
 	showWeekNumbers: isBoolean,
 }

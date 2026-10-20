@@ -30,9 +30,9 @@ export const LOCALES = [
 ] as const
 export type Locale = (typeof LOCALES)[number]
 
-export const WEEKDAY_FORMATS = ['short', 'narrow'] as const
+export const WEEKDAY_FORMATS = ['full', 'short', 'narrow'] as const
 
-/** How weekday names are written: `short` = "Mon", `narrow` = "M". */
+/** How weekday names are written: `full` = "Monday", `short` = "Mon", `narrow` = "M". */
 export type WeekdayFormat = (typeof WEEKDAY_FORMATS)[number]
 
 export const HOUR_FORMATS = ['auto', '12h', '24h'] as const
@@ -163,7 +163,9 @@ export function weekdayNames(
 	weekStart: WeekStart,
 	weekdayFormat: WeekdayFormat = 'short',
 ): string[] {
-	const format = dateFormatter(locale, { weekday: weekdayFormat })
+	const format = dateFormatter(locale, {
+		weekday: weekdayFormat === 'full' ? 'long' : weekdayFormat,
+	})
 	// 2023-01-01 was a Sunday.
 	return Array.from({ length: 7 }, (_, index) =>
 		capitalize(

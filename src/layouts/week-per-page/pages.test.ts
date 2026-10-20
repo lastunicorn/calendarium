@@ -111,6 +111,8 @@ describe('planWeekPages', () => {
 		])
 		const narrow = plan(2026, { weekdayFormat: 'narrow' }).weeks[1]
 		expect(days(narrow)[0].weekday).toBe('M')
+		const full = plan(2026, { weekdayFormat: 'full' }).weeks[1]
+		expect(days(full)[0].weekday).toBe('Monday')
 	})
 
 	it('gives a schedule to each day of the year in a cell of its own', () => {

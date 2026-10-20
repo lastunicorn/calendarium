@@ -150,6 +150,23 @@ describe('parseConfig', () => {
 		expect(config).toEqual(defaultAppConfig())
 	})
 
+	it('keeps full weekday names on week pages only, not in a month grid', () => {
+		const stored = toStoredConfig(defaultAppConfig())
+		stored.layouts['week-per-page'] = {
+			...stored.layouts['week-per-page'],
+			weekdayFormat: 'full',
+		}
+		stored.layouts['month-per-page'] = {
+			...stored.layouts['month-per-page'],
+			weekdayFormat: 'full',
+		}
+		const { layouts } = parseConfig(stored)
+		expect(layouts['week-per-page'].weekdayFormat).toBe('full')
+		expect(layouts['month-per-page'].weekdayFormat).toBe(
+			defaultLayoutConfig('month-per-page').weekdayFormat,
+		)
+	})
+
 	it('ignores fields a layout does not have', () => {
 		const config = parseConfig({
 			version: CONFIG_VERSION,

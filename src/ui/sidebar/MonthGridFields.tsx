@@ -4,7 +4,7 @@ import { WEEKEND_HIGHLIGHTS, type WeekendHighlight } from '../../core/weekend'
 import { CheckboxField } from '../fields/CheckboxField'
 import { optionsFrom } from '../fields/options'
 import { RadioField } from '../fields/RadioField'
-import { WEEKDAY_FORMAT_OPTIONS } from './fieldOptions'
+import { MONTH_GRID_WEEKDAY_FORMAT_OPTIONS } from './fieldOptions'
 import type { ConfigSectionProps } from './Section'
 
 const WEEKEND_HIGHLIGHT_OPTIONS = optionsFrom(WEEKEND_HIGHLIGHTS, {
@@ -32,7 +32,7 @@ export function MonthGridFields({ config, onUpdate }: ConfigSectionProps<MonthGr
 			<RadioField
 				label="Weekday names"
 				value={config.weekdayFormat}
-				options={WEEKDAY_FORMAT_OPTIONS}
+				options={MONTH_GRID_WEEKDAY_FORMAT_OPTIONS}
 				onChange={handleWeekdayFormatChange}
 			/>
 			<RadioField
