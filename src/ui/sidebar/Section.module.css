@@ -9,7 +9,7 @@
 
 /* Collapsed sections stack their bands flush; an open one keeps room below its fields. */
 .open {
-	padding-bottom: 28px;
+	padding-bottom: 16px;
 }
 
 /* A band across the whole sidebar: the negative margins cancel the form's side padding. */
