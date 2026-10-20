@@ -52,12 +52,19 @@ export function ExportIcon() {
 	)
 }
 
-/** Counter-clockwise arrow: restores the default config. */
+/**
+ * A power symbol whose ring breaks into dashes on the upper right: restores the default config.
+ * Flat ends, so the narrow gaps between the dashes stay open.
+ */
 export function ResetIcon() {
 	return (
 		<Icon>
-			<path d="M3 12a9 9 0 1 0 3-6.7L3 8" />
-			<path d="M3 3v5h5" />
+			<g strokeLinecap="butt">
+				<path d="M12 2v9" />
+				<path d="M20 13a8 8 0 1 1-12-6.93" />
+				<path d="M16 6.07a8 8 0 0 1 1.95 1.58" />
+				<path d="M18.93 9a8 8 0 0 1 .9 2.34" />
+			</g>
 		</Icon>
 	)
 }

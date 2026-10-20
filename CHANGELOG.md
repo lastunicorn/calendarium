@@ -7,6 +7,7 @@ The features each release brought, newest first. Versions follow the app version
 ### Changed
 
 - The export, import and reset buttons sit in the layout section, under the layout they act on.
+- The reset button's icon is a power symbol with a dashed ring.
 
 ## 4.1.0 — 2026-10-20
 
