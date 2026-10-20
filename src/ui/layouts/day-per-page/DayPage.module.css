@@ -50,6 +50,40 @@
 	border-bottom: 0.2mm solid var(--color-rule-light);
 }
 
+/* Squares of fixed size (set inline): rows drawing the line below, columns the line right of each. */
+.squares {
+	position: relative;
+	flex: 1;
+	min-height: 0;
+	overflow: hidden;
+	border-top: 0.3mm solid var(--color-rule);
+	border-left: 0.2mm solid var(--color-rule-light);
+}
+
+.squareRows,
+.squareColumns {
+	position: absolute;
+	inset: 0;
+	display: grid;
+}
+
+.squareRows {
+	align-content: start;
+}
+
+.squareColumns {
+	grid-auto-flow: column;
+	justify-content: start;
+}
+
+.squareRow {
+	border-bottom: 0.2mm solid var(--color-rule-light);
+}
+
+.squareColumn {
+	border-right: 0.2mm solid var(--color-rule-light);
+}
+
 /* One row per hour, sharing the height left under the header. */
 .schedule {
 	flex: 1;

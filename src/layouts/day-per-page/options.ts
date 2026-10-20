@@ -4,8 +4,11 @@ import type { LayoutSpec } from '../LayoutSpec'
 import { MINI_MONTH_VALIDATORS, type MiniMonthOptions, miniMonthDefaults } from '../monthGrid'
 import { type HourSchedule, orderHours, SCHEDULE_VALIDATORS, scheduleDefaults } from '../schedule'
 
-/** What fills a `day-per-page` page under its header: an hourly schedule or plain ruled lines. */
-export const DAY_PAGE_LINES = ['hours', 'ruled'] as const
+/**
+ * What fills a `day-per-page` page under its header: an hourly schedule, plain ruled lines, or a
+ * grid of squares like a math notebook's.
+ */
+export const DAY_PAGE_LINES = ['hours', 'ruled', 'squares'] as const
 export type DayPageLines = (typeof DAY_PAGE_LINES)[number]
 
 /** What a `day-per-page` page's heading shows; the other one goes in the subheading. */

@@ -16,11 +16,12 @@ import { type ConfigSectionProps, Section } from '../../sidebar/Section'
 const DAY_PAGE_LINES_OPTIONS = optionsFrom(DAY_PAGE_LINES, {
 	hours: 'Hourly schedule',
 	ruled: 'Ruled lines',
+	squares: 'Squares',
 })
 
 /**
- * What fills a day's page: an hourly schedule and its hours, or ruled lines and their spacing, on
- * one page or two.
+ * What fills a day's page: an hourly schedule and its hours, ruled lines and their spacing, or
+ * squares, on one page or two.
  */
 export function DayContentSection({ config, onUpdate }: ConfigSectionProps<DayPerPageConfig>) {
 	function handleDayPageLinesChange(dayPageLines: DayPageLines) {
@@ -48,9 +49,10 @@ export function DayContentSection({ config, onUpdate }: ConfigSectionProps<DayPe
 				options={DAY_PAGE_LINES_OPTIONS}
 				onChange={handleDayPageLinesChange}
 			/>
-			{config.dayPageLines === 'hours' ? (
+			{config.dayPageLines === 'hours' && (
 				<ScheduleFields config={config} onUpdate={onUpdate} />
-			) : (
+			)}
+			{config.dayPageLines === 'ruled' && (
 				<NumberField
 					label="Line spacing (mm)"
 					description={`From ${MIN_RULED_LINE_SPACING} to ${MAX_RULED_LINE_SPACING} mm.`}

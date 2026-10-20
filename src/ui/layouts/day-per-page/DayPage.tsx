@@ -22,6 +22,24 @@ function DayLines({ fill }: DayLinesProps) {
 			</div>
 		)
 	}
+	if (fill.kind === 'squares') {
+		// A layer of rows drawing the horizontal lines over one of columns drawing the vertical
+		// ones: a few dozen elements a sheet rather than one per square.
+		return (
+			<div className={styles.squares}>
+				<div className={styles.squareRows} style={{ gridAutoRows: `${fill.size}mm` }}>
+					{Array.from({ length: fill.rows }, (_, index) => (
+						<div key={index} className={styles.squareRow} />
+					))}
+				</div>
+				<div className={styles.squareColumns} style={{ gridAutoColumns: `${fill.size}mm` }}>
+					{Array.from({ length: fill.columns }, (_, index) => (
+						<div key={index} className={styles.squareColumn} />
+					))}
+				</div>
+			</div>
+		)
+	}
 	return (
 		<div
 			className={styles.schedule}

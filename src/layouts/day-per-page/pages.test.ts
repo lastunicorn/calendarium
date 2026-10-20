@@ -105,6 +105,14 @@ describe('planDayPages', () => {
 			])
 		})
 
+		it('fill the page inside its margins with 5 mm squares, on every sheet', () => {
+			// A4 portrait with 12 mm margins: 186 by 273 mm, so 38 columns and 55 rows.
+			expect(plan(2026, { dayPageLines: 'squares', twoPagesPerDay: true })[0].fills).toEqual([
+				{ kind: 'squares', rows: 55, columns: 38, size: 5 },
+				{ kind: 'squares', rows: 55, columns: 38, size: 5 },
+			])
+		})
+
 		it('are the same for every day', () => {
 			const days = plan(2026)
 			expect(days[200].fills).toBe(days[0].fills)
