@@ -5,9 +5,11 @@ import {
 	type WeekendDisplay,
 } from '../../../layouts/week-per-page/cells'
 import {
+	isFooterHeight,
+	MAX_FOOTER_HEIGHT,
+	MIN_FOOTER_HEIGHT,
 	START_PAGES,
 	type StartPage,
-	WEEK_FOOTER_HEIGHT,
 	WEEK_PAGE_LINES,
 	type WeekPageLines,
 	type WeekPerPageConfig,
@@ -15,6 +17,7 @@ import {
 import type { WeekdayFormat } from '../../../core/locale'
 import { ContentIcon } from '../../components/icons'
 import { CheckboxField } from '../../fields/CheckboxField'
+import { NumberField } from '../../fields/NumberField'
 import { optionsFrom } from '../../fields/options'
 import { RadioField } from '../../fields/RadioField'
 import { WEEKDAY_FORMAT_OPTIONS } from '../../sidebar/fieldOptions'
@@ -49,7 +52,7 @@ const START_PAGE_OPTIONS = optionsFrom(START_PAGES, {
 const START_PAGE_DESCRIPTION =
 	'Printed double-sided, a week starting on an even page faces the next page, so each week’s two pages lie open side by side.'
 
-const FOOTER_DESCRIPTION = `An empty space ${WEEK_FOOTER_HEIGHT} mm tall under the days, on every page.`
+const FOOTER_DESCRIPTION = 'An empty space under the days, on every page.'
 
 const WEEK_PAGE_LINES_OPTIONS = optionsFrom(WEEK_PAGE_LINES, {
 	none: 'Off',
@@ -97,6 +100,10 @@ export function WeekContentSection({
 		onUpdate({ showFooter })
 	}
 
+	function handleFooterHeightChange(footerHeight: number) {
+		onUpdate({ footerHeight })
+	}
+
 	function handleReset() {
 		onUpdate(
 			defaultFields(defaults, [
@@ -111,6 +118,7 @@ export function WeekContentSection({
 				'firstHour',
 				'lastHour',
 				'showFooter',
+				'footerHeight',
 			]),
 		)
 	}
@@ -185,6 +193,18 @@ export function WeekContentSection({
 				checked={config.showFooter}
 				onChange={handleShowFooterChange}
 			/>
+			{config.showFooter && (
+				<NumberField
+					label="Footer height (mm)"
+					description={`Whole mm, from ${MIN_FOOTER_HEIGHT} to ${MAX_FOOTER_HEIGHT}.`}
+					value={config.footerHeight}
+					min={MIN_FOOTER_HEIGHT}
+					max={MAX_FOOTER_HEIGHT}
+					step={1}
+					isValid={isFooterHeight}
+					onChange={handleFooterHeightChange}
+				/>
+			)}
 		</Section>
 	)
 }

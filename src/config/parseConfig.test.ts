@@ -71,6 +71,7 @@ describe('parseConfig', () => {
 					startPage: 'even',
 					weekDayDirection: 'horizontal',
 					showFooter: true,
+					footerHeight: 42,
 					hourFormat: '12h',
 					firstHour: 8,
 					lastHour: 18,

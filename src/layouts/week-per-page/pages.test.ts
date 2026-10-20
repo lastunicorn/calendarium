@@ -102,7 +102,9 @@ describe('planWeekPages', () => {
 	it('keeps an empty footer under every week only when shown', () => {
 		expect(plan(2026).weeks.every((week) => week.footerHeight === undefined)).toBe(true)
 		expect(
-			plan(2026, { showFooter: true }).weeks.every((week) => week.footerHeight === 20),
+			plan(2026, { showFooter: true, footerHeight: 35 }).weeks.every(
+				(week) => week.footerHeight === 35,
+			),
 		).toBe(true)
 	})
 
