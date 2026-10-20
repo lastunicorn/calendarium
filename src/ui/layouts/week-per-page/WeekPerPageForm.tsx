@@ -1,6 +1,7 @@
 import type { MiniMonthOptions } from '../../../layouts/monthGrid'
 import type { WeekPerPageConfig } from '../../../layouts/week-per-page/options'
 import { CalendarSection } from '../../sidebar/CalendarSection'
+import { EventsSection } from '../../sidebar/EventsSection'
 import { MiniMonthSection } from '../../sidebar/MiniMonthSection'
 import { PageSection } from '../../sidebar/PageSection'
 import type { ConfigSectionProps } from '../../sidebar/Section'
@@ -19,6 +20,7 @@ export function WeekPerPageForm({ config, onUpdate }: ConfigSectionProps<WeekPer
 	return (
 		<>
 			<CalendarSection config={config} onUpdate={onUpdate} />
+			<EventsSection config={config} onUpdate={onUpdate} />
 			<HeaderSection config={config} onUpdate={onUpdate} />
 			<MiniMonthSection config={config.miniMonth} onUpdate={handleMiniMonthUpdate} />
 			<WeekContentSection config={config} onUpdate={onUpdate} />

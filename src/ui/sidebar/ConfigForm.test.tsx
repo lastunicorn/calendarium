@@ -32,6 +32,7 @@ describe('ConfigForm', () => {
 		expect(sectionTitles('year-per-page')).toEqual([
 			'Layout',
 			'Calendar',
+			'Events',
 			'Header',
 			'Content',
 			'Page',
@@ -42,6 +43,7 @@ describe('ConfigForm', () => {
 		expect(sectionTitles('month-per-page')).toEqual([
 			'Layout',
 			'Calendar',
+			'Events',
 			'Header',
 			'Content',
 			'Page',
@@ -52,6 +54,7 @@ describe('ConfigForm', () => {
 		expect(sectionTitles('week-per-page')).toEqual([
 			'Layout',
 			'Calendar',
+			'Events',
 			'Header',
 			'Mini calendar',
 			'Content',
@@ -63,6 +66,7 @@ describe('ConfigForm', () => {
 		expect(sectionTitles('day-per-page')).toEqual([
 			'Layout',
 			'Calendar',
+			'Events',
 			'Header',
 			'Mini calendar',
 			'Content',

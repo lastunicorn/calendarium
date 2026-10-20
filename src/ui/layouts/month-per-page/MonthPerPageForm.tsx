@@ -1,5 +1,6 @@
 import type { MonthPerPageConfig } from '../../../layouts/month-per-page/options'
 import { CalendarSection } from '../../sidebar/CalendarSection'
+import { EventsSection } from '../../sidebar/EventsSection'
 import { ContentSection } from '../../sidebar/ContentSection'
 import { WEEKDAY_FORMAT_OPTIONS } from '../../sidebar/fieldOptions'
 import { PageSection } from '../../sidebar/PageSection'
@@ -11,6 +12,7 @@ export function MonthPerPageForm({ config, onUpdate }: ConfigSectionProps<MonthP
 	return (
 		<>
 			<CalendarSection config={config} onUpdate={onUpdate} />
+			<EventsSection config={config} onUpdate={onUpdate} />
 			<HeaderSection config={config} onUpdate={onUpdate} />
 			<ContentSection
 				config={config}

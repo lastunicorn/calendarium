@@ -1,5 +1,6 @@
 import type { YearPerPageConfig } from '../../../layouts/year-per-page/options'
 import { CalendarSection } from '../../sidebar/CalendarSection'
+import { EventsSection } from '../../sidebar/EventsSection'
 import { ContentSection } from '../../sidebar/ContentSection'
 import { HeaderSection } from './HeaderSection'
 import { PageSection } from '../../sidebar/PageSection'
@@ -10,6 +11,7 @@ export function YearPerPageForm({ config, onUpdate }: ConfigSectionProps<YearPer
 	return (
 		<>
 			<CalendarSection config={config} onUpdate={onUpdate} />
+			<EventsSection config={config} onUpdate={onUpdate} />
 			<HeaderSection config={config} onUpdate={onUpdate} />
 			<ContentSection config={config} onUpdate={onUpdate} />
 			<PageSection config={config} onUpdate={onUpdate} />

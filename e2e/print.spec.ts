@@ -126,6 +126,7 @@ test('week-per-page fits its content with the mini calendar, on one page or two'
 
 test('year-per-page lists its events on a second page', async ({ page }) => {
 	await showLayout(page, 'year-per-page', YEAR)
+	await openSection(page, 'Events')
 	await page
 		.getByRole('textbox', { name: 'Events' })
 		.fill('2024-03-01 Trip\n0000-12-25 Christmas\n2025-01-01 Next year')

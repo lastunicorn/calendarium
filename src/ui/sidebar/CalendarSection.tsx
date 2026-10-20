@@ -1,12 +1,10 @@
 import type { CommonConfig } from '../../layouts/common'
 import { isYear, MAX_YEAR, MIN_YEAR } from '../../core/calendar'
-import { invalidEventLines } from '../../core/events'
 import { type Locale, LOCALES, type WeekStartSetting } from '../../core/locale'
 import { CalendarIcon } from '../components/icons'
 import { NumberField } from '../fields/NumberField'
 import { type Option, optionsFrom } from '../fields/options'
 import { SelectField } from '../fields/SelectField'
-import { TextAreaField } from '../fields/TextAreaField'
 import { type ConfigSectionProps, Section } from './Section'
 
 /** Week start options in panel order: the language's own day, then Monday to Sunday. */
@@ -55,23 +53,7 @@ const YEAR_DESCRIPTION = [
 	`${MIN_YEAR} is the first full year of the Gregorian calendar.`,
 ]
 
-const EVENTS_DESCRIPTION = [
-	'One event per line: its date as year-month-day, a space, then its name, e.g. 2026-04-05 Easter.',
-	'The year 0000 repeats an event every year, e.g. 0000-12-25 Christmas.',
-	'The month layout writes the names in the days’ cells, the week layout under the days’ labels and the day layout under the page’s heading. The year layout doesn’t show them.',
-]
-
-const EVENTS_PLACEHOLDER = '0000-01-01 New Year\n0000-12-25 Christmas\n2026-04-05 Easter'
-
-/** A warning naming the lines of `events` that aren't an event, or none when all are. */
-function eventsError(events: string): string | undefined {
-	const lines = invalidEventLines(events)
-	if (lines.length === 0) return undefined
-	const which = lines.length === 1 ? `Line ${lines[0]} is` : `Lines ${lines.join(', ')} are`
-	return `${which} not a date and a name (YYYY-MM-DD Name), so not printed.`
-}
-
-/** Which year the calendar shows, in which language, the day its weeks start on and its events. */
+/** Which year the calendar shows, in which language, and the day its weeks start on. */
 export function CalendarSection({ config, onUpdate }: ConfigSectionProps<CommonConfig>) {
 	function handleYearChange(year: number) {
 		onUpdate({ year })
@@ -83,10 +65,6 @@ export function CalendarSection({ config, onUpdate }: ConfigSectionProps<CommonC
 
 	function handleWeekStartChange(weekStart: WeekStartSetting) {
 		onUpdate({ weekStart })
-	}
-
-	function handleEventsChange(events: string) {
-		onUpdate({ events })
 	}
 
 	return (
@@ -111,14 +89,6 @@ export function CalendarSection({ config, onUpdate }: ConfigSectionProps<CommonC
 				value={config.weekStart}
 				options={WEEK_START_OPTIONS}
 				onChange={handleWeekStartChange}
-			/>
-			<TextAreaField
-				label="Events"
-				description={EVENTS_DESCRIPTION}
-				value={config.events}
-				placeholder={EVENTS_PLACEHOLDER}
-				error={eventsError(config.events)}
-				onChange={handleEventsChange}
 			/>
 		</Section>
 	)
