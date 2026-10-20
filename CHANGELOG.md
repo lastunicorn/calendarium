@@ -10,6 +10,7 @@ The features each release brought, newest first. Versions follow the app version
 
 ### Fixed
 
+- Year layout: without a title, the year is written in the calendar's language, e.g. "2026年" in Japanese, "2026 г." in Russian, in the heading and in the Title field's placeholder.
 - A browser in a language whose code starts like another's (Filipino, `fil`, and Finnish, `fi`) starts in its own language, and a Taiwanese browser in Traditional Chinese.
 
 ## 4.3.0 — 2026-10-21

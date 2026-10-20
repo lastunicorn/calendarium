@@ -130,6 +130,11 @@ export function monthNames(locale: string): string[] {
 	)
 }
 
+/** Localized year, e.g. "2026", "2026年", "2026 m.". */
+export function yearName(locale: string, year: number): string {
+	return dateFormatter(locale, { year: 'numeric' }).format(utcDate(year, 0, 1))
+}
+
 /** Localized month and year heading, e.g. "January 2026", "2026年1月". */
 export function monthYearName(locale: string, year: number, month: number): string {
 	const format = dateFormatter(locale, { month: 'long', year: 'numeric' })

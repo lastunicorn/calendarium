@@ -23,6 +23,7 @@ describe('planYearPage', () => {
 			subheading: 'Ours',
 		})
 		expect(plan({ title: '   ' }).heading).toBe('2026')
+		expect(plan({ title: '', locale: 'ja-JP' }).heading).toBe('2026年')
 	})
 
 	it('draws the 12 months, each 6 rows so they line up', () => {

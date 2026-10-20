@@ -1,5 +1,5 @@
 import { eventNames, eventsOfYear } from '../../core/events'
-import { dayMonthName, weekdayNames } from '../../core/locale'
+import { dayMonthName, weekdayNames, yearName } from '../../core/locale'
 import { PRINT_MESSAGES } from '../../core/messages'
 import type { CalendarModel } from '../common'
 import type { MiniMonthPlan } from '../monthGrid'
@@ -26,7 +26,7 @@ export interface EventListPage {
 
 /** The year's page, followed by the list of its events when it has any. */
 export interface YearPage {
-	/** The title, or the year when the title is empty. */
+	/** The title, or the year, e.g. "2026", "2026年", when the title is empty. */
 	heading: string
 	/** The subtitle; hidden when empty. */
 	subheading: string
@@ -42,7 +42,7 @@ export interface YearPage {
  */
 export function planYearPage(config: YearPerPageConfig, model: CalendarModel): YearPage {
 	const weekdays = weekdayNames(config.locale, model.weekStart, config.weekdayFormat)
-	const heading = config.title.trim() || String(config.year)
+	const heading = config.title.trim() || yearName(config.locale, config.year)
 	const events = eventsOfYear(model.events, config.year)
 	return {
 		heading,

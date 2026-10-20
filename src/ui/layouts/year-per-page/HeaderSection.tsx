@@ -1,3 +1,4 @@
+import { yearName } from '../../../core/locale'
 import type { YearPerPageConfig } from '../../../layouts/year-per-page/options'
 import { HeaderIcon } from '../../components/icons'
 import { TextField } from '../../fields/TextField'
@@ -27,7 +28,7 @@ export function HeaderSection({
 			<TextField
 				label="Title"
 				value={config.title}
-				placeholder={String(config.year)}
+				placeholder={yearName(config.locale, config.year)}
 				onChange={handleTitleChange}
 			/>
 			<TextField label="Subtitle" value={config.subtitle} onChange={handleSubtitleChange} />

@@ -14,6 +14,7 @@ import {
 	resolveWeekStart,
 	weekdayName,
 	weekdayNames,
+	yearName,
 } from './locale'
 
 describe('dateFormatter', () => {
@@ -35,6 +36,14 @@ describe('monthNames', () => {
 	it('writes Japanese month names', () => {
 		expect(monthNames('ja-JP')[0]).toBe('1月')
 		expect(monthNames('ja-JP')[11]).toBe('12月')
+	})
+})
+
+describe('yearName', () => {
+	it('writes the year in the locale', () => {
+		expect(yearName('en-US', 2026)).toBe('2026')
+		expect(yearName('ja-JP', 2026)).toBe('2026年')
+		expect(yearName('th-TH', 2026)).toBe('2026')
 	})
 })
 
