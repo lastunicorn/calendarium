@@ -104,7 +104,7 @@ export function HeaderIcon() {
 	)
 }
 
-/** Dots in a frame, a month grid's days: the content section. */
+/** Dots in a frame, a page's days: the content section. */
 export function ContentIcon() {
 	return (
 		<Icon>

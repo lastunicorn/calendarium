@@ -5,7 +5,7 @@ import { MiniMonthSection } from '../../sidebar/MiniMonthSection'
 import { PageSection } from '../../sidebar/PageSection'
 import type { ConfigSectionProps } from '../../sidebar/Section'
 import { HeaderSection } from './HeaderSection'
-import { WeekPageSection } from './WeekPageSection'
+import { WeekContentSection } from './WeekContentSection'
 
 /**
  * The `week-per-page` options, including its header, how each day is labeled and the weekend drawn,
@@ -21,7 +21,7 @@ export function WeekPerPageForm({ config, onUpdate }: ConfigSectionProps<WeekPer
 			<CalendarSection config={config} onUpdate={onUpdate} />
 			<HeaderSection config={config} onUpdate={onUpdate} />
 			<MiniMonthSection config={config.miniMonth} onUpdate={handleMiniMonthUpdate} />
-			<WeekPageSection config={config} onUpdate={onUpdate} />
+			<WeekContentSection config={config} onUpdate={onUpdate} />
 			<PageSection config={config} onUpdate={onUpdate} />
 		</>
 	)

@@ -103,7 +103,7 @@ test('day-per-page prints two pages per day when asked', async ({ page }) => {
 
 test('week-per-page prints two pages per week when asked', async ({ page }) => {
 	await showLayout(page, 'week-per-page', YEAR)
-	await openSection(page, 'Week page')
+	await openSection(page, 'Content')
 	await page.getByRole('checkbox', { name: 'Two pages per week' }).check()
 
 	const sizes = pdfPageSizes(await page.pdf({ preferCSSPageSize: true, printBackground: true }))
@@ -119,7 +119,7 @@ test('week-per-page fits its content with the mini calendar, on one page or two'
 	expect(await clippedPages(page), 'pages whose content is cut off').toEqual([])
 
 	await page.emulateMedia({ media: 'screen' })
-	await openSection(page, 'Week page')
+	await openSection(page, 'Content')
 	await page.getByRole('checkbox', { name: 'Two pages per week' }).check()
 	expect(await clippedPages(page), 'pages whose content is cut off').toEqual([])
 })

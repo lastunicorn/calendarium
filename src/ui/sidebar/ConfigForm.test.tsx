@@ -48,13 +48,13 @@ describe('ConfigForm', () => {
 		])
 	})
 
-	it('shows the week page and mini calendar options only on the week layout', () => {
+	it('shows the content and mini calendar options on the week layout', () => {
 		expect(sectionTitles('week-per-page')).toEqual([
 			'Layout',
 			'Calendar',
 			'Header',
 			'Mini calendar',
-			'Week page',
+			'Content',
 			'Page',
 		])
 	})

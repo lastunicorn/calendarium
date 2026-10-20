@@ -10,7 +10,7 @@ import {
 	type WeekPerPageConfig,
 } from '../../../layouts/week-per-page/options'
 import type { WeekdayFormat } from '../../../core/locale'
-import { DayPageIcon } from '../../components/icons'
+import { ContentIcon } from '../../components/icons'
 import { CheckboxField } from '../../fields/CheckboxField'
 import { optionsFrom } from '../../fields/options'
 import { RadioField } from '../../fields/RadioField'
@@ -39,7 +39,7 @@ const WEEK_PAGE_LINES_OPTIONS = optionsFrom(WEEK_PAGE_LINES, {
  * How a week's page (or two) is divided between its days, how each day is labeled,
  * and what fills its cell.
  */
-export function WeekPageSection({ config, onUpdate }: ConfigSectionProps<WeekPerPageConfig>) {
+export function WeekContentSection({ config, onUpdate }: ConfigSectionProps<WeekPerPageConfig>) {
 	function handleWeekdayFormatChange(weekdayFormat: WeekdayFormat) {
 		onUpdate({ weekdayFormat })
 	}
@@ -65,7 +65,7 @@ export function WeekPageSection({ config, onUpdate }: ConfigSectionProps<WeekPer
 	}
 
 	return (
-		<Section title="Week page" icon={<DayPageIcon />}>
+		<Section title="Content" icon={<ContentIcon />}>
 			<CheckboxField
 				label="Two pages per week"
 				checked={config.twoPagesPerWeek}
