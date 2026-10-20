@@ -3,7 +3,7 @@ import { NumberInput } from './NumberInput'
 
 interface NumberFieldProps {
 	label: string
-	/** A short note shown under the input. */
+	/** A short note opened in a balloon from an info button next to the label. */
 	description?: string
 	value: number
 	min: number
@@ -16,7 +16,7 @@ interface NumberFieldProps {
 export function NumberField({ label, description, ...inputProps }: NumberFieldProps) {
 	return (
 		<Field label={label} description={description}>
-			<NumberInput {...inputProps} />
+			{(control) => <NumberInput {...control} {...inputProps} />}
 		</Field>
 	)
 }

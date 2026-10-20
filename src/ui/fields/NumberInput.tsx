@@ -1,6 +1,8 @@
 import { type ChangeEvent, useState } from 'react'
 
 interface NumberInputProps {
+	id?: string
+	'aria-describedby'?: string
 	value: number
 	min: number
 	max: number
@@ -17,7 +19,17 @@ interface NumberInputProps {
  * cleared or hold an intermediate value without snapping back. Only valid numbers reach
  * `onChange`; leaving the field shows the committed value again.
  */
-export function NumberInput({ value, min, max, step, label, isValid, onChange }: NumberInputProps) {
+export function NumberInput({
+	id,
+	'aria-describedby': describedBy,
+	value,
+	min,
+	max,
+	step,
+	label,
+	isValid,
+	onChange,
+}: NumberInputProps) {
 	const [draft, setDraft] = useState(String(value))
 	const [shownValue, setShownValue] = useState(value)
 
@@ -43,11 +55,13 @@ export function NumberInput({ value, min, max, step, label, isValid, onChange }:
 
 	return (
 		<input
+			id={id}
 			type="number"
 			min={min}
 			max={max}
 			step={step}
 			aria-label={label}
+			aria-describedby={describedBy}
 			value={draft}
 			onChange={handleInputChange}
 			onBlur={handleInputBlur}

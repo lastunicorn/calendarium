@@ -4,6 +4,8 @@ import type { Option } from './options'
 
 interface SelectFieldProps<T extends string | number> {
 	label: string
+	/** A short note opened in a balloon from an info button next to the label. */
+	description?: string
 	value: T
 	options: readonly Option<T>[]
 	onChange: (value: T) => void
@@ -12,6 +14,7 @@ interface SelectFieldProps<T extends string | number> {
 /** A select whose options carry typed values, so `onChange` needs no cast from the DOM string. */
 export function SelectField<T extends string | number>({
 	label,
+	description,
 	value,
 	options,
 	onChange,
@@ -22,14 +25,16 @@ export function SelectField<T extends string | number>({
 	}
 
 	return (
-		<Field label={label}>
-			<select value={value} onChange={handleSelectChange}>
-				{options.map((option) => (
-					<option key={option.value} value={option.value}>
-						{option.label}
-					</option>
-				))}
-			</select>
+		<Field label={label} description={description}>
+			{(control) => (
+				<select {...control} value={value} onChange={handleSelectChange}>
+					{options.map((option) => (
+						<option key={option.value} value={option.value}>
+							{option.label}
+						</option>
+					))}
+				</select>
+			)}
 		</Field>
 	)
 }

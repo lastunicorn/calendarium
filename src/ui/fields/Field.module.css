@@ -4,24 +4,20 @@
 	gap: 4px;
 }
 
-.label {
+.labelRow {
 	display: flex;
-	flex-direction: column;
+	align-items: center;
 	gap: 4px;
+}
+
+.label {
 	font-size: 0.875rem;
 	font-weight: 600;
 }
 
-.label input,
-.label select {
+.field input,
+.field select {
 	padding: 6px 8px;
 	font: inherit;
-	font-weight: normal;
-}
-
-.description {
-	margin: 0;
-	font-size: 0.6875rem;
-	line-height: 1.4;
-	color: var(--color-text-faint);
+	font-size: 0.875rem;
 }
