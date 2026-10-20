@@ -25,6 +25,7 @@ The features each release brought, newest first. Versions follow the app version
 - The line above a day page's schedule, ruled lines or squares is drawn like their other lines, no longer darker.
 - The month layout writes weekday names in full by default.
 - Info buttons explain more options (mirror margins, week numbers, two pages per week or day, a hidden weekend), and their notes are clearer, split into short paragraphs.
+- The mini calendar on week and day pages is a little smaller.
 
 ## 4.1.0 — 2026-10-20
 

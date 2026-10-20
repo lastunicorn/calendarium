@@ -82,20 +82,20 @@
 
 /* Smaller text, for a mini month in the corner of a page. */
 .small .name {
-	margin-bottom: 1mm;
-	font-size: 10pt;
+	margin-bottom: 0.8mm;
+	font-size: 9pt;
 }
 
 .small .days {
-	font-size: 8.5pt;
+	font-size: 7.5pt;
 }
 
 .small .weekday {
-	font-size: 7pt;
+	font-size: 6.5pt;
 }
 
 .small .weekNumber {
-	font-size: 6.5pt;
+	font-size: 6pt;
 }
 
 @media print {

@@ -34,8 +34,8 @@
 	grid-row: 1;
 	grid-column: 2;
 	display: grid;
-	width: 44mm;
-	height: 32mm;
+	width: 40mm;
+	height: 29mm;
 }
 
 /* A header part one of a week's two pages leaves out, keeping its space so their cells line up. */
