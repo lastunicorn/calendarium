@@ -9,9 +9,10 @@ import { dateRangeName, hourNames, weekdayNames } from '../../core/locale'
 import { PRINT_MESSAGES } from '../../core/messages'
 import { isHighlightedWeekDay } from '../../core/weekend'
 import type { CalendarModel } from '../common'
+import type { HeadingAlign } from '../heading'
 import type { MiniMonthPlan } from '../monthGrid'
 import { splitWeekCells, stacksDays, type WeekCell, weekCells } from './cells'
-import type { HeadingAlignment, WeekPerPageConfig } from './options'
+import type { WeekPerPageConfig } from './options'
 
 /** One day as a week page draws it: the results of the layout's rules, not their inputs. */
 export interface WeekPageDay {
@@ -52,7 +53,7 @@ export interface WeekPages {
 	/** "Week 43", or empty without `showHeaderWeek`. */
 	subheading: string
 	/** Where the heading and subheading sit across the header row (`headingAlign`). */
-	headingAlign: Exclude<HeadingAlignment, 'auto'>
+	headingAlign: HeadingAlign
 	/** The month holding most of the week's days, the week framed; none when hidden. */
 	miniMonth?: MiniMonthPlan
 	/** Whether the days are stacked rows rather than columns side by side (`stacksDays`). */
@@ -77,7 +78,7 @@ export function headingAlign({
 	headingAlignment,
 	miniMonth,
 	twoPagesPerWeek,
-}: WeekPerPageConfig): Exclude<HeadingAlignment, 'auto'> {
+}: WeekPerPageConfig): HeadingAlign {
 	if (headingAlignment !== 'auto') return headingAlignment
 	return miniMonth.show || twoPagesPerWeek ? 'left' : 'center'
 }

@@ -43,7 +43,7 @@ describe('parseConfig', () => {
 			layout: 'month-per-page',
 			layouts: {
 				'year-per-page': { ...common, ...grid, title: 'Family', subtitle: 'Birthdays' },
-				'month-per-page': { ...common, ...grid, year: 2031 },
+				'month-per-page': { ...common, ...grid, year: 2031, monthHeadingAlignment: 'left' },
 				'week-per-page': {
 					...common,
 					year: 2033,

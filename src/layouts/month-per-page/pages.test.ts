@@ -23,6 +23,11 @@ describe('planMonthPages', () => {
 		expect(pages[0].heading).toBe('January 2026')
 	})
 
+	it('centers the heading unless told where to set it', () => {
+		expect(plan(2026)[0].headingAlign).toBe('center')
+		expect(plan(2026, { monthHeadingAlignment: 'right' })[3].headingAlign).toBe('right')
+	})
+
 	it('draws only the rows holding a day of the month', () => {
 		// February 2021 runs from Monday the 1st to Sunday the 28th; May 2021 spans six Monday weeks.
 		const pages = plan(2021)

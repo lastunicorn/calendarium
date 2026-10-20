@@ -20,7 +20,7 @@ function sectionTitles(layout: LayoutId): string[] {
 }
 
 describe('ConfigForm', () => {
-	it('shows the header options only on the year layout', () => {
+	it('shows the header and appearance options on the year layout', () => {
 		expect(sectionTitles('year-per-page')).toEqual([
 			'Layout',
 			'Calendar',
@@ -30,10 +30,11 @@ describe('ConfigForm', () => {
 		])
 	})
 
-	it('shows the shared sections only on the month layout', () => {
+	it('shows the header and appearance options on the month layout', () => {
 		expect(sectionTitles('month-per-page')).toEqual([
 			'Layout',
 			'Calendar',
+			'Header',
 			'Appearance',
 			'Page',
 		])

@@ -2,6 +2,7 @@ import { WEEKDAY_FORMATS, type WeekdayFormat } from '../../core/locale'
 import { margins } from '../../core/paper'
 import { isBoolean, oneOf } from '../../core/validation'
 import { COMMON_VALIDATORS, type CommonConfig, commonDefaults } from '../common'
+import { HEADING_ALIGNMENTS, type HeadingAlignment } from '../heading'
 import type { LayoutSpec } from '../LayoutSpec'
 import { MINI_MONTH_VALIDATORS, type MiniMonthOptions, miniMonthDefaults } from '../monthGrid'
 import { type HourSchedule, orderHours, SCHEDULE_VALIDATORS, scheduleDefaults } from '../schedule'
@@ -16,13 +17,6 @@ import {
 export const WEEK_PAGE_LINES = ['none', 'hours'] as const
 export type WeekPageLines = (typeof WEEK_PAGE_LINES)[number]
 
-/**
- * Where a `week-per-page` heading sits across its header row; `auto` sets it to the left beside the
- * mini month or over two pages, centered otherwise (`headingAlign`).
- */
-export const HEADING_ALIGNMENTS = ['auto', 'left', 'center', 'right'] as const
-export type HeadingAlignment = (typeof HEADING_ALIGNMENTS)[number]
-
 export interface WeekPerPageConfig extends CommonConfig, HourSchedule {
 	/** How the weekday name in each day's cell is written: in full or abbreviated. */
 	weekdayFormat: WeekdayFormat
@@ -30,7 +24,10 @@ export interface WeekPerPageConfig extends CommonConfig, HourSchedule {
 	highlightWeekendDays: boolean
 	/** Whether the heading shows the week's ISO number ("Week 1"). */
 	showHeaderWeek: boolean
-	/** Where the heading sits across the header row. */
+	/**
+	 * Where the heading sits across the header row; `auto` sets it to the left beside the mini
+	 * month or over two pages, centered otherwise (`headingAlign`).
+	 */
 	headingAlignment: HeadingAlignment
 	/** Whether Saturday and Sunday get a cell each, share one, or are left out. */
 	weekendDisplay: WeekendDisplay

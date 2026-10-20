@@ -2,6 +2,7 @@ import { type CalendarDay, visibleWeeks } from '../../core/calendar'
 import { monthYearName, weekdayNames } from '../../core/locale'
 import type { WeekendHighlight } from '../../core/weekend'
 import type { CalendarModel } from '../common'
+import type { HeadingAlign } from '../heading'
 import type { MonthPerPageConfig } from './options'
 
 /** A month drawn as a page of large writing cells: the props of the `MonthGrid` that draws it. */
@@ -20,6 +21,8 @@ export interface MonthPage {
 	key: number
 	/** E.g. "January 2026". */
 	heading: string
+	/** Where the heading sits above the grid. */
+	headingAlign: HeadingAlign
 	grid: MonthGridPlan
 }
 
@@ -29,6 +32,7 @@ export function planMonthPages(config: MonthPerPageConfig, model: CalendarModel)
 	return model.months.map((month) => ({
 		key: month.month,
 		heading: monthYearName(config.locale, config.year, month.month),
+		headingAlign: config.monthHeadingAlignment,
 		grid: {
 			weeks: visibleWeeks(month),
 			weekdays,

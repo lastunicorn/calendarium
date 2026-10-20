@@ -16,7 +16,7 @@ export function MonthPerPageLayout({ config }: MonthPerPageLayoutProps) {
 	return pages.map((page) => (
 		<Page key={page.key} setup={config.page}>
 			<div className={styles.layout}>
-				<CalendarHeader heading={page.heading} size="compact" />
+				<CalendarHeader heading={page.heading} size="compact" align={page.headingAlign} />
 				<MonthGrid {...page.grid} />
 			</div>
 		</Page>

@@ -1,9 +1,17 @@
 import { margins } from '../../core/paper'
+import { oneOf } from '../../core/validation'
 import { COMMON_VALIDATORS, type CommonConfig, commonDefaults } from '../common'
+import { HEADING_ALIGNS, type HeadingAlign } from '../heading'
 import { type LayoutSpec, unchanged } from '../LayoutSpec'
 import { MONTH_GRID_VALIDATORS, type MonthGridOptions, monthGridDefaults } from '../monthGrid'
 
-export interface MonthPerPageConfig extends CommonConfig, MonthGridOptions {}
+export interface MonthPerPageConfig extends CommonConfig, MonthGridOptions {
+	/**
+	 * Where the heading sits above the grid. Nothing is ever beside it, so unlike the week's
+	 * `headingAlignment` it has no `auto`.
+	 */
+	monthHeadingAlignment: HeadingAlign
+}
 
 export const MONTH_PER_PAGE_SPEC: LayoutSpec<MonthPerPageConfig> = {
 	// Large writing cells fit landscape, with room for three-letter weekdays.
@@ -15,9 +23,14 @@ export const MONTH_PER_PAGE_SPEC: LayoutSpec<MonthPerPageConfig> = {
 			weekdayFormat: 'short',
 			highlightWeekends: 'columns',
 			showWeekNumbers: true,
+			monthHeadingAlignment: 'center',
 			page: { ...common.page, orientation: 'landscape', margins: margins(10) },
 		}
 	},
-	validators: { ...COMMON_VALIDATORS, ...MONTH_GRID_VALIDATORS },
+	validators: {
+		...COMMON_VALIDATORS,
+		...MONTH_GRID_VALIDATORS,
+		monthHeadingAlignment: oneOf(HEADING_ALIGNS),
+	},
 	normalize: unchanged,
 }

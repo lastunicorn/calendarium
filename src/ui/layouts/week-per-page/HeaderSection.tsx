@@ -1,20 +1,10 @@
-import {
-	HEADING_ALIGNMENTS,
-	type HeadingAlignment,
-	type WeekPerPageConfig,
-} from '../../../layouts/week-per-page/options'
+import type { HeadingAlignment } from '../../../layouts/heading'
+import type { WeekPerPageConfig } from '../../../layouts/week-per-page/options'
 import { HeaderIcon } from '../../components/icons'
 import { CheckboxField } from '../../fields/CheckboxField'
-import { optionsFrom } from '../../fields/options'
 import { RadioField } from '../../fields/RadioField'
+import { HEADING_ALIGNMENT_OPTIONS } from '../../sidebar/fieldOptions'
 import { type ConfigSectionProps, Section } from '../../sidebar/Section'
-
-const HEADING_ALIGNMENT_OPTIONS = optionsFrom(HEADING_ALIGNMENTS, {
-	auto: 'Automatic',
-	left: 'Left',
-	center: 'Center',
-	right: 'Right',
-})
 
 /** What a week's heading shows besides the dates of its days, and where it sits. */
 export function HeaderSection({ config, onUpdate }: ConfigSectionProps<WeekPerPageConfig>) {
