@@ -28,7 +28,7 @@ const DAY_NUMBER_VERTICAL_ALIGNMENT_OPTIONS = optionsFrom(DAY_NUMBER_VERTICAL_AL
 
 /**
  * How the month's grid looks, with room for full weekday names, whether it shows other months'
- * days, and where the day numbers sit in their cells.
+ * days and its lines, and where the day numbers sit in their cells.
  */
 export function MonthContentSection({
 	config,
@@ -37,6 +37,10 @@ export function MonthContentSection({
 }: ConfigSectionProps<MonthPerPageConfig>) {
 	function handleShowAdjacentMonthDaysChange(showAdjacentMonthDays: boolean) {
 		onUpdate({ showAdjacentMonthDays })
+	}
+
+	function handleShowGridLinesChange(showGridLines: boolean) {
+		onUpdate({ showGridLines })
 	}
 
 	function handleDayNumberHorizontalAlignmentChange(
@@ -58,6 +62,7 @@ export function MonthContentSection({
 				'highlightWeekends',
 				'showWeekNumbers',
 				'showAdjacentMonthDays',
+				'showGridLines',
 				'dayNumberHorizontalAlignment',
 				'dayNumberVerticalAlignment',
 			]),
@@ -76,6 +81,12 @@ export function MonthContentSection({
 				checked={config.showAdjacentMonthDays}
 				onChange={handleShowAdjacentMonthDaysChange}
 				description="Show days of the previous and next month"
+			/>
+			<CheckboxField
+				label="Show grid lines"
+				checked={config.showGridLines}
+				onChange={handleShowGridLinesChange}
+				description="Rule the cells of the month's grid"
 			/>
 			<RadioField
 				label="Day number horizontal alignment"

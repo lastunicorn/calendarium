@@ -52,6 +52,11 @@ describe('planMonthPages', () => {
 		expect(plan(2026, { showAdjacentMonthDays: true })[0].grid.showAdjacentMonthDays).toBe(true)
 	})
 
+	it('rules the grid unless told not to', () => {
+		expect(plan(2026)[0].grid.showGridLines).toBe(true)
+		expect(plan(2026, { showGridLines: false })[0].grid.showGridLines).toBe(false)
+	})
+
 	it('sets the day numbers top left unless told where', () => {
 		expect(plan(2026)[0].grid).toMatchObject({
 			dayNumberHorizontalAlignment: 'left',

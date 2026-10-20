@@ -30,6 +30,7 @@ export function MonthGrid({
 	highlightWeekends,
 	showWeekNumbers,
 	showAdjacentMonthDays,
+	showGridLines,
 	dayNumberHorizontalAlignment,
 	dayNumberVerticalAlignment,
 }: MonthGridPlan) {
@@ -38,7 +39,11 @@ export function MonthGrid({
 
 	return (
 		<div
-			className={`${styles.grid} ${showWeekNumbers ? styles.withWeekNumbers : ''}`}
+			className={[
+				styles.grid,
+				showWeekNumbers ? styles.withWeekNumbers : '',
+				showGridLines ? '' : styles.withoutLines,
+			].join(' ')}
 			// Weeks share the height left under the weekday row; a month has 4–6 of them.
 			style={{ gridTemplateRows: `auto repeat(${weeks.length}, 1fr)` }}
 		>

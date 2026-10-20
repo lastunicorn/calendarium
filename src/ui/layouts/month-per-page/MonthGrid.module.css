@@ -20,6 +20,14 @@
 	border-bottom: 0.2mm solid var(--color-cell-border);
 }
 
+/* The lines stay, transparent, so the cells keep their size with or without them. */
+.withoutLines,
+.withoutLines .weekday,
+.withoutLines .weekNumber,
+.withoutLines .day {
+	border-color: transparent;
+}
+
 .weekday {
 	padding: 1.5mm 1mm;
 	overflow: hidden;

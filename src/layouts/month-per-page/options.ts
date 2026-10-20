@@ -51,6 +51,8 @@ export interface MonthPerPageConfig extends CommonConfig, MonthGridOptions {
 	monthHeadingAlignment: HeadingAlign
 	/** Whether the grid's grayed days of the previous and next month show their numbers. */
 	showAdjacentMonthDays: boolean
+	/** Whether the grid's cells are ruled, or only their contents are drawn. */
+	showGridLines: boolean
 	dayNumberHorizontalAlignment: DayNumberHorizontalAlignment
 	dayNumberVerticalAlignment: DayNumberVerticalAlignment
 	adjacentMonths: AdjacentMonthsOptions
@@ -68,6 +70,7 @@ export const MONTH_PER_PAGE_SPEC: LayoutSpec<MonthPerPageConfig> = {
 			highlightWeekends: 'columns',
 			monthHeadingAlignment: 'center',
 			showAdjacentMonthDays: false,
+			showGridLines: true,
 			dayNumberHorizontalAlignment: 'left',
 			dayNumberVerticalAlignment: 'top',
 			adjacentMonths: adjacentMonthsDefaults(),
@@ -82,6 +85,7 @@ export const MONTH_PER_PAGE_SPEC: LayoutSpec<MonthPerPageConfig> = {
 		title: isString,
 		monthHeadingAlignment: oneOf(HEADING_ALIGNS),
 		showAdjacentMonthDays: isBoolean,
+		showGridLines: isBoolean,
 		dayNumberHorizontalAlignment: oneOf(DAY_NUMBER_HORIZONTAL_ALIGNMENTS),
 		dayNumberVerticalAlignment: oneOf(DAY_NUMBER_VERTICAL_ALIGNMENTS),
 		adjacentMonths: ADJACENT_MONTHS_VALIDATORS,

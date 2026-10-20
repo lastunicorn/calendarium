@@ -51,6 +51,7 @@ describe('parseConfig', () => {
 					title: 'Office',
 					monthHeadingAlignment: 'left',
 					showAdjacentMonthDays: false,
+					showGridLines: false,
 					dayNumberHorizontalAlignment: 'center',
 					dayNumberVerticalAlignment: 'bottom',
 					adjacentMonths: { ...grid, showPreviousMonth: false, showNextMonth: true },
