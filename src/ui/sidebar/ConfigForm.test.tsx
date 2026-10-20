@@ -43,6 +43,7 @@ describe('ConfigForm', () => {
 		expect(sectionTitles('week-per-page')).toEqual([
 			'Layout',
 			'Calendar',
+			'Header',
 			'Week page',
 			'Mini calendar',
 			'Page',

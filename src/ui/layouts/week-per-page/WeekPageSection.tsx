@@ -36,14 +36,10 @@ const WEEK_PAGE_LINES_OPTIONS = optionsFrom(WEEK_PAGE_LINES, {
 })
 
 /**
- * How a week's page (or two) is headed and divided between its days, how each day is labeled,
+ * How a week's page (or two) is divided between its days, how each day is labeled,
  * and what fills its cell.
  */
 export function WeekPageSection({ config, onUpdate }: ConfigSectionProps<WeekPerPageConfig>) {
-	function handleShowHeaderWeekChange(showHeaderWeek: boolean) {
-		onUpdate({ showHeaderWeek })
-	}
-
 	function handleWeekdayFormatChange(weekdayFormat: WeekdayFormat) {
 		onUpdate({ weekdayFormat })
 	}
@@ -70,11 +66,6 @@ export function WeekPageSection({ config, onUpdate }: ConfigSectionProps<WeekPer
 
 	return (
 		<Section title="Week page" icon={<DayPageIcon />}>
-			<CheckboxField
-				label="Week number in header"
-				checked={config.showHeaderWeek}
-				onChange={handleShowHeaderWeekChange}
-			/>
 			<RadioField
 				label="Weekday names"
 				value={config.weekdayFormat}
