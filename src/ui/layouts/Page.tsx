@@ -3,8 +3,9 @@ import { pageDimensions, type PageSetup } from '../../core/paper'
 import styles from './Page.module.css'
 import { useOverflow } from './useOverflow'
 
-/** The inline style, with the side margins as custom properties the stylesheet can swap. */
-type PageStyle = CSSProperties & Record<'--margin-left' | '--margin-right', string>
+/** The inline style, with the margins as custom properties the stylesheet can swap. */
+type PageStyle = CSSProperties &
+	Record<'--margin-top' | '--margin-right' | '--margin-bottom' | '--margin-left', string>
 
 interface PageProps {
 	setup: PageSetup
@@ -14,7 +15,8 @@ interface PageProps {
 /**
  * One sheet of paper, sized in mm so the preview matches print; the margins become its padding.
  * Content that doesn't fit inside the margins would be cut off silently, so the preview marks it.
- * With mirrored margins, the stylesheet swaps the left and right margins of every even page.
+ * With mirrored margins, the stylesheet swaps the margins on either side of the spine (left and
+ * right, or top and bottom) of every even page.
  */
 export function Page({ setup, children }: PageProps) {
 	const ref = useRef<HTMLElement>(null)
@@ -24,17 +26,16 @@ export function Page({ setup, children }: PageProps) {
 	const style: PageStyle = {
 		width: `${width}mm`,
 		height: `${height}mm`,
-		paddingTop: `${top}mm`,
-		paddingBottom: `${bottom}mm`,
-		'--margin-left': `${left}mm`,
+		'--margin-top': `${top}mm`,
 		'--margin-right': `${right}mm`,
+		'--margin-bottom': `${bottom}mm`,
+		'--margin-left': `${left}mm`,
 	}
+	const className = setup.mirrorMargins
+		? `${styles.page} ${setup.spine === 'left' ? styles.mirroredSides : styles.mirroredEnds}`
+		: styles.page
 	return (
-		<section
-			ref={ref}
-			className={setup.mirrorMargins ? `${styles.page} ${styles.mirrored}` : styles.page}
-			style={style}
-		>
+		<section ref={ref} className={className} style={style}>
 			{children}
 			{overflows && (
 				<p className={styles.overflowBadge}>

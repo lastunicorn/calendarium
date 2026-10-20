@@ -59,4 +59,23 @@ describe('ConfigForm', () => {
 		])
 		expect(screen.queryByLabelText('Title')).toBeNull()
 	})
+
+	it('shows the spine only with mirrored margins', () => {
+		const config = defaultAppConfig()
+		const { rerender } = render(
+			<ConfigForm config={config} onSelectLayout={noop} onUpdate={noop} />,
+		)
+		expect(screen.queryByRole('group', { name: 'Spine' })).toBeNull()
+
+		const layout = config.layouts[config.layout]
+		const mirrored = {
+			...config,
+			layouts: {
+				...config.layouts,
+				[config.layout]: { ...layout, page: { ...layout.page, mirrorMargins: true } },
+			},
+		}
+		rerender(<ConfigForm config={mirrored} onSelectLayout={noop} onUpdate={noop} />)
+		expect(screen.getByRole('group', { name: 'Spine' })).not.toBeNull()
+	})
 })

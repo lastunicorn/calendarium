@@ -1,10 +1,9 @@
 /*
- * Width, height and top/bottom padding are set inline from the config; the side margins come as
- * `--margin-left` and `--margin-right`, so mirrored pages can swap them.
+ * Width and height are set inline from the config; the margins come as `--margin-top`,
+ * `--margin-right`, `--margin-bottom` and `--margin-left`, so mirrored pages can swap them.
  */
 .page {
-	padding-left: var(--margin-left);
-	padding-right: var(--margin-right);
+	padding: var(--margin-top) var(--margin-right) var(--margin-bottom) var(--margin-left);
 	/* Positions the overflow badge. */
 	position: relative;
 	flex-shrink: 0;
@@ -19,12 +18,18 @@
 }
 
 /*
- * Mirrored margins: every even page (the back of a double-sided sheet) swaps its side margins.
- * Pages are the only sections among their siblings, so `nth-of-type` counts pages.
+ * Mirrored margins: every even page (the back of a double-sided sheet) swaps the margins on
+ * either side of the spine: left and right for a spine on the left, top and bottom for one at the
+ * top. Pages are the only sections among their siblings, so `nth-of-type` counts pages.
  */
-.mirrored:nth-of-type(even) {
+.mirroredSides:nth-of-type(even) {
 	padding-left: var(--margin-right);
 	padding-right: var(--margin-left);
+}
+
+.mirroredEnds:nth-of-type(even) {
+	padding-top: var(--margin-bottom);
+	padding-bottom: var(--margin-top);
 }
 
 /*

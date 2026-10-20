@@ -5,6 +5,7 @@ import {
 	type MarginSide,
 	MAX_MARGIN,
 	type Orientation,
+	type Spine,
 } from '../../core/paper'
 import styles from './MarginsField.module.css'
 import { NumberInput } from './NumberInput'
@@ -46,20 +47,29 @@ interface MarginsFieldProps {
 	value: Margins
 	/** The shape of the page drawn between the inputs. */
 	orientation: Orientation
+	/** The bound edge, drawn on the page when the margins are mirrored. */
+	spine?: Spine
 	onChange: (margins: Margins) => void
 }
 
 /** The four page margins in mm, each input placed by its side of a drawn page. */
-export function MarginsField({ value, orientation, onChange }: MarginsFieldProps) {
+export function MarginsField({ value, orientation, spine, onChange }: MarginsFieldProps) {
 	function handleMarginChange(side: MarginSide, margin: number) {
 		onChange({ ...value, [side]: margin })
 	}
+
+	const pageClassName = `${styles.page} ${styles[orientation]}`
 
 	return (
 		<fieldset className={styles.margins}>
 			<legend>Margins (mm)</legend>
 			<div className={styles.layout}>
-				<div className={`${styles.page} ${styles[orientation]}`} aria-hidden="true">
+				<div
+					className={
+						spine ? `${pageClassName} ${styles[`${spine}Spine`]}` : pageClassName
+					}
+					aria-hidden="true"
+				>
 					<div className={styles.contentBox} />
 				</div>
 				{MARGIN_SIDES.map((side) => (

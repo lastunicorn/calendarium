@@ -41,6 +41,7 @@ export function commonDefaults(): CommonConfig {
 			orientation: 'portrait',
 			margins: margins(12),
 			mirrorMargins: false,
+			spine: 'left',
 		},
 	}
 }

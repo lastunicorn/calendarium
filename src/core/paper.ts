@@ -34,6 +34,14 @@ export type MarginSide = (typeof MARGIN_SIDES)[number]
 /** Blank space between the paper edge and the calendar, in mm per side. */
 export type Margins = Record<MarginSide, number>
 
+/**
+ * The edge of the first page that is bound, with mirrored margins: `left` for a book (the back
+ * of a sheet is bound on its right), `top` for a flip calendar (the back is bound at its bottom).
+ * A right or bottom spine would mirror the same margins, so they are not separate values.
+ */
+export const SPINES = ['left', 'top'] as const
+export type Spine = (typeof SPINES)[number]
+
 export const MAX_MARGIN = 50
 
 export function isMargin(value: unknown): value is number {
@@ -50,8 +58,13 @@ export interface PageSetup {
 	paperSize: PaperSize
 	orientation: Orientation
 	margins: Margins
-	/** Swaps the left and right margins on even pages, for double-sided printing and binding. */
+	/**
+	 * Swaps the margins on either side of the spine on even pages, for double-sided printing and
+	 * binding: left and right for a `left` spine, top and bottom for a `top` one.
+	 */
 	mirrorMargins: boolean
+	/** Where the pages are bound; only used with `mirrorMargins`. */
+	spine: Spine
 }
 
 /** Margins are checked per side, so one bad side keeps the others. */
@@ -66,6 +79,7 @@ export const PAGE_VALIDATORS: Validators<PageSetup> = {
 	paperSize: oneOf(PAPER_SIZES),
 	orientation: oneOf(ORIENTATIONS),
 	mirrorMargins: isBoolean,
+	spine: oneOf(SPINES),
 	margins: MARGIN_VALIDATORS,
 }
 

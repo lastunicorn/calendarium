@@ -30,6 +30,7 @@ describe('parseConfig', () => {
 			orientation: 'landscape',
 			margins: { top: 5, right: 12.5, bottom: 0, left: 50 },
 			mirrorMargins: true,
+			spine: 'top',
 		}
 		const common = {
 			year: 2030,

@@ -44,6 +44,15 @@
 	height: 56px;
 }
 
+/* The bound edge, with mirrored margins. */
+.leftSpine {
+	border-left: 3px solid var(--color-text-muted);
+}
+
+.topSpine {
+	border-top: 3px solid var(--color-text-muted);
+}
+
 .contentBox {
 	width: 100%;
 	height: 100%;
