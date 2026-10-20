@@ -94,7 +94,7 @@ for (const { layout, pages, width, height } of CASES) {
 
 test('day-per-page prints two pages per day when asked', async ({ page }) => {
 	await showLayout(page, 'day-per-page', YEAR)
-	await openSection(page, 'Day page')
+	await openSection(page, 'Content')
 	await page.getByRole('checkbox', { name: 'Two pages per day' }).check()
 
 	const sizes = pdfPageSizes(await page.pdf({ preferCSSPageSize: true, printBackground: true }))

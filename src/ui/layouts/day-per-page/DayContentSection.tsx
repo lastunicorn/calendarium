@@ -3,7 +3,7 @@ import {
 	type DayPageLines,
 	type DayPerPageConfig,
 } from '../../../layouts/day-per-page/options'
-import { DayPageIcon } from '../../components/icons'
+import { ContentIcon } from '../../components/icons'
 import { CheckboxField } from '../../fields/CheckboxField'
 import { optionsFrom } from '../../fields/options'
 import { RadioField } from '../../fields/RadioField'
@@ -16,7 +16,7 @@ const DAY_PAGE_LINES_OPTIONS = optionsFrom(DAY_PAGE_LINES, {
 })
 
 /** What fills a day's page: an hourly schedule and its hours, or ruled lines, on one page or two. */
-export function DayPageSection({ config, onUpdate }: ConfigSectionProps<DayPerPageConfig>) {
+export function DayContentSection({ config, onUpdate }: ConfigSectionProps<DayPerPageConfig>) {
 	function handleDayPageLinesChange(dayPageLines: DayPageLines) {
 		onUpdate({ dayPageLines })
 	}
@@ -26,7 +26,7 @@ export function DayPageSection({ config, onUpdate }: ConfigSectionProps<DayPerPa
 	}
 
 	return (
-		<Section title="Day page" icon={<DayPageIcon />}>
+		<Section title="Content" icon={<ContentIcon />}>
 			<RadioField
 				label="Fill"
 				value={config.dayPageLines}

@@ -59,13 +59,13 @@ describe('ConfigForm', () => {
 		])
 	})
 
-	it('shows the day page and mini calendar options only on the day layout', () => {
+	it('shows the content and mini calendar options on the day layout', () => {
 		expect(sectionTitles('day-per-page')).toEqual([
 			'Layout',
 			'Calendar',
 			'Header',
 			'Mini calendar',
-			'Day page',
+			'Content',
 			'Page',
 		])
 		expect(screen.queryByLabelText('Title')).toBeNull()
@@ -145,7 +145,7 @@ describe('ConfigForm', () => {
 			/>,
 		)
 		expect(screen.getByLabelText('Year')).not.toBeNull()
-		expect(screen.getByRole('button', { name: 'Day page' }).getAttribute('aria-expanded')).toBe(
+		expect(screen.getByRole('button', { name: 'Content' }).getAttribute('aria-expanded')).toBe(
 			'false',
 		)
 

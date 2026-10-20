@@ -126,16 +126,6 @@ export function PageIcon() {
 	)
 }
 
-/** A clock face: the day page section, with its hourly schedule. */
-export function DayPageIcon() {
-	return (
-		<Icon>
-			<circle cx="12" cy="12" r="9" />
-			<path d="M12 7v5l3 2" />
-		</Icon>
-	)
-}
-
 /** An "i" in a circle: opens a note about a field. */
 export function InfoIcon() {
 	return (
