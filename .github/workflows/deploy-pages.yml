@@ -20,7 +20,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          # Full history, so the commit can be checked against master.
+          # Full history and tags, so the commit can be checked against master
+          # and its release tag.
           fetch-depth: 0
 
       - name: Validate release
@@ -29,12 +30,23 @@ jobs:
           EVENT_NAME: ${{ github.event_name }}
           TAG_NAME: ${{ github.event.release.tag_name }}
         run: |
-          if [ "$EVENT_NAME" = "release" ]; then
-            stable_tag_pattern='^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$'
-            if ! [[ "$TAG_NAME" =~ $stable_tag_pattern ]]; then
-              echo "Expected a release tag in the format vMAJOR.MINOR.PATCH, got '$TAG_NAME'."
-              exit 1
-            fi
+          # Only a released version is deployed, manual runs included: the
+          # commit must carry the tag of the version in package.json.
+          expected_tag="v$(node -p "require('./package.json').version")"
+          stable_tag_pattern='^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$'
+          if ! [[ "$expected_tag" =~ $stable_tag_pattern ]]; then
+            echo "Expected package.json to hold a stable MAJOR.MINOR.PATCH version, got '$expected_tag'."
+            exit 1
+          fi
+
+          if [ "$EVENT_NAME" = "release" ] && [ "$TAG_NAME" != "$expected_tag" ]; then
+            echo "Release tag '$TAG_NAME' does not match the package.json version '$expected_tag'."
+            exit 1
+          fi
+
+          if ! git tag --points-at "$GITHUB_SHA" | grep -qx "$expected_tag"; then
+            echo "Commit $GITHUB_SHA is not tagged $expected_tag; publish a release instead of deploying an unreleased commit."
+            exit 1
           fi
 
           if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/master; then
