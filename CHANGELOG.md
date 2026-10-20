@@ -17,6 +17,7 @@ The features each release brought, newest first. Versions follow the app version
 - The reset button's icon is a power symbol with a dashed ring.
 - The year and month layouts' Appearance section and the week and day layouts' Week page and Day page sections are named Content.
 - Two pages per day comes first in the day layout's content section.
+- The line above a day page's schedule, ruled lines or squares is drawn like their other lines, no longer darker.
 
 ## 4.1.0 — 2026-10-20
 

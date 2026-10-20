@@ -36,14 +36,14 @@
  * depending on zoom and where it lands on the pixel grid.
  */
 
-/* Rows of fixed height (set inline), each drawing the line below it. */
+/* Rows of fixed height (set inline), each drawing the line below it, under a top line like theirs. */
 .ruled {
 	flex: 1;
 	display: grid;
 	align-content: start;
 	min-height: 0;
 	overflow: hidden;
-	border-top: 0.3mm solid var(--color-rule);
+	border-top: 0.2mm solid var(--color-rule-light);
 }
 
 .ruledLine {
@@ -56,7 +56,7 @@
 	flex: 1;
 	min-height: 0;
 	overflow: hidden;
-	border-top: 0.3mm solid var(--color-rule);
+	border-top: 0.2mm solid var(--color-rule-light);
 	border-left: 0.2mm solid var(--color-rule-light);
 }
 
@@ -89,7 +89,7 @@
 	flex: 1;
 	display: grid;
 	min-height: 0;
-	border-top: 0.3mm solid var(--color-rule);
+	border-top: 0.2mm solid var(--color-cell-border);
 }
 
 /* The label sits left of a writing area split by a light half-hour line. */
