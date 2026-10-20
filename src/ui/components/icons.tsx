@@ -116,6 +116,18 @@ export function AppearanceIcon() {
 	)
 }
 
+/** Twelve dots in a frame, the year's months: the year page's content section. */
+export function ContentIcon() {
+	return (
+		<Icon>
+			<rect x="3" y="3" width="18" height="18" rx="2" />
+			{[7.5, 10.5, 13.5, 16.5].map((cy) =>
+				[8, 12, 16].map((cx) => <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r="0.75" />),
+			)}
+		</Icon>
+	)
+}
+
 /** A sheet of paper with a folded corner: the page section. */
 export function PageIcon() {
 	return (

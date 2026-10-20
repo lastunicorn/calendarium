@@ -28,12 +28,12 @@ function sectionTitles(layout: LayoutId): string[] {
 }
 
 describe('ConfigForm', () => {
-	it('shows the header and appearance options on the year layout', () => {
+	it('shows the header and content options on the year layout', () => {
 		expect(sectionTitles('year-per-page')).toEqual([
 			'Layout',
 			'Calendar',
 			'Header',
-			'Appearance',
+			'Content',
 			'Page',
 		])
 	})

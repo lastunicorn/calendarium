@@ -1,5 +1,5 @@
 import type { MonthPerPageConfig } from '../../../layouts/month-per-page/options'
-import { AppearanceSection } from '../../sidebar/AppearanceSection'
+import { AppearanceSection } from './AppearanceSection'
 import { CalendarSection } from '../../sidebar/CalendarSection'
 import { WEEKDAY_FORMAT_OPTIONS } from '../../sidebar/fieldOptions'
 import { PageSection } from '../../sidebar/PageSection'
