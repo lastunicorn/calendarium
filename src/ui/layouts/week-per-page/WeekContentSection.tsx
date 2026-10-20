@@ -7,6 +7,7 @@ import {
 import {
 	START_PAGES,
 	type StartPage,
+	WEEK_FOOTER_HEIGHT,
 	WEEK_PAGE_LINES,
 	type WeekPageLines,
 	type WeekPerPageConfig,
@@ -47,6 +48,8 @@ const START_PAGE_OPTIONS = optionsFrom(START_PAGES, {
 
 const START_PAGE_DESCRIPTION =
 	'Printed double-sided, a week starting on an even page faces the next page, so each week’s two pages lie open side by side.'
+
+const FOOTER_DESCRIPTION = `An empty space ${WEEK_FOOTER_HEIGHT} mm tall under the days, on every page.`
 
 const WEEK_PAGE_LINES_OPTIONS = optionsFrom(WEEK_PAGE_LINES, {
 	none: 'Off',
@@ -90,6 +93,10 @@ export function WeekContentSection({
 		onUpdate({ startPage })
 	}
 
+	function handleShowFooterChange(showFooter: boolean) {
+		onUpdate({ showFooter })
+	}
+
 	function handleReset() {
 		onUpdate(
 			defaultFields(defaults, [
@@ -103,6 +110,7 @@ export function WeekContentSection({
 				'hourFormat',
 				'firstHour',
 				'lastHour',
+				'showFooter',
 			]),
 		)
 	}
@@ -171,6 +179,12 @@ export function WeekContentSection({
 			{config.weekPageLines === 'hours' && (
 				<ScheduleFields config={config} onUpdate={onUpdate} />
 			)}
+			<CheckboxField
+				label="Footer"
+				description={FOOTER_DESCRIPTION}
+				checked={config.showFooter}
+				onChange={handleShowFooterChange}
+			/>
 		</Section>
 	)
 }

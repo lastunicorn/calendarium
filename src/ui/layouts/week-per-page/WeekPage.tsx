@@ -175,6 +175,9 @@ export const WeekPage = memo(function WeekPage({ plan, hours, setup }: WeekPageP
 			<div className={styles.layout}>
 				{header(sheet.header)}
 				<WeekGrid sheet={sheet} hours={hours} stacked={stacked} />
+				{plan.footerHeight !== undefined && (
+					<div className={styles.footer} style={{ height: `${plan.footerHeight}mm` }} />
+				)}
 			</div>
 		</Page>
 	))

@@ -13,7 +13,7 @@ import type { CalendarModel } from '../common'
 import type { HeadingAlign } from '../heading'
 import type { MiniMonthPlan } from '../monthGrid'
 import { splitWeekCells, stacksDays, type WeekCell, weekCells } from './cells'
-import type { WeekPerPageConfig } from './options'
+import { WEEK_FOOTER_HEIGHT, type WeekPerPageConfig } from './options'
 
 /** One day as a week page draws it: the results of the layout's rules, not their inputs. */
 export interface WeekPageDay {
@@ -70,6 +70,8 @@ export interface WeekPages {
 	stacked: boolean
 	/** One sheet, or two with `twoPagesPerWeek` (`splitWeekCells`). */
 	sheets: WeekSheet[]
+	/** The height of the empty footer under each sheet's cells, in mm; none without `showFooter`. */
+	footerHeight?: number
 }
 
 export interface WeekPlan {
@@ -154,6 +156,7 @@ export function planWeekPages(config: WeekPerPageConfig, model: CalendarModel): 
 			sheets: twoPagesPerWeek
 				? [planSheet(firstCells, 'heading'), planSheet(secondCells, 'miniMonth')]
 				: [planSheet(cells, 'both')],
+			footerHeight: config.showFooter ? WEEK_FOOTER_HEIGHT : undefined,
 		}
 	}
 

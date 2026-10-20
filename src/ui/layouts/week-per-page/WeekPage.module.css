@@ -52,6 +52,11 @@
 	border-left: 0.2mm solid var(--color-cell-border);
 }
 
+/* Empty space under the cells, its height set inline. */
+.footer {
+	flex: none;
+}
+
 /* As many cells as the page has: 7, 6 with the weekend reduced, 5 without it. */
 .columns {
 	grid-auto-flow: column;

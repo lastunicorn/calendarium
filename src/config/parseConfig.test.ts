@@ -70,6 +70,7 @@ describe('parseConfig', () => {
 					twoPagesPerWeek: true,
 					startPage: 'even',
 					weekDayDirection: 'horizontal',
+					showFooter: true,
 					hourFormat: '12h',
 					firstHour: 8,
 					lastHour: 18,

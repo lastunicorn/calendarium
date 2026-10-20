@@ -99,6 +99,13 @@ describe('planWeekPages', () => {
 		expect(plan(2026, { startPage: 'even' }).blankFirstPage).toBe(true)
 	})
 
+	it('keeps an empty footer under every week only when shown', () => {
+		expect(plan(2026).weeks.every((week) => week.footerHeight === undefined)).toBe(true)
+		expect(
+			plan(2026, { showFooter: true }).weeks.every((week) => week.footerHeight === 20),
+		).toBe(true)
+	})
+
 	it('names the month where it changes and on each sheet’s first day', () => {
 		// January 26 – February 1, 2026.
 		const monthNames = (options: Partial<WeekPerPageConfig>) =>

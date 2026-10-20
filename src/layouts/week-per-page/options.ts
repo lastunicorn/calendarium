@@ -24,6 +24,9 @@ export type WeekPageLines = (typeof WEEK_PAGE_LINES)[number]
 export const START_PAGES = ['odd', 'even'] as const
 export type StartPage = (typeof START_PAGES)[number]
 
+/** The height of the empty footer under a week's cells, in mm, when `showFooter` is set. */
+export const WEEK_FOOTER_HEIGHT = 20
+
 export interface WeekPerPageConfig extends CommonConfig, HourSchedule {
 	/** How the weekday name in each day's cell is written: in full or abbreviated. */
 	weekdayFormat: WeekdayFormat
@@ -55,6 +58,8 @@ export interface WeekPerPageConfig extends CommonConfig, HourSchedule {
 	startPage: StartPage
 	/** Whether the days are columns or rows (`stacksDays`). */
 	weekDayDirection: WeekDayDirection
+	/** Whether each sheet keeps an empty footer, `WEEK_FOOTER_HEIGHT` mm tall, under its cells. */
+	showFooter: boolean
 	/** The week's month (`weekMonth`), drawn small beside the heading with the week marked. */
 	miniMonth: MiniMonthOptions
 }
@@ -76,6 +81,7 @@ export const WEEK_PER_PAGE_SPEC: LayoutSpec<WeekPerPageConfig> = {
 			twoPagesPerWeek: false,
 			startPage: 'odd',
 			weekDayDirection: 'auto',
+			showFooter: false,
 			...scheduleDefaults(),
 			miniMonth: miniMonthDefaults(),
 			page: { ...common.page, orientation: 'landscape', margins: margins(10) },
@@ -93,6 +99,7 @@ export const WEEK_PER_PAGE_SPEC: LayoutSpec<WeekPerPageConfig> = {
 		twoPagesPerWeek: isBoolean,
 		startPage: oneOf(START_PAGES),
 		weekDayDirection: oneOf(WEEK_DAY_DIRECTIONS),
+		showFooter: isBoolean,
 		...SCHEDULE_VALIDATORS,
 		miniMonth: MINI_MONTH_VALIDATORS,
 	},
