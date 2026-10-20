@@ -1,6 +1,7 @@
 import { type ReactNode, useId } from 'react'
 import styles from './Field.module.css'
 import { InfoBalloon, InfoButton } from './Info'
+import type { Description } from './description'
 
 /** What a field's control spreads onto itself: its id, which the label points at, and its description. */
 export interface FieldControlProps {
@@ -11,7 +12,7 @@ export interface FieldControlProps {
 interface FieldProps {
 	label: string
 	/** A short note opened in a balloon from an info button next to the label. */
-	description?: string
+	description?: Description
 	/** Renders the form control, labelled by `label`, given the props tying it to the label. */
 	children: (control: FieldControlProps) => ReactNode
 }

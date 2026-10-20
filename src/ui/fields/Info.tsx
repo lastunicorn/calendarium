@@ -1,5 +1,6 @@
 import { type ToggleEvent, useEffect, useRef, useState } from 'react'
 import { InfoIcon } from '../components/icons'
+import { type Description, descriptionParagraphs } from './description'
 import styles from './Info.module.css'
 
 interface InfoButtonProps {
@@ -31,7 +32,8 @@ const ANCHOR_GAP = 8
 
 interface InfoBalloonProps {
 	id: string
-	children: string
+	/** What it says, each paragraph in its own `<p>`. */
+	children: Description
 }
 
 /**
@@ -83,7 +85,11 @@ export function InfoBalloon({ id, children }: InfoBalloonProps) {
 			className={styles.balloon}
 			onToggle={handleBalloonToggle}
 		>
-			{children}
+			{descriptionParagraphs(children).map((paragraph, index) => (
+				<p key={index} className={styles.paragraph}>
+					{paragraph}
+				</p>
+			))}
 		</div>
 	)
 }

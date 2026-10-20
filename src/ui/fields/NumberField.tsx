@@ -1,10 +1,11 @@
 import { Field } from './Field'
 import { NumberInput } from './NumberInput'
+import type { Description } from './description'
 
 interface NumberFieldProps {
 	label: string
 	/** A short note opened in a balloon from an info button next to the label. */
-	description?: string
+	description?: Description
 	value: number
 	min: number
 	max: number

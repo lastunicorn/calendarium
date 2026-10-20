@@ -36,6 +36,14 @@
 	box-shadow: 0 2px 8px var(--color-page-shadow);
 }
 
+.paragraph {
+	margin: 0;
+}
+
+.paragraph + .paragraph {
+	margin-top: 6px;
+}
+
 .balloon::before {
 	content: '';
 	position: absolute;

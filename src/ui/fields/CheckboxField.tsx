@@ -1,11 +1,12 @@
 import { type ChangeEvent, useId } from 'react'
 import styles from './CheckboxField.module.css'
 import { InfoBalloon, InfoButton } from './Info'
+import type { Description } from './description'
 
 interface CheckboxFieldProps {
 	label: string
 	/** A short note opened in a balloon from an info button next to the label. */
-	description?: string
+	description?: Description
 	checked: boolean
 	onChange: (checked: boolean) => void
 }

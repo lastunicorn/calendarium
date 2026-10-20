@@ -1,10 +1,11 @@
 import type { ChangeEvent } from 'react'
 import { Field } from './Field'
+import type { Description } from './description'
 
 interface TextFieldProps {
 	label: string
 	/** A short note opened in a balloon from an info button next to the label. */
-	description?: string
+	description?: Description
 	value: string
 	placeholder?: string
 	onChange: (value: string) => void

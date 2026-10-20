@@ -58,6 +58,21 @@ describe('field descriptions', () => {
 		expectBalloon('Show', screen.getByRole('checkbox', { name: 'Show' }))
 	})
 
+	it('show each paragraph of a longer description on its own', () => {
+		render(
+			<TextField
+				label="Title"
+				description={['First note.', 'Second note.']}
+				value=""
+				onChange={noop}
+			/>,
+		)
+		const button = screen.getByRole('button', { name: 'About Title' })
+		const balloon = document.getElementById(button.getAttribute('popovertarget')!)!
+		const paragraphs = [...balloon.querySelectorAll('p')].map((p) => p.textContent)
+		expect(paragraphs).toEqual(['First note.', 'Second note.'])
+	})
+
 	it('leave out the info button without a description', () => {
 		render(
 			<>

@@ -2,11 +2,12 @@ import { type ChangeEvent, useId } from 'react'
 import { InfoBalloon, InfoButton } from './Info'
 import styles from './RadioField.module.css'
 import type { Option } from './options'
+import type { Description } from './description'
 
 interface RadioFieldProps<T extends string | number> {
 	label: string
 	/** A short note opened in a balloon from an info button next to the label. */
-	description?: string
+	description?: Description
 	value: T
 	options: readonly Option<T>[]
 	onChange: (value: T) => void

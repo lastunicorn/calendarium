@@ -1,11 +1,12 @@
 import type { ChangeEvent } from 'react'
 import { Field } from './Field'
 import type { Option } from './options'
+import type { Description } from './description'
 
 interface SelectFieldProps<T extends string | number> {
 	label: string
 	/** A short note opened in a balloon from an info button next to the label. */
-	description?: string
+	description?: Description
 	value: T
 	options: readonly Option<T>[]
 	onChange: (value: T) => void
