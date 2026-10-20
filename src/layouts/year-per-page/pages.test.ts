@@ -44,4 +44,13 @@ describe('planYearPage', () => {
 		expect(months.every((month) => month.month.weeks.length === 6)).toBe(true)
 		expect(months[0].markedDay).toBeUndefined()
 	})
+
+	it('circles the days with an event, on their date or every year', () => {
+		const { months } = plan({
+			events: '2026-01-05 Trip\n0000-01-20 Birthday\n2027-01-07 Next year\n2026-02-01 Feb',
+		})
+		expect(months[0].eventDays).toEqual([5, 20])
+		expect(months[1].eventDays).toEqual([1])
+		expect(months[2].eventDays).toEqual([])
+	})
 })

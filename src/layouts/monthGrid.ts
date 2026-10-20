@@ -62,4 +62,6 @@ export interface MiniMonthPlan {
 	markedDay?: number
 	/** Key of any day of the week to frame as a row, e.g. the week a page is about. */
 	markedWeek?: string
+	/** Days of the month that have an event, each circled. */
+	eventDays?: number[]
 }

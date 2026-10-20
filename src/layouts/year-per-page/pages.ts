@@ -1,3 +1,4 @@
+import { eventNames } from '../../core/events'
 import { weekdayNames } from '../../core/locale'
 import type { CalendarModel } from '../common'
 import type { MiniMonthPlan } from '../monthGrid'
@@ -9,11 +10,11 @@ export interface YearPage {
 	heading: string
 	/** The subtitle; hidden when empty. */
 	subheading: string
-	/** The 12 months, each 6 rows so they line up. */
+	/** The 12 months, each 6 rows so they line up, their days with an event circled. */
 	months: MiniMonthPlan[]
 }
 
-/** The whole year on one page: a heading above a grid of 12 small months. */
+/** The whole year on one page: a heading above a grid of 12 small months, events circled. */
 export function planYearPage(config: YearPerPageConfig, model: CalendarModel): YearPage {
 	const weekdays = weekdayNames(config.locale, model.weekStart, config.weekdayFormat)
 	return {
@@ -25,6 +26,10 @@ export function planYearPage(config: YearPerPageConfig, model: CalendarModel): Y
 			weekdays,
 			highlightWeekends: config.highlightWeekends,
 			showWeekNumbers: config.showWeekNumbers,
+			eventDays: month.weeks
+				.flat()
+				.filter((day) => day.inMonth && eventNames(model.events, day).length > 0)
+				.map((day) => day.day),
 		})),
 	}
 }

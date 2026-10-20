@@ -18,6 +18,7 @@ export function MiniMonth({
 	showWeekNumbers,
 	markedDay,
 	markedWeek,
+	eventDays = [],
 	size = 'normal',
 }: MiniMonthProps) {
 	const weekendColumns = month.weeks[0].map((day) => isHighlightedColumn(day, highlightWeekends))
@@ -62,7 +63,12 @@ export function MiniMonth({
 											: '',
 									].join(' ')}
 								>
-									{day.inMonth ? day.day : ''}
+									{day.inMonth &&
+										(eventDays.includes(day.day) ? (
+											<span className={styles.event}>{day.day}</span>
+										) : (
+											day.day
+										))}
 								</div>
 							))}
 						</Fragment>
