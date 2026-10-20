@@ -29,6 +29,20 @@ export function isRuledLineSpacing(value: unknown): value is number {
 	)
 }
 
+/** Bounds of the side of a square in the `squares` fill, in mm. */
+export const MIN_SQUARE_SIZE = 3
+export const MAX_SQUARE_SIZE = 10
+
+/** The side of a square, in mm, from `MIN_SQUARE_SIZE` to `MAX_SQUARE_SIZE`. */
+export function isSquareSize(value: unknown): value is number {
+	return (
+		typeof value === 'number' &&
+		Number.isFinite(value) &&
+		value >= MIN_SQUARE_SIZE &&
+		value <= MAX_SQUARE_SIZE
+	)
+}
+
 export interface DayPerPageConfig extends CommonConfig, HourSchedule {
 	/** Whether the heading is the weekday ("Thursday") or the date ("1 January 2026"). */
 	dayPageTitle: DayPageTitle
@@ -36,6 +50,8 @@ export interface DayPerPageConfig extends CommonConfig, HourSchedule {
 	dayPageLines: DayPageLines
 	/** The distance between ruled lines, in mm; only used when `dayPageLines` is `ruled`. */
 	ruledLineSpacing: number
+	/** The side of a square, in mm; only used when `dayPageLines` is `squares`. */
+	squareSize: number
 	/**
 	 * Whether each day takes two pages: the second, without a header, continues the ruled lines or
 	 * holds the second half of the schedule's hours.
@@ -58,6 +74,8 @@ export const DAY_PER_PAGE_SPEC: LayoutSpec<DayPerPageConfig> = {
 		dayPageTitle: 'weekday',
 		dayPageLines: 'hours',
 		ruledLineSpacing: 8,
+		// A math notebook's squares.
+		squareSize: 5,
 		twoPagesPerDay: false,
 		...scheduleDefaults(),
 		highlightWeekendDays: true,
@@ -70,6 +88,7 @@ export const DAY_PER_PAGE_SPEC: LayoutSpec<DayPerPageConfig> = {
 		dayPageTitle: oneOf(DAY_PAGE_TITLES),
 		dayPageLines: oneOf(DAY_PAGE_LINES),
 		ruledLineSpacing: isRuledLineSpacing,
+		squareSize: isSquareSize,
 		twoPagesPerDay: isBoolean,
 		...SCHEDULE_VALIDATORS,
 		highlightWeekendDays: isBoolean,

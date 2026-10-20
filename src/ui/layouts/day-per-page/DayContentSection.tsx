@@ -3,7 +3,9 @@ import {
 	type DayPageLines,
 	type DayPerPageConfig,
 	MAX_RULED_LINE_SPACING,
+	MAX_SQUARE_SIZE,
 	MIN_RULED_LINE_SPACING,
+	MIN_SQUARE_SIZE,
 } from '../../../layouts/day-per-page/options'
 import { ContentIcon } from '../../components/icons'
 import { CheckboxField } from '../../fields/CheckboxField'
@@ -21,7 +23,7 @@ const DAY_PAGE_LINES_OPTIONS = optionsFrom(DAY_PAGE_LINES, {
 
 /**
  * What fills a day's page: an hourly schedule and its hours, ruled lines and their spacing, or
- * squares, on one page or two.
+ * squares and their size, on one page or two.
  */
 export function DayContentSection({ config, onUpdate }: ConfigSectionProps<DayPerPageConfig>) {
 	function handleDayPageLinesChange(dayPageLines: DayPageLines) {
@@ -30,6 +32,10 @@ export function DayContentSection({ config, onUpdate }: ConfigSectionProps<DayPe
 
 	function handleRuledLineSpacingChange(ruledLineSpacing: number) {
 		onUpdate({ ruledLineSpacing })
+	}
+
+	function handleSquareSizeChange(squareSize: number) {
+		onUpdate({ squareSize })
 	}
 
 	function handleTwoPagesPerDayChange(twoPagesPerDay: boolean) {
@@ -61,6 +67,17 @@ export function DayContentSection({ config, onUpdate }: ConfigSectionProps<DayPe
 					max={MAX_RULED_LINE_SPACING}
 					step={0.5}
 					onChange={handleRuledLineSpacingChange}
+				/>
+			)}
+			{config.dayPageLines === 'squares' && (
+				<NumberField
+					label="Square size (mm)"
+					description={`From ${MIN_SQUARE_SIZE} to ${MAX_SQUARE_SIZE} mm.`}
+					value={config.squareSize}
+					min={MIN_SQUARE_SIZE}
+					max={MAX_SQUARE_SIZE}
+					step={0.5}
+					onChange={handleSquareSizeChange}
 				/>
 			)}
 		</Section>

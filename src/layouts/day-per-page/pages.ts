@@ -6,9 +6,6 @@ import type { CalendarModel } from '../common'
 import type { MiniMonthPlan } from '../monthGrid'
 import type { DayPerPageConfig } from './options'
 
-/** The side of a square in the `squares` fill, in mm: a math notebook's. */
-const SQUARE_SIZE = 5
-
 /** What fills a day's sheet under its header, or all of its second sheet. */
 export type DayFill =
 	/** One row per hour, labeled. */
@@ -38,7 +35,8 @@ export interface DayPages {
 /**
  * The fills of every day's sheets, the same for every day. Ruled lines, `ruledLineSpacing` apart, fill the page inside its
  * margins (the header takes some of that height, and the ruled area clips the lines that don't
- * fit); over two sheets they continue. Squares fill it the same way, across and down. The hours are split in half over two sheets, the first
+ * fit); over two sheets they continue. Squares, `squareSize` a side, fill it the same way, across and
+ * down. The hours are split in half over two sheets, the first
  * taking the extra hour of an odd count.
  */
 function planFills(config: DayPerPageConfig): DayFill[] {
@@ -51,11 +49,12 @@ function planFills(config: DayPerPageConfig): DayFill[] {
 	}
 	if (config.dayPageLines === 'squares') {
 		const { width, height } = contentBox(config.page)
+		const size = config.squareSize
 		const fill: DayFill = {
 			kind: 'squares',
-			rows: Math.ceil(height / SQUARE_SIZE),
-			columns: Math.ceil(width / SQUARE_SIZE),
-			size: SQUARE_SIZE,
+			rows: Math.ceil(height / size),
+			columns: Math.ceil(width / size),
+			size,
 		}
 		return Array.from({ length: sheets }, () => fill)
 	}

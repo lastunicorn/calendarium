@@ -113,6 +113,13 @@ describe('planDayPages', () => {
 			])
 		})
 
+		it('draw the squares as large as asked', () => {
+			// 186 by 273 mm: 24 columns and 35 rows of 8 mm squares.
+			expect(plan(2026, { dayPageLines: 'squares', squareSize: 8 })[0].fills).toEqual([
+				{ kind: 'squares', rows: 35, columns: 24, size: 8 },
+			])
+		})
+
 		it('are the same for every day', () => {
 			const days = plan(2026)
 			expect(days[200].fills).toBe(days[0].fills)
