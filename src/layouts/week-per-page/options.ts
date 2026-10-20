@@ -24,6 +24,20 @@ export type WeekPageLines = (typeof WEEK_PAGE_LINES)[number]
 export const START_PAGES = ['odd', 'even'] as const
 export type StartPage = (typeof START_PAGES)[number]
 
+/** Bounds of the heading's font size, in pt. */
+export const MIN_HEADING_FONT_SIZE = 12
+export const MAX_HEADING_FONT_SIZE = 48
+
+/** A heading font size, in pt, from `MIN_HEADING_FONT_SIZE` to `MAX_HEADING_FONT_SIZE`. */
+export function isHeadingFontSize(value: unknown): value is number {
+	return (
+		typeof value === 'number' &&
+		Number.isFinite(value) &&
+		value >= MIN_HEADING_FONT_SIZE &&
+		value <= MAX_HEADING_FONT_SIZE
+	)
+}
+
 export interface WeekPerPageConfig extends CommonConfig, HourSchedule {
 	/** How the weekday name in each day's cell is written: in full or abbreviated. */
 	weekdayFormat: WeekdayFormat
@@ -36,6 +50,8 @@ export interface WeekPerPageConfig extends CommonConfig, HourSchedule {
 	 * month or over two pages, centered otherwise (`headingAlign`).
 	 */
 	headingAlignment: HeadingAlignment
+	/** The heading's font size, in pt; the subheading keeps its own. */
+	headingFontSize: number
 	/** Whether Saturday and Sunday get a cell each, share one, or are left out. */
 	weekendDisplay: WeekendDisplay
 	/**
@@ -68,6 +84,7 @@ export const WEEK_PER_PAGE_SPEC: LayoutSpec<WeekPerPageConfig> = {
 			highlightWeekendDays: true,
 			showHeaderWeek: true,
 			headingAlignment: 'auto',
+			headingFontSize: 20,
 			weekendDisplay: 'reduced',
 			weekPageLines: 'hours',
 			twoPagesPerWeek: false,
@@ -84,6 +101,7 @@ export const WEEK_PER_PAGE_SPEC: LayoutSpec<WeekPerPageConfig> = {
 		highlightWeekendDays: isBoolean,
 		showHeaderWeek: isBoolean,
 		headingAlignment: oneOf(HEADING_ALIGNMENTS),
+		headingFontSize: isHeadingFontSize,
 		weekendDisplay: oneOf(WEEKEND_DISPLAYS),
 		weekPageLines: oneOf(WEEK_PAGE_LINES),
 		twoPagesPerWeek: isBoolean,

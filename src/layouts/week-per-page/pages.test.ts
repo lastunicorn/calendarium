@@ -60,6 +60,13 @@ describe('planWeekPages', () => {
 		expect(week(plan(2026, { showHeaderWeek: false }).weeks, '2026-10-19').subheading).toBe('')
 	})
 
+	it('sets the heading in the chosen font size', () => {
+		expect(week(plan(2026).weeks, '2026-10-19').headingFontSize).toBe(20)
+		expect(week(plan(2026, { headingFontSize: 36 }).weeks, '2026-10-19').headingFontSize).toBe(
+			36,
+		)
+	})
+
 	it('sets the heading left beside the mini month or over two pages, unless told where', () => {
 		const align = (options: Partial<WeekPerPageConfig>) =>
 			week(plan(2026, options).weeks, '2026-10-19').headingAlign

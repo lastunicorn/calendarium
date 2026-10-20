@@ -58,6 +58,7 @@ describe('parseConfig', () => {
 					highlightWeekendDays: false,
 					showHeaderWeek: false,
 					headingAlignment: 'right',
+					headingFontSize: 32,
 					weekendDisplay: 'reduced',
 					weekPageLines: 'hours',
 					twoPagesPerWeek: true,

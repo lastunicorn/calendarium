@@ -1,7 +1,12 @@
 import type { HeadingAlignment } from '../../../layouts/heading'
-import type { WeekPerPageConfig } from '../../../layouts/week-per-page/options'
+import {
+	MAX_HEADING_FONT_SIZE,
+	MIN_HEADING_FONT_SIZE,
+	type WeekPerPageConfig,
+} from '../../../layouts/week-per-page/options'
 import { HeaderIcon } from '../../components/icons'
 import { CheckboxField } from '../../fields/CheckboxField'
+import { NumberField } from '../../fields/NumberField'
 import { RadioField } from '../../fields/RadioField'
 import { WEEK_NUMBER_DESCRIPTION } from '../../sidebar/descriptions'
 import { HEADING_ALIGNMENT_OPTIONS } from '../../sidebar/fieldOptions'
@@ -22,8 +27,12 @@ export function HeaderSection({
 		onUpdate({ headingAlignment })
 	}
 
+	function handleHeadingFontSizeChange(headingFontSize: number) {
+		onUpdate({ headingFontSize })
+	}
+
 	function handleReset() {
-		onUpdate(defaultFields(defaults, ['headingAlignment', 'showHeaderWeek']))
+		onUpdate(defaultFields(defaults, ['headingAlignment', 'headingFontSize', 'showHeaderWeek']))
 	}
 
 	return (
@@ -38,6 +47,14 @@ export function HeaderSection({
 				value={config.headingAlignment}
 				options={HEADING_ALIGNMENT_OPTIONS}
 				onChange={handleHeadingAlignmentChange}
+			/>
+			<NumberField
+				label="Title size (pt)"
+				description={`From ${MIN_HEADING_FONT_SIZE} to ${MAX_HEADING_FONT_SIZE} pt.`}
+				value={config.headingFontSize}
+				min={MIN_HEADING_FONT_SIZE}
+				max={MAX_HEADING_FONT_SIZE}
+				onChange={handleHeadingFontSizeChange}
 			/>
 			<CheckboxField
 				label="Show week number"

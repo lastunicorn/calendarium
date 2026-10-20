@@ -62,6 +62,8 @@ export interface WeekPages {
 	subheading: string
 	/** Where the heading and subheading sit across the header row (`headingAlign`). */
 	headingAlign: HeadingAlign
+	/** The heading's font size, in pt (`headingFontSize`). */
+	headingFontSize: number
 	/** The month holding most of the week's days, the week marked; none when hidden. */
 	miniMonth?: MiniMonthPlan
 	/** Whether the days are stacked rows rather than columns side by side (`stacksDays`). */
@@ -137,6 +139,7 @@ export function planWeekPages(config: WeekPerPageConfig, model: CalendarModel): 
 			heading: dateRangeName(locale, days[0], days.at(-1)!),
 			subheading: config.showHeaderWeek ? PRINT_MESSAGES[locale].week(weekNumber(days)) : '',
 			headingAlign: headingAlign(config),
+			headingFontSize: config.headingFontSize,
 			miniMonth: miniMonth.show
 				? {
 						month: months[month],

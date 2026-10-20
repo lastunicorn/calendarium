@@ -126,6 +126,7 @@ export const WeekPage = memo(function WeekPage({ plan, hours, setup }: WeekPageP
 			subheading={plan.subheading}
 			size="compact"
 			align={plan.headingAlign}
+			headingFontSize={plan.headingFontSize}
 		/>
 	)
 
