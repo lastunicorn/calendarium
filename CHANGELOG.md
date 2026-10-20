@@ -4,6 +4,10 @@ The features each release brought, newest first. Versions follow the app version
 
 ## Unreleased
 
+## 4.2.0 — 2026-10-20
+
+Settings and files from 4.1.0 are read as they are; the new options start at their defaults.
+
 ### Added
 
 - Month layout: a title printed on every page, the month and year then below it.
