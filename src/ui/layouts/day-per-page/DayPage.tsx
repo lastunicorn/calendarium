@@ -79,6 +79,7 @@ export const DayPage = memo(function DayPage({ plan, setup }: DayPageProps) {
 								size="compact"
 								align="left"
 								highlight={plan.weekend}
+								headingFontSize={plan.headingFontSize}
 							/>
 							{events.map((name, index) => (
 								// Two events may share a name, and they never reorder.

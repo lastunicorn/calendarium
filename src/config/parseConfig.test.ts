@@ -72,7 +72,8 @@ describe('parseConfig', () => {
 				'day-per-page': {
 					...common,
 					year: 2032,
-					dayPageTitle: 'date',
+					dayPageTitle: 'weekday',
+					headingFontSize: 18,
 					dayPageLines: 'ruled',
 					ruledLineSpacing: 6.5,
 					squareSize: 4,

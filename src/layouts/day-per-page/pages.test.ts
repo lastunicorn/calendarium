@@ -31,15 +31,23 @@ describe('planDayPages', () => {
 
 	it('heads a day with its weekday or its date, the other one below', () => {
 		const noDetails = { showHeaderWeek: false, showHeaderDayOfYear: false }
-		const byWeekday = day(plan(2026, noDetails), '2026-01-01')
+		const byWeekday = day(plan(2026, { ...noDetails, dayPageTitle: 'weekday' }), '2026-01-01')
 		expect([byWeekday.heading, byWeekday.subheading]).toEqual(['Thursday', '1 January 2026'])
 		const byDate = day(plan(2026, { ...noDetails, dayPageTitle: 'date' }), '2026-01-01')
 		expect([byDate.heading, byDate.subheading]).toEqual(['1 January 2026', 'Thursday'])
 	})
 
+	it('sets the heading in the chosen font size', () => {
+		expect(day(plan(2026), '2026-01-01').headingFontSize).toBe(24)
+		expect(day(plan(2026, { headingFontSize: 36 }), '2026-01-01').headingFontSize).toBe(36)
+	})
+
 	it('details the ISO week and the day of the year after the subheading, each when asked', () => {
 		const subheading = (showHeaderWeek: boolean, showHeaderDayOfYear: boolean) =>
-			day(plan(2026, { showHeaderWeek, showHeaderDayOfYear }), '2026-02-10').subheading
+			day(
+				plan(2026, { dayPageTitle: 'weekday', showHeaderWeek, showHeaderDayOfYear }),
+				'2026-02-10',
+			).subheading
 		// The dots have en spaces (U+2002) either side.
 		expect(subheading(true, true)).toBe(
 			'10 February 2026\u2002·\u2002Week 7\u2002·\u2002Day 41 / 365',

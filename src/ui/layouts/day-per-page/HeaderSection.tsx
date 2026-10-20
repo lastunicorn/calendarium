@@ -9,6 +9,7 @@ import { optionsFrom } from '../../fields/options'
 import { RadioField } from '../../fields/RadioField'
 import { DAY_WEEK_NUMBER_DESCRIPTION } from '../../sidebar/descriptions'
 import { defaultFields } from '../../sidebar/defaultFields'
+import { HeadingFontSizeField } from '../../sidebar/HeadingFontSizeField'
 import { type ConfigSectionProps, Section } from '../../sidebar/Section'
 
 const DAY_PAGE_TITLE_OPTIONS = optionsFrom(DAY_PAGE_TITLES, {
@@ -29,6 +30,10 @@ export function HeaderSection({
 		onUpdate({ dayPageTitle })
 	}
 
+	function handleHeadingFontSizeChange(headingFontSize: number) {
+		onUpdate({ headingFontSize })
+	}
+
 	function handleShowHeaderWeekChange(showHeaderWeek: boolean) {
 		onUpdate({ showHeaderWeek })
 	}
@@ -45,6 +50,7 @@ export function HeaderSection({
 		onUpdate(
 			defaultFields(defaults, [
 				'dayPageTitle',
+				'headingFontSize',
 				'showHeaderWeek',
 				'showHeaderDayOfYear',
 				'highlightWeekendDays',
@@ -59,6 +65,10 @@ export function HeaderSection({
 				value={config.dayPageTitle}
 				options={DAY_PAGE_TITLE_OPTIONS}
 				onChange={handleDayPageTitleChange}
+			/>
+			<HeadingFontSizeField
+				value={config.headingFontSize}
+				onChange={handleHeadingFontSizeChange}
 			/>
 			<CheckboxField
 				label="Show week number"

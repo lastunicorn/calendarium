@@ -1,4 +1,5 @@
 import { isBoolean, oneOf } from '../../core/validation'
+import { isHeadingFontSize } from '../heading'
 import { COMMON_VALIDATORS, type CommonConfig, commonDefaults } from '../common'
 import type { LayoutSpec } from '../LayoutSpec'
 import { MINI_MONTH_VALIDATORS, type MiniMonthOptions, miniMonthDefaults } from '../monthGrid'
@@ -46,6 +47,8 @@ export function isSquareSize(value: unknown): value is number {
 export interface DayPerPageConfig extends CommonConfig, HourSchedule {
 	/** Whether the heading is the weekday ("Thursday") or the date ("1 January 2026"). */
 	dayPageTitle: DayPageTitle
+	/** The heading's font size, in pt; the subheading keeps its own. */
+	headingFontSize: number
 	/** What fills the page under its header; the schedule's hours come from `HourSchedule`. */
 	dayPageLines: DayPageLines
 	/** The distance between ruled lines, in mm; only used when `dayPageLines` is `ruled`. */
@@ -71,7 +74,8 @@ export const DAY_PER_PAGE_SPEC: LayoutSpec<DayPerPageConfig> = {
 	// A tall schedule fits portrait.
 	defaults: () => ({
 		...commonDefaults(),
-		dayPageTitle: 'weekday',
+		dayPageTitle: 'date',
+		headingFontSize: 24,
 		dayPageLines: 'hours',
 		ruledLineSpacing: 8,
 		// A math notebook's squares.
@@ -86,6 +90,7 @@ export const DAY_PER_PAGE_SPEC: LayoutSpec<DayPerPageConfig> = {
 	validators: {
 		...COMMON_VALIDATORS,
 		dayPageTitle: oneOf(DAY_PAGE_TITLES),
+		headingFontSize: isHeadingFontSize,
 		dayPageLines: oneOf(DAY_PAGE_LINES),
 		ruledLineSpacing: isRuledLineSpacing,
 		squareSize: isSquareSize,

@@ -2,7 +2,7 @@ import { WEEKDAY_FORMATS, type WeekdayFormat } from '../../core/locale'
 import { margins } from '../../core/paper'
 import { isBoolean, oneOf } from '../../core/validation'
 import { COMMON_VALIDATORS, type CommonConfig, commonDefaults } from '../common'
-import { HEADING_ALIGNMENTS, type HeadingAlignment } from '../heading'
+import { HEADING_ALIGNMENTS, type HeadingAlignment, isHeadingFontSize } from '../heading'
 import type { LayoutSpec } from '../LayoutSpec'
 import { MINI_MONTH_VALIDATORS, type MiniMonthOptions, miniMonthDefaults } from '../monthGrid'
 import { type HourSchedule, orderHours, SCHEDULE_VALIDATORS, scheduleDefaults } from '../schedule'
@@ -23,20 +23,6 @@ export type WeekPageLines = (typeof WEEK_PAGE_LINES)[number]
  */
 export const START_PAGES = ['odd', 'even'] as const
 export type StartPage = (typeof START_PAGES)[number]
-
-/** Bounds of the heading's font size, in pt. */
-export const MIN_HEADING_FONT_SIZE = 12
-export const MAX_HEADING_FONT_SIZE = 48
-
-/** A heading font size, in pt, from `MIN_HEADING_FONT_SIZE` to `MAX_HEADING_FONT_SIZE`. */
-export function isHeadingFontSize(value: unknown): value is number {
-	return (
-		typeof value === 'number' &&
-		Number.isFinite(value) &&
-		value >= MIN_HEADING_FONT_SIZE &&
-		value <= MAX_HEADING_FONT_SIZE
-	)
-}
 
 export interface WeekPerPageConfig extends CommonConfig, HourSchedule {
 	/** How the weekday name in each day's cell is written: in full or abbreviated. */

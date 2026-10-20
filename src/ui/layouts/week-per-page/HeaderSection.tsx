@@ -1,16 +1,12 @@
 import type { HeadingAlignment } from '../../../layouts/heading'
-import {
-	MAX_HEADING_FONT_SIZE,
-	MIN_HEADING_FONT_SIZE,
-	type WeekPerPageConfig,
-} from '../../../layouts/week-per-page/options'
+import type { WeekPerPageConfig } from '../../../layouts/week-per-page/options'
 import { HeaderIcon } from '../../components/icons'
 import { CheckboxField } from '../../fields/CheckboxField'
-import { NumberField } from '../../fields/NumberField'
 import { RadioField } from '../../fields/RadioField'
 import { WEEK_NUMBER_DESCRIPTION } from '../../sidebar/descriptions'
 import { HEADING_ALIGNMENT_OPTIONS } from '../../sidebar/fieldOptions'
 import { defaultFields } from '../../sidebar/defaultFields'
+import { HeadingFontSizeField } from '../../sidebar/HeadingFontSizeField'
 import { type ConfigSectionProps, Section } from '../../sidebar/Section'
 
 /** What a week's heading shows besides the dates of its days, and where it sits. */
@@ -48,12 +44,8 @@ export function HeaderSection({
 				options={HEADING_ALIGNMENT_OPTIONS}
 				onChange={handleHeadingAlignmentChange}
 			/>
-			<NumberField
-				label="Title size (pt)"
-				description={`From ${MIN_HEADING_FONT_SIZE} to ${MAX_HEADING_FONT_SIZE} pt.`}
+			<HeadingFontSizeField
 				value={config.headingFontSize}
-				min={MIN_HEADING_FONT_SIZE}
-				max={MAX_HEADING_FONT_SIZE}
 				onChange={handleHeadingFontSizeChange}
 			/>
 			<CheckboxField

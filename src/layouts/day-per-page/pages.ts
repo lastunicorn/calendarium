@@ -24,6 +24,8 @@ export interface DayPages {
 	day: CalendarDay
 	/** The weekday or the date, per `dayPageTitle`. */
 	heading: string
+	/** The heading's font size, in pt (`headingFontSize`). */
+	headingFontSize: number
 	/**
 	 * The other one of the two, then the details "Week 1 · Day 1 / 365", each part per its option,
 	 * all separated by dots.
@@ -96,6 +98,7 @@ export function planDayPages(config: DayPerPageConfig, model: CalendarModel): Da
 		return {
 			day,
 			heading: config.dayPageTitle === 'weekday' ? weekday : date,
+			headingFontSize: config.headingFontSize,
 			subheading,
 			events: eventNames(model.events, day),
 			weekend: config.highlightWeekendDays && day.isWeekend,

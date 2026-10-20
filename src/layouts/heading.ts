@@ -8,3 +8,17 @@ export type HeadingAlign = (typeof HEADING_ALIGNS)[number]
  */
 export const HEADING_ALIGNMENTS = ['auto', ...HEADING_ALIGNS] as const
 export type HeadingAlignment = (typeof HEADING_ALIGNMENTS)[number]
+
+/** Bounds of the heading's font size, in pt. */
+export const MIN_HEADING_FONT_SIZE = 12
+export const MAX_HEADING_FONT_SIZE = 48
+
+/** A heading font size, in pt, from `MIN_HEADING_FONT_SIZE` to `MAX_HEADING_FONT_SIZE`. */
+export function isHeadingFontSize(value: unknown): value is number {
+	return (
+		typeof value === 'number' &&
+		Number.isFinite(value) &&
+		value >= MIN_HEADING_FONT_SIZE &&
+		value <= MAX_HEADING_FONT_SIZE
+	)
+}
