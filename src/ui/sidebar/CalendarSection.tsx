@@ -95,6 +95,16 @@ const YEAR_DESCRIPTION = [
 	`${MIN_YEAR} is the first full year of the Gregorian calendar.`,
 ]
 
+const LOCALE_DESCRIPTION = [
+	'The language the calendar is printed in. It applies to the printable calendar only.',
+	'The language of the editor stays in English.',
+]
+
+const WEEK_START_DESCRIPTION = [
+	'Choose the day to be used as the first day of the week.',
+	'Language default picks the language’s own day, e.g. Sunday in American English, Monday in German.',
+]
+
 /** Which year the calendar shows, in which language, and the day its weeks start on. */
 export function CalendarSection({ config, defaults, onUpdate }: ConfigSectionProps<CommonConfig>) {
 	function handleYearChange(year: number) {
@@ -126,12 +136,14 @@ export function CalendarSection({ config, defaults, onUpdate }: ConfigSectionPro
 			/>
 			<ComboboxField
 				label="Language"
+				description={LOCALE_DESCRIPTION}
 				value={config.locale}
 				options={LOCALE_OPTIONS}
 				onChange={handleLocaleChange}
 			/>
 			<SelectField
 				label="Week starts on"
+				description={WEEK_START_DESCRIPTION}
 				value={config.weekStart}
 				options={WEEK_START_OPTIONS}
 				onChange={handleWeekStartChange}

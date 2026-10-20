@@ -7,6 +7,7 @@ The features each release brought, newest first. Versions follow the app version
 ### Added
 
 - 21 more languages: Afrikaans, Amharic, Catalan, Estonian, Filipino, Gujarati, Hindi, Indonesian, Kannada, Latvian, Lithuanian, Malay, Malayalam, Serbian, Slovenian, Swahili, Tamil, Telugu, Thai (with Gregorian years), Traditional Chinese and Vietnamese.
+- The Language field explains, under its info icon, that it sets the printed calendar's language, the editor staying in English, and the Week starts on field what it sets and what Language default means.
 
 ### Fixed
 
