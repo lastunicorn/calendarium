@@ -53,4 +53,19 @@ describe('planYearPage', () => {
 		expect(months[1].eventDays).toEqual([1])
 		expect(months[2].eventDays).toEqual([])
 	})
+
+	it('lists the year’s events by date on a second page, when it has any', () => {
+		expect(plan().eventList).toBeUndefined()
+		expect(plan({ events: '2027-01-07 Next year' }).eventList).toBeUndefined()
+		expect(
+			plan({ title: 'Ours', events: '2026-03-01 Trip\n0000-01-20 Birthday' }).eventList,
+		).toEqual({
+			heading: 'Events',
+			subheading: 'Ours',
+			events: [
+				{ key: '2026-01-20-0', date: '20 January', name: 'Birthday' },
+				{ key: '2026-03-01-1', date: '1 March', name: 'Trip' },
+			],
+		})
+	})
 })

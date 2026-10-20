@@ -14,6 +14,7 @@ describe('PRINT_MESSAGES', () => {
 		for (const locale of LOCALES) {
 			expect(PRINT_MESSAGES[locale].week(42)).toContain('42')
 			expect(PRINT_MESSAGES[locale].dayOfYear(292, 366)).toMatch(/292.*366/)
+			expect(PRINT_MESSAGES[locale].events).not.toBe('')
 		}
 	})
 })

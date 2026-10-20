@@ -120,6 +120,12 @@ export function fullDateName(locale: string, date: PlainDate): string {
 	return capitalize(dateFormatter(locale, { dateStyle: 'long' }).format(toDate(date)), locale)
 }
 
+/** Localized day and month, e.g. "October 19", "19 octombrie", "10月19日". */
+export function dayMonthName(locale: string, date: PlainDate): string {
+	const format = dateFormatter(locale, { day: 'numeric', month: 'long' })
+	return capitalize(format.format(toDate(date)), locale)
+}
+
 /**
  * Localized range of long dates, sharing what the ends have in common: "October 19 – 25, 2026",
  * "29 decembrie 2025 – 4 ianuarie 2026".

@@ -1,0 +1,39 @@
+.layout {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+/* Columns at least 60 mm wide, each filled to the bottom before the next. */
+.list {
+	flex: 1;
+	min-height: 0;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	columns: 60mm;
+	column-gap: 8mm;
+	column-fill: auto;
+	font-size: 10pt;
+}
+
+.event {
+	display: flex;
+	gap: 3mm;
+	padding: 1.2mm 0;
+	border-bottom: 0.2mm solid var(--color-rule-light);
+	break-inside: avoid;
+}
+
+.date {
+	/* Wide enough for most dates, so the names line up; a longer one pushes its name along. */
+	flex: none;
+	min-width: 30mm;
+	white-space: nowrap;
+	font-weight: 600;
+}
+
+.name {
+	min-width: 0;
+	overflow-wrap: anywhere;
+}

@@ -123,3 +123,15 @@ test('week-per-page fits its content with the mini calendar, on one page or two'
 	await page.getByRole('checkbox', { name: 'Two pages per week' }).check()
 	expect(await clippedPages(page), 'pages whose content is cut off').toEqual([])
 })
+
+test('year-per-page lists its events on a second page', async ({ page }) => {
+	await showLayout(page, 'year-per-page', YEAR)
+	await page
+		.getByRole('textbox', { name: 'Events' })
+		.fill('2024-03-01 Trip\n0000-12-25 Christmas\n2025-01-01 Next year')
+
+	const sizes = pdfPageSizes(await page.pdf({ preferCSSPageSize: true, printBackground: true }))
+	expect(sizes).toHaveLength(2)
+	await expect(page.locator('main section').nth(1).getByRole('listitem')).toHaveCount(2)
+	expect(await clippedPages(page), 'pages whose content is cut off').toEqual([])
+})

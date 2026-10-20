@@ -3,6 +3,7 @@ import { plainDate } from './calendar'
 import {
 	dateRangeName,
 	dateFormatter,
+	dayMonthName,
 	fullDateName,
 	hourNames,
 	isWeekStartSetting,
@@ -94,6 +95,15 @@ describe('fullDateName', () => {
 		expect(fullDateName('en-US', date)).toBe('October 19, 2026')
 		expect(fullDateName('ro-RO', date)).toBe('19 octombrie 2026')
 		expect(fullDateName('ja-JP', date)).toBe('2026年10月19日')
+	})
+})
+
+describe('dayMonthName', () => {
+	it('writes the day and month in the locale', () => {
+		const date = plainDate(2026, 9, 19)
+		expect(dayMonthName('en-US', date)).toBe('October 19')
+		expect(dayMonthName('ro-RO', date)).toBe('19 octombrie')
+		expect(dayMonthName('ja-JP', date)).toBe('10月19日')
 	})
 })
 

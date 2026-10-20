@@ -1,4 +1,4 @@
-import { daysInMonth, type PlainDate } from './calendar'
+import { daysInMonth, type PlainDate, plainDate } from './calendar'
 
 /** A named day: on one date, or every year on the same month and day. */
 export interface CalendarEvent {
@@ -59,4 +59,25 @@ export function eventNames(events: readonly CalendarEvent[], date: PlainDate): s
 				(event.year === undefined || event.year === date.year),
 		)
 		.map((event) => event.name)
+}
+
+/** An event on its date in a given year. */
+export interface DatedEvent {
+	date: PlainDate
+	name: string
+}
+
+/**
+ * The events that happen in `year`, by date, those on one date in the list's order. A yearly
+ * event on February 29 happens in leap years only.
+ */
+export function eventsOfYear(events: readonly CalendarEvent[], year: number): DatedEvent[] {
+	return events
+		.filter(
+			(event) =>
+				(event.year === undefined || event.year === year) &&
+				event.day <= daysInMonth(year, event.month),
+		)
+		.map((event) => ({ date: plainDate(year, event.month, event.day), name: event.name }))
+		.sort((a, b) => a.date.key.localeCompare(b.date.key))
 }

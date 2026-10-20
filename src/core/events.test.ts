@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { plainDate } from './calendar'
-import { eventNames, invalidEventLines, parseEventLine, parseEvents } from './events'
+import { eventNames, eventsOfYear, invalidEventLines, parseEventLine, parseEvents } from './events'
 
 describe('parseEventLine', () => {
 	it('reads a date and a name', () => {
@@ -56,5 +56,26 @@ describe('eventNames', () => {
 		expect(eventNames(events, plainDate(2026, 0, 1))).toEqual(['New Year', 'Holiday'])
 		expect(eventNames(events, plainDate(2028, 0, 1))).toEqual(['New Year'])
 		expect(eventNames(events, plainDate(2026, 0, 2))).toEqual([])
+	})
+})
+
+describe('eventsOfYear', () => {
+	const events = parseEvents(
+		'2026-03-01 Trip\n0000-01-20 Birthday\n2027-01-07 Next year\n0000-02-29 Leap day\n2026-01-20 Party',
+	)
+
+	it('lists the year’s events by date, those on one date in the list’s order', () => {
+		expect(eventsOfYear(events, 2026).map((event) => [event.date.key, event.name])).toEqual([
+			['2026-01-20', 'Birthday'],
+			['2026-01-20', 'Party'],
+			['2026-03-01', 'Trip'],
+		])
+	})
+
+	it('lists a yearly February 29 in leap years only', () => {
+		expect(eventsOfYear(events, 2028).map((event) => event.name)).toEqual([
+			'Birthday',
+			'Leap day',
+		])
 	})
 })
