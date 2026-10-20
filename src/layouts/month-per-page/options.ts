@@ -1,10 +1,32 @@
 import { WEEKDAY_FORMATS } from '../../core/locale'
 import { margins } from '../../core/paper'
-import { isString, oneOf } from '../../core/validation'
+import { isBoolean, isString, oneOf, type Validators } from '../../core/validation'
 import { COMMON_VALIDATORS, type CommonConfig, commonDefaults } from '../common'
 import { HEADING_ALIGNS, type HeadingAlign } from '../heading'
 import { type LayoutSpec, unchanged } from '../LayoutSpec'
 import { MONTH_GRID_VALIDATORS, type MonthGridOptions, monthGridDefaults } from '../monthGrid'
+
+/** The previous and the next month, drawn small at the top left and top right of each page. */
+export interface AdjacentMonthsOptions extends MonthGridOptions {
+	showPreviousMonth: boolean
+	showNextMonth: boolean
+}
+
+/** Both adjacent months shown, with week numbers, as a mini month on the other layouts. */
+function adjacentMonthsDefaults(): AdjacentMonthsOptions {
+	return {
+		showPreviousMonth: true,
+		showNextMonth: true,
+		...monthGridDefaults(),
+		showWeekNumbers: true,
+	}
+}
+
+const ADJACENT_MONTHS_VALIDATORS: Validators<AdjacentMonthsOptions> = {
+	showPreviousMonth: isBoolean,
+	showNextMonth: isBoolean,
+	...MONTH_GRID_VALIDATORS,
+}
 
 export interface MonthPerPageConfig extends CommonConfig, MonthGridOptions {
 	/**
@@ -17,6 +39,7 @@ export interface MonthPerPageConfig extends CommonConfig, MonthGridOptions {
 	 * `headingAlignment` it has no `auto`.
 	 */
 	monthHeadingAlignment: HeadingAlign
+	adjacentMonths: AdjacentMonthsOptions
 }
 
 export const MONTH_PER_PAGE_SPEC: LayoutSpec<MonthPerPageConfig> = {
@@ -31,6 +54,7 @@ export const MONTH_PER_PAGE_SPEC: LayoutSpec<MonthPerPageConfig> = {
 			highlightWeekends: 'columns',
 			showWeekNumbers: true,
 			monthHeadingAlignment: 'center',
+			adjacentMonths: adjacentMonthsDefaults(),
 			page: { ...common.page, orientation: 'landscape', margins: margins(10) },
 		}
 	},
@@ -41,6 +65,7 @@ export const MONTH_PER_PAGE_SPEC: LayoutSpec<MonthPerPageConfig> = {
 		weekdayFormat: oneOf(WEEKDAY_FORMATS),
 		title: isString,
 		monthHeadingAlignment: oneOf(HEADING_ALIGNS),
+		adjacentMonths: ADJACENT_MONTHS_VALIDATORS,
 	},
 	normalize: unchanged,
 }

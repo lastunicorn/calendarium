@@ -3,3 +3,47 @@
 	display: flex;
 	flex-direction: column;
 }
+
+.top {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	align-items: start;
+	margin-bottom: 4mm;
+}
+
+/*
+ * The heading between the previous and the next month, each in its corner. Both side columns keep
+ * a mini month's width when only one is shown, so a centered heading stays centered on the page.
+ */
+.withMiniMonths {
+	grid-template-columns: 40mm minmax(0, 1fr) 40mm;
+	column-gap: 6mm;
+}
+
+.withMiniMonths .heading {
+	grid-column: 2;
+}
+
+.heading {
+	grid-row: 1;
+}
+
+/* The heading's own bottom margin is the gap under the row. */
+.heading > header {
+	margin-bottom: 0;
+}
+
+/* A grid, so the mini month stretches to this fixed box. */
+.miniMonth {
+	display: grid;
+	grid-row: 1;
+	height: 29mm;
+}
+
+.previous {
+	grid-column: 1;
+}
+
+.next {
+	grid-column: 3;
+}

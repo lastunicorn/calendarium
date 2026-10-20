@@ -1,23 +1,36 @@
-import type { MonthPerPageConfig } from '../../../layouts/month-per-page/options'
+import type {
+	AdjacentMonthsOptions,
+	MonthPerPageConfig,
+} from '../../../layouts/month-per-page/options'
 import { CalendarSection } from '../../sidebar/CalendarSection'
 import { EventsSection } from '../../sidebar/EventsSection'
 import { ContentSection } from '../../sidebar/ContentSection'
 import { WEEKDAY_FORMAT_OPTIONS } from '../../sidebar/fieldOptions'
 import { PageSection } from '../../sidebar/PageSection'
 import type { ConfigSectionProps } from '../../sidebar/Section'
+import { AdjacentMonthsSection } from './AdjacentMonthsSection'
 import { HeaderSection } from './HeaderSection'
 
-/** The `month-per-page` options, including its header. */
+/** The `month-per-page` options, including its header and the mini months beside it. */
 export function MonthPerPageForm({
 	config,
 	defaults,
 	onUpdate,
 }: ConfigSectionProps<MonthPerPageConfig>) {
+	function handleAdjacentMonthsUpdate(patch: Partial<AdjacentMonthsOptions>) {
+		onUpdate({ adjacentMonths: { ...config.adjacentMonths, ...patch } })
+	}
+
 	return (
 		<>
 			<CalendarSection config={config} defaults={defaults} onUpdate={onUpdate} />
 			<EventsSection config={config} defaults={defaults} onUpdate={onUpdate} />
 			<HeaderSection config={config} defaults={defaults} onUpdate={onUpdate} />
+			<AdjacentMonthsSection
+				config={config.adjacentMonths}
+				defaults={defaults.adjacentMonths}
+				onUpdate={handleAdjacentMonthsUpdate}
+			/>
 			<ContentSection
 				config={config}
 				defaults={defaults}

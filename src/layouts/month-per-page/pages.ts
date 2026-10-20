@@ -1,9 +1,10 @@
-import { type CalendarDay, visibleWeeks } from '../../core/calendar'
+import { buildMonth, type CalendarDay, visibleWeeks } from '../../core/calendar'
 import { eventNames } from '../../core/events'
 import { monthYearName, weekdayNames } from '../../core/locale'
 import type { WeekendHighlight } from '../../core/weekend'
 import type { CalendarModel } from '../common'
 import type { HeadingAlign } from '../heading'
+import type { MiniMonthPlan } from '../monthGrid'
 import type { MonthPerPageConfig } from './options'
 
 /** A day's cell in a month grid. */
@@ -33,14 +34,37 @@ export interface MonthPage {
 	/** Where the heading sits above the grid. */
 	headingAlign: HeadingAlign
 	grid: MonthGridPlan
+	/** The month before, drawn small at the top left; left out when hidden. */
+	previousMonth?: MiniMonthPlan
+	/** The month after, drawn small at the top right; left out when hidden. */
+	nextMonth?: MiniMonthPlan
 }
 
-/** Twelve pages, one per month, headed by the title, if any, above the month and year. */
+/**
+ * Twelve pages, one per month, headed by the title, if any, above the month and year, between the
+ * previous and the next month drawn small, each when `adjacentMonths` shows it.
+ */
 export function planMonthPages(config: MonthPerPageConfig, model: CalendarModel): MonthPage[] {
-	const weekdays = weekdayNames(config.locale, model.weekStart, config.weekdayFormat)
+	const { locale, year, adjacentMonths } = config
+	const weekdays = weekdayNames(locale, model.weekStart, config.weekdayFormat)
+	const miniWeekdays = weekdayNames(locale, model.weekStart, adjacentMonths.weekdayFormat)
 	const title = config.title.trim()
+
+	/** The month `offset` (±1) months from `month` of the year, named with its year. */
+	function planMiniMonth(month: number, offset: number): MiniMonthPlan {
+		const otherYear = year + Math.floor((month + offset) / 12)
+		const otherMonth = (month + offset + 12) % 12
+		return {
+			month: buildMonth(otherYear, otherMonth, model.weekStart),
+			name: monthYearName(locale, otherYear, otherMonth),
+			weekdays: miniWeekdays,
+			highlightWeekends: adjacentMonths.highlightWeekends,
+			showWeekNumbers: adjacentMonths.showWeekNumbers,
+		}
+	}
+
 	return model.months.map((month) => {
-		const monthYear = monthYearName(config.locale, config.year, month.month)
+		const monthYear = monthYearName(locale, year, month.month)
 		return {
 			key: month.month,
 			heading: title || monthYear,
@@ -57,6 +81,10 @@ export function planMonthPages(config: MonthPerPageConfig, model: CalendarModel)
 				highlightWeekends: config.highlightWeekends,
 				showWeekNumbers: config.showWeekNumbers,
 			},
+			previousMonth: adjacentMonths.showPreviousMonth
+				? planMiniMonth(month.month, -1)
+				: undefined,
+			nextMonth: adjacentMonths.showNextMonth ? planMiniMonth(month.month, 1) : undefined,
 		}
 	})
 }

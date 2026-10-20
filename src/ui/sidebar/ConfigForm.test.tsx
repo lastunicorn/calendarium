@@ -39,12 +39,13 @@ describe('ConfigForm', () => {
 		])
 	})
 
-	it('shows the header and content options on the month layout', () => {
+	it('shows the header, mini calendar and content options on the month layout', () => {
 		expect(sectionTitles('month-per-page')).toEqual([
 			'Layout',
 			'Calendar',
 			'Events',
 			'Header',
+			'Mini calendar',
 			'Content',
 			'Page',
 		])

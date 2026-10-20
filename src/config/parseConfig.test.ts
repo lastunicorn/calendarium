@@ -50,6 +50,7 @@ describe('parseConfig', () => {
 					year: 2031,
 					title: 'Office',
 					monthHeadingAlignment: 'left',
+					adjacentMonths: { ...grid, showPreviousMonth: false, showNextMonth: true },
 				},
 				'week-per-page': {
 					...common,

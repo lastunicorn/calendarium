@@ -69,4 +69,35 @@ describe('planMonthPages', () => {
 		)
 		expect(days.find((day) => day.key === '2026-01-02')!.events).toEqual([])
 	})
+
+	it('draws the previous and the next month small, each named with its year', () => {
+		const pages = plan(2026)
+		expect(pages[5].previousMonth).toMatchObject({
+			name: 'May 2026',
+			month: { year: 2026, month: 4 },
+		})
+		expect(pages[5].nextMonth).toMatchObject({
+			name: 'July 2026',
+			month: { year: 2026, month: 6 },
+		})
+		expect(pages[0].previousMonth).toMatchObject({
+			name: 'December 2025',
+			month: { year: 2025, month: 11 },
+		})
+		expect(pages[11].nextMonth).toMatchObject({
+			name: 'January 2027',
+			month: { year: 2027, month: 0 },
+		})
+		expect(pages[0].previousMonth!.weekdays).toBe(pages[11].nextMonth!.weekdays)
+	})
+
+	it('leaves out the previous or the next month when hidden', () => {
+		const shown = defaultLayoutConfig('month-per-page').adjacentMonths
+		const noPrevious = plan(2026, { adjacentMonths: { ...shown, showPreviousMonth: false } })[3]
+		expect(noPrevious.previousMonth).toBeUndefined()
+		expect(noPrevious.nextMonth).toMatchObject({ name: 'May 2026' })
+		const noNext = plan(2026, { adjacentMonths: { ...shown, showNextMonth: false } })[3]
+		expect(noNext.previousMonth).toMatchObject({ name: 'March 2026' })
+		expect(noNext.nextMonth).toBeUndefined()
+	})
 })
