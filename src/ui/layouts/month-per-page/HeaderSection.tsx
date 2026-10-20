@@ -6,6 +6,9 @@ import { TextField } from '../../fields/TextField'
 import { HEADING_ALIGN_OPTIONS } from '../../sidebar/fieldOptions'
 import { type ConfigSectionProps, Section } from '../../sidebar/Section'
 
+const TITLE_DESCRIPTION =
+	'Printed at the top of every page, with the month and year below it. When empty, the month and year are the title.'
+
 /** The title above every month, and where the heading sits above its grid. */
 export function HeaderSection({ config, onUpdate }: ConfigSectionProps<MonthPerPageConfig>) {
 	function handleTitleChange(title: string) {
@@ -18,7 +21,12 @@ export function HeaderSection({ config, onUpdate }: ConfigSectionProps<MonthPerP
 
 	return (
 		<Section title="Header" icon={<HeaderIcon />}>
-			<TextField label="Title" value={config.title} onChange={handleTitleChange} />
+			<TextField
+				label="Title"
+				description={TITLE_DESCRIPTION}
+				value={config.title}
+				onChange={handleTitleChange}
+			/>
 			<RadioField
 				label="Title alignment"
 				value={config.monthHeadingAlignment}
