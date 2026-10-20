@@ -22,6 +22,7 @@ const DAY_PAGE_LINES_OPTIONS = optionsFrom(DAY_PAGE_LINES, {
 	hours: 'Hourly schedule',
 	ruled: 'Ruled lines',
 	squares: 'Squares',
+	blank: 'Blank',
 })
 
 const SQUARE_GRID_ALIGNMENT_OPTIONS = optionsFrom(SQUARE_GRID_ALIGNMENTS, {
@@ -32,7 +33,7 @@ const SQUARE_GRID_ALIGNMENT_OPTIONS = optionsFrom(SQUARE_GRID_ALIGNMENTS, {
 
 /**
  * What fills a day's page: an hourly schedule and its hours, ruled lines and their spacing, or
- * squares, their size and where they sit, on one page or two.
+ * squares, their size and where they sit, or nothing, on one page or two.
  */
 export function DayContentSection({
 	config,

@@ -23,6 +23,9 @@ interface DayLinesProps {
 
 /** The writing area filling a day's page under its header, or all of its second page. */
 function DayLines({ fill }: DayLinesProps) {
+	if (fill.kind === 'blank') {
+		return null
+	}
 	if (fill.kind === 'ruled') {
 		return (
 			<div className={styles.ruled} style={{ gridAutoRows: `${fill.spacing}mm` }}>

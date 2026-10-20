@@ -125,6 +125,12 @@ describe('planDayPages', () => {
 			])
 		})
 
+		it('leave every sheet blank under the header', () => {
+			const [day] = plan(2026, { dayPageLines: 'blank', twoPagesPerDay: true })
+			expect(day.fills).toEqual([{ kind: 'blank' }, { kind: 'blank' }])
+			expect(day.heading).toBe('1 January 2026')
+		})
+
 		it('draw the squares as large as asked', () => {
 			// 186 by 273 mm: 23 whole columns and 34 rows of 8 mm squares.
 			expect(plan(2026, { dayPageLines: 'squares', squareSize: 8 })[0].fills).toEqual([
