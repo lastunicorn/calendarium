@@ -1,4 +1,5 @@
 import type { AppConfig } from '../../config/AppConfig'
+import type { ImportedLayoutConfig } from '../../config/configFile'
 import type { LayoutConfigs, LayoutId } from '../../layouts'
 import { layoutView } from '../layouts/registry'
 import type { UpdateLayoutConfig } from '../useCalendarConfig'
@@ -10,6 +11,8 @@ interface ConfigFormProps {
 	config: AppConfig
 	onSelectLayout: (layout: LayoutId) => void
 	onUpdate: UpdateLayoutConfig
+	onResetLayout: (layout: LayoutId) => void
+	onImportLayout: (imported: ImportedLayoutConfig) => void
 }
 
 interface LayoutFormProps<K extends LayoutId> {
@@ -30,16 +33,27 @@ function LayoutForm<K extends LayoutId>({ layout, config, onUpdate }: LayoutForm
 }
 
 /**
- * The layout picker and the chosen layout's options, grouped by what they affect, in sections
+ * The layout picker with the export, import and reset of its options, and the chosen layout's options, grouped by what they affect, in sections
  * of which one at a time is open, staying open across layouts and reloads.
  */
-export function ConfigForm({ config, onSelectLayout, onUpdate }: ConfigFormProps) {
+export function ConfigForm({
+	config,
+	onSelectLayout,
+	onUpdate,
+	onResetLayout,
+	onImportLayout,
+}: ConfigFormProps) {
 	const { layout } = config
 	const openSections = useOpenSections()
 	return (
 		<OpenSectionsContext value={openSections}>
 			<div className={styles.form}>
-				<LayoutSection layout={layout} onSelect={onSelectLayout} />
+				<LayoutSection
+					config={config}
+					onSelect={onSelectLayout}
+					onReset={onResetLayout}
+					onImport={onImportLayout}
+				/>
 				{/* Keyed so half-typed field drafts don't carry over to another layout. */}
 				<LayoutForm
 					key={layout}

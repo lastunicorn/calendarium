@@ -4,6 +4,10 @@ The features each release brought, newest first. Versions follow the app version
 
 ## Unreleased
 
+### Changed
+
+- The export, import and reset buttons sit in the layout section, under the layout they act on.
+
 ## 4.1.0 — 2026-10-20
 
 Settings and files from 4.0.0 are read as they are; the new options start at their defaults.

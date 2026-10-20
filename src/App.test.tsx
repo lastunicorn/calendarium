@@ -4,7 +4,7 @@ import App from './App'
 import { defaultLayoutConfig } from './layouts'
 import { serializeLayoutConfig } from './config/configFile'
 
-/** Chooses `file` in the toolbar's hidden file input, as the import button's dialog would. */
+/** Chooses `file` in the layout section's hidden file input, as the import button's dialog would. */
 function chooseImportFile(container: HTMLElement, file: File) {
 	const input = container.querySelector<HTMLInputElement>('input[type="file"]')!
 	fireEvent.change(input, { target: { files: [file] } })

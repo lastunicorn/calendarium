@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import type { LayoutId } from '../../layouts'
 import { defaultAppConfig } from '../../config/AppConfig'
@@ -12,7 +12,15 @@ function noop() {}
  */
 function sectionTitles(layout: LayoutId): string[] {
 	const config = { ...defaultAppConfig(), layout }
-	render(<ConfigForm config={config} onSelectLayout={noop} onUpdate={noop} />)
+	render(
+		<ConfigForm
+			config={config}
+			onSelectLayout={noop}
+			onUpdate={noop}
+			onResetLayout={noop}
+			onImportLayout={noop}
+		/>,
+	)
 	return screen
 		.getAllByRole('group')
 		.filter((group) => group.parentElement?.closest('fieldset') === null)
@@ -68,6 +76,16 @@ describe('ConfigForm', () => {
 		expect(layoutTitle).toBe('Layout')
 		expect(screen.queryByRole('button', { name: 'Layout' })).toBeNull()
 		expect(screen.getByRole('group', { name: 'Layout' }).querySelector('select')).not.toBeNull()
+		const actions = within(screen.getByRole('group', { name: 'Layout' })).getByRole('toolbar')
+		expect(
+			within(actions)
+				.getAllByRole('button')
+				.map((button) => button.title),
+		).toEqual([
+			'Export settings to a file',
+			'Import settings from a file',
+			'Reset layout settings',
+		])
 		const toggles = screen.getAllByRole('button', { expanded: false })
 		expect(toggles.map((button) => button.textContent)).toEqual(titles)
 		expect(screen.queryByLabelText('Year')).toBeNull()
@@ -92,12 +110,28 @@ describe('ConfigForm', () => {
 		expect(calendar.getAttribute('aria-expanded')).toBe('false')
 		expect(screen.queryByLabelText('Year')).toBeNull()
 		expect(screen.getByRole('group', { name: 'Layout' }).querySelector('select')).not.toBeNull()
+		const actions = within(screen.getByRole('group', { name: 'Layout' })).getByRole('toolbar')
+		expect(
+			within(actions)
+				.getAllByRole('button')
+				.map((button) => button.title),
+		).toEqual([
+			'Export settings to a file',
+			'Import settings from a file',
+			'Reset layout settings',
+		])
 	})
 
 	it('keeps a section open on another layout and after a reload', () => {
 		const config = defaultAppConfig()
 		const { rerender, unmount } = render(
-			<ConfigForm config={config} onSelectLayout={noop} onUpdate={noop} />,
+			<ConfigForm
+				config={config}
+				onSelectLayout={noop}
+				onUpdate={noop}
+				onResetLayout={noop}
+				onImportLayout={noop}
+			/>,
 		)
 		fireEvent.click(screen.getByRole('button', { name: 'Calendar' }))
 
@@ -106,6 +140,8 @@ describe('ConfigForm', () => {
 				config={{ ...config, layout: 'day-per-page' }}
 				onSelectLayout={noop}
 				onUpdate={noop}
+				onResetLayout={noop}
+				onImportLayout={noop}
 			/>,
 		)
 		expect(screen.getByLabelText('Year')).not.toBeNull()
@@ -114,14 +150,28 @@ describe('ConfigForm', () => {
 		)
 
 		unmount()
-		render(<ConfigForm config={config} onSelectLayout={noop} onUpdate={noop} />)
+		render(
+			<ConfigForm
+				config={config}
+				onSelectLayout={noop}
+				onUpdate={noop}
+				onResetLayout={noop}
+				onImportLayout={noop}
+			/>,
+		)
 		expect(screen.getByLabelText('Year')).not.toBeNull()
 	})
 
 	it('shows the spine only with mirrored margins', () => {
 		const config = defaultAppConfig()
 		const { rerender } = render(
-			<ConfigForm config={config} onSelectLayout={noop} onUpdate={noop} />,
+			<ConfigForm
+				config={config}
+				onSelectLayout={noop}
+				onUpdate={noop}
+				onResetLayout={noop}
+				onImportLayout={noop}
+			/>,
 		)
 		fireEvent.click(screen.getByRole('button', { name: 'Page' }))
 		expect(screen.queryByRole('group', { name: 'Spine' })).toBeNull()
@@ -134,7 +184,15 @@ describe('ConfigForm', () => {
 				[config.layout]: { ...layout, page: { ...layout.page, mirrorMargins: true } },
 			},
 		}
-		rerender(<ConfigForm config={mirrored} onSelectLayout={noop} onUpdate={noop} />)
+		rerender(
+			<ConfigForm
+				config={mirrored}
+				onSelectLayout={noop}
+				onUpdate={noop}
+				onResetLayout={noop}
+				onImportLayout={noop}
+			/>,
+		)
 		expect(screen.getByRole('group', { name: 'Spine' })).not.toBeNull()
 	})
 })

@@ -11,8 +11,14 @@ export default function App() {
 	return (
 		<div className={styles.app}>
 			<Sidebar>
-				<Toolbar config={config} onReset={resetLayout} onImport={importLayout} />
-				<ConfigForm config={config} onSelectLayout={selectLayout} onUpdate={update} />
+				<Toolbar />
+				<ConfigForm
+					config={config}
+					onSelectLayout={selectLayout}
+					onUpdate={update}
+					onResetLayout={resetLayout}
+					onImportLayout={importLayout}
+				/>
 			</Sidebar>
 			<Preview config={config} onResetLayout={resetLayout} />
 		</div>

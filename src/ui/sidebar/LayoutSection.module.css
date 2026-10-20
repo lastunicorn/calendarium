@@ -1,0 +1,16 @@
+.actions {
+	display: flex;
+	gap: 8px;
+}
+
+.error {
+	margin: 0;
+	font-size: 0.875rem;
+	color: var(--color-error);
+}
+
+.notice {
+	margin: 0;
+	font-size: 0.875rem;
+	color: var(--color-text-muted);
+}
