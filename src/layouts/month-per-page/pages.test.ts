@@ -57,6 +57,11 @@ describe('planMonthPages', () => {
 		expect(plan(2026, { showGridLines: false })[0].grid.showGridLines).toBe(false)
 	})
 
+	it('writes the day numbers in 14 pt unless told another size', () => {
+		expect(plan(2026)[0].grid.dayNumberFontSize).toBe(14)
+		expect(plan(2026, { dayNumberFontSize: 24 })[0].grid.dayNumberFontSize).toBe(24)
+	})
+
 	it('sets the day numbers top left unless told where', () => {
 		expect(plan(2026)[0].grid).toMatchObject({
 			dayNumberHorizontalAlignment: 'left',

@@ -38,6 +38,20 @@ export type DayNumberHorizontalAlignment = (typeof DAY_NUMBER_HORIZONTAL_ALIGNME
 export const DAY_NUMBER_VERTICAL_ALIGNMENTS = ['top', 'center', 'bottom'] as const
 export type DayNumberVerticalAlignment = (typeof DAY_NUMBER_VERTICAL_ALIGNMENTS)[number]
 
+/** Bounds of a grid day's number size, in pt. */
+export const MIN_DAY_NUMBER_FONT_SIZE = 8
+export const MAX_DAY_NUMBER_FONT_SIZE = 36
+
+/** A day number's font size, in pt, from `MIN_DAY_NUMBER_FONT_SIZE` to `MAX_DAY_NUMBER_FONT_SIZE`. */
+export function isDayNumberFontSize(value: unknown): value is number {
+	return (
+		typeof value === 'number' &&
+		Number.isFinite(value) &&
+		value >= MIN_DAY_NUMBER_FONT_SIZE &&
+		value <= MAX_DAY_NUMBER_FONT_SIZE
+	)
+}
+
 export interface MonthPerPageConfig extends CommonConfig, MonthGridOptions {
 	/**
 	 * Shown above the grid on every page, the month and year then below it; when empty, the month
@@ -53,6 +67,8 @@ export interface MonthPerPageConfig extends CommonConfig, MonthGridOptions {
 	showAdjacentMonthDays: boolean
 	/** Whether the grid's cells are ruled, or only their contents are drawn. */
 	showGridLines: boolean
+	/** The size of each day's number in the grid, in pt; its events' names keep their own. */
+	dayNumberFontSize: number
 	dayNumberHorizontalAlignment: DayNumberHorizontalAlignment
 	dayNumberVerticalAlignment: DayNumberVerticalAlignment
 	adjacentMonths: AdjacentMonthsOptions
@@ -71,6 +87,7 @@ export const MONTH_PER_PAGE_SPEC: LayoutSpec<MonthPerPageConfig> = {
 			monthHeadingAlignment: 'center',
 			showAdjacentMonthDays: false,
 			showGridLines: true,
+			dayNumberFontSize: 14,
 			dayNumberHorizontalAlignment: 'left',
 			dayNumberVerticalAlignment: 'top',
 			adjacentMonths: adjacentMonthsDefaults(),
@@ -86,6 +103,7 @@ export const MONTH_PER_PAGE_SPEC: LayoutSpec<MonthPerPageConfig> = {
 		monthHeadingAlignment: oneOf(HEADING_ALIGNS),
 		showAdjacentMonthDays: isBoolean,
 		showGridLines: isBoolean,
+		dayNumberFontSize: isDayNumberFontSize,
 		dayNumberHorizontalAlignment: oneOf(DAY_NUMBER_HORIZONTAL_ALIGNMENTS),
 		dayNumberVerticalAlignment: oneOf(DAY_NUMBER_VERTICAL_ALIGNMENTS),
 		adjacentMonths: ADJACENT_MONTHS_VALIDATORS,

@@ -10,6 +10,7 @@ The features each release brought, newest first. Versions follow the app version
 - Month layout: the grayed days of the previous and next month can be left out of the grid, their cells blank (left out by default).
 - Month layout: the day numbers can be set left, centered or right, and at the top, middle or bottom of their cells, with the events' names following them (top left by default).
 - Month layout: the grid's lines can be left out, only the weekday names, the days and their events being drawn (shown by default).
+- Month layout: the day numbers' font size can be set, from 8 to 36 pt (14 pt by default).
 - Every sidebar section but the layout picker ends with a small reset button, at its bottom right. It veils the section's fields with a question and a Reset button that restores just that section's settings to their defaults; a click outside the section, Escape or collapsing the section cancels.
 - Week layout: the weeks can start on an even page, after a blank first page, so that printed double-sided each week's two pages face each other.
 - Day layout: the grid of squares can be aligned left, centered or right on the page, inside its margins (left by default).

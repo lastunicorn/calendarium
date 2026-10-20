@@ -59,7 +59,7 @@
 	min-width: 0;
 	min-height: 0;
 	padding: 1.5mm 2mm;
-	font-size: 14pt;
+	/* The number's size is set per `dayNumberFontSize`, on the number itself. */
 	font-weight: 600;
 	line-height: 1;
 	overflow: hidden;

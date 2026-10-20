@@ -29,6 +29,8 @@ export interface MonthGridPlan {
 	showAdjacentMonthDays: boolean
 	/** Whether the cells are ruled, or only their contents are drawn. */
 	showGridLines: boolean
+	/** The size of each day's number, in pt. */
+	dayNumberFontSize: number
 	/** Where each day's number sits across its cell. */
 	dayNumberHorizontalAlignment: DayNumberHorizontalAlignment
 	/** Where each day's number sits down its cell. */
@@ -94,6 +96,7 @@ export function planMonthPages(config: MonthPerPageConfig, model: CalendarModel)
 				showWeekNumbers: config.showWeekNumbers,
 				showAdjacentMonthDays: config.showAdjacentMonthDays,
 				showGridLines: config.showGridLines,
+				dayNumberFontSize: config.dayNumberFontSize,
 				dayNumberHorizontalAlignment: config.dayNumberHorizontalAlignment,
 				dayNumberVerticalAlignment: config.dayNumberVerticalAlignment,
 			},
