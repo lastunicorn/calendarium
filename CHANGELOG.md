@@ -4,6 +4,10 @@ The features each release brought, newest first. Versions follow the app version
 
 ## Unreleased
 
+## 4.1.0 — 2026-10-20
+
+Settings and files from 4.0.0 are read as they are; the new options start at their defaults.
+
 ### Added
 
 - Week layout: the page title can be set left, centered or right, or automatically (left beside the mini calendar or over two pages, centered otherwise).
