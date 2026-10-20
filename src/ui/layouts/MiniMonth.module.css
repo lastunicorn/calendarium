@@ -46,6 +46,10 @@
 	border-right: 0.3mm solid var(--color-rule-light);
 }
 
+.weekNumber.emptyWeek {
+	border-right: none;
+}
+
 .weekday.weekNumber {
 	border-bottom-color: var(--color-rule);
 }

@@ -39,12 +39,15 @@ export function MiniMonth({
 				))}
 				{month.weeks.map((week) => {
 					const marked = week.some((day) => day.key === markedWeek)
+					// Trailing rows made only of next-month days stay blank, without the rule.
+					const empty = !week.some((day) => day.inMonth)
 					return (
 						<Fragment key={week[0].key}>
 							{showWeekNumbers && (
-								<div className={styles.weekNumber}>
-									{/* Trailing rows made only of next-month days stay blank. */}
-									{week.some((day) => day.inMonth) ? weekNumber(week) : ''}
+								<div
+									className={`${styles.weekNumber} ${empty ? styles.emptyWeek : ''}`}
+								>
+									{empty ? '' : weekNumber(week)}
 								</div>
 							)}
 							{week.map((day) => (
