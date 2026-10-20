@@ -50,6 +50,7 @@ describe('parseConfig', () => {
 					weekdayFormat: 'narrow',
 					highlightWeekendDays: false,
 					showHeaderWeek: false,
+					headingAlignment: 'right',
 					weekendDisplay: 'reduced',
 					weekPageLines: 'hours',
 					twoPagesPerWeek: true,

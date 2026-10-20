@@ -16,6 +16,13 @@ import {
 export const WEEK_PAGE_LINES = ['none', 'hours'] as const
 export type WeekPageLines = (typeof WEEK_PAGE_LINES)[number]
 
+/**
+ * Where a `week-per-page` heading sits across its header row; `auto` sets it to the left beside the
+ * mini month or over two pages, centered otherwise (`headingAlign`).
+ */
+export const HEADING_ALIGNMENTS = ['auto', 'left', 'center', 'right'] as const
+export type HeadingAlignment = (typeof HEADING_ALIGNMENTS)[number]
+
 export interface WeekPerPageConfig extends CommonConfig, HourSchedule {
 	/** How the weekday name in each day's cell is abbreviated. */
 	weekdayFormat: WeekdayFormat
@@ -23,6 +30,8 @@ export interface WeekPerPageConfig extends CommonConfig, HourSchedule {
 	highlightWeekendDays: boolean
 	/** Whether the heading shows the week's ISO number ("Week 1"). */
 	showHeaderWeek: boolean
+	/** Where the heading sits across the header row. */
+	headingAlignment: HeadingAlignment
 	/** Whether Saturday and Sunday get a cell each, share one, or are left out. */
 	weekendDisplay: WeekendDisplay
 	/**
@@ -32,8 +41,8 @@ export interface WeekPerPageConfig extends CommonConfig, HourSchedule {
 	 */
 	weekPageLines: WeekPageLines
 	/**
-	 * Whether each week takes two pages: its first three days on the first, under a heading set
-	 * to the left, and the rest on the second, under the mini month (if shown) in the top right.
+	 * Whether each week takes two pages: its first three days on the first, under the heading,
+	 * and the rest on the second, under the mini month (if shown) in the top right.
 	 */
 	twoPagesPerWeek: boolean
 	/** Whether the days are columns or rows (`stacksDays`). */
@@ -52,6 +61,7 @@ export const WEEK_PER_PAGE_SPEC: LayoutSpec<WeekPerPageConfig> = {
 			weekdayFormat: 'short',
 			highlightWeekendDays: true,
 			showHeaderWeek: true,
+			headingAlignment: 'auto',
 			weekendDisplay: 'reduced',
 			weekPageLines: 'hours',
 			twoPagesPerWeek: false,
@@ -67,6 +77,7 @@ export const WEEK_PER_PAGE_SPEC: LayoutSpec<WeekPerPageConfig> = {
 		weekdayFormat: oneOf(WEEKDAY_FORMATS),
 		highlightWeekendDays: isBoolean,
 		showHeaderWeek: isBoolean,
+		headingAlignment: oneOf(HEADING_ALIGNMENTS),
 		weekendDisplay: oneOf(WEEKEND_DISPLAYS),
 		weekPageLines: oneOf(WEEK_PAGE_LINES),
 		twoPagesPerWeek: isBoolean,

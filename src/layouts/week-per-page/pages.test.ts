@@ -60,6 +60,17 @@ describe('planWeekPages', () => {
 		expect(week(plan(2026, { showHeaderWeek: false }).weeks, '2026-10-19').subheading).toBe('')
 	})
 
+	it('sets the heading left beside the mini month or over two pages, unless told where', () => {
+		const align = (options: Partial<WeekPerPageConfig>) =>
+			week(plan(2026, options).weeks, '2026-10-19').headingAlign
+		const miniMonth = { ...defaultLayoutConfig('week-per-page').miniMonth, show: true }
+		expect(align({})).toBe('center')
+		expect(align({ miniMonth })).toBe('left')
+		expect(align({ twoPagesPerWeek: true })).toBe('left')
+		expect(align({ headingAlignment: 'right', miniMonth })).toBe('right')
+		expect(align({ headingAlignment: 'center', twoPagesPerWeek: true })).toBe('center')
+	})
+
 	it('puts the whole week on one sheet, or Monday to Wednesday then the rest on two', () => {
 		const one = week(plan(2026, { weekendDisplay: 'full' }).weeks, '2026-10-19')
 		expect(one.sheets.map((sheet) => sheet.header)).toEqual(['both'])

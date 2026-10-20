@@ -6,8 +6,8 @@ interface CalendarHeaderProps {
 	subheading?: string
 	/** `large` heads a single-page calendar; `compact` leaves room for a month grid. */
 	size?: 'large' | 'compact'
-	/** `start` sits the header beside other content instead of centered above it. */
-	align?: 'center' | 'start'
+	/** Where the lines sit across the header's box: `left` beside other content, `center` above it. */
+	align?: 'left' | 'center' | 'right'
 	/** Draws the heading in the weekend color. */
 	highlight?: boolean
 }
@@ -25,7 +25,7 @@ export function CalendarHeader({
 			className={[
 				styles.header,
 				styles[size],
-				align === 'start' ? styles.start : '',
+				styles[align],
 				highlight ? styles.highlight : '',
 			].join(' ')}
 		>

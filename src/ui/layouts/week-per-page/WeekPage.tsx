@@ -104,7 +104,7 @@ export const WeekPage = memo(function WeekPage({ plan, hours, setup }: WeekPageP
 			heading={plan.heading}
 			subheading={plan.subheading}
 			size="compact"
-			align={plan.sheets.length > 1 || miniMonth ? 'start' : 'center'}
+			align={plan.headingAlign}
 		/>
 	)
 

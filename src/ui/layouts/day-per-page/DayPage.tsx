@@ -59,7 +59,7 @@ export const DayPage = memo(function DayPage({ plan, setup }: DayPageProps) {
 								heading={plan.heading}
 								subheading={plan.subheading}
 								size="compact"
-								align="start"
+								align="left"
 								highlight={plan.weekend}
 							/>
 							{details && <p className={styles.details}>{details}</p>}
