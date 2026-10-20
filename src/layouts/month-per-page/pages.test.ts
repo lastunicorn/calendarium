@@ -47,6 +47,13 @@ describe('planMonthPages', () => {
 		expect(pages[4].grid.weeks).toHaveLength(6)
 	})
 
+	it('shows the days of the previous and next month unless told not to', () => {
+		expect(plan(2026)[0].grid.showAdjacentMonthDays).toBe(true)
+		expect(plan(2026, { showAdjacentMonthDays: false })[0].grid.showAdjacentMonthDays).toBe(
+			false,
+		)
+	})
+
 	it('writes the weekday names in full when asked', () => {
 		expect(plan(2026, { weekdayFormat: 'full' })[0].grid.weekdays[2]).toBe('Wednesday')
 	})

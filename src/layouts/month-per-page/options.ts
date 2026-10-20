@@ -39,6 +39,8 @@ export interface MonthPerPageConfig extends CommonConfig, MonthGridOptions {
 	 * `headingAlignment` it has no `auto`.
 	 */
 	monthHeadingAlignment: HeadingAlign
+	/** Whether the grid's grayed days of the previous and next month show their numbers. */
+	showAdjacentMonthDays: boolean
 	adjacentMonths: AdjacentMonthsOptions
 }
 
@@ -54,6 +56,7 @@ export const MONTH_PER_PAGE_SPEC: LayoutSpec<MonthPerPageConfig> = {
 			highlightWeekends: 'columns',
 			showWeekNumbers: true,
 			monthHeadingAlignment: 'center',
+			showAdjacentMonthDays: true,
 			adjacentMonths: adjacentMonthsDefaults(),
 			page: { ...common.page, orientation: 'landscape', margins: margins(10) },
 		}
@@ -65,6 +68,7 @@ export const MONTH_PER_PAGE_SPEC: LayoutSpec<MonthPerPageConfig> = {
 		weekdayFormat: oneOf(WEEKDAY_FORMATS),
 		title: isString,
 		monthHeadingAlignment: oneOf(HEADING_ALIGNS),
+		showAdjacentMonthDays: isBoolean,
 		adjacentMonths: ADJACENT_MONTHS_VALIDATORS,
 	},
 	normalize: unchanged,

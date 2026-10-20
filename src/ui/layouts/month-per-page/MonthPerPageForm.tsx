@@ -4,12 +4,11 @@ import type {
 } from '../../../layouts/month-per-page/options'
 import { CalendarSection } from '../../sidebar/CalendarSection'
 import { EventsSection } from '../../sidebar/EventsSection'
-import { ContentSection } from '../../sidebar/ContentSection'
-import { WEEKDAY_FORMAT_OPTIONS } from '../../sidebar/fieldOptions'
 import { PageSection } from '../../sidebar/PageSection'
 import type { ConfigSectionProps } from '../../sidebar/Section'
 import { AdjacentMonthsSection } from './AdjacentMonthsSection'
 import { HeaderSection } from './HeaderSection'
+import { MonthContentSection } from './MonthContentSection'
 
 /** The `month-per-page` options, including its header and the mini months beside it. */
 export function MonthPerPageForm({
@@ -31,12 +30,7 @@ export function MonthPerPageForm({
 				defaults={defaults.adjacentMonths}
 				onUpdate={handleAdjacentMonthsUpdate}
 			/>
-			<ContentSection
-				config={config}
-				defaults={defaults}
-				onUpdate={onUpdate}
-				weekdayFormats={WEEKDAY_FORMAT_OPTIONS}
-			/>
+			<MonthContentSection config={config} defaults={defaults} onUpdate={onUpdate} />
 			<PageSection config={config} defaults={defaults} onUpdate={onUpdate} />
 		</>
 	)

@@ -21,6 +21,8 @@ export interface MonthGridPlan {
 	weekdays: string[]
 	highlightWeekends: WeekendHighlight
 	showWeekNumbers: boolean
+	/** Whether the days of the previous and next month show their numbers, or leave their cells blank. */
+	showAdjacentMonthDays: boolean
 }
 
 /** One month's page. */
@@ -80,6 +82,7 @@ export function planMonthPages(config: MonthPerPageConfig, model: CalendarModel)
 				weekdays,
 				highlightWeekends: config.highlightWeekends,
 				showWeekNumbers: config.showWeekNumbers,
+				showAdjacentMonthDays: config.showAdjacentMonthDays,
 			},
 			previousMonth: adjacentMonths.showPreviousMonth
 				? planMiniMonth(month.month, -1)

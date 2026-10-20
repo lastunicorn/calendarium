@@ -4,8 +4,17 @@ import { isHighlightedColumn, isHighlightedDay } from '../../../core/weekend'
 import type { MonthGridPlan } from '../../../layouts/month-per-page/pages'
 import styles from './MonthGrid.module.css'
 
-/** A full-page month (`MonthGridPlan`): large cells with room to write, adjacent-month days in gray. */
-export function MonthGrid({ weeks, weekdays, highlightWeekends, showWeekNumbers }: MonthGridPlan) {
+/**
+ * A full-page month (`MonthGridPlan`): large cells with room to write, adjacent-month days in gray
+ * or left blank.
+ */
+export function MonthGrid({
+	weeks,
+	weekdays,
+	highlightWeekends,
+	showWeekNumbers,
+	showAdjacentMonthDays,
+}: MonthGridPlan) {
 	const weekendColumns = weeks[0].map((day) => isHighlightedColumn(day, highlightWeekends))
 
 	return (
@@ -36,7 +45,7 @@ export function MonthGrid({ weeks, weekdays, highlightWeekends, showWeekNumbers 
 								day.inMonth ? '' : styles.adjacent,
 							].join(' ')}
 						>
-							{day.day}
+							{(day.inMonth || showAdjacentMonthDays) && day.day}
 							{day.events.map((name, index) => (
 								// Two events may share a name, and they never reorder.
 								<span key={index} className={styles.event}>
