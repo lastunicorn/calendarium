@@ -54,6 +54,7 @@ describe('ConfigForm', () => {
 		expect(sectionTitles('day-per-page')).toEqual([
 			'Layout',
 			'Calendar',
+			'Header',
 			'Day page',
 			'Mini calendar',
 			'Page',
