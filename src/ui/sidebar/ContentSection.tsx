@@ -1,9 +1,9 @@
 import type { ComponentProps } from 'react'
-import { ContentIcon } from '../../components/icons'
-import { MonthGridFields } from '../../sidebar/MonthGridFields'
-import { Section } from '../../sidebar/Section'
+import { ContentIcon } from '../components/icons'
+import { MonthGridFields } from './MonthGridFields'
+import { Section } from './Section'
 
-/** How the page's twelve months look. */
+/** How the layout's month grids look. */
 export function ContentSection(props: ComponentProps<typeof MonthGridFields>) {
 	return (
 		<Section title="Content" icon={<ContentIcon />}>

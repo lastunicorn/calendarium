@@ -104,19 +104,7 @@ export function HeaderIcon() {
 	)
 }
 
-/** A painter's palette: the appearance section. */
-export function AppearanceIcon() {
-	return (
-		<Icon>
-			<path d="M12 21a9 9 0 1 1 9-9c0 2.5-2 3.5-4 3.5h-1.5a1.5 1.5 0 0 0-1 2.6c.6.6.4 2.9-2.5 2.9z" />
-			<circle cx="7.5" cy="11" r="1" />
-			<circle cx="10.5" cy="7" r="1" />
-			<circle cx="15" cy="7.5" r="1" />
-		</Icon>
-	)
-}
-
-/** Twelve dots in a frame, the year's months: the year page's content section. */
+/** Dots in a frame, a month grid's days: the content section. */
 export function ContentIcon() {
 	return (
 		<Icon>

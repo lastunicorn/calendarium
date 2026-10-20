@@ -1,6 +1,6 @@
 import type { YearPerPageConfig } from '../../../layouts/year-per-page/options'
 import { CalendarSection } from '../../sidebar/CalendarSection'
-import { ContentSection } from './ContentSection'
+import { ContentSection } from '../../sidebar/ContentSection'
 import { HeaderSection } from './HeaderSection'
 import { PageSection } from '../../sidebar/PageSection'
 import type { ConfigSectionProps } from '../../sidebar/Section'

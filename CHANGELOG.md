@@ -10,7 +10,7 @@ The features each release brought, newest first. Versions follow the app version
 - The layout section's buttons show what they do in a line under them, on hover or focus.
 - Less space under an open sidebar section.
 - The reset button's icon is a power symbol with a dashed ring.
-- The year layout's Appearance section is named Content.
+- The year and month layouts' Appearance section is named Content.
 
 ## 4.1.0 — 2026-10-20
 

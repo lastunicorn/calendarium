@@ -38,12 +38,12 @@ describe('ConfigForm', () => {
 		])
 	})
 
-	it('shows the header and appearance options on the month layout', () => {
+	it('shows the header and content options on the month layout', () => {
 		expect(sectionTitles('month-per-page')).toEqual([
 			'Layout',
 			'Calendar',
 			'Header',
-			'Appearance',
+			'Content',
 			'Page',
 		])
 	})
