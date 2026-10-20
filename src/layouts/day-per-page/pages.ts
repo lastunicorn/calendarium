@@ -6,9 +6,6 @@ import type { CalendarModel } from '../common'
 import type { MiniMonthPlan } from '../monthGrid'
 import type { DayPerPageConfig } from './options'
 
-/** Distance between ruled lines, in mm. */
-const RULED_LINE_SPACING = 8
-
 /** What fills a day's sheet under its header, or all of its second sheet. */
 export type DayFill =
 	/** One row per hour, labeled. */
@@ -34,7 +31,7 @@ export interface DayPages {
 }
 
 /**
- * The fills of every day's sheets, the same for every day. Ruled lines fill the page inside its
+ * The fills of every day's sheets, the same for every day. Ruled lines, `ruledLineSpacing` apart, fill the page inside its
  * margins (the header takes some of that height, and the ruled area clips the lines that don't
  * fit); over two sheets they continue. The hours are split in half over two sheets, the first
  * taking the extra hour of an odd count.
@@ -42,8 +39,9 @@ export interface DayPages {
 function planFills(config: DayPerPageConfig): DayFill[] {
 	const sheets = config.twoPagesPerDay ? 2 : 1
 	if (config.dayPageLines === 'ruled') {
-		const lines = Math.ceil(contentBox(config.page).height / RULED_LINE_SPACING)
-		const fill: DayFill = { kind: 'ruled', lines, spacing: RULED_LINE_SPACING }
+		const spacing = config.ruledLineSpacing
+		const lines = Math.ceil(contentBox(config.page).height / spacing)
+		const fill: DayFill = { kind: 'ruled', lines, spacing }
 		return Array.from({ length: sheets }, () => fill)
 	}
 	const hours = hourNames(config.locale, config.firstHour, config.lastHour, config.hourFormat)

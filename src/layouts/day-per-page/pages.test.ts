@@ -98,6 +98,13 @@ describe('planDayPages', () => {
 			])
 		})
 
+		it('rule the lines as far apart as asked', () => {
+			// 273 mm high: 46 lines 6 mm apart, the last one clipped.
+			expect(plan(2026, { dayPageLines: 'ruled', ruledLineSpacing: 6 })[0].fills).toEqual([
+				{ kind: 'ruled', lines: 46, spacing: 6 },
+			])
+		})
+
 		it('are the same for every day', () => {
 			const days = plan(2026)
 			expect(days[200].fills).toBe(days[0].fills)

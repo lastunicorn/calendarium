@@ -4,6 +4,10 @@ The features each release brought, newest first. Versions follow the app version
 
 ## Unreleased
 
+### Added
+
+- The day layout's ruled lines can be set closer or further apart, from 4 to 20 mm.
+
 ### Changed
 
 - The export, import and reset buttons sit in the layout section, under the layout they act on.

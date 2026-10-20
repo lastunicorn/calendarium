@@ -2,9 +2,12 @@ import {
 	DAY_PAGE_LINES,
 	type DayPageLines,
 	type DayPerPageConfig,
+	MAX_RULED_LINE_SPACING,
+	MIN_RULED_LINE_SPACING,
 } from '../../../layouts/day-per-page/options'
 import { ContentIcon } from '../../components/icons'
 import { CheckboxField } from '../../fields/CheckboxField'
+import { NumberField } from '../../fields/NumberField'
 import { optionsFrom } from '../../fields/options'
 import { RadioField } from '../../fields/RadioField'
 import { ScheduleFields } from '../../sidebar/ScheduleFields'
@@ -15,10 +18,17 @@ const DAY_PAGE_LINES_OPTIONS = optionsFrom(DAY_PAGE_LINES, {
 	ruled: 'Ruled lines',
 })
 
-/** What fills a day's page: an hourly schedule and its hours, or ruled lines, on one page or two. */
+/**
+ * What fills a day's page: an hourly schedule and its hours, or ruled lines and their spacing, on
+ * one page or two.
+ */
 export function DayContentSection({ config, onUpdate }: ConfigSectionProps<DayPerPageConfig>) {
 	function handleDayPageLinesChange(dayPageLines: DayPageLines) {
 		onUpdate({ dayPageLines })
+	}
+
+	function handleRuledLineSpacingChange(ruledLineSpacing: number) {
+		onUpdate({ ruledLineSpacing })
 	}
 
 	function handleTwoPagesPerDayChange(twoPagesPerDay: boolean) {
@@ -38,8 +48,18 @@ export function DayContentSection({ config, onUpdate }: ConfigSectionProps<DayPe
 				options={DAY_PAGE_LINES_OPTIONS}
 				onChange={handleDayPageLinesChange}
 			/>
-			{config.dayPageLines === 'hours' && (
+			{config.dayPageLines === 'hours' ? (
 				<ScheduleFields config={config} onUpdate={onUpdate} />
+			) : (
+				<NumberField
+					label="Line spacing (mm)"
+					description={`From ${MIN_RULED_LINE_SPACING} to ${MAX_RULED_LINE_SPACING} mm.`}
+					value={config.ruledLineSpacing}
+					min={MIN_RULED_LINE_SPACING}
+					max={MAX_RULED_LINE_SPACING}
+					step={0.5}
+					onChange={handleRuledLineSpacingChange}
+				/>
 			)}
 		</Section>
 	)

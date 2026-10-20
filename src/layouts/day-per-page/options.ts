@@ -12,11 +12,27 @@ export type DayPageLines = (typeof DAY_PAGE_LINES)[number]
 export const DAY_PAGE_TITLES = ['weekday', 'date'] as const
 export type DayPageTitle = (typeof DAY_PAGE_TITLES)[number]
 
+/** Bounds of the distance between ruled lines, in mm. */
+export const MIN_RULED_LINE_SPACING = 4
+export const MAX_RULED_LINE_SPACING = 20
+
+/** A distance between ruled lines, in mm, from `MIN_RULED_LINE_SPACING` to `MAX_RULED_LINE_SPACING`. */
+export function isRuledLineSpacing(value: unknown): value is number {
+	return (
+		typeof value === 'number' &&
+		Number.isFinite(value) &&
+		value >= MIN_RULED_LINE_SPACING &&
+		value <= MAX_RULED_LINE_SPACING
+	)
+}
+
 export interface DayPerPageConfig extends CommonConfig, HourSchedule {
 	/** Whether the heading is the weekday ("Thursday") or the date ("1 January 2026"). */
 	dayPageTitle: DayPageTitle
 	/** What fills the page under its header; the schedule's hours come from `HourSchedule`. */
 	dayPageLines: DayPageLines
+	/** The distance between ruled lines, in mm; only used when `dayPageLines` is `ruled`. */
+	ruledLineSpacing: number
 	/**
 	 * Whether each day takes two pages: the second, without a header, continues the ruled lines or
 	 * holds the second half of the schedule's hours.
@@ -38,6 +54,7 @@ export const DAY_PER_PAGE_SPEC: LayoutSpec<DayPerPageConfig> = {
 		...commonDefaults(),
 		dayPageTitle: 'weekday',
 		dayPageLines: 'hours',
+		ruledLineSpacing: 8,
 		twoPagesPerDay: false,
 		...scheduleDefaults(),
 		highlightWeekendDays: true,
@@ -49,6 +66,7 @@ export const DAY_PER_PAGE_SPEC: LayoutSpec<DayPerPageConfig> = {
 		...COMMON_VALIDATORS,
 		dayPageTitle: oneOf(DAY_PAGE_TITLES),
 		dayPageLines: oneOf(DAY_PAGE_LINES),
+		ruledLineSpacing: isRuledLineSpacing,
 		twoPagesPerDay: isBoolean,
 		...SCHEDULE_VALIDATORS,
 		highlightWeekendDays: isBoolean,
