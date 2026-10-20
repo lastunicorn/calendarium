@@ -7,6 +7,7 @@ The features each release brought, newest first. Versions follow the app version
 ### Added
 
 - Every sidebar section but the layout picker ends with a small reset button, at its bottom right. It veils the section's fields with a question and a Reset button that restores just that section's settings to their defaults; a click outside the section, Escape or collapsing the section cancels.
+- Week layout: the weeks can start on an even page, after a blank first page, so that printed double-sided each week's two pages face each other.
 
 ## 4.2.0 — 2026-10-20
 

@@ -87,6 +87,11 @@ describe('planWeekPages', () => {
 		])
 	})
 
+	it('puts a blank page first only when the weeks start on an even page', () => {
+		expect(plan(2026).blankFirstPage).toBe(false)
+		expect(plan(2026, { startPage: 'even' }).blankFirstPage).toBe(true)
+	})
+
 	it('names the month where it changes and on each sheet’s first day', () => {
 		// January 26 – February 1, 2026.
 		const monthNames = (options: Partial<WeekPerPageConfig>) =>

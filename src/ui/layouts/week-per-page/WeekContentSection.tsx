@@ -5,6 +5,8 @@ import {
 	type WeekendDisplay,
 } from '../../../layouts/week-per-page/cells'
 import {
+	START_PAGES,
+	type StartPage,
 	WEEK_PAGE_LINES,
 	type WeekPageLines,
 	type WeekPerPageConfig,
@@ -37,6 +39,14 @@ const WEEK_DAY_DIRECTION_OPTIONS = optionsFrom(WEEK_DAY_DIRECTIONS, {
 	vertical: 'Vertical (columns)',
 	horizontal: 'Horizontal (rows)',
 })
+
+const START_PAGE_OPTIONS = optionsFrom(START_PAGES, {
+	odd: 'Odd page',
+	even: 'Even page (a blank page first)',
+})
+
+const START_PAGE_DESCRIPTION =
+	'Printed double-sided, a week starting on an even page faces the next page, so each week’s two pages lie open side by side.'
 
 const WEEK_PAGE_LINES_OPTIONS = optionsFrom(WEEK_PAGE_LINES, {
 	none: 'Off',
@@ -76,10 +86,15 @@ export function WeekContentSection({
 		onUpdate({ twoPagesPerWeek })
 	}
 
+	function handleStartPageChange(startPage: StartPage) {
+		onUpdate({ startPage })
+	}
+
 	function handleReset() {
 		onUpdate(
 			defaultFields(defaults, [
 				'twoPagesPerWeek',
+				'startPage',
 				'weekDayDirection',
 				'weekdayFormat',
 				'highlightWeekendDays',
@@ -99,6 +114,13 @@ export function WeekContentSection({
 				description="The first three days go on the first page, under the title; the rest on the second, under the mini calendar if shown."
 				checked={config.twoPagesPerWeek}
 				onChange={handleTwoPagesPerWeekChange}
+			/>
+			<RadioField
+				label="Start on"
+				description={START_PAGE_DESCRIPTION}
+				value={config.startPage}
+				options={START_PAGE_OPTIONS}
+				onChange={handleStartPageChange}
 			/>
 			<RadioField
 				label="Days direction"

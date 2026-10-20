@@ -61,6 +61,7 @@ describe('parseConfig', () => {
 					weekendDisplay: 'reduced',
 					weekPageLines: 'hours',
 					twoPagesPerWeek: true,
+					startPage: 'even',
 					weekDayDirection: 'horizontal',
 					hourFormat: '12h',
 					firstHour: 8,

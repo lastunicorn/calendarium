@@ -9,7 +9,8 @@ type PageStyle = CSSProperties &
 
 interface PageProps {
 	setup: PageSetup
-	children: ReactNode
+	/** Its content; none for a blank page. */
+	children?: ReactNode
 }
 
 /**

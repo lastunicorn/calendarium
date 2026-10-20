@@ -71,6 +71,8 @@ export interface WeekPages {
 }
 
 export interface WeekPlan {
+	/** Whether a blank sheet comes first, so the first week starts on an even page (`startPage`). */
+	blankFirstPage: boolean
 	/** Labels of the hourly schedule, one array for every page; none when no cell holds one. */
 	hours?: string[]
 	/** The weeks that get pages, in order. */
@@ -159,5 +161,5 @@ export function planWeekPages(config: WeekPerPageConfig, model: CalendarModel): 
 	const hours = withSchedule
 		? hourNames(locale, config.firstHour, config.lastHour, config.hourFormat)
 		: undefined
-	return { hours, weeks }
+	return { blankFirstPage: config.startPage === 'even', hours, weeks }
 }

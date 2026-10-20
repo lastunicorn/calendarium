@@ -17,6 +17,13 @@ import {
 export const WEEK_PAGE_LINES = ['none', 'hours'] as const
 export type WeekPageLines = (typeof WEEK_PAGE_LINES)[number]
 
+/**
+ * The page the first week prints on: `odd`, the first sheet, or `even`, after a blank sheet, so
+ * that printed double-sided, each week's two pages face each other.
+ */
+export const START_PAGES = ['odd', 'even'] as const
+export type StartPage = (typeof START_PAGES)[number]
+
 export interface WeekPerPageConfig extends CommonConfig, HourSchedule {
 	/** How the weekday name in each day's cell is written: in full or abbreviated. */
 	weekdayFormat: WeekdayFormat
@@ -42,6 +49,8 @@ export interface WeekPerPageConfig extends CommonConfig, HourSchedule {
 	 * and the rest on the second, under the mini month (if shown) in the top right.
 	 */
 	twoPagesPerWeek: boolean
+	/** Whether the first week starts on the first page, or on the second after a blank one. */
+	startPage: StartPage
 	/** Whether the days are columns or rows (`stacksDays`). */
 	weekDayDirection: WeekDayDirection
 	/** The week's month (`weekMonth`), drawn small beside the heading with the week marked. */
@@ -62,6 +71,7 @@ export const WEEK_PER_PAGE_SPEC: LayoutSpec<WeekPerPageConfig> = {
 			weekendDisplay: 'reduced',
 			weekPageLines: 'hours',
 			twoPagesPerWeek: false,
+			startPage: 'odd',
 			weekDayDirection: 'auto',
 			...scheduleDefaults(),
 			miniMonth: miniMonthDefaults(),
@@ -77,6 +87,7 @@ export const WEEK_PER_PAGE_SPEC: LayoutSpec<WeekPerPageConfig> = {
 		weekendDisplay: oneOf(WEEKEND_DISPLAYS),
 		weekPageLines: oneOf(WEEK_PAGE_LINES),
 		twoPagesPerWeek: isBoolean,
+		startPage: oneOf(START_PAGES),
 		weekDayDirection: oneOf(WEEK_DAY_DIRECTIONS),
 		...SCHEDULE_VALIDATORS,
 		miniMonth: MINI_MONTH_VALIDATORS,

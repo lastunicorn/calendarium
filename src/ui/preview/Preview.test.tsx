@@ -38,6 +38,16 @@ describe('Preview', () => {
 		expect(pageCount('week-per-page', 2025)).toBe(53)
 	})
 
+	it('draws a blank page before the first week when it starts on an even page', () => {
+		const config = configFor('week-per-page', 2025)
+		config.layouts['week-per-page'].startPage = 'even'
+		const { container } = render(<Preview config={config} onResetLayout={noop} />)
+		const pages = container.querySelectorAll('section')
+		expect(pages).toHaveLength(1 + 53)
+		expect(pages[0].textContent).toBe('')
+		expect(pages[1].textContent).toContain('Mon')
+	})
+
 	it('spreads each week over two pages, with the heading on the first only', () => {
 		const config = configFor('week-per-page', 2025)
 		Object.assign(config.layouts['week-per-page'], {

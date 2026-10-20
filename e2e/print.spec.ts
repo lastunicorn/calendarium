@@ -108,6 +108,12 @@ test('week-per-page prints two pages per week when asked', async ({ page }) => {
 
 	const sizes = pdfPageSizes(await page.pdf({ preferCSSPageSize: true, printBackground: true }))
 	expect(sizes).toHaveLength(2 * 53)
+
+	await page.getByRole('radio', { name: 'Even page (a blank page first)' }).check()
+	const evenSizes = pdfPageSizes(
+		await page.pdf({ preferCSSPageSize: true, printBackground: true }),
+	)
+	expect(evenSizes).toHaveLength(1 + 2 * 53)
 })
 
 test('week-per-page fits its content with the mini calendar, on one page or two', async ({
