@@ -195,4 +195,27 @@ describe('ConfigForm', () => {
 		)
 		expect(screen.getByRole('group', { name: 'Spine' })).not.toBeNull()
 	})
+
+	it('labels the hovered or focused layout action under the buttons', () => {
+		render(
+			<ConfigForm
+				config={defaultAppConfig()}
+				onSelectLayout={noop}
+				onUpdate={noop}
+				onResetLayout={noop}
+				onImportLayout={noop}
+			/>,
+		)
+		const actions = screen.getByRole('toolbar', { name: 'Layout settings' })
+		const hint = actions.nextElementSibling!
+		expect(hint.textContent).toBe('')
+
+		fireEvent.pointerOver(screen.getByRole('button', { name: 'Reset layout settings' }))
+		expect(hint.textContent).toBe('Reset layout settings')
+		fireEvent.pointerLeave(actions)
+		expect(hint.textContent).toBe('')
+
+		fireEvent.focus(screen.getByRole('button', { name: 'Export settings to a file' }))
+		expect(hint.textContent).toBe('Export settings to a file')
+	})
 })

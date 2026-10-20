@@ -1,3 +1,10 @@
+/* The buttons with the hovered one's label just under them. */
+.actionsGroup {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
 .actions {
 	display: flex;
 	gap: 8px;
@@ -12,5 +19,13 @@
 .notice {
 	margin: 0;
 	font-size: 0.875rem;
+	color: var(--color-text-muted);
+}
+
+/* Keeps its line when empty, so the sections below don't jump as the pointer moves. */
+.hint {
+	min-height: 1lh;
+	margin: 0;
+	font-size: 0.75rem;
 	color: var(--color-text-muted);
 }

@@ -1,4 +1,4 @@
-import { type ChangeEvent, useRef, useState } from 'react'
+import { type ChangeEvent, type FocusEvent, type PointerEvent, useRef, useState } from 'react'
 import type { AppConfig } from '../../config/AppConfig'
 import { LAYOUT_IDS, type LayoutId } from '../../layouts'
 import {
@@ -50,6 +50,11 @@ function describeImport(fileName: string, { ignored, newer }: ImportedLayoutConf
 	return notices.join(' ')
 }
 
+/** The label of the action button `target` is in, or empty outside a button. */
+function actionLabel(target: EventTarget): string {
+	return (target instanceof Element && target.closest('button')?.title) || ''
+}
+
 /**
  * How the calendar is spread over pages, above the export, import and reset of the shown
  * layout's options; each layout keeps its own options. Always open.
@@ -60,6 +65,19 @@ export function LayoutSection({ config, onSelect, onReset, onImport }: LayoutSec
 	const fileInput = useRef<HTMLInputElement>(null)
 	const [importError, setImportError] = useState('')
 	const [importNotice, setImportNotice] = useState('')
+	const [hint, setHint] = useState('')
+
+	function handleActionsPointerOver(event: PointerEvent<HTMLDivElement>) {
+		setHint(actionLabel(event.target))
+	}
+
+	function handleActionsFocus(event: FocusEvent<HTMLDivElement>) {
+		setHint(actionLabel(event.target))
+	}
+
+	function handleActionsLeave() {
+		setHint('')
+	}
 
 	function handleExportClick() {
 		const file = exportLayoutFile(config)
@@ -99,29 +117,43 @@ export function LayoutSection({ config, onSelect, onReset, onImport }: LayoutSec
 	return (
 		<Section title="Layout" icon={<LayoutIcon />} collapsible={false}>
 			<SelectField label="" value={layout} options={LAYOUT_OPTIONS} onChange={onSelect} />
-			<div className={styles.actions} role="toolbar" aria-label="Layout settings">
-				<IconButton
-					label="Export settings to a file"
-					icon={<ExportIcon />}
-					onClick={handleExportClick}
-				/>
-				<IconButton
-					label="Import settings from a file"
-					icon={<ImportIcon />}
-					onClick={handleImportClick}
-				/>
-				<IconButton
-					label="Reset layout settings"
-					icon={<ResetIcon />}
-					onClick={handleResetClick}
-				/>
-				<input
-					ref={fileInput}
-					type="file"
-					accept=".json,application/json"
-					hidden
-					onChange={handleImportFileChange}
-				/>
+			<div className={styles.actionsGroup}>
+				<div
+					className={styles.actions}
+					role="toolbar"
+					aria-label="Layout settings"
+					onPointerOver={handleActionsPointerOver}
+					onPointerLeave={handleActionsLeave}
+					onFocus={handleActionsFocus}
+					onBlur={handleActionsLeave}
+				>
+					<IconButton
+						label="Export settings to a file"
+						icon={<ExportIcon />}
+						onClick={handleExportClick}
+					/>
+					<IconButton
+						label="Import settings from a file"
+						icon={<ImportIcon />}
+						onClick={handleImportClick}
+					/>
+					<IconButton
+						label="Reset layout settings"
+						icon={<ResetIcon />}
+						onClick={handleResetClick}
+					/>
+					<input
+						ref={fileInput}
+						type="file"
+						accept=".json,application/json"
+						hidden
+						onChange={handleImportFileChange}
+					/>
+				</div>
+				{/* The buttons are already named by their labels; this repeats one for the eye. */}
+				<p className={styles.hint} aria-hidden="true">
+					{hint}
+				</p>
 			</div>
 
 			{importError && (
