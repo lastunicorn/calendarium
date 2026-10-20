@@ -1,6 +1,11 @@
 import { memo } from 'react'
-import type { PageSetup } from '../../../config/CalendarConfig'
-import { stacksDays, type WeekDayDirection } from '../../../config/layouts/weekPerPage'
+import type { PageSetup } from '../../../core/paper'
+import {
+	splitWeekCells,
+	stacksDays,
+	type WeekCell,
+	type WeekDayDirection,
+} from '../../../layouts/week-per-page/cells'
 import {
 	type CalendarMonth,
 	type WeekDay,
@@ -10,12 +15,7 @@ import {
 } from '../../../core/calendar'
 import { dateRangeName, type Locale } from '../../../core/locale'
 import { PRINT_MESSAGES } from '../../../core/messages'
-import {
-	isHighlightedWeekDay,
-	splitWeekCells,
-	type WeekCell,
-	type WeekendHighlight,
-} from '../../../core/weekend'
+import { isHighlightedWeekDay, type WeekendHighlight } from '../../../core/weekend'
 import { CalendarHeader } from '../CalendarHeader'
 import { MiniMonth } from '../MiniMonth'
 import { Page } from '../Page'

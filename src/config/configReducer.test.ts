@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { configReducer } from './configReducer'
-import { defaultAppConfig, defaultLayoutConfig } from './layouts'
+import { defaultAppConfig } from './AppConfig'
+import { defaultLayoutConfig } from '../layouts'
 
 describe('configReducer', () => {
 	it('selectLayout changes only the active layout', () => {

@@ -1,4 +1,4 @@
-import type { MonthPerPageConfig } from '../../../config/layouts/monthPerPage'
+import type { MonthPerPageConfig } from '../../../layouts/month-per-page/options'
 import type { LayoutView } from '../LayoutView'
 import { MonthPerPageForm } from './MonthPerPageForm'
 import { MonthPerPageLayout } from './MonthPerPageLayout'

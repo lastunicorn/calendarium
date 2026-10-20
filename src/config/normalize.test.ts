@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { configReducer } from '../configReducer'
-import { parseConfig, toStoredConfig } from '../parseConfig'
-import { defaultAppConfig, defaultLayoutConfig, normalizeLayout } from './index'
+import { defaultLayoutConfig, normalizeLayout } from '../layouts'
+import { defaultAppConfig } from './AppConfig'
+import { configReducer } from './configReducer'
+import { parseConfig, toStoredConfig } from './parseConfig'
 
 describe('normalizeLayout', () => {
 	it('puts a reversed day schedule in order', () => {

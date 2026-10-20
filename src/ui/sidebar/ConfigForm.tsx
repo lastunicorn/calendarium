@@ -1,4 +1,5 @@
-import type { AppConfig, LayoutConfigs, LayoutId } from '../../config/CalendarConfig'
+import type { AppConfig } from '../../config/AppConfig'
+import type { LayoutConfigs, LayoutId } from '../../layouts'
 import { layoutView } from '../layouts/registry'
 import type { UpdateLayoutConfig } from '../useCalendarConfig'
 import styles from './ConfigForm.module.css'

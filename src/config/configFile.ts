@@ -1,4 +1,5 @@
-import type { AppConfig, LayoutConfigs, LayoutId } from './CalendarConfig'
+import type { AppConfig } from './AppConfig'
+import type { LayoutConfigs, LayoutId } from '../layouts'
 import { asObject, FILE_FORMAT, isConfigFile, isFromLaterVersion, upgradeFile } from './migrations'
 import { parseLayoutConfig, parseLayoutId } from './parseConfig'
 import { APP_VERSION, CONFIG_VERSION } from './version'

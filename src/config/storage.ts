@@ -1,5 +1,4 @@
-import type { AppConfig } from './CalendarConfig'
-import { defaultAppConfig } from './layouts'
+import { type AppConfig, defaultAppConfig } from './AppConfig'
 import { asObject, isFromLaterVersion } from './migrations'
 import { parseConfig, toStoredConfig } from './parseConfig'
 

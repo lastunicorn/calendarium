@@ -55,6 +55,14 @@ export function weekdayColumn(weekday: Weekday, weekStart: WeekStart): number {
 	return (weekday - weekStart + 7) % 7
 }
 
+/** The first full year of the Gregorian calendar, which the printed weekdays and leap days follow. */
+export const MIN_YEAR = 1583
+export const MAX_YEAR = 9999
+
+export function isYear(value: unknown): value is number {
+	return Number.isInteger(value) && (value as number) >= MIN_YEAR && (value as number) <= MAX_YEAR
+}
+
 export function isLeapYear(year: number): boolean {
 	return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0
 }

@@ -1,4 +1,4 @@
-import type { YearPerPageConfig } from '../../../config/layouts/yearPerPage'
+import type { YearPerPageConfig } from '../../../layouts/year-per-page/options'
 import type { LayoutView } from '../LayoutView'
 import { YearPerPageForm } from './YearPerPageForm'
 import { YearPerPageLayout } from './YearPerPageLayout'

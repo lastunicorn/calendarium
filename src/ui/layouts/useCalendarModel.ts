@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import type { CommonConfig } from '../../config/CalendarConfig'
+import type { CommonConfig } from '../../layouts/common'
 import { buildYear, type CalendarMonth, type WeekStart } from '../../core/calendar'
 import {
 	type Locale,

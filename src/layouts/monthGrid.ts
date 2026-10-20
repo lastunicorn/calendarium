@@ -1,6 +1,6 @@
-import { WEEKDAY_FORMATS, type WeekdayFormat } from '../../core/locale'
-import { WEEKEND_HIGHLIGHTS, type WeekendHighlight } from '../../core/weekend'
-import { isBoolean, oneOf, type Validators } from '../validators'
+import { WEEKDAY_FORMATS, type WeekdayFormat } from '../core/locale'
+import { WEEKEND_HIGHLIGHTS, type WeekendHighlight } from '../core/weekend'
+import { isBoolean, oneOf, type Validators } from '../core/validation'
 
 /** The options of a month drawn as a grid of weeks, shared by the layouts that draw one. */
 export interface MonthGridOptions {

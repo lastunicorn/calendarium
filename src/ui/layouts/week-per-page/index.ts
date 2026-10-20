@@ -1,4 +1,4 @@
-import type { WeekPerPageConfig } from '../../../config/layouts/weekPerPage'
+import type { WeekPerPageConfig } from '../../../layouts/week-per-page/options'
 import type { LayoutView } from '../LayoutView'
 import { WeekPerPageForm } from './WeekPerPageForm'
 import { WeekPerPageLayout } from './WeekPerPageLayout'

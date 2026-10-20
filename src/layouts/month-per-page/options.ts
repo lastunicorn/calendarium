@@ -1,7 +1,7 @@
-import { type CommonConfig, commonDefaults, margins } from '../CalendarConfig'
-import { COMMON_VALIDATORS } from '../validators'
-import { type LayoutSpec, unchanged } from './LayoutSpec'
-import { MONTH_GRID_VALIDATORS, type MonthGridOptions, monthGridDefaults } from './monthGrid'
+import { margins } from '../../core/paper'
+import { COMMON_VALIDATORS, type CommonConfig, commonDefaults } from '../common'
+import { type LayoutSpec, unchanged } from '../LayoutSpec'
+import { MONTH_GRID_VALIDATORS, type MonthGridOptions, monthGridDefaults } from '../monthGrid'
 
 export interface MonthPerPageConfig extends CommonConfig, MonthGridOptions {}
 

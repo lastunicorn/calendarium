@@ -1,5 +1,5 @@
 import { useEffect, useReducer, useRef } from 'react'
-import type { LayoutConfigs, LayoutId } from '../config/CalendarConfig'
+import type { LayoutConfigs, LayoutId } from '../layouts'
 import type { ImportedLayoutConfig } from '../config/configFile'
 import { type ConfigAction, configReducer } from '../config/configReducer'
 import { loadConfig, saveConfig } from '../config/storage'

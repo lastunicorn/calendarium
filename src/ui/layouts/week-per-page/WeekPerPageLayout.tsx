@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
-import type { WeekPerPageConfig } from '../../../config/layouts/weekPerPage'
+import type { WeekPerPageConfig } from '../../../layouts/week-per-page/options'
 import { weekMonth, weeksOfYear } from '../../../core/calendar'
 import { hourNames } from '../../../core/locale'
-import { weekCells } from '../../../core/weekend'
+import { weekCells } from '../../../layouts/week-per-page/cells'
 import { useCalendarModel, useWeekdayNames } from '../useCalendarModel'
 import { WeekPage } from './WeekPage'
 

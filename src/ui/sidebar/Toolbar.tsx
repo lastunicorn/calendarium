@@ -1,5 +1,6 @@
 import { type ChangeEvent, useRef, useState } from 'react'
-import type { AppConfig, LayoutId } from '../../config/CalendarConfig'
+import type { AppConfig } from '../../config/AppConfig'
+import type { LayoutId } from '../../layouts'
 import {
 	exportLayoutFile,
 	type ImportedLayoutConfig,

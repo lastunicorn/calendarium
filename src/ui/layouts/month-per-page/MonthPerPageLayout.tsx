@@ -1,4 +1,4 @@
-import type { MonthPerPageConfig } from '../../../config/layouts/monthPerPage'
+import type { MonthPerPageConfig } from '../../../layouts/month-per-page/options'
 import { monthYearName } from '../../../core/locale'
 import { CalendarHeader } from '../CalendarHeader'
 import { MonthGrid } from './MonthGrid'

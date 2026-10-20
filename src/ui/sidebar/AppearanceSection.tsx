@@ -1,4 +1,4 @@
-import type { MonthGridOptions } from '../../config/layouts/monthGrid'
+import type { MonthGridOptions } from '../../layouts/monthGrid'
 import { AppearanceIcon } from '../components/icons'
 import { MonthGridFields } from './MonthGridFields'
 import { type ConfigSectionProps, Section } from './Section'

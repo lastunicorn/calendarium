@@ -1,4 +1,5 @@
-import type { AppConfig, LayoutConfigs, LayoutId } from '../../config/CalendarConfig'
+import type { AppConfig } from '../../config/AppConfig'
+import type { LayoutConfigs, LayoutId } from '../../layouts'
 import { pageSizeCss } from '../../core/paper'
 import { layoutView } from '../layouts/registry'
 import styles from './Preview.module.css'

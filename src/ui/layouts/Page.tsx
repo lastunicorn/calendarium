@@ -1,6 +1,5 @@
 import { type CSSProperties, type ReactNode, useRef } from 'react'
-import type { PageSetup } from '../../config/CalendarConfig'
-import { pageDimensions } from '../../core/paper'
+import { pageDimensions, type PageSetup } from '../../core/paper'
 import styles from './Page.module.css'
 import { useOverflow } from './useOverflow'
 

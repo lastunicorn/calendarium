@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import App from './App'
-import { defaultLayoutConfig } from './config/layouts'
+import { defaultLayoutConfig } from './layouts'
 import { serializeLayoutConfig } from './config/configFile'
 
 /** Chooses `file` in the toolbar's hidden file input, as the import button's dialog would. */

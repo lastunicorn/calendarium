@@ -1,4 +1,4 @@
-import type { YearPerPageConfig } from '../../../config/layouts/yearPerPage'
+import type { YearPerPageConfig } from '../../../layouts/year-per-page/options'
 import { CalendarHeader } from '../CalendarHeader'
 import { MiniMonth } from '../MiniMonth'
 import { Page } from '../Page'

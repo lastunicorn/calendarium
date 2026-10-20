@@ -1,4 +1,4 @@
-import { type HourSchedule, isHour, MAX_HOUR, MIN_HOUR } from '../../config/layouts/hours'
+import { type HourSchedule, isHour, MAX_HOUR, MIN_HOUR } from '../../layouts/schedule'
 import { HOUR_FORMATS, type HourFormat } from '../../core/locale'
 import { NumberField } from '../fields/NumberField'
 import { optionsFrom } from '../fields/options'
@@ -26,7 +26,7 @@ export function ScheduleFields({ config, onUpdate }: ConfigSectionProps<HourSche
 	}
 
 	// Each bound stops at the other, so the range can't be turned around while typing; the config
-	// would put a reversed range in order anyway (`orderHours` in `config/layouts/hours.ts`).
+	// would put a reversed range in order anyway (`orderHours` in `layouts/schedule.ts`).
 	function isValidFirstHour(hour: number) {
 		return isHour(hour) && hour <= config.lastHour
 	}

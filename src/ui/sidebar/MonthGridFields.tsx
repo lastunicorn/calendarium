@@ -1,4 +1,4 @@
-import type { MonthGridOptions } from '../../config/layouts/monthGrid'
+import type { MonthGridOptions } from '../../layouts/monthGrid'
 import type { WeekdayFormat } from '../../core/locale'
 import { WEEKEND_HIGHLIGHTS, type WeekendHighlight } from '../../core/weekend'
 import { CheckboxField } from '../fields/CheckboxField'

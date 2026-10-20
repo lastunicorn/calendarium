@@ -1,5 +1,5 @@
-import { HOUR_FORMATS, type HourFormat } from '../../core/locale'
-import { oneOf, type Validators } from '../validators'
+import { HOUR_FORMATS, type HourFormat } from '../core/locale'
+import { oneOf, type Validators } from '../core/validation'
 
 export const MIN_HOUR = 0
 export const MAX_HOUR = 23

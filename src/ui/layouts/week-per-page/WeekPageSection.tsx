@@ -1,12 +1,15 @@
 import {
 	WEEK_DAY_DIRECTIONS,
-	WEEK_PAGE_LINES,
 	type WeekDayDirection,
+	WEEKEND_DISPLAYS,
+	type WeekendDisplay,
+} from '../../../layouts/week-per-page/cells'
+import {
+	WEEK_PAGE_LINES,
 	type WeekPageLines,
 	type WeekPerPageConfig,
-} from '../../../config/layouts/weekPerPage'
+} from '../../../layouts/week-per-page/options'
 import type { WeekdayFormat } from '../../../core/locale'
-import { WEEKEND_DISPLAYS, type WeekendDisplay } from '../../../core/weekend'
 import { DayPageIcon } from '../../components/icons'
 import { CheckboxField } from '../../fields/CheckboxField'
 import { optionsFrom } from '../../fields/options'

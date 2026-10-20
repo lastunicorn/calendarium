@@ -1,5 +1,11 @@
-import type { CommonConfig, Margins } from '../../config/CalendarConfig'
-import { type Orientation, ORIENTATIONS, PAPER_SIZES, type PaperSize } from '../../core/paper'
+import type { CommonConfig } from '../../layouts/common'
+import {
+	type Margins,
+	type Orientation,
+	ORIENTATIONS,
+	PAPER_SIZES,
+	type PaperSize,
+} from '../../core/paper'
 import { PageIcon } from '../components/icons'
 import { CheckboxField } from '../fields/CheckboxField'
 import { MarginsField } from '../fields/MarginsField'

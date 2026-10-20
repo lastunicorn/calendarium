@@ -1,4 +1,4 @@
-import type { MiniMonthOptions } from '../../config/layouts/monthGrid'
+import type { MiniMonthOptions } from '../../layouts/monthGrid'
 import { CalendarIcon } from '../components/icons'
 import { CheckboxField } from '../fields/CheckboxField'
 import { MonthGridFields } from './MonthGridFields'

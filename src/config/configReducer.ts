@@ -1,5 +1,5 @@
-import type { AppConfig, LayoutConfigs, LayoutId } from './CalendarConfig'
-import { defaultLayoutConfig, normalizeLayout } from './layouts'
+import type { AppConfig } from './AppConfig'
+import { defaultLayoutConfig, type LayoutConfigs, type LayoutId, normalizeLayout } from '../layouts'
 
 /**
  * The commands that change the `AppConfig` aggregate, the only way it changes. The per-layout ones

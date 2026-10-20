@@ -1,4 +1,4 @@
-import type { MonthPerPageConfig } from '../../../config/layouts/monthPerPage'
+import type { MonthPerPageConfig } from '../../../layouts/month-per-page/options'
 import { AppearanceSection } from '../../sidebar/AppearanceSection'
 import { CalendarSection } from '../../sidebar/CalendarSection'
 import { PageSection } from '../../sidebar/PageSection'

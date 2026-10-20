@@ -1,33 +1,20 @@
-import { WEEKEND_DISPLAYS, type WeekendDisplay } from '../../core/weekend'
 import { WEEKDAY_FORMATS, type WeekdayFormat } from '../../core/locale'
-import type { Orientation } from '../../core/paper'
-import { type CommonConfig, commonDefaults, margins } from '../CalendarConfig'
-import { COMMON_VALIDATORS, isBoolean, oneOf } from '../validators'
-import { type HourSchedule, orderHours, SCHEDULE_VALIDATORS, scheduleDefaults } from './hours'
-import type { LayoutSpec } from './LayoutSpec'
-import { MINI_MONTH_VALIDATORS, type MiniMonthOptions, miniMonthDefaults } from './monthGrid'
+import { margins } from '../../core/paper'
+import { isBoolean, oneOf } from '../../core/validation'
+import { COMMON_VALIDATORS, type CommonConfig, commonDefaults } from '../common'
+import type { LayoutSpec } from '../LayoutSpec'
+import { MINI_MONTH_VALIDATORS, type MiniMonthOptions, miniMonthDefaults } from '../monthGrid'
+import { type HourSchedule, orderHours, SCHEDULE_VALIDATORS, scheduleDefaults } from '../schedule'
+import {
+	WEEK_DAY_DIRECTIONS,
+	type WeekDayDirection,
+	WEEKEND_DISPLAYS,
+	type WeekendDisplay,
+} from './cells'
 
 /** What fills each day's cell on a `week-per-page` page under its label: nothing, or an hourly schedule. */
 export const WEEK_PAGE_LINES = ['none', 'hours'] as const
 export type WeekPageLines = (typeof WEEK_PAGE_LINES)[number]
-
-/**
- * How a `week-per-page` page lays out its days: `vertical` as columns side by side, left to right;
- * `horizontal` as rows stacked top to bottom; `auto` columns on landscape paper or over two pages,
- * rows otherwise.
- */
-export const WEEK_DAY_DIRECTIONS = ['auto', 'vertical', 'horizontal'] as const
-export type WeekDayDirection = (typeof WEEK_DAY_DIRECTIONS)[number]
-
-/** Whether a week page stacks its days as rows (true) or sets them side by side as columns. */
-export function stacksDays(
-	direction: WeekDayDirection,
-	orientation: Orientation,
-	twoPages: boolean,
-): boolean {
-	if (direction === 'auto') return orientation === 'portrait' && !twoPages
-	return direction === 'horizontal'
-}
 
 export interface WeekPerPageConfig extends CommonConfig, HourSchedule {
 	/** How the weekday name in each day's cell is abbreviated. */

@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import type { DayPerPageConfig } from '../../../config/layouts/dayPerPage'
+import type { DayPerPageConfig } from '../../../layouts/day-per-page/options'
 import { daysOfYear } from '../../../core/calendar'
 import { hourNames } from '../../../core/locale'
 import { DayPage } from './DayPage'
