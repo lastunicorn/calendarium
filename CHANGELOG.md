@@ -15,7 +15,7 @@ The features each release brought, newest first. Versions follow the app version
 - Week layout: the weeks can start on an even page, after a blank first page, so that printed double-sided each week's two pages face each other.
 - Day layout: the grid of squares can be aligned left, centered or right on the page, inside its margins (left by default).
 - The Language list opens with a filter box: typing narrows it by the language's or the country's name, in English or in the language itself ("Deutsch", "Brasil"), accents and case ignored.
-- Week layout: each page can keep an empty footer, 20 mm tall, under the days (off by default).
+- Week layout: each page can keep an empty bordered footer, 20 mm tall, under the days (off by default).
 - Week and day layouts: the title's font size can be set, from 12 to 48 pt (20 pt by default on the week layout, 24 pt on the day layout).
 
 ### Changed

@@ -52,9 +52,15 @@
 	border-left: 0.2mm solid var(--color-cell-border);
 }
 
-/* Empty space under the cells, its height set inline. */
+/*
+ * Empty space under the cells, its height set inline, ruled like a cell: the last cells' bottom
+ * borders draw its top edge.
+ */
 .footer {
 	flex: none;
+	border-right: 0.2mm solid var(--color-cell-border);
+	border-bottom: 0.2mm solid var(--color-cell-border);
+	border-left: 0.2mm solid var(--color-cell-border);
 }
 
 /* As many cells as the page has: 7, 6 with the weekend reduced, 5 without it. */
