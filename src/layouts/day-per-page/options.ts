@@ -44,6 +44,13 @@ export function isSquareSize(value: unknown): value is number {
 	)
 }
 
+/**
+ * Where the grid of squares sits across the page inside its margins, the space left by the whole
+ * squares that fit going on the other side, or on both.
+ */
+export const SQUARE_GRID_ALIGNMENTS = ['left', 'center', 'right'] as const
+export type SquareGridAlignment = (typeof SQUARE_GRID_ALIGNMENTS)[number]
+
 export interface DayPerPageConfig extends CommonConfig, HourSchedule {
 	/** Whether the heading is the weekday ("Thursday") or the date ("1 January 2026"). */
 	dayPageTitle: DayPageTitle
@@ -55,6 +62,8 @@ export interface DayPerPageConfig extends CommonConfig, HourSchedule {
 	ruledLineSpacing: number
 	/** The side of a square, in mm; only used when `dayPageLines` is `squares`. */
 	squareSize: number
+	/** Where the grid of squares sits across the page; only used when `dayPageLines` is `squares`. */
+	squareGridAlignment: SquareGridAlignment
 	/**
 	 * Whether each day takes two pages: the second, without a header, continues the ruled lines or
 	 * holds the second half of the schedule's hours.
@@ -80,6 +89,7 @@ export const DAY_PER_PAGE_SPEC: LayoutSpec<DayPerPageConfig> = {
 		ruledLineSpacing: 8,
 		// A math notebook's squares.
 		squareSize: 5,
+		squareGridAlignment: 'left',
 		twoPagesPerDay: false,
 		...scheduleDefaults(),
 		highlightWeekendDays: true,
@@ -94,6 +104,7 @@ export const DAY_PER_PAGE_SPEC: LayoutSpec<DayPerPageConfig> = {
 		dayPageLines: oneOf(DAY_PAGE_LINES),
 		ruledLineSpacing: isRuledLineSpacing,
 		squareSize: isSquareSize,
+		squareGridAlignment: oneOf(SQUARE_GRID_ALIGNMENTS),
 		twoPagesPerDay: isBoolean,
 		...SCHEDULE_VALIDATORS,
 		highlightWeekendDays: isBoolean,

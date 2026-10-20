@@ -53,12 +53,26 @@
 
 /*
  * Squares of a fixed side (`--square-size`, set inline). The grid is cut down to the whole squares
- * that fit the area left under the header, leaving the rest blank: rows drawing the line below,
- * columns the line right of each, under a top and left line.
+ * that fit the area left under the header, leaving the rest blank, and set across it per
+ * alignment: rows drawing the line below, columns the line right of each, under a top and left
+ * line.
  */
 .squares {
 	flex: 1;
+	display: flex;
 	min-height: 0;
+}
+
+.alignLeft {
+	justify-content: flex-start;
+}
+
+.alignCenter {
+	justify-content: center;
+}
+
+.alignRight {
+	justify-content: flex-end;
 }
 
 /*
@@ -70,6 +84,7 @@
  */
 .squareGrid {
 	position: relative;
+	flex-shrink: 0;
 	width: calc(round(down, 100% - 0.2mm, var(--square-size)) + 0.2mm);
 	height: calc(round(down, 100% - 0.2mm, var(--square-size)) + 0.2mm);
 	overflow: clip;

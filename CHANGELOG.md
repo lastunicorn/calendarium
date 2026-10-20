@@ -8,6 +8,7 @@ The features each release brought, newest first. Versions follow the app version
 
 - Every sidebar section but the layout picker ends with a small reset button, at its bottom right. It veils the section's fields with a question and a Reset button that restores just that section's settings to their defaults; a click outside the section, Escape or collapsing the section cancels.
 - Week layout: the weeks can start on an even page, after a blank first page, so that printed double-sided each week's two pages face each other.
+- Day layout: the grid of squares can be aligned left, centered or right on the page, inside its margins (left by default).
 - Week and day layouts: the title's font size can be set, from 12 to 48 pt (20 pt by default on the week layout, 24 pt on the day layout).
 
 ### Changed

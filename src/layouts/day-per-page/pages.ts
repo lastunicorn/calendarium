@@ -5,7 +5,7 @@ import { PRINT_MESSAGES } from '../../core/messages'
 import { contentBox } from '../../core/paper'
 import type { CalendarModel } from '../common'
 import type { MiniMonthPlan } from '../monthGrid'
-import type { DayPerPageConfig } from './options'
+import type { DayPerPageConfig, SquareGridAlignment } from './options'
 
 /** The dot between the subheading's parts, with en spaces either side for more room than plain ones. */
 const SUBHEADING_SEPARATOR = '\u2002·\u2002'
@@ -18,9 +18,15 @@ export type DayFill =
 	| { kind: 'ruled'; lines: number; spacing: number }
 	/**
 	 * A grid of squares `size` mm a side: at most `rows` by `columns`, as many as fit whole in the
-	 * area left, the rest of it blank.
+	 * area left, the rest of it blank, set across it per `align`.
 	 */
-	| { kind: 'squares'; rows: number; columns: number; size: number }
+	| {
+			kind: 'squares'
+			rows: number
+			columns: number
+			size: number
+			align: SquareGridAlignment
+	  }
 
 /** Everything one day prints, on one sheet or two. */
 export interface DayPages {
@@ -48,7 +54,8 @@ export interface DayPages {
  * The fills of every day's sheets, the same for every day. Ruled lines, `ruledLineSpacing` apart, fill the page inside its
  * margins (the header takes some of that height, and the ruled area clips the lines that don't
  * fit); over two sheets they continue. Squares, `squareSize` a side, fill it with as many whole squares
- * as fit across and down, the header's height being known only once drawn. The hours are split in half over two sheets, the first
+ * as fit across and down, the header's height being known only once drawn, set across the page per
+ * `squareGridAlignment`. The hours are split in half over two sheets, the first
  * taking the extra hour of an odd count.
  */
 function planFills(config: DayPerPageConfig): DayFill[] {
@@ -67,6 +74,7 @@ function planFills(config: DayPerPageConfig): DayFill[] {
 			rows: Math.floor(height / size),
 			columns: Math.floor(width / size),
 			size,
+			align: config.squareGridAlignment,
 		}
 		return Array.from({ length: sheets }, () => fill)
 	}

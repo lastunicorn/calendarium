@@ -6,6 +6,8 @@ import {
 	MAX_SQUARE_SIZE,
 	MIN_RULED_LINE_SPACING,
 	MIN_SQUARE_SIZE,
+	SQUARE_GRID_ALIGNMENTS,
+	type SquareGridAlignment,
 } from '../../../layouts/day-per-page/options'
 import { ContentIcon } from '../../components/icons'
 import { CheckboxField } from '../../fields/CheckboxField'
@@ -22,9 +24,15 @@ const DAY_PAGE_LINES_OPTIONS = optionsFrom(DAY_PAGE_LINES, {
 	squares: 'Squares',
 })
 
+const SQUARE_GRID_ALIGNMENT_OPTIONS = optionsFrom(SQUARE_GRID_ALIGNMENTS, {
+	left: 'Left',
+	center: 'Center',
+	right: 'Right',
+})
+
 /**
  * What fills a day's page: an hourly schedule and its hours, ruled lines and their spacing, or
- * squares and their size, on one page or two.
+ * squares, their size and where they sit, on one page or two.
  */
 export function DayContentSection({
 	config,
@@ -43,6 +51,10 @@ export function DayContentSection({
 		onUpdate({ squareSize })
 	}
 
+	function handleSquareGridAlignmentChange(squareGridAlignment: SquareGridAlignment) {
+		onUpdate({ squareGridAlignment })
+	}
+
 	function handleTwoPagesPerDayChange(twoPagesPerDay: boolean) {
 		onUpdate({ twoPagesPerDay })
 	}
@@ -57,6 +69,7 @@ export function DayContentSection({
 				'lastHour',
 				'ruledLineSpacing',
 				'squareSize',
+				'squareGridAlignment',
 			]),
 		)
 	}
@@ -90,15 +103,24 @@ export function DayContentSection({
 				/>
 			)}
 			{config.dayPageLines === 'squares' && (
-				<NumberField
-					label="Square size (mm)"
-					description={`From ${MIN_SQUARE_SIZE} to ${MAX_SQUARE_SIZE} mm.`}
-					value={config.squareSize}
-					min={MIN_SQUARE_SIZE}
-					max={MAX_SQUARE_SIZE}
-					step={0.5}
-					onChange={handleSquareSizeChange}
-				/>
+				<>
+					<NumberField
+						label="Square size (mm)"
+						description={`From ${MIN_SQUARE_SIZE} to ${MAX_SQUARE_SIZE} mm.`}
+						value={config.squareSize}
+						min={MIN_SQUARE_SIZE}
+						max={MAX_SQUARE_SIZE}
+						step={0.5}
+						onChange={handleSquareSizeChange}
+					/>
+					<RadioField
+						label="Squares alignment"
+						description="Only whole squares are drawn; the space left goes on the other side, or on both."
+						value={config.squareGridAlignment}
+						options={SQUARE_GRID_ALIGNMENT_OPTIONS}
+						onChange={handleSquareGridAlignmentChange}
+					/>
+				</>
 			)}
 		</Section>
 	)
