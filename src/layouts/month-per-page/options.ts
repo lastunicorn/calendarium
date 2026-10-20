@@ -15,13 +15,13 @@ export interface MonthPerPageConfig extends CommonConfig, MonthGridOptions {
 }
 
 export const MONTH_PER_PAGE_SPEC: LayoutSpec<MonthPerPageConfig> = {
-	// Large writing cells fit landscape, with room for three-letter weekdays.
+	// Large writing cells fit landscape, with room for full weekday names.
 	defaults: () => {
 		const common = commonDefaults()
 		return {
 			...common,
 			...monthGridDefaults(),
-			weekdayFormat: 'short',
+			weekdayFormat: 'full',
 			highlightWeekends: 'columns',
 			showWeekNumbers: true,
 			monthHeadingAlignment: 'center',
