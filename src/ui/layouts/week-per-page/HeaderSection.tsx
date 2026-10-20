@@ -28,21 +28,21 @@ export function HeaderSection({ config, onUpdate }: ConfigSectionProps<WeekPerPa
 
 	return (
 		<Section title="Header" icon={<HeaderIcon />}>
-			<CheckboxField
-				label="Show week number"
-				checked={config.showHeaderWeek}
-				onChange={handleShowHeaderWeekChange}
-			/>
 			<RadioField
 				label="Title alignment"
 				description={
 					config.headingAlignment === 'auto'
-						? 'Left beside the mini calendar or over two pages, centered otherwise.'
+						? 'Aligned left beside the mini calendar or over two pages, centered otherwise.'
 						: undefined
 				}
 				value={config.headingAlignment}
 				options={HEADING_ALIGNMENT_OPTIONS}
 				onChange={handleHeadingAlignmentChange}
+			/>
+			<CheckboxField
+				label="Show week number"
+				checked={config.showHeaderWeek}
+				onChange={handleShowHeaderWeekChange}
 			/>
 		</Section>
 	)
