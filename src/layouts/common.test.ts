@@ -21,8 +21,14 @@ describe('default locale', () => {
 		expect(defaultLocalesFor('de-AT')).toEqual(LAYOUT_IDS.map(() => 'de-DE'))
 	})
 
+	it('matches the whole language code, then the region', () => {
+		expect(defaultLocalesFor('fil')).toEqual(LAYOUT_IDS.map(() => 'fil-PH'))
+		expect(defaultLocalesFor('zh-TW')).toEqual(LAYOUT_IDS.map(() => 'zh-TW'))
+		expect(defaultLocalesFor('zh-SG')).toEqual(LAYOUT_IDS.map(() => 'zh-CN'))
+	})
+
 	it('falls back to British English', () => {
-		expect(defaultLocalesFor('th-TH')).toEqual(LAYOUT_IDS.map(() => 'en-GB'))
+		expect(defaultLocalesFor('he-IL')).toEqual(LAYOUT_IDS.map(() => 'en-GB'))
 	})
 })
 

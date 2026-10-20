@@ -27,6 +27,27 @@ export const LOCALES = [
 	'fi-FI',
 	'zh-CN',
 	'ko-KR',
+	'af-ZA',
+	'am-ET',
+	'ca-ES',
+	'et-EE',
+	'fil-PH',
+	'gu-IN',
+	'hi-IN',
+	'id-ID',
+	'kn-IN',
+	'lt-LT',
+	'lv-LV',
+	'ml-IN',
+	'ms-MY',
+	'sl-SI',
+	'sr-RS',
+	'sw-TZ',
+	'ta-IN',
+	'te-IN',
+	'th-TH',
+	'vi-VN',
+	'zh-TW',
 ] as const
 export type Locale = (typeof LOCALES)[number]
 
@@ -45,7 +66,8 @@ const formatters = new Map<string, Intl.DateTimeFormat>()
 /**
  * A shared `Intl.DateTimeFormat` for `locale` and `options`. Building one is slow, and the day
  * layout would otherwise build two per page, so each combination is built once and reused.
- * It formats in UTC, like the dates `utcDate` builds.
+ * It formats in UTC, like the dates `utcDate` builds, and in the Gregorian calendar, which a
+ * language may not default to (Thai counts Buddhist years).
  */
 export function dateFormatter(
 	locale: string,
@@ -54,7 +76,11 @@ export function dateFormatter(
 	const key = `${locale}|${JSON.stringify(options)}`
 	let format = formatters.get(key)
 	if (format === undefined) {
-		format = new Intl.DateTimeFormat(locale, { ...options, timeZone: 'UTC' })
+		format = new Intl.DateTimeFormat(locale, {
+			...options,
+			timeZone: 'UTC',
+			calendar: 'gregory',
+		})
 		formatters.set(key, format)
 	}
 	return format

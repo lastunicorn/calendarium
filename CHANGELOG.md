@@ -4,6 +4,14 @@ The features each release brought, newest first. Versions follow the app version
 
 ## Unreleased
 
+### Added
+
+- 21 more languages: Afrikaans, Amharic, Catalan, Estonian, Filipino, Gujarati, Hindi, Indonesian, Kannada, Latvian, Lithuanian, Malay, Malayalam, Serbian, Slovenian, Swahili, Tamil, Telugu, Thai (with Gregorian years), Traditional Chinese and Vietnamese.
+
+### Fixed
+
+- A browser in a language whose code starts like another's (Filipino, `fil`, and Finnish, `fi`) starts in its own language, and a Taiwanese browser in Traditional Chinese.
+
 ## 4.3.0 — 2026-10-21
 
 Settings and files from 4.2.0 are read as they are; the new options start at their defaults, and saved settings keep the values whose default changed.

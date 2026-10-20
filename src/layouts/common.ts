@@ -31,9 +31,16 @@ export interface CommonConfig {
  * English, of any region, and unsupported languages start in British English.
  */
 function defaultLocale(): Locale {
-	const language = globalThis.navigator?.language.slice(0, 2)
-	if (language === undefined || language === 'en') return 'en-GB'
-	return LOCALES.find((locale) => locale.startsWith(language)) ?? 'en-GB'
+	const tag = globalThis.navigator?.language
+	if (tag === undefined) return 'en-GB'
+	const { language, region } = new Intl.Locale(tag)
+	if (language === 'en') return 'en-GB'
+	const sameLanguage = LOCALES.filter((locale) => new Intl.Locale(locale).language === language)
+	return (
+		sameLanguage.find((locale) => new Intl.Locale(locale).region === region) ??
+		sameLanguage[0] ??
+		'en-GB'
+	)
 }
 
 /** The options shared by every layout, with the values all layouts start from. */

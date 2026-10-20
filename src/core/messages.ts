@@ -140,4 +140,109 @@ export const PRINT_MESSAGES: Record<Locale, PrintMessages> = {
 		dayOfYear: (n, total) => `${n}일째 / ${total}일`,
 		events: '일정',
 	},
+	'af-ZA': {
+		week: (n) => `Week ${n}`,
+		dayOfYear: (n, total) => `Dag ${n} / ${total}`,
+		events: 'Gebeure',
+	},
+	'am-ET': {
+		week: (n) => `ሳምንት ${n}`,
+		dayOfYear: (n, total) => `ቀን ${n} / ${total}`,
+		events: 'ክስተቶች',
+	},
+	'ca-ES': {
+		week: (n) => `Setmana ${n}`,
+		dayOfYear: (n, total) => `Dia ${n} / ${total}`,
+		events: 'Esdeveniments',
+	},
+	'et-EE': {
+		week: (n) => `Nädal ${n}`,
+		dayOfYear: (n, total) => `Päev ${n} / ${total}`,
+		events: 'Sündmused',
+	},
+	'fil-PH': {
+		week: (n) => `Linggo ${n}`,
+		dayOfYear: (n, total) => `Araw ${n} / ${total}`,
+		events: 'Mga kaganapan',
+	},
+	'gu-IN': {
+		week: (n) => `અઠવાડિયું ${n}`,
+		dayOfYear: (n, total) => `દિવસ ${n} / ${total}`,
+		events: 'પ્રસંગો',
+	},
+	'hi-IN': {
+		week: (n) => `सप्ताह ${n}`,
+		dayOfYear: (n, total) => `दिन ${n} / ${total}`,
+		events: 'कार्यक्रम',
+	},
+	'id-ID': {
+		week: (n) => `Minggu ${n}`,
+		dayOfYear: (n, total) => `Hari ${n} / ${total}`,
+		events: 'Acara',
+	},
+	'kn-IN': {
+		week: (n) => `ವಾರ ${n}`,
+		dayOfYear: (n, total) => `ದಿನ ${n} / ${total}`,
+		events: 'ಕಾರ್ಯಕ್ರಮಗಳು',
+	},
+	'lt-LT': {
+		week: (n) => `Savaitė ${n}`,
+		dayOfYear: (n, total) => `Diena ${n} / ${total}`,
+		events: 'Įvykiai',
+	},
+	'lv-LV': {
+		week: (n) => `${n}. nedēļa`,
+		dayOfYear: (n, total) => `${n}. diena / ${total}`,
+		events: 'Notikumi',
+	},
+	'ml-IN': {
+		week: (n) => `ആഴ്ച ${n}`,
+		dayOfYear: (n, total) => `ദിവസം ${n} / ${total}`,
+		events: 'പരിപാടികൾ',
+	},
+	'ms-MY': {
+		week: (n) => `Minggu ${n}`,
+		dayOfYear: (n, total) => `Hari ${n} / ${total}`,
+		events: 'Acara',
+	},
+	'sl-SI': {
+		week: (n) => `Teden ${n}`,
+		dayOfYear: (n, total) => `Dan ${n} / ${total}`,
+		events: 'Dogodki',
+	},
+	'sr-RS': {
+		week: (n) => `Недеља ${n}`,
+		dayOfYear: (n, total) => `Дан ${n} / ${total}`,
+		events: 'Догађаји',
+	},
+	'sw-TZ': {
+		week: (n) => `Wiki ${n}`,
+		dayOfYear: (n, total) => `Siku ${n} / ${total}`,
+		events: 'Matukio',
+	},
+	'ta-IN': {
+		week: (n) => `வாரம் ${n}`,
+		dayOfYear: (n, total) => `நாள் ${n} / ${total}`,
+		events: 'நிகழ்வுகள்',
+	},
+	'te-IN': {
+		week: (n) => `వారం ${n}`,
+		dayOfYear: (n, total) => `రోజు ${n} / ${total}`,
+		events: 'కార్యక్రమాలు',
+	},
+	'th-TH': {
+		week: (n) => `สัปดาห์ที่ ${n}`,
+		dayOfYear: (n, total) => `วันที่ ${n} / ${total}`,
+		events: 'กิจกรรม',
+	},
+	'vi-VN': {
+		week: (n) => `Tuần ${n}`,
+		dayOfYear: (n, total) => `Ngày ${n} / ${total}`,
+		events: 'Sự kiện',
+	},
+	'zh-TW': {
+		week: (n) => `第${n}週`,
+		dayOfYear: (n, total) => `第${n}天 / 共${total}天`,
+		events: '活動',
+	},
 }

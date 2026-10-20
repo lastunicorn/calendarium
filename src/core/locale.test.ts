@@ -44,6 +44,10 @@ describe('monthYearName', () => {
 		expect(monthYearName('ro-RO', 2026, 0)).toBe('Ianuarie 2026')
 		expect(monthYearName('ja-JP', 2026, 11)).toBe('2026年12月')
 	})
+
+	it('counts Gregorian years in a language whose calendar is another', () => {
+		expect(monthYearName('th-TH', 2026, 0)).toBe('มกราคม 2026')
+	})
 })
 
 describe('weekdayNames', () => {
