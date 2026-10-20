@@ -12,13 +12,12 @@ export interface AdjacentMonthsOptions extends MonthGridOptions {
 	showNextMonth: boolean
 }
 
-/** Both adjacent months shown, with week numbers, as a mini month on the other layouts. */
+/** Both adjacent months shown, without week numbers. */
 function adjacentMonthsDefaults(): AdjacentMonthsOptions {
 	return {
 		showPreviousMonth: true,
 		showNextMonth: true,
 		...monthGridDefaults(),
-		showWeekNumbers: true,
 	}
 }
 
@@ -67,9 +66,8 @@ export const MONTH_PER_PAGE_SPEC: LayoutSpec<MonthPerPageConfig> = {
 			weekdayFormat: 'full',
 			title: '',
 			highlightWeekends: 'columns',
-			showWeekNumbers: true,
 			monthHeadingAlignment: 'center',
-			showAdjacentMonthDays: true,
+			showAdjacentMonthDays: false,
 			dayNumberHorizontalAlignment: 'left',
 			dayNumberVerticalAlignment: 'top',
 			adjacentMonths: adjacentMonthsDefaults(),

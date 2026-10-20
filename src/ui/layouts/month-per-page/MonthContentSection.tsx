@@ -72,9 +72,10 @@ export function MonthContentSection({
 				weekdayFormats={WEEKDAY_FORMAT_OPTIONS}
 			/>
 			<CheckboxField
-				label="Show days of the previous and next month"
+				label="Show adjacent month days"
 				checked={config.showAdjacentMonthDays}
 				onChange={handleShowAdjacentMonthDaysChange}
+				description="Show days of the previous and next month"
 			/>
 			<RadioField
 				label="Day number horizontal alignment"

@@ -6,8 +6,8 @@ The features each release brought, newest first. Versions follow the app version
 
 ### Added
 
-- Month layout: the previous and the next month are drawn small at the top left and top right of each page, titled with their month and year, each shown by default and hidden by its own option in the Mini calendar section.
-- Month layout: the grayed days of the previous and next month can be left out of the grid, their cells blank (shown by default).
+- Month layout: the previous and the next month are drawn small at the top left and top right of each page, titled with their month and year, each shown by default and hidden by its own option in the Mini calendar section, without week numbers by default.
+- Month layout: the grayed days of the previous and next month can be left out of the grid, their cells blank (left out by default).
 - Month layout: the day numbers can be set left, centered or right, and at the top, middle or bottom of their cells, with the events' names following them (top left by default).
 - Every sidebar section but the layout picker ends with a small reset button, at its bottom right. It veils the section's fields with a question and a Reset button that restores just that section's settings to their defaults; a click outside the section, Escape or collapsing the section cancels.
 - Week layout: the weeks can start on an even page, after a blank first page, so that printed double-sided each week's two pages face each other.
@@ -16,6 +16,7 @@ The features each release brought, newest first. Versions follow the app version
 
 ### Changed
 
+- Month layout: the grid no longer shows week numbers by default; saved settings keep their value.
 - Day layout: the title is the date by default, the weekday below it.
 
 ### Fixed

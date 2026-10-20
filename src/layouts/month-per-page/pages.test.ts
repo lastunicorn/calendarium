@@ -47,11 +47,9 @@ describe('planMonthPages', () => {
 		expect(pages[4].grid.weeks).toHaveLength(6)
 	})
 
-	it('shows the days of the previous and next month unless told not to', () => {
-		expect(plan(2026)[0].grid.showAdjacentMonthDays).toBe(true)
-		expect(plan(2026, { showAdjacentMonthDays: false })[0].grid.showAdjacentMonthDays).toBe(
-			false,
-		)
+	it('leaves out the days of the previous and next month unless told to show them', () => {
+		expect(plan(2026)[0].grid.showAdjacentMonthDays).toBe(false)
+		expect(plan(2026, { showAdjacentMonthDays: true })[0].grid.showAdjacentMonthDays).toBe(true)
 	})
 
 	it('sets the day numbers top left unless told where', () => {
