@@ -14,6 +14,10 @@ The features each release brought, newest first. Versions follow the app version
 
 - Day layout: the title is the date by default, the weekday below it.
 
+### Fixed
+
+- Day layout: the squares fill only as many whole squares as fit, leaving the rest blank, instead of half-drawn squares along the right and bottom edges.
+
 ## 4.2.0 — 2026-10-20
 
 Settings and files from 4.1.0 are read as they are; the new options start at their defaults.

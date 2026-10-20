@@ -16,7 +16,10 @@ export type DayFill =
 	| { kind: 'hours'; hours: string[] }
 	/** `lines` ruled lines, `spacing` mm apart. */
 	| { kind: 'ruled'; lines: number; spacing: number }
-	/** A grid of `rows` by `columns` squares, `size` mm a side. */
+	/**
+	 * A grid of squares `size` mm a side: at most `rows` by `columns`, as many as fit whole in the
+	 * area left, the rest of it blank.
+	 */
 	| { kind: 'squares'; rows: number; columns: number; size: number }
 
 /** Everything one day prints, on one sheet or two. */
@@ -44,8 +47,8 @@ export interface DayPages {
 /**
  * The fills of every day's sheets, the same for every day. Ruled lines, `ruledLineSpacing` apart, fill the page inside its
  * margins (the header takes some of that height, and the ruled area clips the lines that don't
- * fit); over two sheets they continue. Squares, `squareSize` a side, fill it the same way, across and
- * down. The hours are split in half over two sheets, the first
+ * fit); over two sheets they continue. Squares, `squareSize` a side, fill it with as many whole squares
+ * as fit across and down, the header's height being known only once drawn. The hours are split in half over two sheets, the first
  * taking the extra hour of an odd count.
  */
 function planFills(config: DayPerPageConfig): DayFill[] {
@@ -61,8 +64,8 @@ function planFills(config: DayPerPageConfig): DayFill[] {
 		const size = config.squareSize
 		const fill: DayFill = {
 			kind: 'squares',
-			rows: Math.ceil(height / size),
-			columns: Math.ceil(width / size),
+			rows: Math.floor(height / size),
+			columns: Math.floor(width / size),
 			size,
 		}
 		return Array.from({ length: sheets }, () => fill)

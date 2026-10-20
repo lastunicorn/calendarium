@@ -118,17 +118,17 @@ describe('planDayPages', () => {
 		})
 
 		it('fill the page inside its margins with 5 mm squares, on every sheet', () => {
-			// A4 portrait with 12 mm margins: 186 by 273 mm, so 38 columns and 55 rows.
+			// A4 portrait with 12 mm margins: 186 by 273 mm, so 37 whole columns and 54 rows.
 			expect(plan(2026, { dayPageLines: 'squares', twoPagesPerDay: true })[0].fills).toEqual([
-				{ kind: 'squares', rows: 55, columns: 38, size: 5 },
-				{ kind: 'squares', rows: 55, columns: 38, size: 5 },
+				{ kind: 'squares', rows: 54, columns: 37, size: 5 },
+				{ kind: 'squares', rows: 54, columns: 37, size: 5 },
 			])
 		})
 
 		it('draw the squares as large as asked', () => {
-			// 186 by 273 mm: 24 columns and 35 rows of 8 mm squares.
+			// 186 by 273 mm: 23 whole columns and 34 rows of 8 mm squares.
 			expect(plan(2026, { dayPageLines: 'squares', squareSize: 8 })[0].fills).toEqual([
-				{ kind: 'squares', rows: 35, columns: 24, size: 8 },
+				{ kind: 'squares', rows: 34, columns: 23, size: 8 },
 			])
 		})
 

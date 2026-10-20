@@ -1,10 +1,13 @@
-import { memo } from 'react'
+import { type CSSProperties, memo } from 'react'
 import type { PageSetup } from '../../../core/paper'
 import type { DayFill, DayPages } from '../../../layouts/day-per-page/pages'
 import { CalendarHeader } from '../CalendarHeader'
 import styles from './DayPage.module.css'
 import { MiniMonth } from '../MiniMonth'
 import { Page } from '../Page'
+
+/** The inline style of the squares, with their side as a custom property the stylesheet sizes the grid by. */
+type SquaresStyle = CSSProperties & Record<'--square-size', string>
 
 interface DayLinesProps {
 	fill: DayFill
@@ -24,18 +27,22 @@ function DayLines({ fill }: DayLinesProps) {
 	}
 	if (fill.kind === 'squares') {
 		// A layer of rows drawing the horizontal lines over one of columns drawing the vertical
-		// ones: a few dozen elements a sheet rather than one per square.
+		// ones: a few dozen elements a sheet rather than one per square. The grid is cut to the
+		// whole squares that fit, so none is drawn in part.
+		const style: SquaresStyle = { '--square-size': `${fill.size}mm` }
 		return (
-			<div className={styles.squares}>
-				<div className={styles.squareRows} style={{ gridAutoRows: `${fill.size}mm` }}>
-					{Array.from({ length: fill.rows }, (_, index) => (
-						<div key={index} className={styles.squareRow} />
-					))}
-				</div>
-				<div className={styles.squareColumns} style={{ gridAutoColumns: `${fill.size}mm` }}>
-					{Array.from({ length: fill.columns }, (_, index) => (
-						<div key={index} className={styles.squareColumn} />
-					))}
+			<div className={styles.squares} style={style}>
+				<div className={styles.squareGrid}>
+					<div className={styles.squareRows}>
+						{Array.from({ length: fill.rows }, (_, index) => (
+							<div key={index} className={styles.squareRow} />
+						))}
+					</div>
+					<div className={styles.squareColumns}>
+						{Array.from({ length: fill.columns }, (_, index) => (
+							<div key={index} className={styles.squareColumn} />
+						))}
+					</div>
 				</div>
 			</div>
 		)
