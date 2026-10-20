@@ -27,16 +27,16 @@ export function DayContentSection({ config, onUpdate }: ConfigSectionProps<DayPe
 
 	return (
 		<Section title="Content" icon={<ContentIcon />}>
+			<CheckboxField
+				label="Two pages per day"
+				checked={config.twoPagesPerDay}
+				onChange={handleTwoPagesPerDayChange}
+			/>
 			<RadioField
 				label="Fill"
 				value={config.dayPageLines}
 				options={DAY_PAGE_LINES_OPTIONS}
 				onChange={handleDayPageLinesChange}
-			/>
-			<CheckboxField
-				label="Two pages per day"
-				checked={config.twoPagesPerDay}
-				onChange={handleTwoPagesPerDayChange}
 			/>
 			{config.dayPageLines === 'hours' && (
 				<ScheduleFields config={config} onUpdate={onUpdate} />

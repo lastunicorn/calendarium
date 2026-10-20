@@ -11,6 +11,7 @@ The features each release brought, newest first. Versions follow the app version
 - Less space under an open sidebar section.
 - The reset button's icon is a power symbol with a dashed ring.
 - The year and month layouts' Appearance section and the week and day layouts' Week page and Day page sections are named Content.
+- Two pages per day comes first in the day layout's content section.
 
 ## 4.1.0 — 2026-10-20
 
