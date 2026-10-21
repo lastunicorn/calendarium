@@ -124,8 +124,21 @@ describe('planDayPages', () => {
 		it('fill the page inside its margins with 5 mm squares, on every sheet', () => {
 			// A4 portrait with 12 mm margins: 186 by 273 mm, so 37 whole columns and 54 rows.
 			expect(plan(2026, { dayPageLines: 'squares', twoPagesPerDay: true })[0].fills).toEqual([
-				{ kind: 'squares', rows: 54, columns: 37, size: 5, align: 'left' },
-				{ kind: 'squares', rows: 54, columns: 37, size: 5, align: 'left' },
+				{ kind: 'squares', rows: 54, columns: 37, size: 5, align: 'center' },
+				{ kind: 'squares', rows: 54, columns: 37, size: 5, align: 'center' },
+			])
+		})
+
+		it('dot the corners of squares as large and as aligned as asked, on every sheet', () => {
+			const fills = plan(2026, {
+				dayPageLines: 'dots',
+				squareSize: 4,
+				squareGridAlignment: 'right',
+				twoPagesPerDay: true,
+			})[0].fills
+			expect(fills).toEqual([
+				{ kind: 'dots', size: 4, align: 'right' },
+				{ kind: 'dots', size: 4, align: 'right' },
 			])
 		})
 
@@ -138,15 +151,15 @@ describe('planDayPages', () => {
 		it('draw the squares as large as asked', () => {
 			// 186 by 273 mm: 23 whole columns and 34 rows of 8 mm squares.
 			expect(plan(2026, { dayPageLines: 'squares', squareSize: 8 })[0].fills).toEqual([
-				{ kind: 'squares', rows: 34, columns: 23, size: 8, align: 'left' },
+				{ kind: 'squares', rows: 34, columns: 23, size: 8, align: 'center' },
 			])
 		})
 
 		it('set the squares across the page as aligned', () => {
-			const fills = plan(2026, { dayPageLines: 'squares', squareGridAlignment: 'center' })[0]
+			const fills = plan(2026, { dayPageLines: 'squares', squareGridAlignment: 'left' })[0]
 				.fills
 			expect(fills).toEqual([
-				{ kind: 'squares', rows: 54, columns: 37, size: 5, align: 'center' },
+				{ kind: 'squares', rows: 54, columns: 37, size: 5, align: 'left' },
 			])
 		})
 

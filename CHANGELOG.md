@@ -4,6 +4,14 @@ The features each release brought, newest first. Versions follow the app version
 
 ## Unreleased
 
+### Added
+
+- Day layout: a Dots fill dots the page in a square grid, like the Squares fill with only the corners drawn, its spacing and alignment set like the squares'.
+
+### Changed
+
+- Day layout: the squares, and the new dots, are centered across the page by default, instead of set to the left. Saved settings keep their alignment.
+
 ## 4.4.0 — 2026-10-21
 
 Settings and files from 4.3.0 are read as they are; the new options start at their defaults.

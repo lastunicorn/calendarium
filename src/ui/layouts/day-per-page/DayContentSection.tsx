@@ -22,6 +22,7 @@ const DAY_PAGE_LINES_OPTIONS = optionsFrom(DAY_PAGE_LINES, {
 	hours: 'Hourly schedule',
 	ruled: 'Ruled lines',
 	squares: 'Squares',
+	dots: 'Dots',
 	blank: 'Blank',
 })
 
@@ -33,7 +34,7 @@ const SQUARE_GRID_ALIGNMENT_OPTIONS = optionsFrom(SQUARE_GRID_ALIGNMENTS, {
 
 /**
  * What fills a day's page: an hourly schedule and its hours, ruled lines and their spacing, or
- * squares, their size and where they sit, or nothing, on one page or two.
+ * squares or dots, their size and where they sit, or nothing, on one page or two.
  */
 export function DayContentSection({
 	config,
@@ -117,6 +118,26 @@ export function DayContentSection({
 					<RadioField
 						label="Squares alignment"
 						description="Only whole squares are drawn; the space left goes on the other side, or on both."
+						value={config.squareGridAlignment}
+						options={SQUARE_GRID_ALIGNMENT_OPTIONS}
+						onChange={handleSquareGridAlignmentChange}
+					/>
+				</>
+			)}
+			{config.dayPageLines === 'dots' && (
+				<>
+					<NumberField
+						label="Dot spacing (mm)"
+						description={`From ${MIN_SQUARE_SIZE} to ${MAX_SQUARE_SIZE} mm.`}
+						value={config.squareSize}
+						min={MIN_SQUARE_SIZE}
+						max={MAX_SQUARE_SIZE}
+						step={0.5}
+						onChange={handleSquareSizeChange}
+					/>
+					<RadioField
+						label="Dots alignment"
+						description="The dots mark the corners of whole squares only; the space left goes on the other side, or on both."
 						value={config.squareGridAlignment}
 						options={SQUARE_GRID_ALIGNMENT_OPTIONS}
 						onChange={handleSquareGridAlignmentChange}

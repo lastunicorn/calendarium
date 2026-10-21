@@ -33,6 +33,11 @@ export type DayFill =
 			size: number
 			align: SquareGridAlignment
 	  }
+	/**
+	 * Dots at the corners of squares `size` mm a side, as many whole squares as fit in the area
+	 * left (the header's height being known only once drawn), set across it per `align`.
+	 */
+	| { kind: 'dots'; size: number; align: SquareGridAlignment }
 	/** Nothing: the page is left blank under its header. */
 	| { kind: 'blank' }
 
@@ -63,7 +68,7 @@ export interface DayPages {
  * margins (the header takes some of that height, and the ruled area clips the lines that don't
  * fit); over two sheets they continue. Squares, `squareSize` a side, fill it with as many whole squares
  * as fit across and down, the header's height being known only once drawn, set across the page per
- * `squareGridAlignment`. A blank fill leaves every sheet empty. The hours are split in half over two sheets, the first
+ * `squareGridAlignment`; dots mark those squares' corners. A blank fill leaves every sheet empty. The hours are split in half over two sheets, the first
  * taking the extra hour of an odd count.
  */
 function planFills(config: DayPerPageConfig): DayFill[] {
@@ -86,6 +91,14 @@ function planFills(config: DayPerPageConfig): DayFill[] {
 			rows: Math.floor(height / size),
 			columns: Math.floor(width / size),
 			size,
+			align: config.squareGridAlignment,
+		}
+		return Array.from({ length: sheets }, () => fill)
+	}
+	if (config.dayPageLines === 'dots') {
+		const fill: DayFill = {
+			kind: 'dots',
+			size: config.squareSize,
 			align: config.squareGridAlignment,
 		}
 		return Array.from({ length: sheets }, () => fill)

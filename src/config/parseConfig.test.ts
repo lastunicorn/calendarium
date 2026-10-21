@@ -91,7 +91,7 @@ describe('parseConfig', () => {
 					dayPageLines: 'ruled',
 					ruledLineSpacing: 6.5,
 					squareSize: 4,
-					squareGridAlignment: 'center',
+					squareGridAlignment: 'right',
 					twoPagesPerDay: true,
 					hourFormat: '24h',
 					firstHour: 0,

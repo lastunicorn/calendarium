@@ -52,10 +52,10 @@
 }
 
 /*
- * Squares of a fixed side (`--square-size`, set inline). The grid is cut down to the whole squares
- * that fit the area left under the header, leaving the rest blank, and set across it per
- * alignment: rows drawing the line below, columns the line right of each, under a top and left
- * line.
+ * Squares of a fixed side (`--square-size`, set inline), or the dots at their corners. The grid is
+ * cut down to the whole squares that fit the area left under the header, leaving the rest blank,
+ * and set across it per alignment: rows drawing the line below, columns the line right of each,
+ * under a top and left line.
  */
 .squares {
 	flex: 1;
@@ -117,6 +117,21 @@
 
 .squareColumn {
 	border-right: 0.2mm solid var(--color-rule-light);
+}
+
+/*
+ * The dots' grid: the squares' side times their count, plus one dot (`--dot-size`, set inline) for
+ * the dots on its far edges, sized from the area's percentages like the squares'.
+ */
+.dotGrid {
+	display: block;
+	flex-shrink: 0;
+	width: calc(round(down, 100% - var(--dot-size), var(--square-size)) + var(--dot-size));
+	height: calc(round(down, 100% - var(--dot-size), var(--square-size)) + var(--dot-size));
+}
+
+.dot {
+	fill: var(--color-rule);
 }
 
 /* One row per hour, sharing the height left under the header. */

@@ -7,9 +7,10 @@ import { type HourSchedule, orderHours, SCHEDULE_VALIDATORS, scheduleDefaults } 
 
 /**
  * What fills a `day-per-page` page under its header: an hourly schedule, plain ruled lines, a
- * grid of squares like a math notebook's, or nothing, the page left blank.
+ * grid of squares like a math notebook's, the dots at those squares' corners, or nothing, the page
+ * left blank.
  */
-export const DAY_PAGE_LINES = ['hours', 'ruled', 'squares', 'blank'] as const
+export const DAY_PAGE_LINES = ['hours', 'ruled', 'squares', 'dots', 'blank'] as const
 export type DayPageLines = (typeof DAY_PAGE_LINES)[number]
 
 /** What a `day-per-page` page's heading shows; the other one goes in the subheading. */
@@ -30,7 +31,7 @@ export function isRuledLineSpacing(value: unknown): value is number {
 	)
 }
 
-/** Bounds of the side of a square in the `squares` fill, in mm. */
+/** Bounds of the side of a square in the `squares` fill, or between dots in the `dots` fill, in mm. */
 export const MIN_SQUARE_SIZE = 3
 export const MAX_SQUARE_SIZE = 10
 
@@ -60,9 +61,15 @@ export interface DayPerPageConfig extends CommonConfig, HourSchedule {
 	dayPageLines: DayPageLines
 	/** The distance between ruled lines, in mm; only used when `dayPageLines` is `ruled`. */
 	ruledLineSpacing: number
-	/** The side of a square, in mm; only used when `dayPageLines` is `squares`. */
+	/**
+	 * The side of a square, in mm, the dots marking the corners of such squares; only used when
+	 * `dayPageLines` is `squares` or `dots`.
+	 */
 	squareSize: number
-	/** Where the grid of squares sits across the page; only used when `dayPageLines` is `squares`. */
+	/**
+	 * Where the grid of squares, or of dots, sits across the page; only used when `dayPageLines` is
+	 * `squares` or `dots`.
+	 */
 	squareGridAlignment: SquareGridAlignment
 	/**
 	 * Whether each day takes two pages: the second, without a header, continues the ruled lines or
@@ -89,7 +96,7 @@ export const DAY_PER_PAGE_SPEC: LayoutSpec<DayPerPageConfig> = {
 		ruledLineSpacing: 8,
 		// A math notebook's squares.
 		squareSize: 5,
-		squareGridAlignment: 'left',
+		squareGridAlignment: 'center',
 		twoPagesPerDay: false,
 		...scheduleDefaults(),
 		highlightWeekendDays: true,

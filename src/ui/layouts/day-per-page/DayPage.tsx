@@ -1,4 +1,4 @@
-import { type CSSProperties, memo } from 'react'
+import { type CSSProperties, memo, useId } from 'react'
 import type { PageSetup } from '../../../core/paper'
 import type { SquareGridAlignment } from '../../../layouts/day-per-page/options'
 import type { DayFill, DayPages } from '../../../layouts/day-per-page/pages'
@@ -15,6 +15,49 @@ const SQUARE_GRID_ALIGN_CLASSES: Record<SquareGridAlignment, string> = {
 	left: styles.alignLeft,
 	center: styles.alignCenter,
 	right: styles.alignRight,
+}
+
+/** The diameter of a dot in the `dots` fill, in mm. */
+const DOT_SIZE = 0.5
+
+/** The inline style of the dots, with their spacing and size as custom properties the stylesheet sizes the grid by. */
+type DotsStyle = CSSProperties & Record<'--square-size' | '--dot-size', string>
+
+interface DotGridProps {
+	/** The distance between dots, in mm. */
+	size: number
+}
+
+/**
+ * Dots at the corners of squares `size` mm a side, painted by one SVG pattern rather than one
+ * element per dot: a tile `size` a side with a dot at its center, shifted so the first dot's edge
+ * meets the grid's. The grid, sized in CSS, is cut to the whole squares that fit.
+ */
+function DotGrid({ size }: DotGridProps) {
+	const patternId = useId()
+	const radius = DOT_SIZE / 2
+	return (
+		<svg className={styles.dotGrid} aria-hidden="true">
+			<defs>
+				<pattern
+					id={patternId}
+					patternUnits="userSpaceOnUse"
+					x={`${radius - size / 2}mm`}
+					y={`${radius - size / 2}mm`}
+					width={`${size}mm`}
+					height={`${size}mm`}
+				>
+					<circle
+						className={styles.dot}
+						cx={`${size / 2}mm`}
+						cy={`${size / 2}mm`}
+						r={`${radius}mm`}
+					/>
+				</pattern>
+			</defs>
+			<rect width="100%" height="100%" fill={`url(#${patternId})`} />
+		</svg>
+	)
 }
 
 interface DayLinesProps {
@@ -58,6 +101,20 @@ function DayLines({ fill }: DayLinesProps) {
 						))}
 					</div>
 				</div>
+			</div>
+		)
+	}
+	if (fill.kind === 'dots') {
+		const style: DotsStyle = {
+			'--square-size': `${fill.size}mm`,
+			'--dot-size': `${DOT_SIZE}mm`,
+		}
+		return (
+			<div
+				className={`${styles.squares} ${SQUARE_GRID_ALIGN_CLASSES[fill.align]}`}
+				style={style}
+			>
+				<DotGrid size={fill.size} />
 			</div>
 		)
 	}
