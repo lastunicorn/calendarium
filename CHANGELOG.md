@@ -4,11 +4,17 @@ The features each release brought, newest first. Versions follow the app version
 
 ## Unreleased
 
+## 4.4.0 — 2026-10-21
+
+Settings and files from 4.3.0 are read as they are; the new options start at their defaults.
+
 ### Added
 
 - Day layout: a Blank fill leaves the page empty under its header, for drawing or free writing.
 - 21 more languages: Afrikaans, Amharic, Catalan, Estonian, Filipino, Gujarati, Hindi, Indonesian, Kannada, Latvian, Lithuanian, Malay, Malayalam, Serbian, Slovenian, Swahili, Tamil, Telugu, Thai (with Gregorian years), Traditional Chinese and Vietnamese.
-- The Language field explains, under its info icon, that it sets the printed calendar's language, the editor staying in English, and the Week starts on field what it sets and what Language default means.- Month layout: the weekday names above the grid can be set from 6 to 24 pt (9 pt by default).- Month, week and day layouts: the mini calendars' titles can name the year after the month, or the month alone, per a Show year in title option in the Mini calendar section (the month layout's show the year by default, the week and day layouts' don't, as before).
+- The Language field explains, under its info icon, that it sets the printed calendar's language, the editor staying in English, and the Week starts on field what it sets and what Language default means.
+- Month layout: the weekday names above the grid can be set from 6 to 24 pt (9 pt by default).
+- Month, week and day layouts: the mini calendars' titles can name the year after the month, or the month alone, per a Show year in title option in the Mini calendar section (the month layout's show the year by default, the week and day layouts' don't, as before).
 
 ### Changed
 
