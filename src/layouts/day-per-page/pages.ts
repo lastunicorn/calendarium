@@ -68,8 +68,8 @@ export interface DayPages {
  * margins (the header takes some of that height, and the ruled area clips the lines that don't
  * fit); over two sheets they continue. Squares, `squareSize` a side, fill it with as many whole squares
  * as fit across and down, the header's height being known only once drawn, set across the page per
- * `squareGridAlignment`; dots mark those squares' corners. A blank fill leaves every sheet empty. The hours are split in half over two sheets, the first
- * taking the extra hour of an odd count.
+ * `squareGridAlignment`; dots mark those squares' corners. A blank fill leaves every sheet empty. The hours are split in half over two sheets, the second,
+ * having no header, taking the extra hour of an odd count.
  */
 function planFills(config: DayPerPageConfig): DayFill[] {
 	const sheets = config.twoPagesPerDay ? 2 : 1
@@ -104,7 +104,7 @@ function planFills(config: DayPerPageConfig): DayFill[] {
 		return Array.from({ length: sheets }, () => fill)
 	}
 	const hours = hourNames(config.locale, config.firstHour, config.lastHour, config.hourFormat)
-	const split = Math.ceil(hours.length / sheets)
+	const split = Math.floor(hours.length / sheets)
 	return sheets === 1
 		? [{ kind: 'hours', hours }]
 		: [

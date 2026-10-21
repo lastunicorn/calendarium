@@ -11,6 +11,7 @@ The features each release brought, newest first. Versions follow the app version
 ### Changed
 
 - Day layout: the squares, and the new dots, are centered across the page by default, instead of set to the left. Saved settings keep their alignment.
+- Day layout: an hourly schedule over two pages puts the extra hour of an odd count on the second page, which has no header and so more room, instead of the first.
 
 ## 4.4.0 — 2026-10-21
 

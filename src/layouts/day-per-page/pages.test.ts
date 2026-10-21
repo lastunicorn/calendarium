@@ -84,7 +84,7 @@ describe('planDayPages', () => {
 			])
 		})
 
-		it('split the hours over two sheets, the first taking the odd one', () => {
+		it('split the hours over two sheets, the second, without a header, taking the odd one', () => {
 			const split = (lastHour: number) =>
 				plan(2026, { ...hours, twoPagesPerDay: true, firstHour: 8, lastHour })[0].fills.map(
 					(fill) => (fill.kind === 'hours' ? fill.hours : []),
@@ -94,8 +94,8 @@ describe('planDayPages', () => {
 				['11:00', '12:00', '13:00'],
 			])
 			expect(split(12)).toEqual([
-				['08:00', '09:00', '10:00'],
-				['11:00', '12:00'],
+				['08:00', '09:00'],
+				['10:00', '11:00', '12:00'],
 			])
 		})
 
