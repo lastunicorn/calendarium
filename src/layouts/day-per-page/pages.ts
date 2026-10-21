@@ -1,6 +1,12 @@
 import { type CalendarDay, dayOfYear, daysOfYear, isoWeek } from '../../core/calendar'
 import { eventNames } from '../../core/events'
-import { fullDateName, hourNames, weekdayName, weekdayNames } from '../../core/locale'
+import {
+	fullDateName,
+	hourNames,
+	monthYearName,
+	weekdayName,
+	weekdayNames,
+} from '../../core/locale'
 import { PRINT_MESSAGES } from '../../core/messages'
 import { contentBox } from '../../core/paper'
 import type { CalendarModel } from '../common'
@@ -122,7 +128,9 @@ export function planDayPages(config: DayPerPageConfig, model: CalendarModel): Da
 			miniMonth: miniMonth.show
 				? {
 						month: model.months[day.month],
-						name: model.monthNames[day.month],
+						name: miniMonth.showYear
+							? monthYearName(locale, day.year, day.month)
+							: model.monthNames[day.month],
 						weekdays: miniWeekdays,
 						highlightWeekends: miniMonth.highlightWeekends,
 						showWeekNumbers: miniMonth.showWeekNumbers,

@@ -66,13 +66,15 @@ export function planMonthPages(config: MonthPerPageConfig, model: CalendarModel)
 	const miniWeekdays = weekdayNames(locale, model.weekStart, adjacentMonths.weekdayFormat)
 	const title = config.title.trim()
 
-	/** The month `offset` (±1) months from `month` of the year, named with its year. */
+	/** The month `offset` (±1) months from `month` of the year, named with its year per `showYear`. */
 	function planMiniMonth(month: number, offset: number): MiniMonthPlan {
 		const otherYear = year + Math.floor((month + offset) / 12)
 		const otherMonth = (month + offset + 12) % 12
 		return {
 			month: buildMonth(otherYear, otherMonth, model.weekStart),
-			name: monthYearName(locale, otherYear, otherMonth),
+			name: adjacentMonths.showYear
+				? monthYearName(locale, otherYear, otherMonth)
+				: model.monthNames[otherMonth],
 			weekdays: miniWeekdays,
 			highlightWeekends: adjacentMonths.highlightWeekends,
 			showWeekNumbers: adjacentMonths.showWeekNumbers,

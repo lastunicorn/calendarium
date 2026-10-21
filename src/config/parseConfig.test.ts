@@ -56,7 +56,12 @@ describe('parseConfig', () => {
 					dayNumberFontSize: 20,
 					dayNumberHorizontalAlignment: 'center',
 					dayNumberVerticalAlignment: 'bottom',
-					adjacentMonths: { ...grid, showPreviousMonth: false, showNextMonth: true },
+					adjacentMonths: {
+						...grid,
+						showPreviousMonth: false,
+						showNextMonth: true,
+						showYear: false,
+					},
 				},
 				'week-per-page': {
 					...common,
@@ -76,7 +81,7 @@ describe('parseConfig', () => {
 					hourFormat: '12h',
 					firstHour: 8,
 					lastHour: 18,
-					miniMonth: { ...grid, show: true },
+					miniMonth: { ...grid, show: true, showYear: true },
 				},
 				'day-per-page': {
 					...common,
@@ -92,7 +97,12 @@ describe('parseConfig', () => {
 					firstHour: 0,
 					lastHour: 23,
 					highlightWeekendDays: false,
-					miniMonth: { ...grid, show: false, highlightWeekends: 'columns' },
+					miniMonth: {
+						...grid,
+						show: false,
+						showYear: true,
+						highlightWeekends: 'columns',
+					},
 					showHeaderWeek: false,
 					showHeaderDayOfYear: false,
 				},

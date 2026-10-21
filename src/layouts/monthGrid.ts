@@ -37,15 +37,18 @@ export const MONTH_GRID_VALIDATORS: Validators<MonthGridOptions> = {
 /** A month drawn small beside a page's main content, for context; it can be left out. */
 export interface MiniMonthOptions extends MonthGridOptions {
 	show: boolean
+	/** Whether the title above the grid names the year after the month, or the month alone. */
+	showYear: boolean
 }
 
-/** The default mini month: shown, with week numbers. */
+/** The default mini month: shown, titled with its month alone, with week numbers. */
 export function miniMonthDefaults(): MiniMonthOptions {
-	return { show: true, ...monthGridDefaults(), showWeekNumbers: true }
+	return { show: true, showYear: false, ...monthGridDefaults(), showWeekNumbers: true }
 }
 
 export const MINI_MONTH_VALIDATORS: Validators<MiniMonthOptions> = {
 	show: isBoolean,
+	showYear: isBoolean,
 	...MONTH_GRID_VALIDATORS,
 }
 

@@ -14,6 +14,10 @@ export function MiniMonthSection({
 		onUpdate({ show })
 	}
 
+	function handleShowYearChange(showYear: boolean) {
+		onUpdate({ showYear })
+	}
+
 	function handleReset() {
 		onUpdate(defaults)
 	}
@@ -25,7 +29,17 @@ export function MiniMonthSection({
 				checked={config.show}
 				onChange={handleShowChange}
 			/>
-			{config.show && <MonthGridFields config={config} onUpdate={onUpdate} />}
+			{config.show && (
+				<>
+					<CheckboxField
+						label="Show year in title"
+						checked={config.showYear}
+						onChange={handleShowYearChange}
+						description="Name the year after the month, or the month alone"
+					/>
+					<MonthGridFields config={config} onUpdate={onUpdate} />
+				</>
+			)}
 		</Section>
 	)
 }

@@ -136,4 +136,11 @@ describe('planMonthPages', () => {
 		expect(noNext.previousMonth).toMatchObject({ name: 'March 2026' })
 		expect(noNext.nextMonth).toBeUndefined()
 	})
+
+	it('names the adjacent months without their year when asked', () => {
+		const shown = defaultLayoutConfig('month-per-page').adjacentMonths
+		const page = plan(2026, { adjacentMonths: { ...shown, showYear: false } })[0]
+		expect(page.previousMonth).toMatchObject({ name: 'December' })
+		expect(page.nextMonth).toMatchObject({ name: 'February' })
+	})
 })

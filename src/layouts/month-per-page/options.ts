@@ -10,13 +10,16 @@ import { MONTH_GRID_VALIDATORS, type MonthGridOptions, monthGridDefaults } from 
 export interface AdjacentMonthsOptions extends MonthGridOptions {
 	showPreviousMonth: boolean
 	showNextMonth: boolean
+	/** Whether each one's title names its year after the month, or the month alone. */
+	showYear: boolean
 }
 
-/** Both adjacent months shown, without week numbers. */
+/** Both adjacent months shown, titled with their month and year, without week numbers. */
 function adjacentMonthsDefaults(): AdjacentMonthsOptions {
 	return {
 		showPreviousMonth: true,
 		showNextMonth: true,
+		showYear: true,
 		...monthGridDefaults(),
 	}
 }
@@ -24,6 +27,7 @@ function adjacentMonthsDefaults(): AdjacentMonthsOptions {
 const ADJACENT_MONTHS_VALIDATORS: Validators<AdjacentMonthsOptions> = {
 	showPreviousMonth: isBoolean,
 	showNextMonth: isBoolean,
+	showYear: isBoolean,
 	...MONTH_GRID_VALIDATORS,
 }
 

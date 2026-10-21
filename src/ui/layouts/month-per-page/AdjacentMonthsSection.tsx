@@ -18,6 +18,10 @@ export function AdjacentMonthsSection({
 		onUpdate({ showNextMonth })
 	}
 
+	function handleShowYearChange(showYear: boolean) {
+		onUpdate({ showYear })
+	}
+
 	function handleReset() {
 		onUpdate(defaults)
 	}
@@ -35,7 +39,15 @@ export function AdjacentMonthsSection({
 				onChange={handleShowNextMonthChange}
 			/>
 			{(config.showPreviousMonth || config.showNextMonth) && (
-				<MonthGridFields config={config} onUpdate={onUpdate} />
+				<>
+					<CheckboxField
+						label="Show year in title"
+						checked={config.showYear}
+						onChange={handleShowYearChange}
+						description="Name the year after the month, or the month alone"
+					/>
+					<MonthGridFields config={config} onUpdate={onUpdate} />
+				</>
 			)}
 		</Section>
 	)

@@ -6,7 +6,7 @@ import {
 	weeksOfYear,
 } from '../../core/calendar'
 import { eventNames } from '../../core/events'
-import { dateRangeName, hourNames, weekdayNames } from '../../core/locale'
+import { dateRangeName, hourNames, monthYearName, weekdayNames } from '../../core/locale'
 import { PRINT_MESSAGES } from '../../core/messages'
 import { isHighlightedWeekDay } from '../../core/weekend'
 import type { CalendarModel } from '../common'
@@ -145,7 +145,9 @@ export function planWeekPages(config: WeekPerPageConfig, model: CalendarModel): 
 			miniMonth: miniMonth.show
 				? {
 						month: months[month],
-						name: monthNames[month],
+						name: miniMonth.showYear
+							? monthYearName(locale, config.year, month)
+							: monthNames[month],
 						weekdays: miniWeekdays,
 						highlightWeekends: miniMonth.highlightWeekends,
 						showWeekNumbers: miniMonth.showWeekNumbers,

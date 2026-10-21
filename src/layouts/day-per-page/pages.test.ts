@@ -67,6 +67,10 @@ describe('planDayPages', () => {
 		const shown = day(plan(2026), '2026-03-17')
 		expect(shown.miniMonth).toMatchObject({ name: 'March', markedDay: 17 })
 		expect(shown.miniMonth!.month.month).toBe(2)
+		const withYear = { ...defaultLayoutConfig('day-per-page').miniMonth, showYear: true }
+		expect(day(plan(2026, { miniMonth: withYear }), '2026-03-17').miniMonth).toMatchObject({
+			name: 'March 2026',
+		})
 		const hidden = { ...defaultLayoutConfig('day-per-page').miniMonth, show: false }
 		expect(day(plan(2026, { miniMonth: hidden }), '2026-03-17').miniMonth).toBeUndefined()
 	})
