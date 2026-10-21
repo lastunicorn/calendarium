@@ -37,6 +37,7 @@ export function EventsSection({ config, defaults, onUpdate }: ConfigSectionProps
 				description={EVENTS_DESCRIPTION}
 				value={config.events}
 				placeholder={EVENTS_PLACEHOLDER}
+				rows={10}
 				error={eventsError(config.events)}
 				onChange={handleEventsChange}
 			/>
