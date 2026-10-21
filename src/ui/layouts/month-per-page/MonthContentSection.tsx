@@ -3,6 +3,8 @@ import {
 	DAY_NUMBER_VERTICAL_ALIGNMENTS,
 	MAX_DAY_NUMBER_FONT_SIZE,
 	MIN_DAY_NUMBER_FONT_SIZE,
+	MAX_WEEKDAY_FONT_SIZE,
+	MIN_WEEKDAY_FONT_SIZE,
 	type DayNumberHorizontalAlignment,
 	type DayNumberVerticalAlignment,
 	type MonthPerPageConfig,
@@ -31,7 +33,7 @@ const DAY_NUMBER_VERTICAL_ALIGNMENT_OPTIONS = optionsFrom(DAY_NUMBER_VERTICAL_AL
 
 /**
  * How the month's grid looks, with room for full weekday names, whether it shows other months'
- * days and its lines, and how large the day numbers are and where they sit in their cells.
+ * days and its lines, how large the weekday names are, and how large the day numbers are and where they sit in their cells.
  */
 export function MonthContentSection({
 	config,
@@ -44,6 +46,10 @@ export function MonthContentSection({
 
 	function handleShowGridLinesChange(showGridLines: boolean) {
 		onUpdate({ showGridLines })
+	}
+
+	function handleWeekdayFontSizeChange(weekdayFontSize: number) {
+		onUpdate({ weekdayFontSize })
 	}
 
 	function handleDayNumberFontSizeChange(dayNumberFontSize: number) {
@@ -70,6 +76,7 @@ export function MonthContentSection({
 				'showWeekNumbers',
 				'showAdjacentMonthDays',
 				'showGridLines',
+				'weekdayFontSize',
 				'dayNumberFontSize',
 				'dayNumberHorizontalAlignment',
 				'dayNumberVerticalAlignment',
@@ -95,6 +102,14 @@ export function MonthContentSection({
 				checked={config.showGridLines}
 				onChange={handleShowGridLinesChange}
 				description="Rule the cells of the month's grid"
+			/>
+			<NumberField
+				label="Weekday name size (pt)"
+				description={`From ${MIN_WEEKDAY_FONT_SIZE} to ${MAX_WEEKDAY_FONT_SIZE} pt.`}
+				value={config.weekdayFontSize}
+				min={MIN_WEEKDAY_FONT_SIZE}
+				max={MAX_WEEKDAY_FONT_SIZE}
+				onChange={handleWeekdayFontSizeChange}
 			/>
 			<NumberField
 				label="Day number size (pt)"

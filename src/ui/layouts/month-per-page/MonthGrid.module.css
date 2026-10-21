@@ -31,7 +31,7 @@
 .weekday {
 	padding: 1.5mm 1mm;
 	overflow: hidden;
-	font-size: 9pt;
+	/* The size is set per `weekdayFontSize`, on each name. */
 	font-weight: 600;
 	text-align: center;
 	text-transform: uppercase;

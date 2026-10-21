@@ -31,11 +31,13 @@ export function MonthGrid({
 	showWeekNumbers,
 	showAdjacentMonthDays,
 	showGridLines,
+	weekdayFontSize,
 	dayNumberFontSize,
 	dayNumberHorizontalAlignment,
 	dayNumberVerticalAlignment,
 }: MonthGridPlan) {
 	const dayAlignClasses = `${HORIZONTAL_ALIGN_CLASSES[dayNumberHorizontalAlignment]} ${VERTICAL_ALIGN_CLASSES[dayNumberVerticalAlignment]}`
+	const weekdayStyle = { fontSize: `${weekdayFontSize}pt` }
 	const numberStyle = { fontSize: `${dayNumberFontSize}pt` }
 	const weekendColumns = weeks[0].map((day) => isHighlightedColumn(day, highlightWeekends))
 	const filledHeadings = weeks[0].map((day) => isFilledColumnHeading(day, highlightWeekends))
@@ -60,6 +62,7 @@ export function MonthGrid({
 						weekendColumns[index] ? styles.weekend : '',
 						filledHeadings[index] ? styles.filled : '',
 					].join(' ')}
+					style={weekdayStyle}
 				>
 					{weekday}
 				</div>

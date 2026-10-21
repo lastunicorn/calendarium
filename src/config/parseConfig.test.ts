@@ -52,6 +52,7 @@ describe('parseConfig', () => {
 					monthHeadingAlignment: 'left',
 					showAdjacentMonthDays: false,
 					showGridLines: false,
+					weekdayFontSize: 11,
 					dayNumberFontSize: 20,
 					dayNumberHorizontalAlignment: 'center',
 					dayNumberVerticalAlignment: 'bottom',

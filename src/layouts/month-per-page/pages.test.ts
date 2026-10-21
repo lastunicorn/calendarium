@@ -57,6 +57,11 @@ describe('planMonthPages', () => {
 		expect(plan(2026, { showGridLines: false })[0].grid.showGridLines).toBe(false)
 	})
 
+	it('writes the weekday names in 9 pt unless told another size', () => {
+		expect(plan(2026)[0].grid.weekdayFontSize).toBe(9)
+		expect(plan(2026, { weekdayFontSize: 12 })[0].grid.weekdayFontSize).toBe(12)
+	})
+
 	it('writes the day numbers in 14 pt unless told another size', () => {
 		expect(plan(2026)[0].grid.dayNumberFontSize).toBe(14)
 		expect(plan(2026, { dayNumberFontSize: 24 })[0].grid.dayNumberFontSize).toBe(24)

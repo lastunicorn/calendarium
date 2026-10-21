@@ -52,6 +52,20 @@ export function isDayNumberFontSize(value: unknown): value is number {
 	)
 }
 
+/** Bounds of the grid's weekday names' size, in pt. */
+export const MIN_WEEKDAY_FONT_SIZE = 6
+export const MAX_WEEKDAY_FONT_SIZE = 24
+
+/** A weekday name's font size, in pt, from `MIN_WEEKDAY_FONT_SIZE` to `MAX_WEEKDAY_FONT_SIZE`. */
+export function isWeekdayFontSize(value: unknown): value is number {
+	return (
+		typeof value === 'number' &&
+		Number.isFinite(value) &&
+		value >= MIN_WEEKDAY_FONT_SIZE &&
+		value <= MAX_WEEKDAY_FONT_SIZE
+	)
+}
+
 export interface MonthPerPageConfig extends CommonConfig, MonthGridOptions {
 	/**
 	 * Shown above the grid on every page, the month and year then below it; when empty, the month
@@ -67,6 +81,8 @@ export interface MonthPerPageConfig extends CommonConfig, MonthGridOptions {
 	showAdjacentMonthDays: boolean
 	/** Whether the grid's cells are ruled, or only their contents are drawn. */
 	showGridLines: boolean
+	/** The size of the weekday names above the grid's columns, in pt. */
+	weekdayFontSize: number
 	/** The size of each day's number in the grid, in pt; its events' names keep their own. */
 	dayNumberFontSize: number
 	dayNumberHorizontalAlignment: DayNumberHorizontalAlignment
@@ -87,6 +103,7 @@ export const MONTH_PER_PAGE_SPEC: LayoutSpec<MonthPerPageConfig> = {
 			monthHeadingAlignment: 'center',
 			showAdjacentMonthDays: false,
 			showGridLines: true,
+			weekdayFontSize: 9,
 			dayNumberFontSize: 14,
 			dayNumberHorizontalAlignment: 'left',
 			dayNumberVerticalAlignment: 'top',
@@ -103,6 +120,7 @@ export const MONTH_PER_PAGE_SPEC: LayoutSpec<MonthPerPageConfig> = {
 		monthHeadingAlignment: oneOf(HEADING_ALIGNS),
 		showAdjacentMonthDays: isBoolean,
 		showGridLines: isBoolean,
+		weekdayFontSize: isWeekdayFontSize,
 		dayNumberFontSize: isDayNumberFontSize,
 		dayNumberHorizontalAlignment: oneOf(DAY_NUMBER_HORIZONTAL_ALIGNMENTS),
 		dayNumberVerticalAlignment: oneOf(DAY_NUMBER_VERTICAL_ALIGNMENTS),
