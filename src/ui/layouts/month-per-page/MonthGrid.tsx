@@ -1,6 +1,6 @@
 import { Fragment } from 'react'
 import { weekNumber } from '../../../core/calendar'
-import { isHighlightedColumn, isHighlightedDay } from '../../../core/weekend'
+import { isFilledColumnHeading, isHighlightedColumn, isHighlightedDay } from '../../../core/weekend'
 import type {
 	DayNumberHorizontalAlignment,
 	DayNumberVerticalAlignment,
@@ -38,6 +38,7 @@ export function MonthGrid({
 	const dayAlignClasses = `${HORIZONTAL_ALIGN_CLASSES[dayNumberHorizontalAlignment]} ${VERTICAL_ALIGN_CLASSES[dayNumberVerticalAlignment]}`
 	const numberStyle = { fontSize: `${dayNumberFontSize}pt` }
 	const weekendColumns = weeks[0].map((day) => isHighlightedColumn(day, highlightWeekends))
+	const filledHeadings = weeks[0].map((day) => isFilledColumnHeading(day, highlightWeekends))
 
 	return (
 		<div
@@ -54,7 +55,11 @@ export function MonthGrid({
 				<div
 					// Narrow names repeat (T, T, S, S), so the column index is the key.
 					key={index}
-					className={`${styles.weekday} ${weekendColumns[index] ? styles.weekend : ''}`}
+					className={[
+						styles.weekday,
+						weekendColumns[index] ? styles.weekend : '',
+						filledHeadings[index] ? styles.filled : '',
+					].join(' ')}
 				>
 					{weekday}
 				</div>

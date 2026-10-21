@@ -22,3 +22,11 @@ export function isHighlightedWeekDay(day: WeekDay, highlight: boolean): boolean 
 export function isHighlightedColumn(day: CalendarDay, mode: WeekendHighlight): boolean {
 	return mode !== 'off' && day.isWeekend
 }
+
+/**
+ * Whether the weekday heading above `day`'s column gets the weekend background too: only in
+ * `columns` mode, the heading then being part of the shaded column.
+ */
+export function isFilledColumnHeading(day: CalendarDay, mode: WeekendHighlight): boolean {
+	return mode === 'columns' && day.isWeekend
+}

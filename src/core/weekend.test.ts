@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import { buildMonth, type CalendarDay, weeksOfYear } from './calendar'
-import { isHighlightedColumn, isHighlightedDay, isHighlightedWeekDay } from './weekend'
+import {
+	isFilledColumnHeading,
+	isHighlightedColumn,
+	isHighlightedDay,
+	isHighlightedWeekDay,
+} from './weekend'
 
 // January 2026 starting on Monday: the first row is Dec 29 – Jan 4, so it holds
 // in-month weekend days (Jan 3, 4); the last row is Feb 2 – 8, all outside the month.
@@ -53,5 +58,14 @@ describe('isHighlightedColumn', () => {
 		expect(isHighlightedColumn(saturday, 'days')).toBe(true)
 		expect(isHighlightedColumn(saturday, 'columns')).toBe(true)
 		expect(isHighlightedColumn(weekday, 'columns')).toBe(false)
+	})
+})
+
+describe('isFilledColumnHeading', () => {
+	it('fills weekend headings only when whole columns are highlighted', () => {
+		expect(isFilledColumnHeading(saturday, 'off')).toBe(false)
+		expect(isFilledColumnHeading(saturday, 'days')).toBe(false)
+		expect(isFilledColumnHeading(saturday, 'columns')).toBe(true)
+		expect(isFilledColumnHeading(weekday, 'columns')).toBe(false)
 	})
 })

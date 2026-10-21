@@ -111,7 +111,8 @@
 	color: var(--color-weekend);
 }
 
-.day.weekend {
+.day.weekend,
+.weekday.filled {
 	background: var(--color-weekend-background);
 }
 
