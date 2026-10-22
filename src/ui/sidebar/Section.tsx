@@ -1,7 +1,7 @@
 import { type ReactNode, useEffect, useId, useRef, useState } from 'react'
 import { ChevronIcon, ResetIcon } from '../components/icons'
 import styles from './Section.module.css'
-import { useOpenSectionsContext } from './useOpenSections'
+import { useOpenSectionsContext } from './openSections'
 
 /**
  * Props shared by groups of fields: a layout's options, or the part of them the fields edit, and a

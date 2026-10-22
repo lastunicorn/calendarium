@@ -1,11 +1,32 @@
 import { fireEvent, render, screen, within } from '@testing-library/react'
+import { type ComponentProps, useState } from 'react'
 import { describe, expect, it, vi } from 'vitest'
 import { LAYOUT_IDS, type LayoutId } from '../../layouts'
 import { defaultWorkspace } from '../../workspace/Workspace'
 import { margins } from '../../core/paper'
+import { defaultPreferences, withSectionToggled } from '../../preferences/Preferences'
 import { WorkspaceForm } from './WorkspaceForm'
 
 function noop() {}
+
+type FormProps = Omit<ComponentProps<typeof WorkspaceForm>, 'openSection' | 'onToggleSection'>
+
+/** The form with its open section held as the app holds it, in the viewer's preferences. */
+function Form(props: FormProps) {
+	const [preferences, setPreferences] = useState(defaultPreferences)
+
+	function handleToggleSection(title: string) {
+		setPreferences((current) => withSectionToggled(current, title))
+	}
+
+	return (
+		<WorkspaceForm
+			{...props}
+			openSection={preferences.openSection}
+			onToggleSection={handleToggleSection}
+		/>
+	)
+}
 
 /**
  * The titles of the form's sections, top to bottom. Each is a `<fieldset>`; groups inside one
@@ -14,7 +35,7 @@ function noop() {}
 function sectionTitles(layout: LayoutId): string[] {
 	const workspace = { ...defaultWorkspace(), layout }
 	render(
-		<WorkspaceForm
+		<Form
 			workspace={workspace}
 			onSelectLayout={noop}
 			onUpdate={noop}
@@ -32,16 +53,18 @@ describe('WorkspaceForm', () => {
 	// Each layout's sections are tested next to its form, in `layouts/<layout-id>/ui/`.
 	it.each(LAYOUT_IDS)('shows the layout picker above the %s form', (layout) => {
 		const [first, ...rest] = sectionTitles(layout)
-		expect(first).toBe('Layout')
+		expect(first).toBe('Project')
 		expect(rest.length).toBeGreaterThan(0)
 	})
 
 	it('keeps the layout picker open, starts every other section collapsed, and opens one when its title is clicked', () => {
 		const [layoutTitle, ...titles] = sectionTitles('year-per-page')
-		expect(layoutTitle).toBe('Layout')
-		expect(screen.queryByRole('button', { name: 'Layout' })).toBeNull()
-		expect(screen.getByRole('group', { name: 'Layout' }).querySelector('select')).not.toBeNull()
-		const actions = within(screen.getByRole('group', { name: 'Layout' })).getByRole('toolbar')
+		expect(layoutTitle).toBe('Project')
+		expect(screen.queryByRole('button', { name: 'Project' })).toBeNull()
+		expect(
+			screen.getByRole('group', { name: 'Project' }).querySelector('select'),
+		).not.toBeNull()
+		const actions = within(screen.getByRole('group', { name: 'Project' })).getByRole('toolbar')
 		expect(
 			within(actions)
 				.getAllByRole('button')
@@ -70,8 +93,10 @@ describe('WorkspaceForm', () => {
 		expect(page.getAttribute('aria-expanded')).toBe('true')
 		expect(calendar.getAttribute('aria-expanded')).toBe('false')
 		expect(screen.queryByLabelText('Year')).toBeNull()
-		expect(screen.getByRole('group', { name: 'Layout' }).querySelector('select')).not.toBeNull()
-		const actions = within(screen.getByRole('group', { name: 'Layout' })).getByRole('toolbar')
+		expect(
+			screen.getByRole('group', { name: 'Project' }).querySelector('select'),
+		).not.toBeNull()
+		const actions = within(screen.getByRole('group', { name: 'Project' })).getByRole('toolbar')
 		expect(
 			within(actions)
 				.getAllByRole('button')
@@ -79,10 +104,10 @@ describe('WorkspaceForm', () => {
 		).toEqual(['Save project to a file', 'Open a project file', 'New project'])
 	})
 
-	it('keeps a section open on another layout and after a reload', () => {
+	it('keeps a section open on another layout', () => {
 		const workspace = defaultWorkspace()
-		const { rerender, unmount } = render(
-			<WorkspaceForm
+		const { rerender } = render(
+			<Form
 				workspace={workspace}
 				onSelectLayout={noop}
 				onUpdate={noop}
@@ -93,7 +118,7 @@ describe('WorkspaceForm', () => {
 		fireEvent.click(screen.getByRole('button', { name: 'Calendar' }))
 
 		rerender(
-			<WorkspaceForm
+			<Form
 				workspace={{ ...workspace, layout: 'day-per-page' }}
 				onSelectLayout={noop}
 				onUpdate={noop}
@@ -105,24 +130,12 @@ describe('WorkspaceForm', () => {
 		expect(screen.getByRole('button', { name: 'Content' }).getAttribute('aria-expanded')).toBe(
 			'false',
 		)
-
-		unmount()
-		render(
-			<WorkspaceForm
-				workspace={workspace}
-				onSelectLayout={noop}
-				onUpdate={noop}
-				onNewProject={noop}
-				onOpenProject={noop}
-			/>,
-		)
-		expect(screen.getByLabelText('Year')).not.toBeNull()
 	})
 
 	it('shows the spine only with mirrored margins', () => {
 		const workspace = defaultWorkspace()
 		const { rerender } = render(
-			<WorkspaceForm
+			<Form
 				workspace={workspace}
 				onSelectLayout={noop}
 				onUpdate={noop}
@@ -142,7 +155,7 @@ describe('WorkspaceForm', () => {
 			},
 		}
 		rerender(
-			<WorkspaceForm
+			<Form
 				workspace={mirrored}
 				onSelectLayout={noop}
 				onUpdate={noop}
@@ -167,7 +180,7 @@ describe('WorkspaceForm', () => {
 			}
 		}
 		const { rerender } = render(
-			<WorkspaceForm
+			<Form
 				workspace={workspace}
 				onSelectLayout={noop}
 				onUpdate={onUpdate}
@@ -188,7 +201,7 @@ describe('WorkspaceForm', () => {
 		})
 
 		rerender(
-			<WorkspaceForm
+			<Form
 				workspace={withPage({ mirrorMargins: true, equalMargins: false })}
 				onSelectLayout={noop}
 				onUpdate={onUpdate}
@@ -201,7 +214,7 @@ describe('WorkspaceForm', () => {
 		expect(left.readOnly).toBe(false)
 
 		rerender(
-			<WorkspaceForm
+			<Form
 				workspace={withPage({
 					equalMargins: false,
 					margins: { top: 5, right: 10, bottom: 15, left: 20 },
@@ -220,7 +233,7 @@ describe('WorkspaceForm', () => {
 
 	it('labels the hovered or focused project action under the buttons', () => {
 		render(
-			<WorkspaceForm
+			<Form
 				workspace={defaultWorkspace()}
 				onSelectLayout={noop}
 				onUpdate={noop}
@@ -245,7 +258,7 @@ describe('WorkspaceForm', () => {
 		const onUpdate = vi.fn()
 		const workspace = defaultWorkspace()
 		render(
-			<WorkspaceForm
+			<Form
 				workspace={workspace}
 				onSelectLayout={noop}
 				onUpdate={onUpdate}
@@ -268,7 +281,7 @@ describe('WorkspaceForm', () => {
 	it('cancels a section’s reset on a click outside it, on Escape, or when it collapses', () => {
 		const onUpdate = vi.fn()
 		render(
-			<WorkspaceForm
+			<Form
 				workspace={defaultWorkspace()}
 				onSelectLayout={noop}
 				onUpdate={onUpdate}
@@ -282,7 +295,7 @@ describe('WorkspaceForm', () => {
 		fireEvent.click(reset)
 		fireEvent.pointerDown(screen.getByLabelText('Year'))
 		expect(screen.getByRole('alertdialog')).not.toBeNull()
-		fireEvent.pointerDown(screen.getByRole('group', { name: 'Layout' }))
+		fireEvent.pointerDown(screen.getByRole('group', { name: 'Project' }))
 		expect(screen.queryByRole('alertdialog')).toBeNull()
 
 		fireEvent.click(reset)

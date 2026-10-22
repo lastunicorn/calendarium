@@ -6,7 +6,7 @@ import { layoutView } from '../layouts/registry'
 import type { UpdateLayoutOptions } from '../useWorkspace'
 import styles from './WorkspaceForm.module.css'
 import { LayoutSection } from './LayoutSection'
-import { OpenSectionsContext, useOpenSections } from './useOpenSections'
+import { type OpenSections, OpenSectionsContext } from './openSections'
 
 interface WorkspaceFormProps {
 	workspace: Workspace
@@ -14,6 +14,9 @@ interface WorkspaceFormProps {
 	onUpdate: UpdateLayoutOptions
 	onNewProject: (layout: LayoutId) => void
 	onOpenProject: (opened: OpenedProject) => void
+	/** The title of the open section, from the viewer's preferences; `null` when all are closed. */
+	openSection: string | null
+	onToggleSection: (title: string) => void
 }
 
 interface LayoutFormProps<K extends LayoutId> {
@@ -40,7 +43,8 @@ function LayoutForm<K extends LayoutId>({ layout, options, onUpdate }: LayoutFor
 
 /**
  * The layout picker with the saving, opening and starting over of its project, and the chosen layout's
- * options, grouped by what they affect, in sections of which one at a time is open, staying open across layouts and reloads.
+ * options, grouped by what they affect, in sections of which one at a time is open, staying open
+ * across layouts.
  */
 export function WorkspaceForm({
 	workspace,
@@ -48,9 +52,16 @@ export function WorkspaceForm({
 	onUpdate,
 	onNewProject,
 	onOpenProject,
+	openSection,
+	onToggleSection,
 }: WorkspaceFormProps) {
 	const { layout } = workspace
-	const openSections = useOpenSections()
+
+	function isOpen(title: string) {
+		return title === openSection
+	}
+
+	const openSections: OpenSections = { isOpen, toggle: onToggleSection }
 	return (
 		<OpenSectionsContext value={openSections}>
 			<div className={styles.form}>

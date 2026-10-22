@@ -15,9 +15,9 @@ function openSection(title: string) {
 	fireEvent.click(screen.getByRole('button', { name: title }))
 }
 
-/** The layout picker: the select in the always open "Layout" section. */
+/** The layout picker: the select in the always open "Project" section. */
 function layoutSelect(): HTMLSelectElement {
-	return screen.getByRole('group', { name: 'Layout' }).querySelector('select')!
+	return screen.getByRole('group', { name: 'Project' }).querySelector('select')!
 }
 
 describe('App open project', () => {
@@ -100,5 +100,32 @@ describe('App new project', () => {
 		expect(screen.getByLabelText<HTMLTextAreaElement>('Events').value).toBe(
 			'0000-12-25 Christmas',
 		)
+	})
+})
+
+describe('App preferences', () => {
+	it('keeps the open section and the sidebar width after a reload', () => {
+		const { unmount } = render(<App />)
+		openSection('Calendar')
+		const handle = screen.getByRole('separator', { name: 'Resize sidebar' })
+		fireEvent.keyDown(handle, { key: 'ArrowRight' })
+		const width = handle.getAttribute('aria-valuenow')
+		expect(Number(width)).toBeGreaterThan(320)
+
+		unmount()
+		render(<App />)
+		expect(screen.getByLabelText('Year')).not.toBeNull()
+		expect(
+			screen.getByRole('separator', { name: 'Resize sidebar' }).getAttribute('aria-valuenow'),
+		).toBe(width)
+	})
+
+	it('keeps the preferences apart from the workspace', () => {
+		render(<App />)
+		openSection('Page')
+		expect(JSON.parse(localStorage.getItem('calendarium-preferences')!)).toMatchObject({
+			openSection: 'Page',
+		})
+		expect(localStorage.getItem('calendarium-config')).toBeNull()
 	})
 })

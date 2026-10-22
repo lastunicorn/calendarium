@@ -116,7 +116,8 @@ export function LayoutSection({ workspace, onSelect, onNew, onOpen }: LayoutSect
 				label="Layout"
 				value={layout}
 				options={LAYOUT_OPTIONS}
-				onChange={onSelect} />
+				onChange={onSelect}
+			/>
 			<div className={styles.actionsGroup}>
 				<div
 					className={styles.actions}
@@ -137,11 +138,7 @@ export function LayoutSection({ workspace, onSelect, onNew, onOpen }: LayoutSect
 						icon={<OpenIcon />}
 						onClick={handleOpenClick}
 					/>
-					<IconButton
-						label="New project"
-						icon={<ResetIcon />}
-						onClick={handleNewClick}
-					/>
+					<IconButton label="New project" icon={<ResetIcon />} onClick={handleNewClick} />
 					<input
 						ref={fileInput}
 						type="file"

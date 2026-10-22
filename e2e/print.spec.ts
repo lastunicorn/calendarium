@@ -31,7 +31,7 @@ async function openSection(page: Page, title: string) {
 /** Shows `layout` for `year` through the sidebar, as a user would. */
 async function showLayout(page: Page, layout: string, year: number) {
 	await page.goto('/')
-	await page.getByRole('group', { name: 'Layout' }).locator('select').selectOption(layout)
+	await page.getByRole('combobox', { name: 'Layout' }).selectOption(layout)
 	await openSection(page, 'Calendar')
 	const yearField = page.getByRole('spinbutton', { name: 'Year' })
 	await yearField.fill(String(year))

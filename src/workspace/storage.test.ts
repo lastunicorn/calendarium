@@ -2,21 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { defaultWorkspace } from './Workspace'
 import { loadWorkspace, saveWorkspace } from './storage'
 import { APP_VERSION, FORMAT_VERSION } from './version'
-
-/** A minimal in-memory `localStorage`, since tests run without a DOM. */
-function memoryStorage(): Storage {
-	const items = new Map<string, string>()
-	return {
-		get length() {
-			return items.size
-		},
-		clear: () => items.clear(),
-		getItem: (key) => items.get(key) ?? null,
-		key: (index) => [...items.keys()][index] ?? null,
-		removeItem: (key) => void items.delete(key),
-		setItem: (key, value) => void items.set(key, String(value)),
-	}
-}
+import { memoryStorage } from '../test/memoryStorage'
 
 describe('workspace storage', () => {
 	beforeEach(() => {
