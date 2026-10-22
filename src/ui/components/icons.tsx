@@ -30,8 +30,17 @@ export function PrintIcon() {
 	)
 }
 
-/** Arrow down into a tray: opens a project file. */
+/** An open folder: opens a project file. */
 export function OpenIcon() {
+	return (
+		<Icon>
+			<path d="M6 14l1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.55 6a2 2 0 0 1-1.94 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2" />
+		</Icon>
+	)
+}
+
+/** Arrow down into a tray: saves the project to a file, which the browser downloads. */
+export function SaveIcon() {
 	return (
 		<Icon>
 			<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -41,19 +50,20 @@ export function OpenIcon() {
 	)
 }
 
-/** Arrow up out of a tray: saves the project to a file. */
-export function SaveIcon() {
+/** A page with a plus on its lower right corner, the outline open around it: starts a new project. */
+export function NewIcon() {
 	return (
 		<Icon>
-			<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-			<path d="M17 8l-5-5-5 5" />
-			<path d="M12 3v12" />
+			<path d="M17 12V7l-5-5H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h6" />
+			<path d="M12 2v5h5" />
+			<path d="M19 15.5v7" />
+			<path d="M15.5 19h7" />
 		</Icon>
 	)
 }
 
 /**
- * A power symbol whose ring breaks into dashes on the upper right: restores default settings, of a section or a whole project.
+ * A power symbol whose ring breaks into dashes on the upper right: restores a section's default settings.
  * Flat ends, so the narrow gaps between the dashes stay open.
  */
 export function ResetIcon() {

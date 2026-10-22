@@ -3,7 +3,7 @@ import { activeProject, type Workspace } from '../../workspace/Workspace'
 import { LAYOUT_IDS, type LayoutId } from '../../layouts'
 import { type OpenedProject, parseProjectFile, projectFile } from '../../workspace/projectFile'
 import { IconButton } from '../components/IconButton'
-import { LayoutIcon, OpenIcon, ResetIcon, SaveIcon } from '../components/icons'
+import { LayoutIcon, NewIcon, OpenIcon, SaveIcon } from '../components/icons'
 import { downloadFile } from '../download'
 import { SelectField } from '../fields/SelectField'
 import { LAYOUT_VIEWS } from '../layouts/registry'
@@ -129,6 +129,11 @@ export function LayoutSection({ workspace, onSelect, onNew, onOpen }: LayoutSect
 					onBlur={handleActionsLeave}
 				>
 					<IconButton
+						label="New project"
+						icon={<NewIcon />}
+						onClick={handleNewClick}
+					/>
+					<IconButton
 						label="Save project to a file"
 						icon={<SaveIcon />}
 						onClick={handleSaveClick}
@@ -138,7 +143,6 @@ export function LayoutSection({ workspace, onSelect, onNew, onOpen }: LayoutSect
 						icon={<OpenIcon />}
 						onClick={handleOpenClick}
 					/>
-					<IconButton label="New project" icon={<ResetIcon />} onClick={handleNewClick} />
 					<input
 						ref={fileInput}
 						type="file"
