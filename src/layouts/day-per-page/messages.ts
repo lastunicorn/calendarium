@@ -197,4 +197,32 @@ export const DAY_PAGE_MESSAGES: Record<Locale, DayPageMessages> = {
 		week: (n) => `第${n}週`,
 		dayOfYear: (n, total) => `第${n}天 / 共${total}天`,
 	},
+	'el-GR': {
+		week: (n) => `Εβδομάδα ${n}`,
+		dayOfYear: (n, total) => `Ημέρα ${n} / ${total}`,
+	},
+	'pt-PT': {
+		week: (n) => `Semana ${n}`,
+		dayOfYear: (n, total) => `Dia ${n} / ${total}`,
+	},
+	'es-MX': {
+		week: (n) => `Semana ${n}`,
+		dayOfYear: (n, total) => `Día ${n} / ${total}`,
+	},
+	'fr-CA': {
+		week: (n) => `Semaine ${n}`,
+		dayOfYear: (n, total) => `Jour ${n} / ${total}`,
+	},
+	'de-AT': {
+		week: (n) => `Woche ${n}`,
+		dayOfYear: (n, total) => `Tag ${n} / ${total}`,
+	},
+	'de-CH': {
+		week: (n) => `Woche ${n}`,
+		dayOfYear: (n, total) => `Tag ${n} / ${total}`,
+	},
+	'zh-HK': {
+		week: (n) => `第${n}週`,
+		dayOfYear: (n, total) => `第${n}天 / 共${total}天`,
+	},
 }

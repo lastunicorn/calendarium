@@ -48,6 +48,13 @@ export const LOCALES = [
 	'th-TH',
 	'vi-VN',
 	'zh-TW',
+	'el-GR',
+	'pt-PT',
+	'es-MX',
+	'fr-CA',
+	'de-AT',
+	'de-CH',
+	'zh-HK',
 ] as const
 export type Locale = (typeof LOCALES)[number]
 
@@ -122,12 +129,28 @@ function capitalize(text: string, locale: string): string {
 	return text.charAt(0).toLocaleUpperCase(locale) + text.slice(1)
 }
 
+/**
+ * Languages whose month alone `Intl` writes in the form it takes inside a date, Greek's "of
+ * January" (Ιανουαρίου), so their month names are taken from a month and year, which names the
+ * month itself (Ιανουάριος). Other languages keep the month alone: in Chinese and Japanese the
+ * month part of a month and year is the bare number, its 月 being a separate literal.
+ */
+const MONTH_NAME_FROM_MONTH_YEAR: ReadonlySet<string> = new Set<Locale>(['el-GR'])
+
 /** Localized month names, January first. */
 export function monthNames(locale: string): string[] {
-	const format = dateFormatter(locale, { month: 'long' })
-	return Array.from({ length: 12 }, (_, month) =>
-		capitalize(format.format(utcDate(2000, month, 1)), locale),
-	)
+	const fromMonthYear = MONTH_NAME_FROM_MONTH_YEAR.has(locale)
+	const format = dateFormatter(locale, {
+		month: 'long',
+		year: fromMonthYear ? 'numeric' : undefined,
+	})
+	return Array.from({ length: 12 }, (_, month) => {
+		const date = utcDate(2000, month, 1)
+		const name = fromMonthYear
+			? (format.formatToParts(date).find((part) => part.type === 'month')?.value ?? '')
+			: format.format(date)
+		return capitalize(name, locale)
+	})
 }
 
 /** Localized year, e.g. "2026", "2026年", "2026 m.". */

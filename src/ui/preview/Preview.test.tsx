@@ -27,4 +27,19 @@ describe('Preview', () => {
 		)
 		expect(container.querySelector('style')?.textContent).toBe('@page { size: A4 landscape; }')
 	})
+
+	it('marks the pages with the calendar’s language', () => {
+		const workspace = workspaceFor('year-per-page')
+		const options = { ...workspace.layouts['year-per-page'], locale: 'el-GR' as const }
+		const { container } = render(
+			<Preview
+				workspace={{
+					...workspace,
+					layouts: { ...workspace.layouts, 'year-per-page': options },
+				}}
+				onNewProject={noop}
+			/>,
+		)
+		expect(container.querySelector('main')?.lang).toBe('el-GR')
+	})
 })

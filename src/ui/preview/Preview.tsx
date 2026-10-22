@@ -27,7 +27,9 @@ export function Preview({ workspace, onNewProject }: PreviewProps) {
 	const { layout } = workspace
 	const options = workspace.layouts[layout]
 	return (
-		<main className={styles.preview}>
+		// In the calendar's language, so the browser writes it as such: Greek capitals without
+		// accents, Chinese and Japanese characters in their own glyphs.
+		<main className={styles.preview} lang={options.locale}>
 			{/* The printed paper size. Every page shares it, so one rule covers the document. */}
 			<style>{`@page { size: ${pageSizeCss(options.page.paperSize, options.page.orientation)}; }`}</style>
 			<PreviewErrorBoundary layout={layout} options={options} onNewProject={onNewProject}>

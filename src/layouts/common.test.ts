@@ -18,7 +18,9 @@ describe('default locale', () => {
 	})
 
 	it('follows the browser when the calendar has its language', () => {
-		expect(defaultLocalesFor('de-AT')).toEqual(LAYOUT_IDS.map(() => 'de-DE'))
+		expect(defaultLocalesFor('de-AT')).toEqual(LAYOUT_IDS.map(() => 'de-AT'))
+		expect(defaultLocalesFor('de-LU')).toEqual(LAYOUT_IDS.map(() => 'de-DE'))
+		expect(defaultLocalesFor('pt')).toEqual(LAYOUT_IDS.map(() => 'pt-BR'))
 	})
 
 	it('matches the whole language code, then the region', () => {

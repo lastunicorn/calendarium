@@ -54,4 +54,11 @@ export const YEAR_PAGE_MESSAGES: Record<Locale, YearPageMessages> = {
 	'th-TH': { events: 'กิจกรรม' },
 	'vi-VN': { events: 'Sự kiện' },
 	'zh-TW': { events: '活動' },
+	'el-GR': { events: 'Συμβάντα' },
+	'pt-PT': { events: 'Eventos' },
+	'es-MX': { events: 'Eventos' },
+	'fr-CA': { events: 'Événements' },
+	'de-AT': { events: 'Termine' },
+	'de-CH': { events: 'Termine' },
+	'zh-HK': { events: '活動' },
 }

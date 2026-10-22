@@ -56,7 +56,7 @@ export class PreviewErrorBoundary extends Component<
 		const { error } = this.state
 		if (error === null) return this.props.children
 		return (
-			<div className={styles.error} role="alert">
+			<div className={styles.error} role="alert" lang="en">
 				<h2 className={styles.title}>The calendar can't be drawn with these settings</h2>
 				<p className={styles.message}>{error.message}</p>
 				<p className={styles.hint}>

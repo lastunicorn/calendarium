@@ -37,6 +37,11 @@ describe('monthNames', () => {
 		expect(monthNames('ja-JP')[0]).toBe('1月')
 		expect(monthNames('ja-JP')[11]).toBe('12月')
 	})
+
+	it('names the month itself in Greek, not the form it takes inside a date', () => {
+		expect(monthNames('el-GR')[0]).toBe('Ιανουάριος')
+		expect(monthNames('el-GR')[4]).toBe('Μάιος')
+	})
 })
 
 describe('yearName', () => {

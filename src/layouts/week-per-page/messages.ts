@@ -57,4 +57,11 @@ export const WEEK_PAGE_MESSAGES: Record<Locale, WeekPageMessages> = {
 	'th-TH': { week: (n) => `สัปดาห์ที่ ${n}` },
 	'vi-VN': { week: (n) => `Tuần ${n}` },
 	'zh-TW': { week: (n) => `第${n}週` },
+	'el-GR': { week: (n) => `Εβδομάδα ${n}` },
+	'pt-PT': { week: (n) => `Semana ${n}` },
+	'es-MX': { week: (n) => `Semana ${n}` },
+	'fr-CA': { week: (n) => `Semaine ${n}` },
+	'de-AT': { week: (n) => `Woche ${n}` },
+	'de-CH': { week: (n) => `Woche ${n}` },
+	'zh-HK': { week: (n) => `第${n}週` },
 }

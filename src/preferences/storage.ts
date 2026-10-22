@@ -3,7 +3,7 @@ import { defaultPreferences, type Preferences, parsePreferences } from './Prefer
 
 const STORAGE_KEY = 'calendarium-preferences'
 
-/** Where builds before 4.5.1 kept each preference, read until the preferences are first saved. */
+/** Where builds before 4.6.0 kept each preference, read until the preferences are first saved. */
 const LEGACY_WIDTH_KEY = 'calendarium-sidebar-width'
 const LEGACY_SECTIONS_KEY = 'calendarium-open-sections'
 
@@ -19,7 +19,7 @@ function storedJson(key: string): unknown {
 }
 
 /**
- * The preferences as builds before 4.5.1 stored them: the width as a number, and the open section
+ * The preferences as builds before 4.6.0 stored them: the width as a number, and the open section
  * as a list of at most one title.
  */
 function legacyPreferences(): UntrustedObject {
