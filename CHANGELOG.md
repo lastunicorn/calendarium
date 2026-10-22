@@ -4,6 +4,10 @@ The features each release brought, newest first. Versions follow the app version
 
 ## Unreleased
 
+## 4.6.0 — 2026-10-23
+
+Settings and files from 4.5.0 are read as they are; the new options start at their defaults, and files exported by earlier versions open as projects.
+
 ### Added
 
 - Greek, and six regional variants: Portuguese (Portugal), Spanish (Mexico), French (Canada), German (Austria and Switzerland) and Chinese (Hong Kong). Their own names and conventions are kept, like Austria's "Jänner" for January, and a browser in one of them starts in it. Greek month names are written as names on their own (Ιανουάριος), not as they read inside a date.
@@ -13,7 +17,6 @@ The features each release brought, newest first. Versions follow the app version
 
 - The Language list names the country of each language it has in several variants, e.g. German (Deutsch, Deutschland), Portuguese (Português, Brasil), Chinese (中文, 繁體, 台灣).
 - The calendar's pages are marked with its language, so the browser writes it as such: Greek weekday names in capitals lose their accents, as Greek capitals do, and Chinese and Japanese characters are drawn in their own language's shapes.
-
 - Sidebar: the Export, Import and Reset buttons under the layout picker are now Save project, Open a project file and New project. A project is a layout with its settings, which is what the file holds; files exported by earlier versions open as they are. The section holding them is titled Project, its layout picker labeled Layout. When the calendar can't be drawn, the offered fix is likewise to start a new project.
 - Sidebar: the Reset button confirming a section's reset is a little larger, and an X button in the corner of its question closes it without resetting.
 - Sidebar: Save project shows a download arrow, Open a project file an open folder and New project a blank page, instead of an upload arrow, a download arrow and the reset symbol.
