@@ -1,46 +1,13 @@
 import { type AppConfig, defaultAppConfig } from './AppConfig'
-import { LAYOUT_IDS, type LayoutConfigs, type LayoutId, layoutSpec, mapLayouts } from '../layouts'
-import { asObject, type StoredData, upgradeStorage } from './migrations'
-import { oneOf, type Validator } from '../core/validation'
+import { isLayoutId, type LayoutConfigs, type LayoutId, layoutSpec, mapLayouts } from '../layouts'
+import { parseOptions } from '../layouts/LayoutSpec'
+import { type StoredData, upgradeStorage } from './migrations'
+import { asObject } from '../core/validation'
 import { APP_VERSION, CONFIG_VERSION } from './version'
 
 /** The app config as written to storage: tagged with its config version and the app version. */
 export function toStoredConfig(config: AppConfig) {
 	return { version: CONFIG_VERSION, app: APP_VERSION, ...config }
-}
-
-/** A validator table seen field by field, whatever object it checks. */
-type AnyValidators = { [field: string]: Validator<unknown> | AnyValidators }
-
-const isLayoutId = oneOf(LAYOUT_IDS)
-
-/**
- * Copies each field of `source` that passes its validator onto `target`. A nested table checks an
- * object field by field, copying onto the object `target` already holds there. A field that is
- * present but invalid, or a nested object that is not an object, is added to `ignored` as its path:
- * `prefix` + its name (`page.margins.top`).
- */
-function copyValid(
-	target: object,
-	source: StoredData,
-	validators: AnyValidators,
-	ignored: string[],
-	prefix = '',
-) {
-	const fields = target as StoredData
-	for (const [key, check] of Object.entries(validators)) {
-		const value = source[key]
-		const path = prefix + key
-		if (typeof check === 'function') {
-			if (check(value)) fields[key] = value
-			else if (value !== undefined) ignored.push(path)
-			continue
-		}
-		if (value === undefined) continue
-		const nested = asObject(value)
-		if (nested === null) ignored.push(path)
-		else copyValid(fields[key] as object, nested, check, ignored, `${path}.`)
-	}
 }
 
 /**
@@ -52,12 +19,7 @@ function parseCurrentLayoutConfig<K extends LayoutId>(
 	data: unknown,
 	ignored: string[] = [],
 ): LayoutConfigs[K] {
-	const spec = layoutSpec(layout)
-	const config = spec.defaults()
-	const stored = asObject(data)
-	if (stored === null) return config
-	copyValid(config, stored, spec.validators, ignored)
-	return spec.normalize(config)
+	return parseOptions(layoutSpec(layout), data, ignored)
 }
 
 /** One layout's options parsed from untrusted data, with the fields that were dropped. */

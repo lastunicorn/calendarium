@@ -131,4 +131,5 @@ export const MONTH_PER_PAGE_SPEC: LayoutSpec<MonthPerPageConfig> = {
 		adjacentMonths: ADJACENT_MONTHS_VALIDATORS,
 	},
 	normalize: normalizeCommon,
+	migrations: {},
 }

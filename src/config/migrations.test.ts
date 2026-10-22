@@ -1,4 +1,6 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
+import { LAYOUT_IDS, layoutSpec } from '../layouts'
+import type { OptionsMigration } from '../layouts/LayoutSpec'
 import {
 	FILE_FORMAT,
 	FILE_MIGRATIONS,
@@ -77,55 +79,50 @@ describe('upgradeStorage and upgradeFile', () => {
 	})
 })
 
-describe('the step from 3 to 4', () => {
-	const week = { year: 2030, highlightWeekends: 'columns', showWeekNumbers: false }
-	const day = {
-		year: 2030,
-		weekdayFormat: 'short',
-		highlightWeekends: 'off',
-		showWeekNumbers: true,
-		showMiniMonth: false,
-	}
-
-	it('moves the week and day options in storage, leaving the other layouts as they were', () => {
+describe('each layout’s own steps', () => {
+	// The layouts' steps say what changed (tested in their folders); these check that storage and
+	// files apply them, each to its own layout's options.
+	it('apply in storage to each layout’s options, leaving the other layouts as they were', () => {
 		const month = { highlightWeekends: 'columns', showWeekNumbers: true }
+		const week = { year: 2030, showWeekNumbers: false }
 		const stored = {
 			version: 3,
-			layouts: { 'month-per-page': month, 'week-per-page': week, 'day-per-page': day },
+			layouts: { 'month-per-page': month, 'week-per-page': week, 'quarter-per-page': week },
 		}
 		expect(upgradeStorage(stored)?.layouts).toEqual({
 			'month-per-page': month,
-			'week-per-page': { year: 2030, highlightWeekendDays: true, showHeaderWeek: false },
-			'day-per-page': {
-				year: 2030,
-				highlightWeekendDays: false,
-				miniMonth: {
-					show: false,
-					weekdayFormat: 'short',
-					highlightWeekends: 'off',
-					showWeekNumbers: true,
-				},
-			},
+			'week-per-page': layoutSpec('week-per-page').migrations[3]!(week),
+			'quarter-per-page': week,
 		})
 	})
 
-	it('moves the options of a week or day file', () => {
-		expect(upgradeFile({ version: 3, layout: 'week-per-page', ...week })).toEqual({
+	it('apply in a file to the options of the layout it names, keeping its tags', () => {
+		const file = {
+			format: FILE_FORMAT,
 			version: 3,
-			layout: 'week-per-page',
-			year: 2030,
-			highlightWeekendDays: true,
-			showHeaderWeek: false,
-		})
-		expect(upgradeFile({ version: 3, layout: 'day-per-page', ...day })).toMatchObject({
-			highlightWeekendDays: false,
-			miniMonth: { show: false },
-		})
+			layout: 'day-per-page',
+			showMiniMonth: false,
+		}
+		expect(upgradeFile(file)).toEqual(layoutSpec('day-per-page').migrations[3]!(file))
+		expect(upgradeFile(file)).toMatchObject({ format: FILE_FORMAT, version: 3 })
+		const unnamed = { version: 3, showMiniMonth: false }
+		expect(upgradeFile(unnamed)).toEqual(unnamed)
 	})
 
-	it('keeps an unknown weekend highlight for parsing to reject', () => {
-		const file = { version: 3, layout: 'week-per-page', highlightWeekends: 'always' }
-		expect(upgradeFile(file)).toMatchObject({ highlightWeekendDays: 'always' })
+	it('are all applied, from a version that has a step in both lists', () => {
+		for (const layout of LAYOUT_IDS) {
+			const { migrations } = layoutSpec(layout)
+			for (const key of Object.keys(migrations)) {
+				const version = Number(key)
+				expect(version).toBeGreaterThanOrEqual(FIRST_CONFIG_VERSION)
+				expect(version).toBeLessThan(CONFIG_VERSION)
+				const step = vi.spyOn(migrations as Record<number, OptionsMigration>, version)
+				upgradeStorage({ version, layouts: { [layout]: {} } })
+				upgradeFile({ version, layout })
+				expect(step, `${layout} from ${version}`).toHaveBeenCalledTimes(2)
+				step.mockRestore()
+			}
+		}
 	})
 })
 

@@ -4,6 +4,7 @@ import { isBoolean, oneOf } from '../../core/validation'
 import { COMMON_VALIDATORS, type CommonConfig, commonDefaults, normalizeCommon } from '../common'
 import { HEADING_ALIGNMENTS, type HeadingAlignment, isHeadingFontSize } from '../heading'
 import type { LayoutSpec } from '../LayoutSpec'
+import { WEEK_PER_PAGE_MIGRATIONS } from './migrations'
 import { MINI_MONTH_VALIDATORS, type MiniMonthOptions, miniMonthDefaults } from '../monthGrid'
 import { type HourSchedule, orderHours, SCHEDULE_VALIDATORS, scheduleDefaults } from '../schedule'
 import {
@@ -118,4 +119,5 @@ export const WEEK_PER_PAGE_SPEC: LayoutSpec<WeekPerPageConfig> = {
 		miniMonth: MINI_MONTH_VALIDATORS,
 	},
 	normalize: (config) => orderHours(normalizeCommon(config)),
+	migrations: WEEK_PER_PAGE_MIGRATIONS,
 }

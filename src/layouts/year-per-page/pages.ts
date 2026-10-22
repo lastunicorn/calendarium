@@ -1,8 +1,8 @@
 import { eventNames, eventsOfYear } from '../../core/events'
 import { dayMonthName, weekdayNames, yearName } from '../../core/locale'
-import { PRINT_MESSAGES } from '../../core/messages'
 import type { CalendarModel } from '../common'
 import type { MiniMonthPlan } from '../monthGrid'
+import { YEAR_PAGE_MESSAGES } from './messages'
 import type { YearPerPageConfig } from './options'
 
 /** One line of the year's list of events. */
@@ -61,7 +61,7 @@ export function planYearPage(config: YearPerPageConfig, model: CalendarModel): Y
 		eventList:
 			events.length > 0
 				? {
-						heading: PRINT_MESSAGES[config.locale].events,
+						heading: YEAR_PAGE_MESSAGES[config.locale].events,
 						subheading: heading,
 						events: events.map((event, index) => ({
 							key: `${event.date.key}-${index}`,

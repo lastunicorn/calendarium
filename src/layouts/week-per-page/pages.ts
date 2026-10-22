@@ -7,12 +7,12 @@ import {
 } from '../../core/calendar'
 import { eventNames } from '../../core/events'
 import { dateRangeName, hourNames, monthYearName, weekdayNames } from '../../core/locale'
-import { PRINT_MESSAGES } from '../../core/messages'
 import { isHighlightedWeekDay } from '../../core/weekend'
 import type { CalendarModel } from '../common'
 import type { HeadingAlign } from '../heading'
 import type { MiniMonthPlan } from '../monthGrid'
 import { splitWeekCells, stacksDays, type WeekCell, weekCells } from './cells'
+import { WEEK_PAGE_MESSAGES } from './messages'
 import type { WeekPerPageConfig } from './options'
 
 /** One day as a week page draws it: the results of the layout's rules, not their inputs. */
@@ -139,7 +139,9 @@ export function planWeekPages(config: WeekPerPageConfig, model: CalendarModel): 
 		return {
 			key: days[0].key,
 			heading: dateRangeName(locale, days[0], days.at(-1)!),
-			subheading: config.showHeaderWeek ? PRINT_MESSAGES[locale].week(weekNumber(days)) : '',
+			subheading: config.showHeaderWeek
+				? WEEK_PAGE_MESSAGES[locale].week(weekNumber(days))
+				: '',
 			headingAlign: headingAlign(config),
 			headingFontSize: config.headingFontSize,
 			miniMonth: miniMonth.show

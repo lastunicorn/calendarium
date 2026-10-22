@@ -20,4 +20,5 @@ export const YEAR_PER_PAGE_SPEC: LayoutSpec<YearPerPageConfig> = {
 		subtitle: isString,
 	},
 	normalize: normalizeCommon,
+	migrations: {},
 }

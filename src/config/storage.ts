@@ -1,5 +1,6 @@
 import { type AppConfig, defaultAppConfig } from './AppConfig'
-import { asObject, isFromLaterVersion } from './migrations'
+import { asObject } from '../core/validation'
+import { isFromLaterVersion } from './migrations'
 import { parseConfig, toStoredConfig } from './parseConfig'
 
 const STORAGE_KEY = 'calendarium-config'

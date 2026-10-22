@@ -1,4 +1,10 @@
-import { defaultLayoutConfig, type LayoutConfigs, type LayoutId, mapLayouts } from '../layouts'
+import {
+	defaultLayoutConfig,
+	LAYOUT_IDS,
+	type LayoutConfigs,
+	type LayoutId,
+	mapLayouts,
+} from '../layouts'
 
 /**
  * The app's whole config: which layout is shown, and a remembered set of options per layout.
@@ -11,6 +17,7 @@ export interface AppConfig {
 	layouts: LayoutConfigs
 }
 
+/** Every layout's defaults, showing the first layout. */
 export function defaultAppConfig(): AppConfig {
-	return { layout: 'year-per-page', layouts: mapLayouts(defaultLayoutConfig) }
+	return { layout: LAYOUT_IDS[0], layouts: mapLayouts(defaultLayoutConfig) }
 }

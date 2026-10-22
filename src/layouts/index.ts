@@ -1,3 +1,4 @@
+import { oneOf, type UntrustedObject } from '../core/validation'
 import type { CommonConfig } from './common'
 import { DAY_PER_PAGE_SPEC, type DayPerPageConfig } from './day-per-page/options'
 import type { LayoutSpec } from './LayoutSpec'
@@ -11,8 +12,9 @@ import { YEAR_PER_PAGE_SPEC, type YearPerPageConfig } from './year-per-page/opti
 // weekend highlights in `core/weekend.ts`. Sets only one layout uses live in its folder here.
 
 /**
- * Ids of the page layouts. Each has a folder here (options, defaults, validators, rules) and one
- * in `ui/layouts/` (component, form, labels).
+ * Ids of the page layouts, in the picker's order; the first is shown by default. Each has a folder
+ * here (options, defaults, validators, rules, migrations, printed text) and one in `ui/layouts/`
+ * (component, form, labels).
  */
 export const LAYOUT_IDS = [
 	'year-per-page',
@@ -21,6 +23,9 @@ export const LAYOUT_IDS = [
 	'day-per-page',
 ] as const
 export type LayoutId = (typeof LAYOUT_IDS)[number]
+
+/** Whether untrusted `value` names a layout. */
+export const isLayoutId = oneOf(LAYOUT_IDS)
 
 /**
  * Each layout's own options, declared in its `<layout-id>/options.ts`. Keyed by every `LayoutId`
@@ -74,7 +79,7 @@ export type SameFieldTypesCheck = Assert<
 export type LayoutConfig = LayoutConfigs[LayoutId]
 
 /**
- * Each layout's defaults, validators and cross-field rules. Keyed by every `LayoutId`, so a new id
+ * Each layout's defaults, validators, cross-field rules and migrations. Keyed by every `LayoutId`, so a new id
  * without a spec won't compile. The views (component, form, labels) are in `ui/layouts/registry.ts`.
  */
 const LAYOUT_SPECS: { [K in LayoutId]: LayoutSpec<LayoutConfigs[K]> } = {
@@ -87,6 +92,20 @@ const LAYOUT_SPECS: { [K in LayoutId]: LayoutSpec<LayoutConfigs[K]> } = {
 /** `layout`'s spec, typed by its own options. */
 export function layoutSpec<K extends LayoutId>(layout: K): LayoutSpec<LayoutConfigs[K]> {
 	return LAYOUT_SPECS[layout]
+}
+
+/**
+ * Untrusted options stored for `layout`, brought from config `version` to the next by that
+ * layout's own step; returned as is for an unknown layout, or one whose options did not change.
+ */
+export function migrateLayoutOptions(
+	layout: unknown,
+	version: number,
+	options: UntrustedObject,
+): UntrustedObject {
+	if (!isLayoutId(layout)) return options
+	const step = layoutSpec(layout).migrations[version]
+	return step === undefined ? options : step(options)
 }
 
 /** A fresh copy of `layout`'s default options. */

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { defaultLayoutConfig, LAYOUT_IDS } from '../layouts'
+import { defaultLayoutConfig, LAYOUT_IDS, mapLayouts } from '../layouts'
 import { defaultAppConfig } from './AppConfig'
-import { parseConfig, parseLayoutConfig, toStoredConfig } from './parseConfig'
+import { parseConfig, toStoredConfig } from './parseConfig'
 import { CONFIG_VERSION } from './version'
 
 describe('parseConfig', () => {
@@ -24,196 +24,69 @@ describe('parseConfig', () => {
 		expect(parseConfig({ version: CONFIG_VERSION })).toEqual(defaultAppConfig())
 	})
 
-	it('keeps valid fields of every layout', () => {
-		const page = {
-			paperSize: 'letter',
-			orientation: 'landscape',
-			margins: { top: 5, right: 12.5, bottom: 0, left: 50 },
-			equalMargins: false,
-			mirrorMargins: true,
-			spine: 'top',
-		}
+	// Each layout's own fields are tested in its `options.test.ts`; these check the shared ones,
+	// and that each layout's options are parsed by its own spec.
+	it('keeps the valid shared fields of every layout, and the active layout', () => {
 		const common = {
 			year: 2030,
 			locale: 'ro-RO',
 			weekStart: 6,
 			events: '0000-12-25 Christmas',
-			page,
+			page: {
+				paperSize: 'letter',
+				orientation: 'landscape',
+				margins: { top: 5, right: 12.5, bottom: 0, left: 50 },
+				equalMargins: false,
+				mirrorMargins: true,
+				spine: 'top',
+			},
 		}
-		const grid = { weekdayFormat: 'short', highlightWeekends: 'off', showWeekNumbers: true }
 		const config = {
 			layout: 'month-per-page',
-			layouts: {
-				'year-per-page': { ...common, ...grid, title: 'Family', subtitle: 'Birthdays' },
-				'month-per-page': {
-					...common,
-					...grid,
-					year: 2031,
-					title: 'Office',
-					monthHeadingAlignment: 'left',
-					showAdjacentMonthDays: false,
-					showGridLines: false,
-					weekdayFontSize: 11,
-					dayNumberFontSize: 20,
-					dayNumberHorizontalAlignment: 'center',
-					dayNumberVerticalAlignment: 'bottom',
-					adjacentMonths: {
-						...grid,
-						showPreviousMonth: false,
-						showNextMonth: true,
-						showYear: false,
-					},
-				},
-				'week-per-page': {
-					...common,
-					year: 2033,
-					weekdayFormat: 'narrow',
-					highlightWeekendDays: false,
-					showHeaderWeek: false,
-					headingAlignment: 'right',
-					headingFontSize: 32,
-					weekendDisplay: 'reduced',
-					weekPageLines: 'hours',
-					twoPagesPerWeek: true,
-					startPage: 'even',
-					weekDayDirection: 'horizontal',
-					showFooter: true,
-					footerHeight: 42,
-					hourFormat: '12h',
-					firstHour: 8,
-					lastHour: 18,
-					miniMonth: { ...grid, show: true, showYear: true },
-				},
-				'day-per-page': {
-					...common,
-					year: 2032,
-					dayPageTitle: 'weekday',
-					headingFontSize: 18,
-					dayPageLines: 'ruled',
-					ruledLineSpacing: 6.5,
-					squareSize: 4,
-					squareGridAlignment: 'right',
-					twoPagesPerDay: true,
-					hourFormat: '24h',
-					firstHour: 0,
-					lastHour: 23,
-					highlightWeekendDays: false,
-					miniMonth: {
-						...grid,
-						show: false,
-						showYear: true,
-						highlightWeekends: 'columns',
-					},
-					showHeaderWeek: false,
-					showHeaderDayOfYear: false,
-				},
-			},
+			layouts: mapLayouts((layout) => ({ ...defaultLayoutConfig(layout), ...common })),
 		}
 		expect(parseConfig({ version: CONFIG_VERSION, ...config })).toEqual(config)
 	})
 
-	it('reads the week and day options of a 3.x config', () => {
+	it('drops invalid shared fields of every layout, and an unknown active layout', () => {
+		const invalidCommon = {
+			year: 2030.5,
+			locale: 'xx',
+			weekStart: 7,
+			events: 42,
+			page: { paperSize: 'b5', orientation: 'up', margins: 'wide' },
+		}
+		const config = parseConfig({
+			version: CONFIG_VERSION,
+			layout: 'quarter-per-page',
+			layouts: Object.fromEntries(LAYOUT_IDS.map((layout) => [layout, invalidCommon])),
+		})
+		expect(config).toEqual(defaultAppConfig())
+	})
+
+	it('reads each layout’s options by its own rules', () => {
+		const config = parseConfig({
+			version: CONFIG_VERSION,
+			layouts: {
+				'year-per-page': { weekdayFormat: 'full' },
+				'month-per-page': { weekdayFormat: 'full' },
+			},
+		})
+		expect(config.layouts['month-per-page'].weekdayFormat).toBe('full')
+		expect(config.layouts['year-per-page'].weekdayFormat).toBe(
+			defaultLayoutConfig('year-per-page').weekdayFormat,
+		)
+	})
+
+	it('reads older data through the layouts’ own migration steps', () => {
 		const config = parseConfig({
 			version: 3,
-			layouts: {
-				'week-per-page': { highlightWeekends: 'off', showWeekNumbers: false },
-				'day-per-page': { highlightWeekends: 'columns', showMiniMonth: false },
-			},
+			layouts: { 'week-per-page': { highlightWeekends: 'off', showWeekNumbers: false } },
 		})
 		expect(config.layouts['week-per-page']).toMatchObject({
 			highlightWeekendDays: false,
 			showHeaderWeek: false,
 		})
-		expect(config.layouts['day-per-page']).toMatchObject({
-			highlightWeekendDays: true,
-			miniMonth: {
-				...defaultLayoutConfig('day-per-page').miniMonth,
-				highlightWeekends: 'columns',
-				show: false,
-			},
-		})
-	})
-
-	it('drops invalid fields', () => {
-		const invalidCommon = {
-			year: 2030.5,
-			locale: 'xx',
-			weekStart: 7,
-			page: { paperSize: 'b5', orientation: 'up', margins: 'wide' },
-		}
-		const invalidGrid = {
-			weekdayFormat: 'long',
-			highlightWeekends: true,
-			showWeekNumbers: 'yes',
-		}
-		const config = parseConfig({
-			version: CONFIG_VERSION,
-			layout: 'quarter-per-page',
-			layouts: {
-				'year-per-page': { ...invalidCommon, ...invalidGrid, title: 7, subtitle: null },
-				'month-per-page': { ...invalidCommon, ...invalidGrid },
-				'week-per-page': {
-					...invalidCommon,
-					weekdayFormat: 'long',
-					highlightWeekendDays: 'days',
-					showHeaderWeek: 'yes',
-					weekendDisplay: 'off',
-					weekPageLines: 'ruled',
-					twoPagesPerWeek: 0,
-					weekDayDirection: 'diagonal',
-					hourFormat: 12,
-					firstHour: -1,
-					lastHour: '21',
-				},
-				'day-per-page': {
-					...invalidCommon,
-					dayPageTitle: 'month',
-					dayPageLines: 'dotted',
-					ruledLineSpacing: 2,
-					squareSize: 12,
-					squareGridAlignment: 'middle',
-					twoPagesPerDay: 'yes',
-					hourFormat: '25h',
-					firstHour: 24,
-					lastHour: 7.5,
-					highlightWeekendDays: 'yes',
-					miniMonth: { ...invalidGrid, show: 'no' },
-					showHeaderWeek: 1,
-					showHeaderDayOfYear: null,
-				},
-			},
-		})
-		expect(config).toEqual(defaultAppConfig())
-	})
-
-	it('keeps full weekday names on week and month pages only, not in a small month grid', () => {
-		const stored = toStoredConfig(defaultAppConfig())
-		const { layouts: storedLayouts } = stored
-		storedLayouts['year-per-page'] = {
-			...storedLayouts['year-per-page'],
-			weekdayFormat: 'full',
-		}
-		storedLayouts['month-per-page'] = {
-			...storedLayouts['month-per-page'],
-			weekdayFormat: 'full',
-		}
-		storedLayouts['week-per-page'] = {
-			...storedLayouts['week-per-page'],
-			weekdayFormat: 'full',
-		}
-		stored.layouts['day-per-page'] = {
-			...stored.layouts['day-per-page'],
-			miniMonth: { ...stored.layouts['day-per-page'].miniMonth, weekdayFormat: 'full' },
-		}
-		const { layouts } = parseConfig(stored)
-		expect(layouts['week-per-page'].weekdayFormat).toBe('full')
-		expect(layouts['month-per-page'].weekdayFormat).toBe('full')
-		expect(layouts['year-per-page'].weekdayFormat).toBe(
-			defaultLayoutConfig('year-per-page').weekdayFormat,
-		)
-		expect(layouts['day-per-page'].miniMonth.weekdayFormat).toBe(
-			defaultLayoutConfig('day-per-page').miniMonth.weekdayFormat,
-		)
 	})
 
 	it('ignores fields a layout does not have', () => {
@@ -283,21 +156,6 @@ describe('parseConfig', () => {
 		expect(config.layouts['year-per-page']).not.toHaveProperty('extra')
 		expect(config.layouts['year-per-page']).not.toHaveProperty('version')
 		expect(config.layouts['year-per-page']).not.toHaveProperty('app')
-	})
-
-	it('gives each layout defaults that pass its own validation', () => {
-		for (const layout of LAYOUT_IDS) {
-			const defaults = defaultLayoutConfig(layout)
-			expect(parseLayoutConfig(layout, defaults)).toEqual({
-				config: defaults,
-				ignored: [],
-			})
-		}
-	})
-
-	it('gives the layouts different defaults', () => {
-		expect(defaultLayoutConfig('month-per-page').page.orientation).toBe('landscape')
-		expect(defaultLayoutConfig('year-per-page').page.orientation).toBe('portrait')
 	})
 })
 

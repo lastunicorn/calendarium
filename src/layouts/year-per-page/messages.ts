@@ -1,0 +1,57 @@
+import type { Locale } from '../../core/locale'
+
+/** Text the year layout prints, besides `Intl`'s month, weekday and date names. */
+export interface YearPageMessages {
+	/** The heading of the year's list of events. */
+	events: string
+}
+
+/** The year layout's printed text in each language; a new locale without it is a compile error. */
+export const YEAR_PAGE_MESSAGES: Record<Locale, YearPageMessages> = {
+	'en-US': { events: 'Events' },
+	'en-GB': { events: 'Events' },
+	'ro-RO': { events: 'Evenimente' },
+	'de-DE': { events: 'Termine' },
+	'fr-FR': { events: 'Événements' },
+	'es-ES': { events: 'Eventos' },
+	'it-IT': { events: 'Eventi' },
+	'ja-JP': { events: '予定' },
+	'pt-BR': { events: 'Eventos' },
+	'nl-NL': { events: 'Evenementen' },
+	'pl-PL': { events: 'Wydarzenia' },
+	'cs-CZ': { events: 'Události' },
+	'sk-SK': { events: 'Udalosti' },
+	'hu-HU': { events: 'Események' },
+	'hr-HR': { events: 'Događaji' },
+	'bg-BG': { events: 'Събития' },
+	'tr-TR': { events: 'Etkinlikler' },
+	'uk-UA': { events: 'Події' },
+	'ru-RU': { events: 'События' },
+	'sv-SE': { events: 'Händelser' },
+	'da-DK': { events: 'Begivenheder' },
+	'nb-NO': { events: 'Hendelser' },
+	'fi-FI': { events: 'Tapahtumat' },
+	'zh-CN': { events: '活动' },
+	'ko-KR': { events: '일정' },
+	'af-ZA': { events: 'Gebeure' },
+	'am-ET': { events: 'ክስተቶች' },
+	'ca-ES': { events: 'Esdeveniments' },
+	'et-EE': { events: 'Sündmused' },
+	'fil-PH': { events: 'Mga kaganapan' },
+	'gu-IN': { events: 'પ્રસંગો' },
+	'hi-IN': { events: 'कार्यक्रम' },
+	'id-ID': { events: 'Acara' },
+	'kn-IN': { events: 'ಕಾರ್ಯಕ್ರಮಗಳು' },
+	'lt-LT': { events: 'Įvykiai' },
+	'lv-LV': { events: 'Notikumi' },
+	'ml-IN': { events: 'പരിപാടികൾ' },
+	'ms-MY': { events: 'Acara' },
+	'sl-SI': { events: 'Dogodki' },
+	'sr-RS': { events: 'Догађаји' },
+	'sw-TZ': { events: 'Matukio' },
+	'ta-IN': { events: 'நிகழ்வுகள்' },
+	'te-IN': { events: 'కార్యక్రమాలు' },
+	'th-TH': { events: 'กิจกรรม' },
+	'vi-VN': { events: 'Sự kiện' },
+	'zh-TW': { events: '活動' },
+}

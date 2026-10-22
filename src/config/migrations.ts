@@ -1,14 +1,16 @@
-import { WEEKEND_HIGHLIGHTS } from '../core/weekend'
+import { migrateLayoutOptions } from '../layouts'
+import { asObject, type UntrustedObject } from '../core/validation'
 import { CONFIG_VERSION, isLaterAppVersion } from './version'
 
 // Storage and files are two formats, tagged with the same `CONFIG_VERSION` (the app's major
 // version) and the app version that wrote them. Each format has an ordered list of migration
 // steps; data is brought to the current version by applying the steps from its own version up,
-// in order. A new major version is one new step at the end of each list (one that returns the
-// data as is when that format did not change).
+// in order. A new major version is one new step at the end of each list. A layout's own options
+// change through that layout's steps (`LayoutSpec.migrations`), which `layoutsInStorage` and
+// `layoutInFile` apply; a step that also changes the format's shape does that around them.
 
 /** Untrusted data read from storage or a file, as an object whose fields can be read. */
-export type StoredData = Record<string, unknown>
+export type StoredData = UntrustedObject
 
 /** One step that brings data from the version before it to the next version. */
 type Migration = (data: StoredData) => StoredData
@@ -16,76 +18,47 @@ type Migration = (data: StoredData) => StoredData
 /** The first config version; data tagged with any earlier one is not this app's. */
 export const FIRST_CONFIG_VERSION = 3
 
-/** A 3 `highlightWeekends` (`off`, `days`, `columns`) as a 4 on/off; any other value kept as is. */
-function weekendDaysHighlighted(value: unknown): unknown {
-	return WEEKEND_HIGHLIGHTS.includes(value as never) ? value !== 'off' : value
+/** The storage step from `version` that changes only the layouts' options, each by its own step. */
+function layoutsInStorage(version: number): Migration {
+	return (data) => {
+		const layouts = asObject(data.layouts)
+		if (layouts === null) return data
+		const upgraded: StoredData = {}
+		for (const [layout, options] of Object.entries(layouts)) {
+			const object = asObject(options)
+			upgraded[layout] =
+				object === null ? options : migrateLayoutOptions(layout, version, object)
+		}
+		return { ...data, layouts: upgraded }
+	}
 }
 
 /**
- * One layout's options from 3 to 4. The week and day layouts lost the month grid options: the
- * week's `highlightWeekends` became `highlightWeekendDays`, on or off, and its `showWeekNumbers`
- * (the heading's "Week N") `showHeaderWeek`, and its new `miniMonth` starts from its defaults; the day's grid options and `showMiniMonth` moved
- * under `miniMonth`, its `highlightWeekends` (for the heading) became `highlightWeekendDays`.
- * Values are moved as they are; parsing checks them afterwards.
+ * The file step from `version` that changes only the options, by the step of the layout the file
+ * names; a file that names no layout is left as is.
  */
-function layoutTo4(layout: unknown, options: StoredData): StoredData {
-	if (layout === 'week-per-page') {
-		const { highlightWeekends, showWeekNumbers, ...rest } = options
-		return {
-			...rest,
-			highlightWeekendDays: weekendDaysHighlighted(highlightWeekends),
-			showHeaderWeek: showWeekNumbers,
-		}
-	}
-	if (layout === 'day-per-page') {
-		const { showMiniMonth, weekdayFormat, highlightWeekends, showWeekNumbers, ...rest } =
-			options
-		return {
-			...rest,
-			highlightWeekendDays: weekendDaysHighlighted(highlightWeekends),
-			miniMonth: { show: showMiniMonth, weekdayFormat, highlightWeekends, showWeekNumbers },
-		}
-	}
-	return options
+function layoutInFile(version: number): Migration {
+	return (data) => migrateLayoutOptions(data.layout, version, data)
 }
 
 /**
  * Storage steps; the step at index `i` migrates version `FIRST_CONFIG_VERSION + i` to the next.
  *
  * - 3: `{ version, app, layout, layouts: { <id>: {...} } }`, one set of options per layout.
- * - 4: the same, with the week and day layouts' options changed as `layoutTo4` describes.
+ * - 4: the same; the week and day layouts' options changed (see their `migrations.ts`).
  */
-export const STORAGE_MIGRATIONS: readonly Migration[] = [
-	(data) => {
-		const layouts = asObject(data.layouts)
-		if (layouts === null) return data
-		const upgraded: StoredData = {}
-		for (const [layout, options] of Object.entries(layouts)) {
-			const object = asObject(options)
-			upgraded[layout] = object === null ? options : layoutTo4(layout, object)
-		}
-		return { ...data, layouts: upgraded }
-	},
-]
+export const STORAGE_MIGRATIONS: readonly Migration[] = [layoutsInStorage(3)]
 
 /**
  * File steps; the step at index `i` migrates version `FIRST_CONFIG_VERSION + i` to the next.
  *
  * - 3: `{ format, version, app, layout, ...options }`, one layout's options, flat.
- * - 4: the same, with the week and day layouts' options changed as `layoutTo4` describes; a file
- *   that names no layout is left as is.
+ * - 4: the same; the week and day layouts' options changed (see their `migrations.ts`).
  */
-export const FILE_MIGRATIONS: readonly Migration[] = [(data) => layoutTo4(data.layout, data)]
+export const FILE_MIGRATIONS: readonly Migration[] = [layoutInFile(3)]
 
 /** Marks a JSON file as one of this app's layout files. */
 export const FILE_FORMAT = 'printable-calendar/layout'
-
-/** `value` as an object whose fields can be read, or `null` when it is not a plain object. */
-export function asObject(value: unknown): StoredData | null {
-	return typeof value === 'object' && value !== null && !Array.isArray(value)
-		? (value as StoredData)
-		: null
-}
 
 /** The config version `data` is tagged with; `null` when it has none this app knows. */
 export function versionOf(data: StoredData): number | null {

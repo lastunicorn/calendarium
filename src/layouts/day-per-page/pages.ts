@@ -7,7 +7,7 @@ import {
 	weekdayName,
 	weekdayNames,
 } from '../../core/locale'
-import { PRINT_MESSAGES } from '../../core/messages'
+import { DAY_PAGE_MESSAGES } from './messages'
 import { contentBox } from '../../core/paper'
 import type { CalendarModel } from '../common'
 import type { MiniMonthPlan } from '../monthGrid'
@@ -116,7 +116,7 @@ function planFills(config: DayPerPageConfig): DayFill[] {
 /** A page, or two, for every day of the year. */
 export function planDayPages(config: DayPerPageConfig, model: CalendarModel): DayPages[] {
 	const { locale, miniMonth } = config
-	const messages = PRINT_MESSAGES[locale]
+	const messages = DAY_PAGE_MESSAGES[locale]
 	const miniWeekdays = weekdayNames(locale, model.weekStart, miniMonth.weekdayFormat)
 	const fills = planFills(config)
 	const days = daysOfYear(model.months)

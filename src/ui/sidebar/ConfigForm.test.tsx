@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
-import type { LayoutId } from '../../layouts'
+import { LAYOUT_IDS, type LayoutId } from '../../layouts'
 import { defaultAppConfig } from '../../config/AppConfig'
 import { margins } from '../../core/paper'
 import { ConfigForm } from './ConfigForm'
@@ -29,52 +29,11 @@ function sectionTitles(layout: LayoutId): string[] {
 }
 
 describe('ConfigForm', () => {
-	it('shows the header and content options on the year layout', () => {
-		expect(sectionTitles('year-per-page')).toEqual([
-			'Layout',
-			'Calendar',
-			'Events',
-			'Header',
-			'Content',
-			'Page',
-		])
-	})
-
-	it('shows the header, mini calendar and content options on the month layout', () => {
-		expect(sectionTitles('month-per-page')).toEqual([
-			'Layout',
-			'Calendar',
-			'Events',
-			'Header',
-			'Mini calendar',
-			'Content',
-			'Page',
-		])
-	})
-
-	it('shows the content and mini calendar options on the week layout', () => {
-		expect(sectionTitles('week-per-page')).toEqual([
-			'Layout',
-			'Calendar',
-			'Events',
-			'Header',
-			'Mini calendar',
-			'Content',
-			'Page',
-		])
-	})
-
-	it('shows the content and mini calendar options on the day layout', () => {
-		expect(sectionTitles('day-per-page')).toEqual([
-			'Layout',
-			'Calendar',
-			'Events',
-			'Header',
-			'Mini calendar',
-			'Content',
-			'Page',
-		])
-		expect(screen.queryByLabelText('Title')).toBeNull()
+	// Each layout's sections are tested next to its form, in `ui/layouts/<layout-id>/`.
+	it.each(LAYOUT_IDS)('shows the layout picker above the %s form', (layout) => {
+		const [first, ...rest] = sectionTitles(layout)
+		expect(first).toBe('Layout')
+		expect(rest.length).toBeGreaterThan(0)
 	})
 
 	it('keeps the layout picker open, starts every other section collapsed, and opens one when its title is clicked', () => {
