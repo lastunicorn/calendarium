@@ -39,6 +39,7 @@ describe('parseWorkspace', () => {
 				equalMargins: false,
 				mirrorMargins: true,
 				spine: 'top',
+				booklet: true,
 			},
 		}
 		const workspace = {

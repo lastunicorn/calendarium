@@ -1,0 +1,30 @@
+/*
+ * The booklet's pages, each placed on the grid by `Booklet`: a sheet's side is a row of two pages
+ * side by side, or two rows of one. `data-side-start` marks the first page of every side but the
+ * first.
+ */
+.booklet {
+	display: grid;
+}
+
+.sideBySide {
+	grid-template-columns: auto auto;
+	row-gap: 24px;
+}
+
+.booklet > [data-side-start] {
+	break-before: page;
+}
+
+@media screen {
+	/* The space between sheets, as between the pages of other layouts. */
+	.stacked > [data-side-start] {
+		margin-top: 24px;
+	}
+}
+
+@media print {
+	.sideBySide {
+		row-gap: 0;
+	}
+}

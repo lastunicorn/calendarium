@@ -12,8 +12,8 @@
 	box-shadow: 0 2px 8px var(--color-page-shadow);
 }
 
-/* Each page of a multi-page layout starts a new printed sheet. */
-.page + .page {
+/* Each page of a multi-page layout starts a new printed sheet, unless it is in a booklet. */
+.ownSheet + .ownSheet {
 	break-before: page;
 }
 

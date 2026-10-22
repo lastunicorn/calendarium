@@ -17,7 +17,8 @@ interface PageProps {
  * One sheet of paper, sized in mm so the preview matches print; the margins become its padding.
  * Content that doesn't fit inside the margins would be cut off silently, so the preview marks it.
  * With mirrored margins, the stylesheet swaps the margins on either side of the spine (left and
- * right, or top and bottom) of every even page.
+ * right, or top and bottom) of every even page. Each page prints on its own sheet, except in a
+ * booklet, whose `Booklet` places two on each side of a sheet.
  */
 export function Page({ setup, children }: PageProps) {
 	const ref = useRef<HTMLElement>(null)
@@ -32,9 +33,11 @@ export function Page({ setup, children }: PageProps) {
 		'--margin-bottom': `${bottom}mm`,
 		'--margin-left': `${left}mm`,
 	}
-	const className = setup.mirrorMargins
-		? `${styles.page} ${setup.spine === 'left' ? styles.mirroredSides : styles.mirroredEnds}`
-		: styles.page
+	const classes = [styles.page]
+	if (!setup.booklet) classes.push(styles.ownSheet)
+	if (setup.mirrorMargins)
+		classes.push(setup.spine === 'left' ? styles.mirroredSides : styles.mirroredEnds)
+	const className = classes.join(' ')
 	return (
 		<section ref={ref} className={className} style={style}>
 			{children}

@@ -142,3 +142,31 @@ test('year-per-page lists its events on a second page', async ({ page }) => {
 	await expect(page.locator('main section').nth(1).getByRole('listitem')).toHaveCount(2)
 	expect(await clippedPages(page), 'pages whose content is cut off').toEqual([])
 })
+
+// A booklet prints two pages on each side of a paper twice their size, so the 12 months fill 3
+// sheets printed on both sides, and the year's single page is completed to one sheet.
+const BOOKLET_CASES: PrintCase[] = [
+	{ layout: 'year-per-page', pages: 2, width: 420, height: 297 },
+	{ layout: 'month-per-page', pages: 6, width: 297, height: 420 },
+]
+
+for (const { layout, pages, width, height } of BOOKLET_CASES) {
+	test(`${layout} prints as a booklet on ${pages} side(s) of ${width} × ${height} mm`, async ({
+		page,
+	}) => {
+		await showLayout(page, layout, YEAR)
+		await openSection(page, 'Page')
+		await page.getByRole('checkbox', { name: 'Print as a booklet' }).check()
+
+		const sizes = pdfPageSizes(
+			await page.pdf({ preferCSSPageSize: true, printBackground: true }),
+		)
+		expect(sizes).toHaveLength(pages)
+		// Chrome rounds the paper to whole CSS pixels (0.75 pt), which on A3 is more than 0.5 pt.
+		for (const size of sizes) {
+			expect(Math.abs(size.width - width * POINTS_PER_MM)).toBeLessThan(1)
+			expect(Math.abs(size.height - height * POINTS_PER_MM)).toBeLessThan(1)
+		}
+		expect(await clippedPages(page), 'pages whose content is cut off').toEqual([])
+	})
+}

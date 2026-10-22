@@ -4,6 +4,7 @@ import { pageSizeCss } from '../../core/paper'
 import { layoutView } from '../layouts/registry'
 import styles from './Preview.module.css'
 import { PreviewErrorBoundary } from './PreviewErrorBoundary'
+import { Booklet } from './Booklet'
 
 interface PreviewProps {
 	workspace: Workspace
@@ -26,14 +27,15 @@ function ActiveLayout<K extends LayoutId>({ layout, options }: ActiveLayoutProps
 export function Preview({ workspace, onNewProject }: PreviewProps) {
 	const { layout } = workspace
 	const options = workspace.layouts[layout]
+	const pages = <ActiveLayout layout={layout} options={options} />
 	return (
 		// In the calendar's language, so the browser writes it as such: Greek capitals without
 		// accents, Chinese and Japanese characters in their own glyphs.
 		<main className={styles.preview} lang={options.locale}>
-			{/* The printed paper size. Every page shares it, so one rule covers the document. */}
-			<style>{`@page { size: ${pageSizeCss(options.page.paperSize, options.page.orientation)}; }`}</style>
+			{/* The printed paper size. Every sheet shares it, so one rule covers the document. */}
+			<style>{`@page { size: ${pageSizeCss(options.page)}; }`}</style>
 			<PreviewErrorBoundary layout={layout} options={options} onNewProject={onNewProject}>
-				<ActiveLayout layout={layout} options={options} />
+				{options.page.booklet ? <Booklet setup={options.page}>{pages}</Booklet> : pages}
 			</PreviewErrorBoundary>
 		</main>
 	)

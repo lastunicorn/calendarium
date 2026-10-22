@@ -55,7 +55,9 @@ export function margins(mm: number): Margins {
 
 /** The sheet the calendar is printed on. */
 export interface PageSetup {
+	/** The size of each page; with `booklet`, the paper printed on holds two (`sheetDimensions`). */
 	paperSize: PaperSize
+	/** How each page lies; with `booklet`, the paper printed on lies the other way. */
 	orientation: Orientation
 	margins: Margins
 	/**
@@ -68,8 +70,17 @@ export interface PageSetup {
 	 * binding: left and right for a `left` spine, top and bottom for a `top` one.
 	 */
 	mirrorMargins: boolean
-	/** Where the pages are bound; only used with `mirrorMargins`. */
+	/**
+	 * Where the pages are bound; only used with `mirrorMargins`. With `booklet`, the fold: on the
+	 * left of portrait pages, at the top of landscape ones (`normalizePage`).
+	 */
 	spine: Spine
+	/**
+	 * Prints two pages side by side (portrait pages) or one above the other (landscape ones) on
+	 * each side of a paper twice their size, ordered so that the sheets, printed double-sided and
+	 * folded in half together, make a booklet (`bookletSides`).
+	 */
+	booklet: boolean
 }
 
 /** Margins are checked per side, so one bad side keeps the others. */
@@ -86,19 +97,41 @@ export const PAGE_VALIDATORS: Validators<PageSetup> = {
 	equalMargins: isBoolean,
 	mirrorMargins: isBoolean,
 	spine: oneOf(SPINES),
+	booklet: isBoolean,
 	margins: MARGIN_VALIDATORS,
 }
 
 /**
  * `page` with its cross-field rules applied: equal margins are off with mirrored margins, and off
- * when the sides differ (as in settings saved before the option), so they never change a margin.
+ * when the sides differ (as in settings saved before the option), so they never change a margin;
+ * a booklet's spine is its fold, on the left of portrait pages and at the top of landscape ones.
  * The same object when it already follows them.
  */
 export function normalizePage(page: PageSetup): PageSetup {
-	if (!page.equalMargins) return page
 	const { top, right, bottom, left } = page.margins
 	const equal = right === top && bottom === top && left === top
-	return equal && !page.mirrorMargins ? page : { ...page, equalMargins: false }
+	const equalMargins = page.equalMargins && equal && !page.mirrorMargins
+	const spine = page.booklet ? bookletSpine(page.orientation) : page.spine
+	return equalMargins === page.equalMargins && spine === page.spine
+		? page
+		: { ...page, equalMargins, spine }
+}
+
+/** A booklet's fold, on the pages as they lie: two portrait pages side by side fold between them. */
+function bookletSpine(orientation: Orientation): Spine {
+	return orientation === 'portrait' ? 'left' : 'top'
+}
+
+/**
+ * Width and height in mm of the paper printed on, as it lies: the page, or for a booklet two pages
+ * joined along their long side, so the paper lies the other way (A3 landscape for A4 portrait).
+ */
+export function sheetDimensions(page: Pick<PageSetup, 'paperSize' | 'orientation' | 'booklet'>) {
+	const { width, height } = pageDimensions(page.paperSize, page.orientation)
+	if (!page.booklet) return { width, height }
+	return page.orientation === 'portrait'
+		? { width: 2 * width, height }
+		: { width, height: 2 * height }
 }
 
 /** Width and height in mm of the area inside the margins, where a layout's content goes. */
@@ -108,7 +141,14 @@ export function contentBox(page: Pick<PageSetup, 'paperSize' | 'orientation' | '
 	return { width: width - left - right, height: height - top - bottom }
 }
 
-/** Value for `@page { size }`, e.g. `A4 landscape`. */
-export function pageSizeCss(size: PaperSize, orientation: Orientation): string {
-	return `${PAPERS[size].cssName} ${orientation}`
+/**
+ * Value for `@page { size }`: the paper's name and orientation, e.g. `A4 landscape`, or for a
+ * booklet its sheet's size in mm, which may have no name here (A2, for A3 pages).
+ */
+export function pageSizeCss(
+	page: Pick<PageSetup, 'paperSize' | 'orientation' | 'booklet'>,
+): string {
+	if (!page.booklet) return `${PAPERS[page.paperSize].cssName} ${page.orientation}`
+	const { width, height } = sheetDimensions(page)
+	return `${width}mm ${height}mm`
 }

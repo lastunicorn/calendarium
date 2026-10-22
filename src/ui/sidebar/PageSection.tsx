@@ -39,7 +39,15 @@ const SPINE_DESCRIPTION = [
 	'Even pages swap the left and right margins with a left spine, the top and bottom ones with a top spine.',
 ]
 
-/** The sheet of paper: size, orientation and margins, optionally mirrored around a spine on even pages. */
+const BOOKLET_DESCRIPTION = [
+	'Prints two pages on each side of a paper twice the paper size (A3 for A4 pages): portrait pages side by side, landscape ones one above the other, in the order that makes a booklet. Blank pages at the end complete the last sheet.',
+	'In the print dialog, choose the larger paper and double-sided printing, flipping on the short edge; then stack the sheets in order and fold them in half together.',
+]
+
+/**
+ * The sheet of paper: size, orientation and margins, optionally mirrored around a spine on even
+ * pages, and whether the pages make a booklet.
+ */
 export function PageSection({ options, defaults, onUpdate }: OptionsSectionProps<CommonOptions>) {
 	const { page } = options
 
@@ -53,6 +61,10 @@ export function PageSection({ options, defaults, onUpdate }: OptionsSectionProps
 
 	function handleMarginsChange(margins: Margins) {
 		onUpdate({ page: { ...page, margins } })
+	}
+
+	function handleBookletChange(booklet: boolean) {
+		onUpdate({ page: { ...page, booklet } })
 	}
 
 	function handleEqualMarginsChange(equalMargins: boolean) {
@@ -87,6 +99,12 @@ export function PageSection({ options, defaults, onUpdate }: OptionsSectionProps
 				onChange={handleOrientationChange}
 			/>
 			<CheckboxField
+				label="Print as a booklet"
+				description={BOOKLET_DESCRIPTION}
+				checked={page.booklet}
+				onChange={handleBookletChange}
+			/>
+			<CheckboxField
 				label="Use equal margins"
 				description="Every side takes the top margin: editing it sets them all. Not available with mirror margins."
 				checked={page.equalMargins}
@@ -106,7 +124,8 @@ export function PageSection({ options, defaults, onUpdate }: OptionsSectionProps
 				checked={page.mirrorMargins}
 				onChange={handleMirrorMarginsChange}
 			/>
-			{page.mirrorMargins && (
+			{/* A booklet's spine is its fold. */}
+			{page.mirrorMargins && !page.booklet && (
 				<RadioField
 					label="Spine"
 					description={SPINE_DESCRIPTION}

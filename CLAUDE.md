@@ -42,7 +42,8 @@ The app version in `package.json` (semver) is the only version to edit; `workspa
 
 - Paper sizes are defined once in `src/core/paper.ts` (`PAPERS`: CSS name and mm dimensions). `Page` sizes its box in mm from it (`contentBox` gives the area inside the margins, for layouts that size content from the page), so the screen preview matches print, and `Preview` renders a `<style>` with the matching `@page { size }` rule. A new paper size is one entry there plus its label in `PageSection`.
 - `Page` clips content to the paper, so on screen it shows a badge when its content doesn't fit inside the margins (`useOverflow`, checked only while the page is visible, so it doesn't undo `content-visibility`). `Preview` wraps the layout in `PreviewErrorBoundary`, which offers a reset of the layout's settings instead of a blank screen.
-- Printing targets Chrome/Chromium: Save as PDF, paper size matching the selection, Margins: None, Scale: 100%.
+- A booklet (`PageSetup.booklet`) keeps the paper size and orientation as each page's and prints two pages on each side of a sheet twice that size (`sheetDimensions`, the `@page` size then given in mm): `ui/preview/Booklet` wraps the layout in a grid and, from the pages actually drawn, appends blank pages to a multiple of 4 and places each on its sheet side by `bookletSides` (`core/booklet.ts`), leaving the pages in reading order in the document so mirrored margins still count them. A booklet's spine is its fold (`normalizePage`). Layouts draw the same pages either way.
+- Printing targets Chrome/Chromium: Save as PDF, paper size matching the selection (twice it for a booklet, printed double-sided flipping on the short edge), Margins: None, Scale: 100%.
 
 ## Domain language
 
@@ -63,7 +64,8 @@ Use these words in code, comments and docs, each for one thing. The terms only o
 | Preferences         | How the app looks and behaves for the viewer, apart from any calendar                           | `Preferences`, `usePreferences`                                  | —                      |
 | Options             | One layout's remembered set of values; a component taking them calls its prop `options`         | `LayoutOptions[id]`, `AnyLayoutOptions`                          | (layout) settings      |
 | Sheet / page        | One printed piece of paper                                                                      | `Page`                                                           | page                   |
-| Page setup          | Paper size, orientation, margins, equal margins, mirrored margins, spine                        | `PageSetup`                                                      | Page                   |
+| Page setup          | Paper size, orientation, margins, equal margins, mirrored margins, spine, booklet               | `PageSetup`                                                      | Page                   |
+| Booklet             | Pages printed two per side of a sheet twice their size, ordered to read in order once folded    | `PageSetup.booklet`, `bookletSides`, `Booklet`                   | Print as a booklet     |
 | Spine               | The first page's bound edge; with mirrored margins, even pages swap the margins either side     | `Spine`, `PageSetup.spine`                                       | Spine                  |
 | Content box         | The area inside the margins                                                                     | `contentBox`                                                     | —                      |
 | Heading, subheading | A page's title lines                                                                            | `CalendarHeader`                                                 | Title                  |

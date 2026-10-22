@@ -28,6 +28,26 @@ describe('Preview', () => {
 		expect(container.querySelector('style')?.textContent).toBe('@page { size: A4 landscape; }')
 	})
 
+	it('prints a booklet on a sheet of two pages, completing the last sheet', () => {
+		const workspace = workspaceFor('month-per-page')
+		const options = workspace.layouts['month-per-page']
+		const { container } = render(
+			<Preview
+				workspace={{
+					...workspace,
+					layouts: {
+						...workspace.layouts,
+						'month-per-page': { ...options, page: { ...options.page, booklet: true } },
+					},
+				}}
+				onNewProject={noop}
+			/>,
+		)
+		// Two A4 landscape pages, one above the other.
+		expect(container.querySelector('style')?.textContent).toBe('@page { size: 297mm 420mm; }')
+		expect(container.querySelectorAll('section')).toHaveLength(12)
+	})
+
 	it('marks the pages with the calendar’s language', () => {
 		const workspace = workspaceFor('year-per-page')
 		const options = { ...workspace.layouts['year-per-page'], locale: 'el-GR' as const }

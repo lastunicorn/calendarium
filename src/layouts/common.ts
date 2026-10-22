@@ -57,6 +57,7 @@ export function commonDefaults(): CommonOptions {
 			equalMargins: true,
 			mirrorMargins: false,
 			spine: 'left',
+			booklet: false,
 		},
 	}
 }

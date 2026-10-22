@@ -7,6 +7,7 @@ The features each release brought, newest first. Versions follow the app version
 ### Added
 
 - Greek, and six regional variants: Portuguese (Portugal), Spanish (Mexico), French (Canada), German (Austria and Switzerland) and Chinese (Hong Kong). Their own names and conventions are kept, like Austria's "Jänner" for January, and a browser in one of them starts in it. Greek month names are written as names on their own (Ιανουάριος), not as they read inside a date.
+- Every layout: a Print as a booklet option in the Page section prints two pages on each side of a paper twice the paper size (A4 pages on A3), portrait pages side by side and landscape ones one above the other, in the order that makes a booklet once printed double-sided (flipping on the short edge) and folded in half. Blank pages at the end complete the last sheet, and the spine is the fold.
 
 ### Changed
 

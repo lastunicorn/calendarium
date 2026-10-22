@@ -132,7 +132,7 @@ describe('WorkspaceForm', () => {
 		)
 	})
 
-	it('shows the spine only with mirrored margins', () => {
+	it('shows the spine only with mirrored margins, outside a booklet', () => {
 		const workspace = defaultWorkspace()
 		const { rerender } = render(
 			<Form
@@ -164,6 +164,28 @@ describe('WorkspaceForm', () => {
 			/>,
 		)
 		expect(screen.getByRole('group', { name: 'Spine' })).not.toBeNull()
+
+		// A booklet's spine is its fold.
+		const booklet = {
+			...workspace,
+			layouts: {
+				...workspace.layouts,
+				[workspace.layout]: {
+					...layout,
+					page: { ...layout.page, mirrorMargins: true, booklet: true },
+				},
+			},
+		}
+		rerender(
+			<Form
+				workspace={booklet}
+				onSelectLayout={noop}
+				onUpdate={noop}
+				onNewProject={noop}
+				onOpenProject={noop}
+			/>,
+		)
+		expect(screen.queryByRole('group', { name: 'Spine' })).toBeNull()
 	})
 
 	it('sets every margin from the top one with equal margins, unavailable with mirror margins', () => {
