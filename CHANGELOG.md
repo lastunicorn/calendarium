@@ -4,6 +4,10 @@ The features each release brought, newest first. Versions follow the app version
 
 ## Unreleased
 
+## 4.5.0 — 2026-10-22
+
+Settings and files from 4.4.0 are read as they are; the new options start at their defaults, and saved settings keep the values whose default changed.
+
 ### Added
 
 - Every layout: a Use equal margins option in the Page section, on by default, gives every side the top margin, the other margins becoming read-only. It is off and unavailable with mirror margins. Saved settings and files whose margins differ keep them, with the option off.
