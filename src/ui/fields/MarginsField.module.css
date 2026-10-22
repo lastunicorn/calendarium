@@ -73,6 +73,12 @@
 	text-align: center;
 }
 
+/* With equal margins, the sides that follow the top one. */
+.margin input:read-only {
+	color: var(--color-text-muted);
+	background: var(--color-section-title-background);
+}
+
 .top {
 	grid-area: top;
 }

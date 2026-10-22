@@ -1,6 +1,7 @@
 import type { CommonConfig } from '../../layouts/common'
 import {
 	type Margins,
+	margins,
 	type Orientation,
 	ORIENTATIONS,
 	PAPER_SIZES,
@@ -54,6 +55,11 @@ export function PageSection({ config, defaults, onUpdate }: ConfigSectionProps<C
 		onUpdate({ page: { ...page, margins } })
 	}
 
+	function handleEqualMarginsChange(equalMargins: boolean) {
+		const sides = equalMargins ? margins(page.margins.top) : page.margins
+		onUpdate({ page: { ...page, equalMargins, margins: sides } })
+	}
+
 	function handleMirrorMarginsChange(mirrorMargins: boolean) {
 		onUpdate({ page: { ...page, mirrorMargins } })
 	}
@@ -80,10 +86,18 @@ export function PageSection({ config, defaults, onUpdate }: ConfigSectionProps<C
 				options={ORIENTATION_OPTIONS}
 				onChange={handleOrientationChange}
 			/>
+			<CheckboxField
+				label="Use equal margins"
+				description="Every side takes the top margin: editing it sets them all. Not available with mirror margins."
+				checked={page.equalMargins}
+				disabled={page.mirrorMargins}
+				onChange={handleEqualMarginsChange}
+			/>
 			<MarginsField
 				value={page.margins}
 				orientation={page.orientation}
 				spine={page.mirrorMargins ? page.spine : undefined}
+				equal={page.equalMargins}
 				onChange={handleMarginsChange}
 			/>
 			<CheckboxField

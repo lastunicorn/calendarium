@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { defaultLayoutConfig, normalizeLayout } from '../layouts'
+import { defaultLayoutConfig, LAYOUT_IDS, normalizeLayout } from '../layouts'
 import { defaultAppConfig } from './AppConfig'
 import { configReducer } from './configReducer'
 import { parseConfig, toStoredConfig } from './parseConfig'
@@ -18,6 +18,37 @@ describe('normalizeLayout', () => {
 		expect(normalizeLayout('week-per-page', config)).toMatchObject({
 			firstHour: 9,
 			lastHour: 18,
+		})
+	})
+
+	it('applies the page rules in every layout', () => {
+		for (const layout of LAYOUT_IDS) {
+			const config = defaultLayoutConfig(layout)
+			expect(config.page.equalMargins).toBe(true)
+			const differing = {
+				...config.page,
+				margins: { top: 5, right: 10, bottom: 15, left: 20 },
+			}
+			expect(normalizeLayout(layout, { ...config, page: differing }).page).toEqual({
+				...differing,
+				equalMargins: false,
+			})
+			const mirrored = { ...config.page, mirrorMargins: true }
+			expect(normalizeLayout(layout, { ...config, page: mirrored }).page.equalMargins).toBe(
+				false,
+			)
+		}
+	})
+
+	it('keeps the differing margins of settings saved before equal margins', () => {
+		const stored = toStoredConfig(defaultAppConfig())
+		const day = stored.layouts['day-per-page']
+		const sides = { top: 5, right: 10, bottom: 15, left: 20 }
+		const { equalMargins: _, ...page } = { ...day.page, margins: sides }
+		const layouts = { ...stored.layouts, 'day-per-page': { ...day, page } }
+		expect(parseConfig({ ...stored, layouts }).layouts['day-per-page'].page).toMatchObject({
+			margins: sides,
+			equalMargins: false,
 		})
 	})
 

@@ -1,5 +1,6 @@
 import {
 	isMargin,
+	margins,
 	MARGIN_SIDES,
 	type Margins,
 	type MarginSide,
@@ -20,10 +21,11 @@ const MARGIN_LABELS: Record<MarginSide, string> = {
 interface MarginInputProps {
 	side: MarginSide
 	value: number
+	readOnly: boolean
 	onChange: (side: MarginSide, margin: number) => void
 }
 
-function MarginInput({ side, value, onChange }: MarginInputProps) {
+function MarginInput({ side, value, readOnly, onChange }: MarginInputProps) {
 	function handleInputChange(margin: number) {
 		onChange(side, margin)
 	}
@@ -37,6 +39,7 @@ function MarginInput({ side, value, onChange }: MarginInputProps) {
 				step={0.5}
 				label={MARGIN_LABELS[side]}
 				isValid={isMargin}
+				readOnly={readOnly}
 				onChange={handleInputChange}
 			/>
 		</div>
@@ -49,13 +52,18 @@ interface MarginsFieldProps {
 	orientation: Orientation
 	/** The bound edge, drawn on the page when the margins are mirrored. */
 	spine?: Spine
+	/** Every side follows the top margin, the other inputs being read-only. */
+	equal: boolean
 	onChange: (margins: Margins) => void
 }
 
-/** The four page margins in mm, each input placed by its side of a drawn page. */
-export function MarginsField({ value, orientation, spine, onChange }: MarginsFieldProps) {
+/**
+ * The four page margins in mm, each input placed by its side of a drawn page; with `equal`, only
+ * the top one is edited, setting them all.
+ */
+export function MarginsField({ value, orientation, spine, equal, onChange }: MarginsFieldProps) {
 	function handleMarginChange(side: MarginSide, margin: number) {
-		onChange({ ...value, [side]: margin })
+		onChange(equal ? margins(margin) : { ...value, [side]: margin })
 	}
 
 	const pageClassName = `${styles.page} ${styles[orientation]}`
@@ -77,6 +85,7 @@ export function MarginsField({ value, orientation, spine, onChange }: MarginsFie
 						key={side}
 						side={side}
 						value={value[side]}
+						readOnly={equal && side !== 'top'}
 						onChange={handleMarginChange}
 					/>
 				))}

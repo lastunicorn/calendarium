@@ -11,6 +11,7 @@ interface NumberInputProps {
 	label?: string
 	/** Whether a typed number may be committed; defaults to finite and within `min`–`max`. */
 	isValid?: (value: number) => boolean
+	readOnly?: boolean
 	onChange: (value: number) => void
 }
 
@@ -28,6 +29,7 @@ export function NumberInput({
 	step,
 	label,
 	isValid,
+	readOnly = false,
 	onChange,
 }: NumberInputProps) {
 	const [draft, setDraft] = useState(String(value))
@@ -63,6 +65,7 @@ export function NumberInput({
 			aria-label={label}
 			aria-describedby={describedBy}
 			value={draft}
+			readOnly={readOnly}
 			onChange={handleInputChange}
 			onBlur={handleInputBlur}
 		/>

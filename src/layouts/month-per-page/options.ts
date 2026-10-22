@@ -1,9 +1,9 @@
 import { WEEKDAY_FORMATS } from '../../core/locale'
 import { margins } from '../../core/paper'
 import { isBoolean, isString, oneOf, type Validators } from '../../core/validation'
-import { COMMON_VALIDATORS, type CommonConfig, commonDefaults } from '../common'
+import { COMMON_VALIDATORS, type CommonConfig, commonDefaults, normalizeCommon } from '../common'
 import { HEADING_ALIGNS, type HeadingAlign } from '../heading'
-import { type LayoutSpec, unchanged } from '../LayoutSpec'
+import type { LayoutSpec } from '../LayoutSpec'
 import { MONTH_GRID_VALIDATORS, type MonthGridOptions, monthGridDefaults } from '../monthGrid'
 
 /** The previous and the next month, drawn small at the top left and top right of each page. */
@@ -130,5 +130,5 @@ export const MONTH_PER_PAGE_SPEC: LayoutSpec<MonthPerPageConfig> = {
 		dayNumberVerticalAlignment: oneOf(DAY_NUMBER_VERTICAL_ALIGNMENTS),
 		adjacentMonths: ADJACENT_MONTHS_VALIDATORS,
 	},
-	normalize: unchanged,
+	normalize: normalizeCommon,
 }

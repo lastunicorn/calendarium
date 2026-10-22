@@ -1,6 +1,6 @@
 import { isString } from '../../core/validation'
-import { COMMON_VALIDATORS, type CommonConfig, commonDefaults } from '../common'
-import { type LayoutSpec, unchanged } from '../LayoutSpec'
+import { COMMON_VALIDATORS, type CommonConfig, commonDefaults, normalizeCommon } from '../common'
+import type { LayoutSpec } from '../LayoutSpec'
 import { MONTH_GRID_VALIDATORS, type MonthGridOptions, monthGridDefaults } from '../monthGrid'
 
 export interface YearPerPageConfig extends CommonConfig, MonthGridOptions {
@@ -19,5 +19,5 @@ export const YEAR_PER_PAGE_SPEC: LayoutSpec<YearPerPageConfig> = {
 		title: isString,
 		subtitle: isString,
 	},
-	normalize: unchanged,
+	normalize: normalizeCommon,
 }

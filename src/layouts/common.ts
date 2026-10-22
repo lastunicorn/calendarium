@@ -8,7 +8,7 @@ import {
 	resolveWeekStart,
 	type WeekStartSetting,
 } from '../core/locale'
-import { margins, PAGE_VALIDATORS, type PageSetup } from '../core/paper'
+import { margins, normalizePage, PAGE_VALIDATORS, type PageSetup } from '../core/paper'
 import { isString, oneOf, type Validators } from '../core/validation'
 
 /** Options every layout has, each with the same meaning in all of them. */
@@ -54,6 +54,7 @@ export function commonDefaults(): CommonConfig {
 			paperSize: 'a4',
 			orientation: 'portrait',
 			margins: margins(12),
+			equalMargins: true,
 			mirrorMargins: false,
 			spine: 'left',
 		},
@@ -67,6 +68,15 @@ export const COMMON_VALIDATORS: Validators<CommonConfig> = {
 	weekStart: isWeekStartSetting,
 	events: isString,
 	page: PAGE_VALIDATORS,
+}
+
+/**
+ * `config` with the rules of the options every layout has applied (`normalizePage`); each
+ * layout's `normalize` starts from it. The same object when it already follows them.
+ */
+export function normalizeCommon<C extends CommonConfig>(config: C): C {
+	const page = normalizePage(config.page)
+	return page === config.page ? config : { ...config, page }
 }
 
 /**

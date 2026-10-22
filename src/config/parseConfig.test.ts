@@ -29,6 +29,7 @@ describe('parseConfig', () => {
 			paperSize: 'letter',
 			orientation: 'landscape',
 			margins: { top: 5, right: 12.5, bottom: 0, left: 50 },
+			equalMargins: false,
 			mirrorMargins: true,
 			spine: 'top',
 		}

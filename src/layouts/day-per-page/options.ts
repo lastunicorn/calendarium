@@ -1,6 +1,6 @@
 import { isBoolean, oneOf } from '../../core/validation'
 import { isHeadingFontSize } from '../heading'
-import { COMMON_VALIDATORS, type CommonConfig, commonDefaults } from '../common'
+import { COMMON_VALIDATORS, type CommonConfig, commonDefaults, normalizeCommon } from '../common'
 import type { LayoutSpec } from '../LayoutSpec'
 import { MINI_MONTH_VALIDATORS, type MiniMonthOptions, miniMonthDefaults } from '../monthGrid'
 import { type HourSchedule, orderHours, SCHEDULE_VALIDATORS, scheduleDefaults } from '../schedule'
@@ -119,5 +119,5 @@ export const DAY_PER_PAGE_SPEC: LayoutSpec<DayPerPageConfig> = {
 		showHeaderWeek: isBoolean,
 		showHeaderDayOfYear: isBoolean,
 	},
-	normalize: orderHours,
+	normalize: (config) => orderHours(normalizeCommon(config)),
 }

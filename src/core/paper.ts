@@ -59,6 +59,11 @@ export interface PageSetup {
 	orientation: Orientation
 	margins: Margins
 	/**
+	 * Every side has the top margin, so editing it sets them all. Off with `mirrorMargins`, which
+	 * equal margins would leave unchanged, and when the sides differ (`normalizePage`).
+	 */
+	equalMargins: boolean
+	/**
 	 * Swaps the margins on either side of the spine on even pages, for double-sided printing and
 	 * binding: left and right for a `left` spine, top and bottom for a `top` one.
 	 */
@@ -78,9 +83,22 @@ const MARGIN_VALIDATORS: Validators<Margins> = {
 export const PAGE_VALIDATORS: Validators<PageSetup> = {
 	paperSize: oneOf(PAPER_SIZES),
 	orientation: oneOf(ORIENTATIONS),
+	equalMargins: isBoolean,
 	mirrorMargins: isBoolean,
 	spine: oneOf(SPINES),
 	margins: MARGIN_VALIDATORS,
+}
+
+/**
+ * `page` with its cross-field rules applied: equal margins are off with mirrored margins, and off
+ * when the sides differ (as in settings saved before the option), so they never change a margin.
+ * The same object when it already follows them.
+ */
+export function normalizePage(page: PageSetup): PageSetup {
+	if (!page.equalMargins) return page
+	const { top, right, bottom, left } = page.margins
+	const equal = right === top && bottom === top && left === top
+	return equal && !page.mirrorMargins ? page : { ...page, equalMargins: false }
 }
 
 /** Width and height in mm of the area inside the margins, where a layout's content goes. */

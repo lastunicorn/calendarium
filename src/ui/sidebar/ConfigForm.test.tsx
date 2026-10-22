@@ -2,6 +2,7 @@ import { fireEvent, render, screen, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import type { LayoutId } from '../../layouts'
 import { defaultAppConfig } from '../../config/AppConfig'
+import { margins } from '../../core/paper'
 import { ConfigForm } from './ConfigForm'
 
 function noop() {}
@@ -199,6 +200,71 @@ describe('ConfigForm', () => {
 			/>,
 		)
 		expect(screen.getByRole('group', { name: 'Spine' })).not.toBeNull()
+	})
+
+	it('sets every margin from the top one with equal margins, unavailable with mirror margins', () => {
+		const config = defaultAppConfig()
+		const layout = config.layouts[config.layout]
+		const onUpdate = vi.fn()
+		function withPage(page: Partial<typeof layout.page>) {
+			return {
+				...config,
+				layouts: {
+					...config.layouts,
+					[config.layout]: { ...layout, page: { ...layout.page, ...page } },
+				},
+			}
+		}
+		const { rerender } = render(
+			<ConfigForm
+				config={config}
+				onSelectLayout={noop}
+				onUpdate={onUpdate}
+				onResetLayout={noop}
+				onImportLayout={noop}
+			/>,
+		)
+		fireEvent.click(screen.getByRole('button', { name: 'Page' }))
+		const left = screen.getByRole<HTMLInputElement>('spinbutton', { name: 'Left margin' })
+		expect(left.readOnly).toBe(true)
+		const top = screen.getByRole<HTMLInputElement>('spinbutton', { name: 'Top margin' })
+		expect(top.readOnly).toBe(false)
+		fireEvent.change(top, { target: { value: '20' } })
+		expect(onUpdate).toHaveBeenLastCalledWith(config.layout, {
+			page: expect.objectContaining({
+				margins: { top: 20, right: 20, bottom: 20, left: 20 },
+			}),
+		})
+
+		rerender(
+			<ConfigForm
+				config={withPage({ mirrorMargins: true, equalMargins: false })}
+				onSelectLayout={noop}
+				onUpdate={onUpdate}
+				onResetLayout={noop}
+				onImportLayout={noop}
+			/>,
+		)
+		const equal = screen.getByRole<HTMLInputElement>('checkbox', { name: 'Use equal margins' })
+		expect(equal.disabled).toBe(true)
+		expect(left.readOnly).toBe(false)
+
+		rerender(
+			<ConfigForm
+				config={withPage({
+					equalMargins: false,
+					margins: { top: 5, right: 10, bottom: 15, left: 20 },
+				})}
+				onSelectLayout={noop}
+				onUpdate={onUpdate}
+				onResetLayout={noop}
+				onImportLayout={noop}
+			/>,
+		)
+		fireEvent.click(equal)
+		expect(onUpdate).toHaveBeenLastCalledWith(config.layout, {
+			page: expect.objectContaining({ equalMargins: true, margins: margins(5) }),
+		})
 	})
 
 	it('labels the hovered or focused layout action under the buttons', () => {

@@ -1,7 +1,7 @@
 import { WEEKDAY_FORMATS, type WeekdayFormat } from '../../core/locale'
 import { margins } from '../../core/paper'
 import { isBoolean, oneOf } from '../../core/validation'
-import { COMMON_VALIDATORS, type CommonConfig, commonDefaults } from '../common'
+import { COMMON_VALIDATORS, type CommonConfig, commonDefaults, normalizeCommon } from '../common'
 import { HEADING_ALIGNMENTS, type HeadingAlignment, isHeadingFontSize } from '../heading'
 import type { LayoutSpec } from '../LayoutSpec'
 import { MINI_MONTH_VALIDATORS, type MiniMonthOptions, miniMonthDefaults } from '../monthGrid'
@@ -117,5 +117,5 @@ export const WEEK_PER_PAGE_SPEC: LayoutSpec<WeekPerPageConfig> = {
 		...SCHEDULE_VALIDATORS,
 		miniMonth: MINI_MONTH_VALIDATORS,
 	},
-	normalize: orderHours,
+	normalize: (config) => orderHours(normalizeCommon(config)),
 }

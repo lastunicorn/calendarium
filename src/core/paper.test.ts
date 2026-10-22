@@ -1,5 +1,14 @@
 import { describe, expect, it } from 'vitest'
-import { contentBox, pageDimensions, pageSizeCss, PAPER_SIZES, PAPERS } from './paper'
+import {
+	contentBox,
+	margins,
+	normalizePage,
+	type PageSetup,
+	pageDimensions,
+	pageSizeCss,
+	PAPER_SIZES,
+	PAPERS,
+} from './paper'
 
 describe('pageDimensions', () => {
 	it('keeps portrait dimensions as listed', () => {
@@ -36,5 +45,34 @@ describe('contentBox', () => {
 			width: 277,
 			height: 180,
 		})
+	})
+})
+
+describe('normalizePage', () => {
+	const page: PageSetup = {
+		paperSize: 'a4',
+		orientation: 'portrait',
+		margins: { top: 10, right: 12, bottom: 14, left: 16 },
+		equalMargins: false,
+		mirrorMargins: false,
+		spine: 'left',
+	}
+
+	it('leaves differing margins as they are without equal margins', () => {
+		expect(normalizePage(page)).toBe(page)
+	})
+
+	it('turns equal margins off when the sides differ, keeping the margins', () => {
+		expect(normalizePage({ ...page, equalMargins: true })).toEqual(page)
+	})
+
+	it('keeps equal margins when the sides are equal', () => {
+		const equal = { ...page, equalMargins: true, margins: margins(8) }
+		expect(normalizePage(equal)).toBe(equal)
+	})
+
+	it('turns equal margins off with mirrored margins, keeping the margins', () => {
+		const mirrored = { ...page, margins: margins(8), mirrorMargins: true }
+		expect(normalizePage({ ...mirrored, equalMargins: true })).toEqual(mirrored)
 	})
 })

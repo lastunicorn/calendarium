@@ -6,6 +6,7 @@ The features each release brought, newest first. Versions follow the app version
 
 ### Added
 
+- Every layout: a Use equal margins option in the Page section, on by default, gives every side the top margin, the other margins becoming read-only. It is off and unavailable with mirror margins. Saved settings and files whose margins differ keep them, with the option off.
 - Day layout: a Dots fill dots the page in a square grid, like the Squares fill with only the corners drawn, its spacing and alignment set like the squares'.
 
 ### Changed
