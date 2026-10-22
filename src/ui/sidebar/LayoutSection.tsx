@@ -128,11 +128,7 @@ export function LayoutSection({ workspace, onSelect, onNew, onOpen }: LayoutSect
 					onFocus={handleActionsFocus}
 					onBlur={handleActionsLeave}
 				>
-					<IconButton
-						label="New project"
-						icon={<NewIcon />}
-						onClick={handleNewClick}
-					/>
+					<IconButton label="New project" icon={<NewIcon />} onClick={handleNewClick} />
 					<IconButton
 						label="Save project to a file"
 						icon={<SaveIcon />}
