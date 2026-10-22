@@ -29,7 +29,7 @@ function sectionTitles(layout: LayoutId): string[] {
 }
 
 describe('ConfigForm', () => {
-	// Each layout's sections are tested next to its form, in `ui/layouts/<layout-id>/`.
+	// Each layout's sections are tested next to its form, in `layouts/<layout-id>/ui/`.
 	it.each(LAYOUT_IDS)('shows the layout picker above the %s form', (layout) => {
 		const [first, ...rest] = sectionTitles(layout)
 		expect(first).toBe('Layout')

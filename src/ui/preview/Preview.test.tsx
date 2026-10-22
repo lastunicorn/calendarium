@@ -11,7 +11,7 @@ function configFor(layout: LayoutId): AppConfig {
 	return { ...defaultAppConfig(), layout }
 }
 
-// What each layout draws is tested in its folder, `ui/layouts/<layout-id>/`; these check that the
+// What each layout draws is tested in its folder, `layouts/<layout-id>/ui/`; these check that the
 // preview draws the chosen one, whichever it is.
 describe('Preview', () => {
 	it.each(LAYOUT_IDS)('draws the pages of %s', (layout) => {

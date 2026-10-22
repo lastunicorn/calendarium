@@ -1,9 +1,9 @@
 import type { LayoutConfigs, LayoutId } from '../../layouts'
-import { DAY_PER_PAGE_VIEW } from './day-per-page'
+import { DAY_PER_PAGE_VIEW } from '../../layouts/day-per-page/ui'
 import type { LayoutView } from './LayoutView'
-import { MONTH_PER_PAGE_VIEW } from './month-per-page'
-import { WEEK_PER_PAGE_VIEW } from './week-per-page'
-import { YEAR_PER_PAGE_VIEW } from './year-per-page'
+import { MONTH_PER_PAGE_VIEW } from '../../layouts/month-per-page/ui'
+import { WEEK_PER_PAGE_VIEW } from '../../layouts/week-per-page/ui'
+import { YEAR_PER_PAGE_VIEW } from '../../layouts/year-per-page/ui'
 
 /**
  * Each layout's component, form and labels. Keyed by every `LayoutId`, so a new id without a view

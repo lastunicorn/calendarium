@@ -4,7 +4,7 @@ import { LAYOUT_IDS } from './layouts'
 // The folders, from the bottom up. Each may import only itself and the folders below it:
 // `core/` (generic: calendar, languages, paper) ← `layouts/` (each layout's options, rules and
 // pages) ← `config/` (the saved settings) ← `ui/`. Only `ui/` may use React. A layout's UI, in
-// `layouts/<layout-id>/ui/` or for now in `ui/layouts/<layout-id>/`, is in `ui/`.
+// `layouts/<layout-id>/ui/`, is in `ui/`.
 const LAYERS = ['core', 'layouts', 'config', 'ui'] as const
 
 // Each layout is one unit, like a plugin of the host (everything outside the layouts' folders):
@@ -16,13 +16,9 @@ const REGISTRIES = ['layouts/index.ts', 'ui/layouts/registry.ts']
 
 /**
  * A layout's entry points, as paths from `src/` without extension: its domain `index.ts`, and its
- * UI's, inside its folder or for now in `ui/layouts/`.
+ * UI's, `ui/index.ts`.
  */
-const ENTRY_POINTS = [
-	/^layouts\/[^/]+\/index$/,
-	/^layouts\/[^/]+\/ui\/index$/,
-	/^ui\/layouts\/[^/]+\/index$/,
-]
+const ENTRY_POINTS = [/^layouts\/[^/]+\/index$/, /^layouts\/[^/]+\/ui\/index$/]
 
 /** Every source file under `src/`, tests included, keyed by its path from here (`./core/paper.ts`). */
 const SOURCES = import.meta.glob<string>('./**/*.{ts,tsx}', {
@@ -36,7 +32,7 @@ const FILES = Object.keys(SOURCES).map((key) => key.slice(2))
 
 /** The layout whose folders hold a path from `src/` (`week-per-page`), or `null` for the host's. */
 function layoutOf(path: string): string | null {
-	return /^(?:ui\/)?layouts\/([^/]+)\//.exec(path)?.[1] ?? null
+	return /^layouts\/([^/]+)\//.exec(path)?.[1] ?? null
 }
 
 /** The layer of a path from `src/` (`core/paper`), or -1 for the files above them (`App.tsx`). */

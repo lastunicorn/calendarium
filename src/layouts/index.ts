@@ -13,7 +13,7 @@ import { YEAR_PER_PAGE_SPEC, type YearPerPageConfig } from './year-per-page'
 
 /**
  * Ids of the page layouts, in the picker's order; the first is shown by default. Each has a folder
- * here (options, defaults, validators, rules, migrations, printed text) and one in `ui/layouts/`
+ * here (options, defaults, validators, rules, migrations, printed text), with its UI in `ui/`
  * (component, form, labels).
  */
 export const LAYOUT_IDS = [
