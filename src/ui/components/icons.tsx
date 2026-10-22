@@ -50,14 +50,12 @@ export function SaveIcon() {
 	)
 }
 
-/** A page with a plus on its lower right corner, the outline open around it: starts a new project. */
+/** A blank page with a folded corner: starts a new project. */
 export function NewIcon() {
 	return (
 		<Icon>
-			<path d="M17 12V7l-5-5H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h6" />
-			<path d="M12 2v5h5" />
-			<path d="M19 15.5v7" />
-			<path d="M15.5 19h7" />
+			<path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7z" />
+			<path d="M14 2v5h5" />
 		</Icon>
 	)
 }
