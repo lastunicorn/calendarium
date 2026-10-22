@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
-	<title>Printable Calendar</title>
+	<title>Calendarium</title>
 	<!-- Paper sheet with a folded bottom-right corner -->
 	<path d="M10 12h44a4 4 0 0 1 4 4v30L44 60H10a4 4 0 0 1-4-4V16a4 4 0 0 1 4-4z" fill="#fff" stroke="#222" stroke-width="3" stroke-linejoin="round"/>
 	<path d="M58 46H48a4 4 0 0 0-4 4v10z" fill="#e0e0e0" stroke="#222" stroke-width="3" stroke-linejoin="round"/>

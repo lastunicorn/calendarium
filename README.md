@@ -29,16 +29,16 @@ Use Chrome/Chromium: **Print → Destination: Save as PDF, Paper size: matching 
 
 ### From a release
 
-Each [release](https://github.com/lastunicorn/calendarium/releases) has the built app attached as `printable-calendar-X.Y.Z.zip`, the same files the online app serves. To run it without building:
+Each [release](https://github.com/lastunicorn/calendarium/releases) has the built app attached as `calendarium-X.Y.Z.zip`, the same files the online app serves. To run it without building:
 
 1. Download the zip from the release's assets and unzip it into a folder.
 2. Serve that folder over HTTP with any static server, for example:
 
    ```bash
-   python3 -m http.server 8080 -d printable-calendar-X.Y.Z
+   python3 -m http.server 8080 -d calendarium-X.Y.Z
    ```
 
-   or, with Node.js, `npx serve printable-calendar-X.Y.Z`.
+   or, with Node.js, `npx serve calendarium-X.Y.Z`.
 
 3. Open http://localhost:8080 (or the address the server prints).
 

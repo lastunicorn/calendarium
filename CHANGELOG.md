@@ -4,6 +4,10 @@ The features each release brought, newest first. Versions follow the app version
 
 ## Unreleased
 
+### Changed
+
+- The browser tab is titled Calendarium, the app's name, instead of Printable Calendar.
+
 ## 4.6.0 — 2026-10-23
 
 Settings and files from 4.5.0 are read as they are; the new options start at their defaults, and files exported by earlier versions open as projects.
