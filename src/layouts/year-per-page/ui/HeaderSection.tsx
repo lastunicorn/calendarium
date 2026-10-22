@@ -1,16 +1,16 @@
 import { yearName } from '../../../core/locale'
-import type { YearPerPageConfig } from '../options'
+import type { YearPerPageOptions } from '../options'
 import { HeaderIcon } from '../../../ui/components/icons'
 import { TextField } from '../../../ui/fields/TextField'
 import { defaultFields } from '../../../ui/sidebar/defaultFields'
-import { type ConfigSectionProps, Section } from '../../../ui/sidebar/Section'
+import { type OptionsSectionProps, Section } from '../../../ui/sidebar/Section'
 
 /** The heading printed above the calendar. */
 export function HeaderSection({
-	config,
+	options,
 	defaults,
 	onUpdate,
-}: ConfigSectionProps<YearPerPageConfig>) {
+}: OptionsSectionProps<YearPerPageOptions>) {
 	function handleTitleChange(title: string) {
 		onUpdate({ title })
 	}
@@ -27,11 +27,11 @@ export function HeaderSection({
 		<Section title="Header" icon={<HeaderIcon />} onReset={handleReset}>
 			<TextField
 				label="Title"
-				value={config.title}
-				placeholder={yearName(config.locale, config.year)}
+				value={options.title}
+				placeholder={yearName(options.locale, options.year)}
 				onChange={handleTitleChange}
 			/>
-			<TextField label="Subtitle" value={config.subtitle} onChange={handleSubtitleChange} />
+			<TextField label="Subtitle" value={options.subtitle} onChange={handleSubtitleChange} />
 		</Section>
 	)
 }

@@ -1,4 +1,4 @@
-import type { LayoutConfigs, LayoutId } from '../../layouts'
+import type { LayoutOptions, LayoutId } from '../../layouts'
 import { DAY_PER_PAGE_VIEW } from '../../layouts/day-per-page/ui'
 import type { LayoutView } from './LayoutView'
 import { MONTH_PER_PAGE_VIEW } from '../../layouts/month-per-page/ui'
@@ -9,7 +9,7 @@ import { YEAR_PER_PAGE_VIEW } from '../../layouts/year-per-page/ui'
  * Each layout's component, form and labels. Keyed by every `LayoutId`, so a new id without a view
  * won't compile. The domain side (options, defaults, validators, rules) is in `layouts/`.
  */
-export const LAYOUT_VIEWS: { [K in LayoutId]: LayoutView<LayoutConfigs[K]> } = {
+export const LAYOUT_VIEWS: { [K in LayoutId]: LayoutView<LayoutOptions[K]> } = {
 	'year-per-page': YEAR_PER_PAGE_VIEW,
 	'month-per-page': MONTH_PER_PAGE_VIEW,
 	'week-per-page': WEEK_PER_PAGE_VIEW,
@@ -17,6 +17,6 @@ export const LAYOUT_VIEWS: { [K in LayoutId]: LayoutView<LayoutConfigs[K]> } = {
 }
 
 /** `layout`'s view, typed by its own options, so its component and form stay paired with them. */
-export function layoutView<K extends LayoutId>(layout: K): LayoutView<LayoutConfigs[K]> {
+export function layoutView<K extends LayoutId>(layout: K): LayoutView<LayoutOptions[K]> {
 	return LAYOUT_VIEWS[layout]
 }

@@ -1,5 +1,5 @@
 import { type AppConfig, defaultAppConfig } from './AppConfig'
-import { isLayoutId, type LayoutConfigs, type LayoutId, layoutSpec, mapLayouts } from '../layouts'
+import { isLayoutId, type LayoutOptions, type LayoutId, layoutSpec, mapLayouts } from '../layouts'
 import { parseOptions } from '../layouts/LayoutSpec'
 import { type StoredData, upgradeStorage } from './migrations'
 import { asObject } from '../core/validation'
@@ -14,17 +14,17 @@ export function toStoredConfig(config: AppConfig) {
  * Keeps only the valid fields of one layout's options, falling back to that layout's defaults,
  * then applies the layout's cross-field rules. Invalid fields are added to `ignored`.
  */
-function parseCurrentLayoutConfig<K extends LayoutId>(
+function parseCurrentLayoutOptions<K extends LayoutId>(
 	layout: K,
 	data: unknown,
 	ignored: string[] = [],
-): LayoutConfigs[K] {
+): LayoutOptions[K] {
 	return parseOptions(layoutSpec(layout), data, ignored)
 }
 
 /** One layout's options parsed from untrusted data, with the fields that were dropped. */
-export interface ParsedLayoutConfig<K extends LayoutId> {
-	config: LayoutConfigs[K]
+export interface ParsedLayoutOptions<K extends LayoutId> {
+	options: LayoutOptions[K]
 	/**
 	 * Fields that were present but invalid, and kept their defaults: `firstHour`,
 	 * `page.margins.top`. Fields the layout doesn't have are left out silently.
@@ -36,13 +36,13 @@ export interface ParsedLayoutConfig<K extends LayoutId> {
  * Keeps only the valid fields of untrusted flat data in the current file shape (an imported
  * file, after `upgradeFile`) for one layout.
  */
-export function parseLayoutConfig<K extends LayoutId>(
+export function parseLayoutOptions<K extends LayoutId>(
 	layout: K,
 	data: unknown,
-): ParsedLayoutConfig<K> {
+): ParsedLayoutOptions<K> {
 	const ignored: string[] = []
-	const config = parseCurrentLayoutConfig(layout, data, ignored)
-	return { config, ignored }
+	const options = parseCurrentLayoutOptions(layout, data, ignored)
+	return { options, ignored }
 }
 
 /** The layout named by flat data in the current file shape; `null` when it names none. */
@@ -63,6 +63,6 @@ export function parseConfig(data: unknown): AppConfig {
 
 	if (isLayoutId(stored.layout)) config.layout = stored.layout
 	const layouts = asObject(stored.layouts) ?? {}
-	config.layouts = mapLayouts((layout) => parseCurrentLayoutConfig(layout, layouts[layout]))
+	config.layouts = mapLayouts((layout) => parseCurrentLayoutOptions(layout, layouts[layout]))
 	return config
 }

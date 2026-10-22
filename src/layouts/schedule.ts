@@ -30,7 +30,9 @@ export const SCHEDULE_VALIDATORS: Validators<HourSchedule, keyof HourSchedule> =
 }
 
 /** The schedule runs from `firstHour` to `lastHour`: a reversed range is put in order. */
-export function orderHours<C extends HourSchedule>(config: C): C {
-	const { firstHour, lastHour } = config
-	return firstHour <= lastHour ? config : { ...config, firstHour: lastHour, lastHour: firstHour }
+export function orderHours<O extends HourSchedule>(options: O): O {
+	const { firstHour, lastHour } = options
+	return firstHour <= lastHour
+		? options
+		: { ...options, firstHour: lastHour, lastHour: firstHour }
 }

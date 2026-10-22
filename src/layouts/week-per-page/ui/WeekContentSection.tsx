@@ -12,7 +12,7 @@ import {
 	type StartPage,
 	WEEK_PAGE_LINES,
 	type WeekPageLines,
-	type WeekPerPageConfig,
+	type WeekPerPageOptions,
 } from '../options'
 import type { WeekdayFormat } from '../../../core/locale'
 import { ContentIcon } from '../../../ui/components/icons'
@@ -23,7 +23,7 @@ import { RadioField } from '../../../ui/fields/RadioField'
 import { WEEKDAY_FORMAT_OPTIONS } from '../../../ui/sidebar/fieldOptions'
 import { ScheduleFields } from '../../../ui/sidebar/ScheduleFields'
 import { defaultFields } from '../../../ui/sidebar/defaultFields'
-import { type ConfigSectionProps, Section } from '../../../ui/sidebar/Section'
+import { type OptionsSectionProps, Section } from '../../../ui/sidebar/Section'
 
 const HOURS_DESCRIPTION = 'Not drawn for the grayed days of the previous or next year.'
 
@@ -64,10 +64,10 @@ const WEEK_PAGE_LINES_OPTIONS = optionsFrom(WEEK_PAGE_LINES, {
  * and what fills its cell.
  */
 export function WeekContentSection({
-	config,
+	options,
 	defaults,
 	onUpdate,
-}: ConfigSectionProps<WeekPerPageConfig>) {
+}: OptionsSectionProps<WeekPerPageOptions>) {
 	function handleWeekdayFormatChange(weekdayFormat: WeekdayFormat) {
 		onUpdate({ weekdayFormat })
 	}
@@ -128,76 +128,76 @@ export function WeekContentSection({
 			<CheckboxField
 				label="Two pages per week"
 				description="The first three days go on the first page, under the title; the rest on the second, under the mini calendar if shown."
-				checked={config.twoPagesPerWeek}
+				checked={options.twoPagesPerWeek}
 				onChange={handleTwoPagesPerWeekChange}
 			/>
 			<RadioField
 				label="Start on"
 				description={START_PAGE_DESCRIPTION}
-				value={config.startPage}
+				value={options.startPage}
 				options={START_PAGE_OPTIONS}
 				onChange={handleStartPageChange}
 			/>
 			<RadioField
 				label="Days direction"
 				description={
-					config.weekDayDirection === 'auto'
+					options.weekDayDirection === 'auto'
 						? 'Columns on landscape paper or over two pages, rows on portrait.'
 						: undefined
 				}
-				value={config.weekDayDirection}
+				value={options.weekDayDirection}
 				options={WEEK_DAY_DIRECTION_OPTIONS}
 				onChange={handleWeekDayDirectionChange}
 			/>
 			<RadioField
 				label="Weekday names"
-				value={config.weekdayFormat}
+				value={options.weekdayFormat}
 				options={WEEKDAY_FORMAT_OPTIONS}
 				onChange={handleWeekdayFormatChange}
 			/>
 			<CheckboxField
 				label="Highlight weekends"
-				checked={config.highlightWeekendDays}
+				checked={options.highlightWeekendDays}
 				onChange={handleHighlightWeekendDaysChange}
 			/>
 			<RadioField
 				label="Weekend"
 				description={
-					config.weekendDisplay === 'hidden'
+					options.weekendDisplay === 'hidden'
 						? 'A week whose only days in this year are its weekend gets no page.'
 						: undefined
 				}
-				value={config.weekendDisplay}
+				value={options.weekendDisplay}
 				options={WEEKEND_DISPLAY_OPTIONS}
 				onChange={handleWeekendDisplayChange}
 			/>
 			<RadioField
 				label="Hours"
 				description={
-					config.weekPageLines !== 'hours'
+					options.weekPageLines !== 'hours'
 						? undefined
-						: config.weekendDisplay === 'reduced'
+						: options.weekendDisplay === 'reduced'
 							? HOURS_SHARED_WEEKEND_DESCRIPTION
 							: HOURS_DESCRIPTION
 				}
-				value={config.weekPageLines}
+				value={options.weekPageLines}
 				options={WEEK_PAGE_LINES_OPTIONS}
 				onChange={handleWeekPageLinesChange}
 			/>
-			{config.weekPageLines === 'hours' && (
-				<ScheduleFields config={config} onUpdate={onUpdate} />
+			{options.weekPageLines === 'hours' && (
+				<ScheduleFields options={options} onUpdate={onUpdate} />
 			)}
 			<CheckboxField
 				label="Footer"
 				description={FOOTER_DESCRIPTION}
-				checked={config.showFooter}
+				checked={options.showFooter}
 				onChange={handleShowFooterChange}
 			/>
-			{config.showFooter && (
+			{options.showFooter && (
 				<NumberField
 					label="Footer height (mm)"
 					description={`Whole mm, from ${MIN_FOOTER_HEIGHT} to ${MAX_FOOTER_HEIGHT}.`}
-					value={config.footerHeight}
+					value={options.footerHeight}
 					min={MIN_FOOTER_HEIGHT}
 					max={MAX_FOOTER_HEIGHT}
 					step={1}

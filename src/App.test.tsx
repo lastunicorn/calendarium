@@ -1,8 +1,8 @@
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import App from './App'
-import { defaultLayoutConfig } from './layouts'
-import { serializeLayoutConfig } from './config/configFile'
+import { defaultLayoutOptions } from './layouts'
+import { serializeLayoutOptions } from './config/configFile'
 
 /** Chooses `file` in the layout section's hidden file input, as the import button's dialog would. */
 function chooseImportFile(container: HTMLElement, file: File) {
@@ -25,8 +25,8 @@ describe('App import', () => {
 		const { container } = render(<App />)
 		expect(layoutSelect().value).toBe('year-per-page')
 
-		const options = { ...defaultLayoutConfig('month-per-page'), year: 2030 }
-		const text = serializeLayoutConfig('month-per-page', options)
+		const options = { ...defaultLayoutOptions('month-per-page'), year: 2030 }
+		const text = serializeLayoutOptions('month-per-page', options)
 		chooseImportFile(container, new File([text], 'month.json', { type: 'application/json' }))
 
 		await waitFor(() => expect(layoutSelect().value).toBe('month-per-page'))
@@ -55,8 +55,8 @@ describe('App import', () => {
 describe('App reset', () => {
 	it('restores the shown layout’s defaults after confirming, and keeps it shown', async () => {
 		const { container } = render(<App />)
-		const options = { ...defaultLayoutConfig('month-per-page'), year: 2030 }
-		const text = serializeLayoutConfig('month-per-page', options)
+		const options = { ...defaultLayoutOptions('month-per-page'), year: 2030 }
+		const text = serializeLayoutOptions('month-per-page', options)
 		chooseImportFile(container, new File([text], 'month.json', { type: 'application/json' }))
 		await waitFor(() => expect(layoutSelect().value).toBe('month-per-page'))
 
@@ -75,11 +75,11 @@ describe('App reset', () => {
 	it('restores only an open section’s defaults once its reset is confirmed', async () => {
 		const { container } = render(<App />)
 		const options = {
-			...defaultLayoutConfig('month-per-page'),
+			...defaultLayoutOptions('month-per-page'),
 			year: 2030,
 			events: '0000-12-25 Christmas',
 		}
-		const text = serializeLayoutConfig('month-per-page', options)
+		const text = serializeLayoutOptions('month-per-page', options)
 		chooseImportFile(container, new File([text], 'month.json', { type: 'application/json' }))
 		await waitFor(() => expect(layoutSelect().value).toBe('month-per-page'))
 

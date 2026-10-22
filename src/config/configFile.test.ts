@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { defaultLayoutConfig, LAYOUT_IDS } from '../layouts'
+import { defaultLayoutOptions, LAYOUT_IDS } from '../layouts'
 import { defaultAppConfig } from './AppConfig'
-import { exportLayoutFile, parseConfigFile, serializeLayoutConfig } from './configFile'
+import { exportLayoutFile, parseConfigFile, serializeLayoutOptions } from './configFile'
 import { FILE_FORMAT } from './migrations'
 import { APP_VERSION, CONFIG_VERSION } from './version'
 
@@ -11,18 +11,18 @@ function fileText(fields: Record<string, unknown>): string {
 }
 
 describe('config files', () => {
-	it('round-trips one layout through serializeLayoutConfig', () => {
-		const defaults = defaultLayoutConfig('day-per-page')
-		const config = {
+	it('round-trips one layout through serializeLayoutOptions', () => {
+		const defaults = defaultLayoutOptions('day-per-page')
+		const options = {
 			...defaults,
 			year: 2031,
 			firstHour: 5,
 			page: { ...defaults.page, paperSize: 'a3' as const },
 		}
-		const text = serializeLayoutConfig('day-per-page', config)
+		const text = serializeLayoutOptions('day-per-page', options)
 		expect(parseConfigFile(text, 'year-per-page')).toEqual({
 			layout: 'day-per-page',
-			config,
+			options,
 			ignored: [],
 			newer: false,
 		})
@@ -34,19 +34,19 @@ describe('config files', () => {
 		const file = exportLayoutFile(config)
 		expect(file.fileName).toBe('calendar-week-per-page-2031.json')
 		expect(file.text).toBe(
-			serializeLayoutConfig('week-per-page', config.layouts['week-per-page']),
+			serializeLayoutOptions('week-per-page', config.layouts['week-per-page']),
 		)
 	})
 
 	it('writes the format, the versions, the layout and only that layout’s options', () => {
-		const config = defaultLayoutConfig('month-per-page')
-		const data = JSON.parse(serializeLayoutConfig('month-per-page', config))
+		const options = defaultLayoutOptions('month-per-page')
+		const data = JSON.parse(serializeLayoutOptions('month-per-page', options))
 		expect(data).toEqual({
 			format: FILE_FORMAT,
 			version: CONFIG_VERSION,
 			app: APP_VERSION,
 			layout: 'month-per-page',
-			...config,
+			...options,
 		})
 		expect(data).not.toHaveProperty('subtitle')
 		expect(data).not.toHaveProperty('layouts')
@@ -66,7 +66,7 @@ describe('config files', () => {
 			fileText({ layout: 'month-per-page', subtitle: 'Office' }),
 			'year-per-page',
 		)
-		expect(imported?.config).not.toHaveProperty('subtitle')
+		expect(imported?.options).not.toHaveProperty('subtitle')
 	})
 
 	it('rejects files that are not a JSON object', () => {
@@ -95,8 +95,8 @@ describe('config files', () => {
 
 	it('accepts a file holding no options', () => {
 		const file = JSON.stringify({ format: FILE_FORMAT, version: CONFIG_VERSION })
-		expect(parseConfigFile(file, 'month-per-page')?.config).toEqual(
-			defaultLayoutConfig('month-per-page'),
+		expect(parseConfigFile(file, 'month-per-page')?.options).toEqual(
+			defaultLayoutOptions('month-per-page'),
 		)
 	})
 
@@ -110,8 +110,8 @@ describe('config files', () => {
 		})
 		const imported = parseConfigFile(file, 'year-per-page')
 		expect(imported?.newer).toBe(true)
-		expect(imported?.config.year).toBe(2031)
-		expect(imported?.config).not.toHaveProperty('futureOption')
+		expect(imported?.options.year).toBe(2031)
+		expect(imported?.options).not.toHaveProperty('futureOption')
 	})
 
 	it('reports a file made by a later app version of the same config version', () => {
@@ -132,7 +132,7 @@ describe('config files', () => {
 			})
 			expect(parseConfigFile(file, layout)).toEqual({
 				layout,
-				config: { ...defaultLayoutConfig(layout), year: 2030 },
+				options: { ...defaultLayoutOptions(layout), year: 2030 },
 				ignored: ['page.orientation'],
 				newer: false,
 			})

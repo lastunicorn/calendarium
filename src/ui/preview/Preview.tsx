@@ -1,5 +1,5 @@
 import type { AppConfig } from '../../config/AppConfig'
-import type { LayoutConfigs, LayoutId } from '../../layouts'
+import type { LayoutOptions, LayoutId } from '../../layouts'
 import { pageSizeCss } from '../../core/paper'
 import { layoutView } from '../layouts/registry'
 import styles from './Preview.module.css'
@@ -13,13 +13,13 @@ interface PreviewProps {
 
 interface ActiveLayoutProps<K extends LayoutId> {
 	layout: K
-	config: LayoutConfigs[K]
+	options: LayoutOptions[K]
 }
 
 /** Draws `layout` with its own options; generic so the component and its options stay paired. */
-function ActiveLayout<K extends LayoutId>({ layout, config }: ActiveLayoutProps<K>) {
+function ActiveLayout<K extends LayoutId>({ layout, options }: ActiveLayoutProps<K>) {
 	const Layout = layoutView(layout).Component
-	return <Layout config={config} />
+	return <Layout options={options} />
 }
 
 /** The scrollable area showing the chosen layout's pages, which is all that gets printed. */
@@ -30,8 +30,8 @@ export function Preview({ config, onResetLayout }: PreviewProps) {
 		<main className={styles.preview}>
 			{/* The printed paper size. Every page shares it, so one rule covers the document. */}
 			<style>{`@page { size: ${pageSizeCss(options.page.paperSize, options.page.orientation)}; }`}</style>
-			<PreviewErrorBoundary layout={layout} config={options} onReset={onResetLayout}>
-				<ActiveLayout layout={layout} config={options} />
+			<PreviewErrorBoundary layout={layout} options={options} onReset={onResetLayout}>
+				<ActiveLayout layout={layout} options={options} />
 			</PreviewErrorBoundary>
 		</main>
 	)

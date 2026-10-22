@@ -1,16 +1,16 @@
 import { render } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
-import { DAY_PER_PAGE_SPEC, type DayPerPageConfig } from '../options'
+import { DAY_PER_PAGE_SPEC, type DayPerPageOptions } from '../options'
 import { DayPerPageLayout } from './DayPerPageLayout'
 
-/** The default options for 2025, with `options` on top. */
-function configWith(options: Partial<DayPerPageConfig> = {}): DayPerPageConfig {
-	return { ...DAY_PER_PAGE_SPEC.defaults(), year: 2025, ...options }
+/** The default options for 2025, with `changes` on top. */
+function optionsWith(changes: Partial<DayPerPageOptions> = {}): DayPerPageOptions {
+	return { ...DAY_PER_PAGE_SPEC.defaults(), year: 2025, ...changes }
 }
 
 /** The sheets of paper the layout draws (each `Page` is a `<section>`). */
-function pagesOf(config: DayPerPageConfig) {
-	const { container } = render(<DayPerPageLayout config={config} />)
+function pagesOf(options: DayPerPageOptions) {
+	const { container } = render(<DayPerPageLayout options={options} />)
 	return container.querySelectorAll('section')
 }
 
@@ -18,12 +18,12 @@ function pagesOf(config: DayPerPageConfig) {
 // component draws the plan, and what only the markup shows.
 describe('DayPerPageLayout', () => {
 	it('draws a page per day', () => {
-		expect(pagesOf(configWith())).toHaveLength(365)
+		expect(pagesOf(optionsWith())).toHaveLength(365)
 	})
 
 	it('draws a day’s second page with the rest of its hours and no header', () => {
 		const pages = pagesOf(
-			configWith({
+			optionsWith({
 				twoPagesPerDay: true,
 				dayPageLines: 'hours',
 				hourFormat: '24h',

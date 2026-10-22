@@ -1,4 +1,4 @@
-import type { CommonConfig } from '../../layouts/common'
+import type { CommonOptions } from '../../layouts/common'
 import { isYear, MAX_YEAR, MIN_YEAR } from '../../core/calendar'
 import { type Locale, LOCALES, type WeekStartSetting } from '../../core/locale'
 import { CalendarIcon } from '../components/icons'
@@ -7,7 +7,7 @@ import { NumberField } from '../fields/NumberField'
 import { type Option, optionsFrom } from '../fields/options'
 import { SelectField } from '../fields/SelectField'
 import { defaultFields } from './defaultFields'
-import { type ConfigSectionProps, Section } from './Section'
+import { type OptionsSectionProps, Section } from './Section'
 
 /** Week start options in panel order: the language's own day, then Monday to Sunday. */
 const WEEK_START_OPTIONS: Option<WeekStartSetting>[] = [
@@ -106,7 +106,11 @@ const WEEK_START_DESCRIPTION = [
 ]
 
 /** Which year the calendar shows, in which language, and the day its weeks start on. */
-export function CalendarSection({ config, defaults, onUpdate }: ConfigSectionProps<CommonConfig>) {
+export function CalendarSection({
+	options,
+	defaults,
+	onUpdate,
+}: OptionsSectionProps<CommonOptions>) {
 	function handleYearChange(year: number) {
 		onUpdate({ year })
 	}
@@ -128,7 +132,7 @@ export function CalendarSection({ config, defaults, onUpdate }: ConfigSectionPro
 			<NumberField
 				label="Year"
 				description={YEAR_DESCRIPTION}
-				value={config.year}
+				value={options.year}
 				min={MIN_YEAR}
 				max={MAX_YEAR}
 				isValid={isYear}
@@ -137,14 +141,14 @@ export function CalendarSection({ config, defaults, onUpdate }: ConfigSectionPro
 			<ComboboxField
 				label="Language"
 				description={LOCALE_DESCRIPTION}
-				value={config.locale}
+				value={options.locale}
 				options={LOCALE_OPTIONS}
 				onChange={handleLocaleChange}
 			/>
 			<SelectField
 				label="Week starts on"
 				description={WEEK_START_DESCRIPTION}
-				value={config.weekStart}
+				value={options.weekStart}
 				options={WEEK_START_OPTIONS}
 				onChange={handleWeekStartChange}
 			/>

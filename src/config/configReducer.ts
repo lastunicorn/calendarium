@@ -1,25 +1,30 @@
 import type { AppConfig } from './AppConfig'
-import { defaultLayoutConfig, type LayoutConfigs, type LayoutId, normalizeLayout } from '../layouts'
+import {
+	defaultLayoutOptions,
+	type LayoutOptions,
+	type LayoutId,
+	normalizeLayout,
+} from '../layouts'
 
 /**
  * The commands that change the `AppConfig` aggregate, the only way it changes. The per-layout ones
- * have one variant per layout, so a patch or config has that layout's type.
+ * have one variant per layout, so a patch or the options have that layout's type.
  */
 export type ConfigAction =
 	/** Shows another layout; every layout's options stay as they were. */
 	| { type: 'selectLayout'; layout: LayoutId }
 	/** Changes some of one layout's options, keeping the rest. */
-	| { [K in LayoutId]: { type: 'update'; layout: K; patch: Partial<LayoutConfigs[K]> } }[LayoutId]
+	| { [K in LayoutId]: { type: 'update'; layout: K; patch: Partial<LayoutOptions[K]> } }[LayoutId]
 	/** Restores one layout's default options; the active layout stays as it was. */
 	| { type: 'resetLayout'; layout: LayoutId }
 	/** Swaps in one layout's options and shows that layout (an imported file). */
-	| { [K in LayoutId]: { type: 'importLayout'; layout: K; config: LayoutConfigs[K] } }[LayoutId]
+	| { [K in LayoutId]: { type: 'importLayout'; layout: K; options: LayoutOptions[K] } }[LayoutId]
 
 /** `config` with `layout`'s options replaced, after applying that layout's rules. */
 function withLayout<K extends LayoutId>(
 	config: AppConfig,
 	layout: K,
-	options: LayoutConfigs[K],
+	options: LayoutOptions[K],
 ): AppConfig {
 	return { ...config, layouts: { ...config.layouts, [layout]: normalizeLayout(layout, options) } }
 }
@@ -35,8 +40,8 @@ export function configReducer(config: AppConfig, action: ConfigAction): AppConfi
 				...action.patch,
 			})
 		case 'resetLayout':
-			return withLayout(config, action.layout, defaultLayoutConfig(action.layout))
+			return withLayout(config, action.layout, defaultLayoutOptions(action.layout))
 		case 'importLayout':
-			return { ...withLayout(config, action.layout, action.config), layout: action.layout }
+			return { ...withLayout(config, action.layout, action.options), layout: action.layout }
 	}
 }

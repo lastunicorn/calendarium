@@ -13,7 +13,7 @@ import type { HeadingAlign } from '../heading'
 import type { MiniMonthPlan } from '../monthGrid'
 import { splitWeekCells, stacksDays, type WeekCell, weekCells } from './cells'
 import { WEEK_PAGE_MESSAGES } from './messages'
-import type { WeekPerPageConfig } from './options'
+import type { WeekPerPageOptions } from './options'
 
 /** One day as a week page draws it: the results of the layout's rules, not their inputs. */
 export interface WeekPageDay {
@@ -92,7 +92,7 @@ export function headingAlign({
 	headingAlignment,
 	miniMonth,
 	twoPagesPerWeek,
-}: WeekPerPageConfig): HeadingAlign {
+}: WeekPerPageOptions): HeadingAlign {
 	if (headingAlignment !== 'auto') return headingAlignment
 	return miniMonth.show || twoPagesPerWeek ? 'left' : 'center'
 }
@@ -101,20 +101,20 @@ export function headingAlign({
  * The year's week pages: every week holding a day of the year, from the one with January 1 to the
  * one with December 31, except a week whose only days of the year are a hidden weekend.
  */
-export function planWeekPages(config: WeekPerPageConfig, model: CalendarModel): WeekPlan {
-	const { locale, miniMonth, twoPagesPerWeek } = config
+export function planWeekPages(options: WeekPerPageOptions, model: CalendarModel): WeekPlan {
+	const { locale, miniMonth, twoPagesPerWeek } = options
 	const { weekStart, months, monthNames } = model
-	const weekdays = weekdayNames(locale, weekStart, config.weekdayFormat)
+	const weekdays = weekdayNames(locale, weekStart, options.weekdayFormat)
 	const miniWeekdays = weekdayNames(locale, weekStart, miniMonth.weekdayFormat)
-	const withSchedule = config.weekPageLines === 'hours'
-	const stacked = stacksDays(config.weekDayDirection, config.page.orientation, twoPagesPerWeek)
+	const withSchedule = options.weekPageLines === 'hours'
+	const stacked = stacksDays(options.weekDayDirection, options.page.orientation, twoPagesPerWeek)
 
 	function planDay(day: WeekDay, firstOnSheet: boolean, shared: boolean): WeekPageDay {
 		return {
 			day,
 			weekday: weekdays[weekdayColumn(day.weekday, weekStart)],
 			monthName: firstOnSheet || day.day === 1 ? monthNames[day.month] : undefined,
-			highlighted: isHighlightedWeekDay(day, config.highlightWeekendDays),
+			highlighted: isHighlightedWeekDay(day, options.highlightWeekendDays),
 			events: day.inYear ? eventNames(model.events, day) : [],
 			schedule: withSchedule && !shared && day.inYear,
 		}
@@ -139,16 +139,16 @@ export function planWeekPages(config: WeekPerPageConfig, model: CalendarModel): 
 		return {
 			key: days[0].key,
 			heading: dateRangeName(locale, days[0], days.at(-1)!),
-			subheading: config.showHeaderWeek
+			subheading: options.showHeaderWeek
 				? WEEK_PAGE_MESSAGES[locale].week(weekNumber(days))
 				: '',
-			headingAlign: headingAlign(config),
-			headingFontSize: config.headingFontSize,
+			headingAlign: headingAlign(options),
+			headingFontSize: options.headingFontSize,
 			miniMonth: miniMonth.show
 				? {
 						month: months[month],
 						name: miniMonth.showYear
-							? monthYearName(locale, config.year, month)
+							? monthYearName(locale, options.year, month)
 							: monthNames[month],
 						weekdays: miniWeekdays,
 						highlightWeekends: miniMonth.highlightWeekends,
@@ -160,16 +160,16 @@ export function planWeekPages(config: WeekPerPageConfig, model: CalendarModel): 
 			sheets: twoPagesPerWeek
 				? [planSheet(firstCells, 'heading'), planSheet(secondCells, 'miniMonth')]
 				: [planSheet(cells, 'both')],
-			footerHeight: config.showFooter ? config.footerHeight : undefined,
+			footerHeight: options.showFooter ? options.footerHeight : undefined,
 		}
 	}
 
-	const weeks = weeksOfYear(config.year, weekStart)
-		.map((week) => weekCells(week, config.weekendDisplay))
+	const weeks = weeksOfYear(options.year, weekStart)
+		.map((week) => weekCells(week, options.weekendDisplay))
 		.filter((cells) => cells.some((cell) => cell.some((day) => day.inYear)))
 		.map(planWeek)
 	const hours = withSchedule
-		? hourNames(locale, config.firstHour, config.lastHour, config.hourFormat)
+		? hourNames(locale, options.firstHour, options.lastHour, options.hourFormat)
 		: undefined
-	return { blankFirstPage: config.startPage === 'even', hours, weeks }
+	return { blankFirstPage: options.startPage === 'even', hours, weeks }
 }

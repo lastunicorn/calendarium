@@ -12,7 +12,7 @@ The whole year on one sheet: the title, or else the year, above the 12 months as
 
 ## Options
 
-`YearPerPageConfig` (`options.ts`): `CommonConfig`, the month grid options (`MonthGridOptions`) for its 12 months, and its own:
+`YearPerPageOptions` (`options.ts`): `CommonOptions`, the month grid options (`MonthGridOptions`) for its 12 months, and its own:
 
 | Sidebar section | Fields                                                                                                                                                                   |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -30,7 +30,7 @@ It has no cross-field rules of its own (`normalize: normalizeCommon`) and no mig
 | File                                                | What it holds                                      |
 | --------------------------------------------------- | -------------------------------------------------- |
 | `index.ts`                                          | The entry point: `YEAR_PER_PAGE = defineLayout(…)` |
-| `options.ts`                                        | `YearPerPageConfig` and `YEAR_PER_PAGE_SPEC`       |
+| `options.ts`                                        | `YearPerPageOptions` and `YEAR_PER_PAGE_SPEC`      |
 | `pages.ts`                                          | `planYearPage`, `YearPage`, `EventListPage`        |
 | `messages.ts`                                       | `YEAR_PAGE_MESSAGES`                               |
 | `ui/index.ts`                                       | The UI's entry point: `YEAR_PER_PAGE_VIEW`         |

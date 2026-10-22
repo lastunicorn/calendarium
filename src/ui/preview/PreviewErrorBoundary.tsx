@@ -1,11 +1,11 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react'
-import type { LayoutConfig, LayoutId } from '../../layouts'
+import type { AnyLayoutOptions, LayoutId } from '../../layouts'
 import styles from './PreviewErrorBoundary.module.css'
 
 interface PreviewErrorBoundaryProps {
 	layout: LayoutId
 	/** The options being drawn; a new value (an edit, an import, a reset) tries drawing again. */
-	config: LayoutConfig
+	options: AnyLayoutOptions
 	/** Restores the layout's default options. */
 	onReset: (layout: LayoutId) => void
 	children: ReactNode
@@ -15,7 +15,7 @@ interface PreviewErrorBoundaryState {
 	error: Error | null
 	/** The options the error happened with; other options clear it. */
 	layout: LayoutId
-	config: LayoutConfig
+	options: AnyLayoutOptions
 }
 
 /**
@@ -29,7 +29,7 @@ export class PreviewErrorBoundary extends Component<
 	state: PreviewErrorBoundaryState = {
 		error: null,
 		layout: this.props.layout,
-		config: this.props.config,
+		options: this.props.options,
 	}
 
 	static getDerivedStateFromError(error: unknown): Partial<PreviewErrorBoundaryState> {
@@ -37,11 +37,11 @@ export class PreviewErrorBoundary extends Component<
 	}
 
 	static getDerivedStateFromProps(
-		{ layout, config }: PreviewErrorBoundaryProps,
+		{ layout, options }: PreviewErrorBoundaryProps,
 		state: PreviewErrorBoundaryState,
 	): Partial<PreviewErrorBoundaryState> | null {
-		if (layout === state.layout && config === state.config) return null
-		return { error: null, layout, config }
+		if (layout === state.layout && options === state.options) return null
+		return { error: null, layout, options }
 	}
 
 	componentDidCatch(error: unknown, info: ErrorInfo) {

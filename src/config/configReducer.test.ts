@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { configReducer } from './configReducer'
 import { defaultAppConfig } from './AppConfig'
-import { defaultLayoutConfig } from '../layouts'
+import { defaultLayoutOptions } from '../layouts'
 
 describe('configReducer', () => {
 	it('selectLayout changes only the active layout', () => {
@@ -72,17 +72,17 @@ describe('configReducer', () => {
 			patch: { title: 'Hi' },
 		})
 		const reset = configReducer(config, { type: 'resetLayout', layout: 'day-per-page' })
-		expect(reset.layouts['day-per-page']).toEqual(defaultLayoutConfig('day-per-page'))
+		expect(reset.layouts['day-per-page']).toEqual(defaultLayoutOptions('day-per-page'))
 		expect(reset.layouts['year-per-page']).toBe(config.layouts['year-per-page'])
 		expect(reset.layout).toBe('year-per-page')
 	})
 
 	it('importLayout swaps one layout’s options and shows that layout', () => {
-		const next = { ...defaultLayoutConfig('month-per-page'), year: 1999 }
+		const next = { ...defaultLayoutOptions('month-per-page'), year: 1999 }
 		const imported = configReducer(defaultAppConfig(), {
 			type: 'importLayout',
 			layout: 'month-per-page',
-			config: next,
+			options: next,
 		})
 		expect(imported.layout).toBe('month-per-page')
 		expect(imported.layouts['month-per-page']).toBe(next)

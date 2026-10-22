@@ -3,7 +3,7 @@ import type { AppConfig } from '../../config/AppConfig'
 import { LAYOUT_IDS, type LayoutId } from '../../layouts'
 import {
 	exportLayoutFile,
-	type ImportedLayoutConfig,
+	type ImportedLayoutOptions,
 	parseConfigFile,
 } from '../../config/configFile'
 import { IconButton } from '../components/IconButton'
@@ -26,14 +26,14 @@ interface LayoutSectionProps {
 	/** Restores one layout's default options. */
 	onReset: (layout: LayoutId) => void
 	/** Replaces one layout's options with an imported file's and shows that layout. */
-	onImport: (imported: ImportedLayoutConfig) => void
+	onImport: (imported: ImportedLayoutOptions) => void
 }
 
 /**
  * What to tell the user about an imported file made by a newer version, or with invalid fields;
  * empty when there is nothing to report.
  */
-function describeImport(fileName: string, { ignored, newer }: ImportedLayoutConfig): string {
+function describeImport(fileName: string, { ignored, newer }: ImportedLayoutOptions): string {
 	const notices = []
 	if (newer) {
 		notices.push(`Imported ${fileName}, made by a newer version; some settings may be ignored.`)

@@ -1,4 +1,4 @@
-import type { CommonConfig } from '../../layouts/common'
+import type { CommonOptions } from '../../layouts/common'
 import {
 	type Margins,
 	margins,
@@ -15,7 +15,7 @@ import { MarginsField } from '../fields/MarginsField'
 import { optionsFrom } from '../fields/options'
 import { RadioField } from '../fields/RadioField'
 import { SelectField } from '../fields/SelectField'
-import { type ConfigSectionProps, Section } from './Section'
+import { type OptionsSectionProps, Section } from './Section'
 
 const PAPER_SIZE_OPTIONS = optionsFrom(PAPER_SIZES, {
 	a3: 'A3',
@@ -40,8 +40,8 @@ const SPINE_DESCRIPTION = [
 ]
 
 /** The sheet of paper: size, orientation and margins, optionally mirrored around a spine on even pages. */
-export function PageSection({ config, defaults, onUpdate }: ConfigSectionProps<CommonConfig>) {
-	const { page } = config
+export function PageSection({ options, defaults, onUpdate }: OptionsSectionProps<CommonOptions>) {
+	const { page } = options
 
 	function handlePaperSizeChange(paperSize: PaperSize) {
 		onUpdate({ page: { ...page, paperSize } })

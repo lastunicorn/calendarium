@@ -1,4 +1,4 @@
-import type { YearPerPageConfig } from '../options'
+import type { YearPerPageOptions } from '../options'
 import { planYearPage } from '../pages'
 import { CalendarHeader } from '../../../ui/layouts/CalendarHeader'
 import { EventList } from './EventList'
@@ -8,16 +8,16 @@ import { usePagePlan } from '../../../ui/layouts/usePagePlan'
 import styles from './YearPerPageLayout.module.css'
 
 interface YearPerPageLayoutProps {
-	config: YearPerPageConfig
+	options: YearPerPageOptions
 }
 
 /**
  * The whole year on one page, as `planYearPage` plans it: the header above 12 small months, then
  * the year's events on a page of their own when it has any.
  */
-export function YearPerPageLayout({ config }: YearPerPageLayoutProps) {
-	const { heading, subheading, months, eventList } = usePagePlan(planYearPage, config)
-	const { page } = config
+export function YearPerPageLayout({ options }: YearPerPageLayoutProps) {
+	const { heading, subheading, months, eventList } = usePagePlan(planYearPage, options)
+	const { page } = options
 
 	return (
 		<>

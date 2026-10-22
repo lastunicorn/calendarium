@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { defaultLayoutConfig, LAYOUT_IDS, mapLayouts } from '../layouts'
+import { defaultLayoutOptions, LAYOUT_IDS, mapLayouts } from '../layouts'
 import { defaultAppConfig } from './AppConfig'
 import { parseConfig, toStoredConfig } from './parseConfig'
 import { CONFIG_VERSION } from './version'
@@ -43,7 +43,7 @@ describe('parseConfig', () => {
 		}
 		const config = {
 			layout: 'month-per-page',
-			layouts: mapLayouts((layout) => ({ ...defaultLayoutConfig(layout), ...common })),
+			layouts: mapLayouts((layout) => ({ ...defaultLayoutOptions(layout), ...common })),
 		}
 		expect(parseConfig({ version: CONFIG_VERSION, ...config })).toEqual(config)
 	})
@@ -74,7 +74,7 @@ describe('parseConfig', () => {
 		})
 		expect(config.layouts['month-per-page'].weekdayFormat).toBe('full')
 		expect(config.layouts['year-per-page'].weekdayFormat).toBe(
-			defaultLayoutConfig('year-per-page').weekdayFormat,
+			defaultLayoutOptions('year-per-page').weekdayFormat,
 		)
 	})
 
@@ -103,7 +103,7 @@ describe('parseConfig', () => {
 			version: CONFIG_VERSION,
 			layouts: { 'year-per-page': 'broken', 'day-per-page': { year: 2040 } },
 		})
-		expect(config.layouts['year-per-page']).toEqual(defaultLayoutConfig('year-per-page'))
+		expect(config.layouts['year-per-page']).toEqual(defaultLayoutOptions('year-per-page'))
 		expect(config.layouts['day-per-page'].year).toBe(2040)
 	})
 
@@ -113,7 +113,7 @@ describe('parseConfig', () => {
 			layouts: { 'month-per-page': { page: 'a4' } },
 		})
 		expect(config.layouts['month-per-page'].page).toEqual(
-			defaultLayoutConfig('month-per-page').page,
+			defaultLayoutOptions('month-per-page').page,
 		)
 	})
 
@@ -127,7 +127,7 @@ describe('parseConfig', () => {
 			},
 		})
 		expect(config.layouts['year-per-page'].page.margins).toEqual({
-			...defaultLayoutConfig('year-per-page').page.margins,
+			...defaultLayoutOptions('year-per-page').page.margins,
 			top: 20,
 		})
 	})

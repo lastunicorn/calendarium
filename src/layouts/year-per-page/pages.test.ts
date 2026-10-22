@@ -1,19 +1,19 @@
 import { describe, expect, it } from 'vitest'
 import { calendarModel } from '../common'
-import { defaultLayoutConfig } from '../index'
-import type { YearPerPageConfig } from './options'
+import { defaultLayoutOptions } from '../index'
+import type { YearPerPageOptions } from './options'
 import { planYearPage } from './pages'
 
 /** The plan of the default year layout for 2026, in British English with Monday weeks. */
-function plan(options: Partial<YearPerPageConfig> = {}) {
-	const config: YearPerPageConfig = {
-		...defaultLayoutConfig('year-per-page'),
+function plan(changes: Partial<YearPerPageOptions> = {}) {
+	const options: YearPerPageOptions = {
+		...defaultLayoutOptions('year-per-page'),
 		year: 2026,
 		locale: 'en-GB',
 		weekStart: 1,
-		...options,
+		...changes,
 	}
-	return planYearPage(config, calendarModel(config))
+	return planYearPage(options, calendarModel(options))
 }
 
 describe('planYearPage', () => {

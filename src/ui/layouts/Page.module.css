@@ -1,5 +1,5 @@
 /*
- * Width and height are set inline from the config; the margins come as `--margin-top`,
+ * Width and height are set inline from the page setup; the margins come as `--margin-top`,
  * `--margin-right`, `--margin-bottom` and `--margin-left`, so mirrored pages can swap them.
  */
 .page {

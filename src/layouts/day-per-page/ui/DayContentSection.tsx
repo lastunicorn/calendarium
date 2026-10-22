@@ -1,7 +1,7 @@
 import {
 	DAY_PAGE_LINES,
 	type DayPageLines,
-	type DayPerPageConfig,
+	type DayPerPageOptions,
 	MAX_RULED_LINE_SPACING,
 	MAX_SQUARE_SIZE,
 	MIN_RULED_LINE_SPACING,
@@ -16,7 +16,7 @@ import { optionsFrom } from '../../../ui/fields/options'
 import { RadioField } from '../../../ui/fields/RadioField'
 import { ScheduleFields } from '../../../ui/sidebar/ScheduleFields'
 import { defaultFields } from '../../../ui/sidebar/defaultFields'
-import { type ConfigSectionProps, Section } from '../../../ui/sidebar/Section'
+import { type OptionsSectionProps, Section } from '../../../ui/sidebar/Section'
 
 const DAY_PAGE_LINES_OPTIONS = optionsFrom(DAY_PAGE_LINES, {
 	hours: 'Hourly schedule',
@@ -37,10 +37,10 @@ const SQUARE_GRID_ALIGNMENT_OPTIONS = optionsFrom(SQUARE_GRID_ALIGNMENTS, {
  * squares or dots, their size and where they sit, or nothing, on one page or two.
  */
 export function DayContentSection({
-	config,
+	options,
 	defaults,
 	onUpdate,
-}: ConfigSectionProps<DayPerPageConfig>) {
+}: OptionsSectionProps<DayPerPageOptions>) {
 	function handleDayPageLinesChange(dayPageLines: DayPageLines) {
 		onUpdate({ dayPageLines })
 	}
@@ -81,35 +81,35 @@ export function DayContentSection({
 			<CheckboxField
 				label="Two pages per day"
 				description="The header goes on the first page only; an hourly schedule is split in half across the two."
-				checked={config.twoPagesPerDay}
+				checked={options.twoPagesPerDay}
 				onChange={handleTwoPagesPerDayChange}
 			/>
 			<RadioField
 				label="Fill"
-				value={config.dayPageLines}
+				value={options.dayPageLines}
 				options={DAY_PAGE_LINES_OPTIONS}
 				onChange={handleDayPageLinesChange}
 			/>
-			{config.dayPageLines === 'hours' && (
-				<ScheduleFields config={config} onUpdate={onUpdate} />
+			{options.dayPageLines === 'hours' && (
+				<ScheduleFields options={options} onUpdate={onUpdate} />
 			)}
-			{config.dayPageLines === 'ruled' && (
+			{options.dayPageLines === 'ruled' && (
 				<NumberField
 					label="Line spacing (mm)"
 					description={`From ${MIN_RULED_LINE_SPACING} to ${MAX_RULED_LINE_SPACING} mm.`}
-					value={config.ruledLineSpacing}
+					value={options.ruledLineSpacing}
 					min={MIN_RULED_LINE_SPACING}
 					max={MAX_RULED_LINE_SPACING}
 					step={0.5}
 					onChange={handleRuledLineSpacingChange}
 				/>
 			)}
-			{config.dayPageLines === 'squares' && (
+			{options.dayPageLines === 'squares' && (
 				<>
 					<NumberField
 						label="Square size (mm)"
 						description={`From ${MIN_SQUARE_SIZE} to ${MAX_SQUARE_SIZE} mm.`}
-						value={config.squareSize}
+						value={options.squareSize}
 						min={MIN_SQUARE_SIZE}
 						max={MAX_SQUARE_SIZE}
 						step={0.5}
@@ -118,18 +118,18 @@ export function DayContentSection({
 					<RadioField
 						label="Squares alignment"
 						description="Only whole squares are drawn; the space left goes on the other side, or on both."
-						value={config.squareGridAlignment}
+						value={options.squareGridAlignment}
 						options={SQUARE_GRID_ALIGNMENT_OPTIONS}
 						onChange={handleSquareGridAlignmentChange}
 					/>
 				</>
 			)}
-			{config.dayPageLines === 'dots' && (
+			{options.dayPageLines === 'dots' && (
 				<>
 					<NumberField
 						label="Dot spacing (mm)"
 						description={`From ${MIN_SQUARE_SIZE} to ${MAX_SQUARE_SIZE} mm.`}
-						value={config.squareSize}
+						value={options.squareSize}
 						min={MIN_SQUARE_SIZE}
 						max={MAX_SQUARE_SIZE}
 						step={0.5}
@@ -138,7 +138,7 @@ export function DayContentSection({
 					<RadioField
 						label="Dots alignment"
 						description="The dots mark the corners of whole squares only; the space left goes on the other side, or on both."
-						value={config.squareGridAlignment}
+						value={options.squareGridAlignment}
 						options={SQUARE_GRID_ALIGNMENT_OPTIONS}
 						onChange={handleSquareGridAlignmentChange}
 					/>

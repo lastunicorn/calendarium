@@ -1,8 +1,8 @@
-import type { CommonConfig } from '../../layouts/common'
+import type { CommonOptions } from '../../layouts/common'
 import { invalidEventLines } from '../../core/events'
 import { EventsIcon } from '../components/icons'
 import { TextAreaField } from '../fields/TextAreaField'
-import { type ConfigSectionProps, Section } from './Section'
+import { type OptionsSectionProps, Section } from './Section'
 
 const EVENTS_DESCRIPTION = [
 	'One event per line: its date as year-month-day, a space, then its name, e.g. 2026-04-05 Easter.',
@@ -21,7 +21,7 @@ function eventsError(events: string): string | undefined {
 }
 
 /** The calendar's events, one per line. */
-export function EventsSection({ config, defaults, onUpdate }: ConfigSectionProps<CommonConfig>) {
+export function EventsSection({ options, defaults, onUpdate }: OptionsSectionProps<CommonOptions>) {
 	function handleEventsChange(events: string) {
 		onUpdate({ events })
 	}
@@ -35,10 +35,10 @@ export function EventsSection({ config, defaults, onUpdate }: ConfigSectionProps
 			<TextAreaField
 				label="Events"
 				description={EVENTS_DESCRIPTION}
-				value={config.events}
+				value={options.events}
 				placeholder={EVENTS_PLACEHOLDER}
 				rows={10}
-				error={eventsError(config.events)}
+				error={eventsError(options.events)}
 				onChange={handleEventsChange}
 			/>
 		</Section>

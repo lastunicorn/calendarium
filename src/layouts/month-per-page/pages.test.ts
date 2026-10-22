@@ -1,19 +1,19 @@
 import { describe, expect, it } from 'vitest'
 import { calendarModel } from '../common'
-import { defaultLayoutConfig } from '../index'
-import type { MonthPerPageConfig } from './options'
+import { defaultLayoutOptions } from '../index'
+import type { MonthPerPageOptions } from './options'
 import { planMonthPages } from './pages'
 
 /** The plan of the default month layout for `year`, in British English with Monday weeks. */
-function plan(year: number, options: Partial<MonthPerPageConfig> = {}) {
-	const config: MonthPerPageConfig = {
-		...defaultLayoutConfig('month-per-page'),
+function plan(year: number, changes: Partial<MonthPerPageOptions> = {}) {
+	const options: MonthPerPageOptions = {
+		...defaultLayoutOptions('month-per-page'),
 		year,
 		locale: 'en-GB',
 		weekStart: 1,
-		...options,
+		...changes,
 	}
-	return planMonthPages(config, calendarModel(config))
+	return planMonthPages(options, calendarModel(options))
 }
 
 describe('planMonthPages', () => {
@@ -128,7 +128,7 @@ describe('planMonthPages', () => {
 	})
 
 	it('leaves out the previous or the next month when hidden', () => {
-		const shown = defaultLayoutConfig('month-per-page').adjacentMonths
+		const shown = defaultLayoutOptions('month-per-page').adjacentMonths
 		const noPrevious = plan(2026, { adjacentMonths: { ...shown, showPreviousMonth: false } })[3]
 		expect(noPrevious.previousMonth).toBeUndefined()
 		expect(noPrevious.nextMonth).toMatchObject({ name: 'May 2026' })
@@ -138,7 +138,7 @@ describe('planMonthPages', () => {
 	})
 
 	it('names the adjacent months without their year when asked', () => {
-		const shown = defaultLayoutConfig('month-per-page').adjacentMonths
+		const shown = defaultLayoutOptions('month-per-page').adjacentMonths
 		const page = plan(2026, { adjacentMonths: { ...shown, showYear: false } })[0]
 		expect(page.previousMonth).toMatchObject({ name: 'December' })
 		expect(page.nextMonth).toMatchObject({ name: 'February' })

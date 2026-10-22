@@ -3,10 +3,10 @@ import type { MonthGridOptions } from '../../monthGrid'
 import { ContentIcon } from '../../../ui/components/icons'
 import { defaultFields } from '../../../ui/sidebar/defaultFields'
 import { MonthGridFields } from '../../../ui/sidebar/MonthGridFields'
-import { type ConfigSectionProps, Section } from '../../../ui/sidebar/Section'
+import { type OptionsSectionProps, Section } from '../../../ui/sidebar/Section'
 
 type YearContentSectionProps = ComponentProps<typeof MonthGridFields> &
-	ConfigSectionProps<MonthGridOptions>
+	OptionsSectionProps<MonthGridOptions>
 
 /** How the year page's month grids look. */
 export function YearContentSection({ defaults, ...props }: YearContentSectionProps) {

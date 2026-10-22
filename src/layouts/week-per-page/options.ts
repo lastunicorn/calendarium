@@ -1,7 +1,7 @@
 import { WEEKDAY_FORMATS, type WeekdayFormat } from '../../core/locale'
 import { margins } from '../../core/paper'
 import { isBoolean, oneOf } from '../../core/validation'
-import { COMMON_VALIDATORS, type CommonConfig, commonDefaults, normalizeCommon } from '../common'
+import { COMMON_VALIDATORS, type CommonOptions, commonDefaults, normalizeCommon } from '../common'
 import { HEADING_ALIGNMENTS, type HeadingAlignment, isHeadingFontSize } from '../heading'
 import type { LayoutSpec } from '../LayoutSpec'
 import { WEEK_PER_PAGE_MIGRATIONS } from './migrations'
@@ -38,7 +38,7 @@ export function isFooterHeight(value: unknown): value is number {
 	)
 }
 
-export interface WeekPerPageConfig extends CommonConfig, HourSchedule {
+export interface WeekPerPageOptions extends CommonOptions, HourSchedule {
 	/** How the weekday name in each day's cell is written: in full or abbreviated. */
 	weekdayFormat: WeekdayFormat
 	/** Whether the weekend days of the year get the weekend color; other years' days stay gray. */
@@ -77,7 +77,7 @@ export interface WeekPerPageConfig extends CommonConfig, HourSchedule {
 	miniMonth: MiniMonthOptions
 }
 
-export const WEEK_PER_PAGE_SPEC: LayoutSpec<WeekPerPageConfig> = {
+export const WEEK_PER_PAGE_SPEC: LayoutSpec<WeekPerPageOptions> = {
 	// Columns side by side fit landscape, with room for three-letter weekdays. The weekend
 	// shares a cell, leaving the weekdays room for an hourly schedule.
 	defaults: () => {
@@ -118,6 +118,6 @@ export const WEEK_PER_PAGE_SPEC: LayoutSpec<WeekPerPageConfig> = {
 		...SCHEDULE_VALIDATORS,
 		miniMonth: MINI_MONTH_VALIDATORS,
 	},
-	normalize: (config) => orderHours(normalizeCommon(config)),
+	normalize: (options) => orderHours(normalizeCommon(options)),
 	migrations: WEEK_PER_PAGE_MIGRATIONS,
 }

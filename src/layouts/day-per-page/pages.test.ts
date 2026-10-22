@@ -1,19 +1,19 @@
 import { describe, expect, it } from 'vitest'
 import { calendarModel } from '../common'
-import { defaultLayoutConfig } from '../index'
-import type { DayPerPageConfig } from './options'
+import { defaultLayoutOptions } from '../index'
+import type { DayPerPageOptions } from './options'
 import { type DayPages, planDayPages } from './pages'
 
-/** The plan of the default day layout for `year`, in British English with Monday weeks, changed by `options`. */
-function plan(year: number, options: Partial<DayPerPageConfig> = {}): DayPages[] {
-	const config: DayPerPageConfig = {
-		...defaultLayoutConfig('day-per-page'),
+/** The plan of the default day layout for `year`, in British English with Monday weeks, changed by `changes`. */
+function plan(year: number, changes: Partial<DayPerPageOptions> = {}): DayPages[] {
+	const options: DayPerPageOptions = {
+		...defaultLayoutOptions('day-per-page'),
 		year,
 		locale: 'en-GB',
 		weekStart: 1,
-		...options,
+		...changes,
 	}
-	return planDayPages(config, calendarModel(config))
+	return planDayPages(options, calendarModel(options))
 }
 
 /** The day keyed `key`. */
@@ -67,11 +67,11 @@ describe('planDayPages', () => {
 		const shown = day(plan(2026), '2026-03-17')
 		expect(shown.miniMonth).toMatchObject({ name: 'March', markedDay: 17 })
 		expect(shown.miniMonth!.month.month).toBe(2)
-		const withYear = { ...defaultLayoutConfig('day-per-page').miniMonth, showYear: true }
+		const withYear = { ...defaultLayoutOptions('day-per-page').miniMonth, showYear: true }
 		expect(day(plan(2026, { miniMonth: withYear }), '2026-03-17').miniMonth).toMatchObject({
 			name: 'March 2026',
 		})
-		const hidden = { ...defaultLayoutConfig('day-per-page').miniMonth, show: false }
+		const hidden = { ...defaultLayoutOptions('day-per-page').miniMonth, show: false }
 		expect(day(plan(2026, { miniMonth: hidden }), '2026-03-17').miniMonth).toBeUndefined()
 	})
 
@@ -104,7 +104,7 @@ describe('planDayPages', () => {
 			expect(plan(2026, { dayPageLines: 'ruled' })[0].fills).toEqual([
 				{ kind: 'ruled', lines: 35, spacing: 8 },
 			])
-			const a5 = { ...defaultLayoutConfig('day-per-page').page }
+			const a5 = { ...defaultLayoutOptions('day-per-page').page }
 			Object.assign(a5, { paperSize: 'a5', orientation: 'landscape' })
 			const fills = plan(2026, { dayPageLines: 'ruled', twoPagesPerDay: true, page: a5 })[0]
 				.fills

@@ -1,13 +1,13 @@
 import { useEffect, useReducer, useRef } from 'react'
-import type { LayoutConfigs, LayoutId } from '../layouts'
-import type { ImportedLayoutConfig } from '../config/configFile'
+import type { LayoutOptions, LayoutId } from '../layouts'
+import type { ImportedLayoutOptions } from '../config/configFile'
 import { type ConfigAction, configReducer } from '../config/configReducer'
 import { loadConfig, saveConfig } from '../config/storage'
 
 /** Changes some of one layout's options. */
-export type UpdateLayoutConfig = <K extends LayoutId>(
+export type UpdateLayoutOptions = <K extends LayoutId>(
 	layout: K,
-	patch: Partial<LayoutConfigs[K]>,
+	patch: Partial<LayoutOptions[K]>,
 ) => void
 
 /** The app's single config state: loaded from and saved to `localStorage`. */
@@ -28,7 +28,7 @@ export function useCalendarConfig() {
 	}
 
 	// The casts pair `layout` with its options, which TypeScript can't follow through a generic.
-	const update: UpdateLayoutConfig = (layout, patch) => {
+	const update: UpdateLayoutOptions = (layout, patch) => {
 		dispatch({ type: 'update', layout, patch } as ConfigAction)
 	}
 
@@ -36,8 +36,8 @@ export function useCalendarConfig() {
 		dispatch({ type: 'resetLayout', layout })
 	}
 
-	function importLayout({ layout, config }: ImportedLayoutConfig) {
-		dispatch({ type: 'importLayout', layout, config } as ConfigAction)
+	function importLayout({ layout, options }: ImportedLayoutOptions) {
+		dispatch({ type: 'importLayout', layout, options } as ConfigAction)
 	}
 
 	return { config, selectLayout, update, resetLayout, importLayout }

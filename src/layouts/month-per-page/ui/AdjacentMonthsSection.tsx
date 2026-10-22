@@ -2,14 +2,14 @@ import type { AdjacentMonthsOptions } from '../options'
 import { CalendarIcon } from '../../../ui/components/icons'
 import { CheckboxField } from '../../../ui/fields/CheckboxField'
 import { MonthGridFields } from '../../../ui/sidebar/MonthGridFields'
-import { type ConfigSectionProps, Section } from '../../../ui/sidebar/Section'
+import { type OptionsSectionProps, Section } from '../../../ui/sidebar/Section'
 
 /** Whether the previous and the next month are drawn small beside the heading, and how they look. */
 export function AdjacentMonthsSection({
-	config,
+	options,
 	defaults,
 	onUpdate,
-}: ConfigSectionProps<AdjacentMonthsOptions>) {
+}: OptionsSectionProps<AdjacentMonthsOptions>) {
 	function handleShowPreviousMonthChange(showPreviousMonth: boolean) {
 		onUpdate({ showPreviousMonth })
 	}
@@ -30,23 +30,23 @@ export function AdjacentMonthsSection({
 		<Section title="Mini calendar" icon={<CalendarIcon />} onReset={handleReset}>
 			<CheckboxField
 				label="Show previous month"
-				checked={config.showPreviousMonth}
+				checked={options.showPreviousMonth}
 				onChange={handleShowPreviousMonthChange}
 			/>
 			<CheckboxField
 				label="Show next month"
-				checked={config.showNextMonth}
+				checked={options.showNextMonth}
 				onChange={handleShowNextMonthChange}
 			/>
-			{(config.showPreviousMonth || config.showNextMonth) && (
+			{(options.showPreviousMonth || options.showNextMonth) && (
 				<>
 					<CheckboxField
 						label="Show year in title"
-						checked={config.showYear}
+						checked={options.showYear}
 						onChange={handleShowYearChange}
 						description="Name the year after the month, or the month alone"
 					/>
-					<MonthGridFields config={config} onUpdate={onUpdate} />
+					<MonthGridFields options={options} onUpdate={onUpdate} />
 				</>
 			)}
 		</Section>

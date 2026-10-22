@@ -1,19 +1,19 @@
 import { describe, expect, it } from 'vitest'
 import { calendarModel } from '../common'
-import { defaultLayoutConfig } from '../index'
-import type { WeekPerPageConfig } from './options'
+import { defaultLayoutOptions } from '../index'
+import type { WeekPerPageOptions } from './options'
 import { planWeekPages, type WeekPageDay, type WeekPages } from './pages'
 
-/** The plan of the default week layout for `year`, in British English with Monday weeks, changed by `options`. */
-function plan(year: number, options: Partial<WeekPerPageConfig> = {}) {
-	const config: WeekPerPageConfig = {
-		...defaultLayoutConfig('week-per-page'),
+/** The plan of the default week layout for `year`, in British English with Monday weeks, changed by `changes`. */
+function plan(year: number, changes: Partial<WeekPerPageOptions> = {}) {
+	const options: WeekPerPageOptions = {
+		...defaultLayoutOptions('week-per-page'),
 		year,
 		locale: 'en-GB',
 		weekStart: 1,
-		...options,
+		...changes,
 	}
-	return planWeekPages(config, calendarModel(config))
+	return planWeekPages(options, calendarModel(options))
 }
 
 /** The week starting on the day keyed `key`. */
@@ -68,9 +68,9 @@ describe('planWeekPages', () => {
 	})
 
 	it('sets the heading left beside the mini month or over two pages, unless told where', () => {
-		const align = (options: Partial<WeekPerPageConfig>) =>
+		const align = (options: Partial<WeekPerPageOptions>) =>
 			week(plan(2026, options).weeks, '2026-10-19').headingAlign
-		const miniMonth = { ...defaultLayoutConfig('week-per-page').miniMonth, show: false }
+		const miniMonth = { ...defaultLayoutOptions('week-per-page').miniMonth, show: false }
 		expect(align({ miniMonth })).toBe('center')
 		expect(align({})).toBe('left')
 		expect(align({ twoPagesPerWeek: true, miniMonth })).toBe('left')
@@ -110,7 +110,7 @@ describe('planWeekPages', () => {
 
 	it('names the month where it changes and on each sheet’s first day', () => {
 		// January 26 – February 1, 2026.
-		const monthNames = (options: Partial<WeekPerPageConfig>) =>
+		const monthNames = (options: Partial<WeekPerPageOptions>) =>
 			week(plan(2026, { weekendDisplay: 'full', ...options }).weeks, '2026-01-26').sheets.map(
 				(sheet) => sheet.cells.flat().map((day) => day.monthName ?? ''),
 			)
@@ -139,7 +139,7 @@ describe('planWeekPages', () => {
 	})
 
 	it('gives a schedule to each day of the year in a cell of its own', () => {
-		const scheduled = (options: Partial<WeekPerPageConfig>) =>
+		const scheduled = (options: Partial<WeekPerPageOptions>) =>
 			plan(2025, { weekPageLines: 'hours', ...options })
 				.weeks.flatMap(days)
 				.filter((day) => day.schedule).length
@@ -188,17 +188,17 @@ describe('planWeekPages', () => {
 			markedWeek: '2024-12-30',
 		})
 		expect(shown.weeks[0].miniMonth!.month.month).toBe(0)
-		const withYear = { ...defaultLayoutConfig('week-per-page').miniMonth, showYear: true }
+		const withYear = { ...defaultLayoutOptions('week-per-page').miniMonth, showYear: true }
 		expect(plan(2025, { miniMonth: withYear }).weeks[0].miniMonth).toMatchObject({
 			name: 'January 2025',
 		})
-		const hidden = { ...defaultLayoutConfig('week-per-page').miniMonth, show: false }
+		const hidden = { ...defaultLayoutOptions('week-per-page').miniMonth, show: false }
 		expect(plan(2025, { miniMonth: hidden }).weeks[0].miniMonth).toBeUndefined()
 	})
 
 	it('stacks the days in portrait unless the week takes two sheets', () => {
 		const portrait = {
-			...defaultLayoutConfig('week-per-page').page,
+			...defaultLayoutOptions('week-per-page').page,
 			orientation: 'portrait' as const,
 		}
 		expect(plan(2026, { page: portrait }).weeks[0].stacked).toBe(true)

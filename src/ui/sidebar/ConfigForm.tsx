@@ -1,9 +1,9 @@
 import type { AppConfig } from '../../config/AppConfig'
-import type { ImportedLayoutConfig } from '../../config/configFile'
+import type { ImportedLayoutOptions } from '../../config/configFile'
 import { useMemo } from 'react'
-import { defaultLayoutConfig, type LayoutConfigs, type LayoutId } from '../../layouts'
+import { defaultLayoutOptions, type LayoutOptions, type LayoutId } from '../../layouts'
 import { layoutView } from '../layouts/registry'
-import type { UpdateLayoutConfig } from '../useCalendarConfig'
+import type { UpdateLayoutOptions } from '../useCalendarConfig'
 import styles from './ConfigForm.module.css'
 import { LayoutSection } from './LayoutSection'
 import { OpenSectionsContext, useOpenSections } from './useOpenSections'
@@ -11,31 +11,31 @@ import { OpenSectionsContext, useOpenSections } from './useOpenSections'
 interface ConfigFormProps {
 	config: AppConfig
 	onSelectLayout: (layout: LayoutId) => void
-	onUpdate: UpdateLayoutConfig
+	onUpdate: UpdateLayoutOptions
 	onResetLayout: (layout: LayoutId) => void
-	onImportLayout: (imported: ImportedLayoutConfig) => void
+	onImportLayout: (imported: ImportedLayoutOptions) => void
 }
 
 interface LayoutFormProps<K extends LayoutId> {
 	layout: K
-	config: LayoutConfigs[K]
-	onUpdate: UpdateLayoutConfig
+	options: LayoutOptions[K]
+	onUpdate: UpdateLayoutOptions
 }
 
 /**
  * The form of `layout`'s options, with their defaults for its sections' resets; generic so the form
  * and its options stay paired.
  */
-function LayoutForm<K extends LayoutId>({ layout, config, onUpdate }: LayoutFormProps<K>) {
+function LayoutForm<K extends LayoutId>({ layout, options, onUpdate }: LayoutFormProps<K>) {
 	const Form = layoutView(layout).Form
 	// Fresh defaults hold today's year; computed once per layout, so they don't change while shown.
-	const defaults = useMemo(() => defaultLayoutConfig(layout), [layout])
+	const defaults = useMemo(() => defaultLayoutOptions(layout), [layout])
 
-	function handleUpdate(patch: Partial<LayoutConfigs[K]>) {
+	function handleUpdate(patch: Partial<LayoutOptions[K]>) {
 		onUpdate(layout, patch)
 	}
 
-	return <Form config={config} defaults={defaults} onUpdate={handleUpdate} />
+	return <Form options={options} defaults={defaults} onUpdate={handleUpdate} />
 }
 
 /**
@@ -64,7 +64,7 @@ export function ConfigForm({
 				<LayoutForm
 					key={layout}
 					layout={layout}
-					config={config.layouts[layout]}
+					options={config.layouts[layout]}
 					onUpdate={onUpdate}
 				/>
 			</div>

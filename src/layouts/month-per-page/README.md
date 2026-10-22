@@ -12,7 +12,7 @@ One sheet per month, 12 in all: a heading between the previous and the next mont
 
 ## Options
 
-`MonthPerPageConfig` (`options.ts`): `CommonConfig`, the month grid options (`MonthGridOptions`) for its grid, and its own:
+`MonthPerPageOptions` (`options.ts`): `CommonOptions`, the month grid options (`MonthGridOptions`) for its grid, and its own:
 
 | Sidebar section | Fields                                                                                                                                                                                                                                                                                           |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -24,16 +24,16 @@ The adjacent months keep to abbreviated weekday names, as every small month grid
 
 ## Files
 
-| File                                                                                 | What it holds                                                              |
-| ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------- |
-| `index.ts`                                                                           | The entry point: `MONTH_PER_PAGE = defineLayout(…)`                        |
-| `options.ts`                                                                         | `MonthPerPageConfig`, its value sets and bounds, and `MONTH_PER_PAGE_SPEC` |
-| `pages.ts`                                                                           | `planMonthPages`, `MonthGridPlan`                                          |
-| `ui/index.ts`                                                                        | The UI's entry point: `MONTH_PER_PAGE_VIEW`                                |
-| `ui/MonthPerPageLayout.tsx`                                                          | Draws the plan                                                             |
-| `ui/MonthGrid.tsx`                                                                   | The large month grid                                                       |
-| `ui/MonthPerPageForm.tsx`                                                            | The options form, combining the sections                                   |
-| `ui/HeaderSection.tsx`, `ui/AdjacentMonthsSection.tsx`, `ui/MonthContentSection.tsx` | The layout's own sections                                                  |
+| File                                                                                 | What it holds                                                               |
+| ------------------------------------------------------------------------------------ | --------------------------------------------------------------------------- |
+| `index.ts`                                                                           | The entry point: `MONTH_PER_PAGE = defineLayout(…)`                         |
+| `options.ts`                                                                         | `MonthPerPageOptions`, its value sets and bounds, and `MONTH_PER_PAGE_SPEC` |
+| `pages.ts`                                                                           | `planMonthPages`, `MonthGridPlan`                                           |
+| `ui/index.ts`                                                                        | The UI's entry point: `MONTH_PER_PAGE_VIEW`                                 |
+| `ui/MonthPerPageLayout.tsx`                                                          | Draws the plan                                                              |
+| `ui/MonthGrid.tsx`                                                                   | The large month grid                                                        |
+| `ui/MonthPerPageForm.tsx`                                                            | The options form, combining the sections                                    |
+| `ui/HeaderSection.tsx`, `ui/AdjacentMonthsSection.tsx`, `ui/MonthContentSection.tsx` | The layout's own sections                                                   |
 
 ## Domain language
 

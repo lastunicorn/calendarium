@@ -8,7 +8,7 @@ import type { MiniMonthPlan } from '../monthGrid'
 import type {
 	DayNumberHorizontalAlignment,
 	DayNumberVerticalAlignment,
-	MonthPerPageConfig,
+	MonthPerPageOptions,
 } from './options'
 
 /** A day's cell in a month grid. */
@@ -60,11 +60,11 @@ export interface MonthPage {
  * Twelve pages, one per month, headed by the title, if any, above the month and year, between the
  * previous and the next month drawn small, each when `adjacentMonths` shows it.
  */
-export function planMonthPages(config: MonthPerPageConfig, model: CalendarModel): MonthPage[] {
-	const { locale, year, adjacentMonths } = config
-	const weekdays = weekdayNames(locale, model.weekStart, config.weekdayFormat)
+export function planMonthPages(options: MonthPerPageOptions, model: CalendarModel): MonthPage[] {
+	const { locale, year, adjacentMonths } = options
+	const weekdays = weekdayNames(locale, model.weekStart, options.weekdayFormat)
 	const miniWeekdays = weekdayNames(locale, model.weekStart, adjacentMonths.weekdayFormat)
-	const title = config.title.trim()
+	const title = options.title.trim()
 
 	/** The month `offset` (±1) months from `month` of the year, named with its year per `showYear`. */
 	function planMiniMonth(month: number, offset: number): MiniMonthPlan {
@@ -87,7 +87,7 @@ export function planMonthPages(config: MonthPerPageConfig, model: CalendarModel)
 			key: month.month,
 			heading: title || monthYear,
 			subheading: title ? monthYear : '',
-			headingAlign: config.monthHeadingAlignment,
+			headingAlign: options.monthHeadingAlignment,
 			grid: {
 				weeks: visibleWeeks(month).map((week) =>
 					week.map((day) => ({
@@ -96,14 +96,14 @@ export function planMonthPages(config: MonthPerPageConfig, model: CalendarModel)
 					})),
 				),
 				weekdays,
-				highlightWeekends: config.highlightWeekends,
-				showWeekNumbers: config.showWeekNumbers,
-				showAdjacentMonthDays: config.showAdjacentMonthDays,
-				showGridLines: config.showGridLines,
-				weekdayFontSize: config.weekdayFontSize,
-				dayNumberFontSize: config.dayNumberFontSize,
-				dayNumberHorizontalAlignment: config.dayNumberHorizontalAlignment,
-				dayNumberVerticalAlignment: config.dayNumberVerticalAlignment,
+				highlightWeekends: options.highlightWeekends,
+				showWeekNumbers: options.showWeekNumbers,
+				showAdjacentMonthDays: options.showAdjacentMonthDays,
+				showGridLines: options.showGridLines,
+				weekdayFontSize: options.weekdayFontSize,
+				dayNumberFontSize: options.dayNumberFontSize,
+				dayNumberHorizontalAlignment: options.dayNumberHorizontalAlignment,
+				dayNumberVerticalAlignment: options.dayNumberVerticalAlignment,
 			},
 			previousMonth: adjacentMonths.showPreviousMonth
 				? planMiniMonth(month.month, -1)

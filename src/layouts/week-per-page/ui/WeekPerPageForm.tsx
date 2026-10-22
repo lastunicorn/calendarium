@@ -1,10 +1,10 @@
 import type { MiniMonthOptions } from '../../monthGrid'
-import type { WeekPerPageConfig } from '../options'
+import type { WeekPerPageOptions } from '../options'
 import { CalendarSection } from '../../../ui/sidebar/CalendarSection'
 import { EventsSection } from '../../../ui/sidebar/EventsSection'
 import { MiniMonthSection } from '../../../ui/sidebar/MiniMonthSection'
 import { PageSection } from '../../../ui/sidebar/PageSection'
-import type { ConfigSectionProps } from '../../../ui/sidebar/Section'
+import type { OptionsSectionProps } from '../../../ui/sidebar/Section'
 import { HeaderSection } from './HeaderSection'
 import { WeekContentSection } from './WeekContentSection'
 
@@ -13,26 +13,26 @@ import { WeekContentSection } from './WeekContentSection'
  * and its mini calendar.
  */
 export function WeekPerPageForm({
-	config,
+	options,
 	defaults,
 	onUpdate,
-}: ConfigSectionProps<WeekPerPageConfig>) {
+}: OptionsSectionProps<WeekPerPageOptions>) {
 	function handleMiniMonthUpdate(patch: Partial<MiniMonthOptions>) {
-		onUpdate({ miniMonth: { ...config.miniMonth, ...patch } })
+		onUpdate({ miniMonth: { ...options.miniMonth, ...patch } })
 	}
 
 	return (
 		<>
-			<CalendarSection config={config} defaults={defaults} onUpdate={onUpdate} />
-			<EventsSection config={config} defaults={defaults} onUpdate={onUpdate} />
-			<HeaderSection config={config} defaults={defaults} onUpdate={onUpdate} />
+			<CalendarSection options={options} defaults={defaults} onUpdate={onUpdate} />
+			<EventsSection options={options} defaults={defaults} onUpdate={onUpdate} />
+			<HeaderSection options={options} defaults={defaults} onUpdate={onUpdate} />
 			<MiniMonthSection
-				config={config.miniMonth}
+				options={options.miniMonth}
 				defaults={defaults.miniMonth}
 				onUpdate={handleMiniMonthUpdate}
 			/>
-			<WeekContentSection config={config} defaults={defaults} onUpdate={onUpdate} />
-			<PageSection config={config} defaults={defaults} onUpdate={onUpdate} />
+			<WeekContentSection options={options} defaults={defaults} onUpdate={onUpdate} />
+			<PageSection options={options} defaults={defaults} onUpdate={onUpdate} />
 		</>
 	)
 }

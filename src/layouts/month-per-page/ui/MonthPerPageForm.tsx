@@ -1,34 +1,34 @@
-import type { AdjacentMonthsOptions, MonthPerPageConfig } from '../options'
+import type { AdjacentMonthsOptions, MonthPerPageOptions } from '../options'
 import { CalendarSection } from '../../../ui/sidebar/CalendarSection'
 import { EventsSection } from '../../../ui/sidebar/EventsSection'
 import { PageSection } from '../../../ui/sidebar/PageSection'
-import type { ConfigSectionProps } from '../../../ui/sidebar/Section'
+import type { OptionsSectionProps } from '../../../ui/sidebar/Section'
 import { AdjacentMonthsSection } from './AdjacentMonthsSection'
 import { HeaderSection } from './HeaderSection'
 import { MonthContentSection } from './MonthContentSection'
 
 /** The `month-per-page` options, including its header and the mini months beside it. */
 export function MonthPerPageForm({
-	config,
+	options,
 	defaults,
 	onUpdate,
-}: ConfigSectionProps<MonthPerPageConfig>) {
+}: OptionsSectionProps<MonthPerPageOptions>) {
 	function handleAdjacentMonthsUpdate(patch: Partial<AdjacentMonthsOptions>) {
-		onUpdate({ adjacentMonths: { ...config.adjacentMonths, ...patch } })
+		onUpdate({ adjacentMonths: { ...options.adjacentMonths, ...patch } })
 	}
 
 	return (
 		<>
-			<CalendarSection config={config} defaults={defaults} onUpdate={onUpdate} />
-			<EventsSection config={config} defaults={defaults} onUpdate={onUpdate} />
-			<HeaderSection config={config} defaults={defaults} onUpdate={onUpdate} />
+			<CalendarSection options={options} defaults={defaults} onUpdate={onUpdate} />
+			<EventsSection options={options} defaults={defaults} onUpdate={onUpdate} />
+			<HeaderSection options={options} defaults={defaults} onUpdate={onUpdate} />
 			<AdjacentMonthsSection
-				config={config.adjacentMonths}
+				options={options.adjacentMonths}
 				defaults={defaults.adjacentMonths}
 				onUpdate={handleAdjacentMonthsUpdate}
 			/>
-			<MonthContentSection config={config} defaults={defaults} onUpdate={onUpdate} />
-			<PageSection config={config} defaults={defaults} onUpdate={onUpdate} />
+			<MonthContentSection options={options} defaults={defaults} onUpdate={onUpdate} />
+			<PageSection options={options} defaults={defaults} onUpdate={onUpdate} />
 		</>
 	)
 }

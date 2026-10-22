@@ -1,4 +1,4 @@
-import { DAY_PAGE_TITLES, type DayPageTitle, type DayPerPageConfig } from '../options'
+import { DAY_PAGE_TITLES, type DayPageTitle, type DayPerPageOptions } from '../options'
 import { HeaderIcon } from '../../../ui/components/icons'
 import { CheckboxField } from '../../../ui/fields/CheckboxField'
 import { optionsFrom } from '../../../ui/fields/options'
@@ -6,7 +6,7 @@ import { RadioField } from '../../../ui/fields/RadioField'
 import { DAY_WEEK_NUMBER_DESCRIPTION } from '../../../ui/sidebar/descriptions'
 import { defaultFields } from '../../../ui/sidebar/defaultFields'
 import { HeadingFontSizeField } from '../../../ui/sidebar/HeadingFontSizeField'
-import { type ConfigSectionProps, Section } from '../../../ui/sidebar/Section'
+import { type OptionsSectionProps, Section } from '../../../ui/sidebar/Section'
 
 const DAY_PAGE_TITLE_OPTIONS = optionsFrom(DAY_PAGE_TITLES, {
 	weekday: 'Weekday (date below)',
@@ -18,10 +18,10 @@ const DAY_PAGE_TITLE_OPTIONS = optionsFrom(DAY_PAGE_TITLES, {
  * the subheading, hold.
  */
 export function HeaderSection({
-	config,
+	options,
 	defaults,
 	onUpdate,
-}: ConfigSectionProps<DayPerPageConfig>) {
+}: OptionsSectionProps<DayPerPageOptions>) {
 	function handleDayPageTitleChange(dayPageTitle: DayPageTitle) {
 		onUpdate({ dayPageTitle })
 	}
@@ -58,28 +58,28 @@ export function HeaderSection({
 		<Section title="Header" icon={<HeaderIcon />} onReset={handleReset}>
 			<RadioField
 				label="Title"
-				value={config.dayPageTitle}
+				value={options.dayPageTitle}
 				options={DAY_PAGE_TITLE_OPTIONS}
 				onChange={handleDayPageTitleChange}
 			/>
 			<HeadingFontSizeField
-				value={config.headingFontSize}
+				value={options.headingFontSize}
 				onChange={handleHeadingFontSizeChange}
 			/>
 			<CheckboxField
 				label="Show week number"
 				description={DAY_WEEK_NUMBER_DESCRIPTION}
-				checked={config.showHeaderWeek}
+				checked={options.showHeaderWeek}
 				onChange={handleShowHeaderWeekChange}
 			/>
 			<CheckboxField
 				label="Show day of year"
-				checked={config.showHeaderDayOfYear}
+				checked={options.showHeaderDayOfYear}
 				onChange={handleShowHeaderDayOfYearChange}
 			/>
 			<CheckboxField
 				label="Highlight weekends"
-				checked={config.highlightWeekendDays}
+				checked={options.highlightWeekendDays}
 				onChange={handleHighlightWeekendDaysChange}
 			/>
 		</Section>

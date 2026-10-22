@@ -1,6 +1,6 @@
 import { isBoolean, oneOf } from '../../core/validation'
 import { isHeadingFontSize } from '../heading'
-import { COMMON_VALIDATORS, type CommonConfig, commonDefaults, normalizeCommon } from '../common'
+import { COMMON_VALIDATORS, type CommonOptions, commonDefaults, normalizeCommon } from '../common'
 import type { LayoutSpec } from '../LayoutSpec'
 import { DAY_PER_PAGE_MIGRATIONS } from './migrations'
 import { MINI_MONTH_VALIDATORS, type MiniMonthOptions, miniMonthDefaults } from '../monthGrid'
@@ -53,7 +53,7 @@ export function isSquareSize(value: unknown): value is number {
 export const SQUARE_GRID_ALIGNMENTS = ['left', 'center', 'right'] as const
 export type SquareGridAlignment = (typeof SQUARE_GRID_ALIGNMENTS)[number]
 
-export interface DayPerPageConfig extends CommonConfig, HourSchedule {
+export interface DayPerPageOptions extends CommonOptions, HourSchedule {
 	/** Whether the heading is the weekday ("Thursday") or the date ("1 January 2026"). */
 	dayPageTitle: DayPageTitle
 	/** The heading's font size, in pt; the subheading keeps its own. */
@@ -87,7 +87,7 @@ export interface DayPerPageConfig extends CommonConfig, HourSchedule {
 	showHeaderDayOfYear: boolean
 }
 
-export const DAY_PER_PAGE_SPEC: LayoutSpec<DayPerPageConfig> = {
+export const DAY_PER_PAGE_SPEC: LayoutSpec<DayPerPageOptions> = {
 	// A tall schedule fits portrait.
 	defaults: () => ({
 		...commonDefaults(),
@@ -120,6 +120,6 @@ export const DAY_PER_PAGE_SPEC: LayoutSpec<DayPerPageConfig> = {
 		showHeaderWeek: isBoolean,
 		showHeaderDayOfYear: isBoolean,
 	},
-	normalize: (config) => orderHours(normalizeCommon(config)),
+	normalize: (options) => orderHours(normalizeCommon(options)),
 	migrations: DAY_PER_PAGE_MIGRATIONS,
 }

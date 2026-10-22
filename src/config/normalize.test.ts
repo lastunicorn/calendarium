@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { defaultLayoutConfig, LAYOUT_IDS, normalizeLayout } from '../layouts'
+import { defaultLayoutOptions, LAYOUT_IDS, normalizeLayout } from '../layouts'
 import { defaultAppConfig } from './AppConfig'
 import { configReducer } from './configReducer'
 import { parseConfig, toStoredConfig } from './parseConfig'
@@ -12,7 +12,7 @@ const DIFFERING = { top: 5, right: 10, bottom: 15, left: 20 }
 describe('normalizeLayout', () => {
 	it('applies the page rules in every layout', () => {
 		for (const layout of LAYOUT_IDS) {
-			const config = defaultLayoutConfig(layout)
+			const config = defaultLayoutOptions(layout)
 			expect(config.page.equalMargins).toBe(true)
 			const differing = { ...config.page, margins: DIFFERING }
 			expect(normalizeLayout(layout, { ...config, page: differing }).page).toEqual({
@@ -39,7 +39,7 @@ describe('normalizeLayout', () => {
 
 	it('applies to every reducer change of a layout’s options', () => {
 		const layout = 'month-per-page'
-		const { page } = defaultLayoutConfig(layout)
+		const { page } = defaultLayoutOptions(layout)
 		const updated = configReducer(defaultAppConfig(), {
 			type: 'update',
 			layout,
@@ -50,7 +50,7 @@ describe('normalizeLayout', () => {
 		const imported = configReducer(defaultAppConfig(), {
 			type: 'importLayout',
 			layout,
-			config: { ...defaultLayoutConfig(layout), page: { ...page, margins: DIFFERING } },
+			options: { ...defaultLayoutOptions(layout), page: { ...page, margins: DIFFERING } },
 		})
 		expect(imported.layouts[layout].page.equalMargins).toBe(false)
 	})

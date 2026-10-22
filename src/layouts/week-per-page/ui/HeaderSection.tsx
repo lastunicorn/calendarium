@@ -1,5 +1,5 @@
 import type { HeadingAlignment } from '../../heading'
-import type { WeekPerPageConfig } from '../options'
+import type { WeekPerPageOptions } from '../options'
 import { HeaderIcon } from '../../../ui/components/icons'
 import { CheckboxField } from '../../../ui/fields/CheckboxField'
 import { RadioField } from '../../../ui/fields/RadioField'
@@ -7,14 +7,14 @@ import { WEEK_NUMBER_DESCRIPTION } from '../../../ui/sidebar/descriptions'
 import { HEADING_ALIGNMENT_OPTIONS } from '../../../ui/sidebar/fieldOptions'
 import { defaultFields } from '../../../ui/sidebar/defaultFields'
 import { HeadingFontSizeField } from '../../../ui/sidebar/HeadingFontSizeField'
-import { type ConfigSectionProps, Section } from '../../../ui/sidebar/Section'
+import { type OptionsSectionProps, Section } from '../../../ui/sidebar/Section'
 
 /** What a week's heading shows besides the dates of its days, and where it sits. */
 export function HeaderSection({
-	config,
+	options,
 	defaults,
 	onUpdate,
-}: ConfigSectionProps<WeekPerPageConfig>) {
+}: OptionsSectionProps<WeekPerPageOptions>) {
 	function handleShowHeaderWeekChange(showHeaderWeek: boolean) {
 		onUpdate({ showHeaderWeek })
 	}
@@ -36,22 +36,22 @@ export function HeaderSection({
 			<RadioField
 				label="Title alignment"
 				description={
-					config.headingAlignment === 'auto'
+					options.headingAlignment === 'auto'
 						? 'Left beside the mini calendar or over two pages, centered otherwise.'
 						: undefined
 				}
-				value={config.headingAlignment}
+				value={options.headingAlignment}
 				options={HEADING_ALIGNMENT_OPTIONS}
 				onChange={handleHeadingAlignmentChange}
 			/>
 			<HeadingFontSizeField
-				value={config.headingFontSize}
+				value={options.headingFontSize}
 				onChange={handleHeadingFontSizeChange}
 			/>
 			<CheckboxField
 				label="Show week number"
 				description={WEEK_NUMBER_DESCRIPTION}
-				checked={config.showHeaderWeek}
+				checked={options.showHeaderWeek}
 				onChange={handleShowHeaderWeekChange}
 			/>
 		</Section>

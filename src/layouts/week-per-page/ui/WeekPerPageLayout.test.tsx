@@ -1,16 +1,16 @@
 import { render } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
-import { WEEK_PER_PAGE_SPEC, type WeekPerPageConfig } from '../options'
+import { WEEK_PER_PAGE_SPEC, type WeekPerPageOptions } from '../options'
 import { WeekPerPageLayout } from './WeekPerPageLayout'
 
-/** The default options for 2025 in Monday weeks, with `options` on top. */
-function configWith(options: Partial<WeekPerPageConfig> = {}): WeekPerPageConfig {
-	return { ...WEEK_PER_PAGE_SPEC.defaults(), year: 2025, weekStart: 1, ...options }
+/** The default options for 2025 in Monday weeks, with `changes` on top. */
+function optionsWith(changes: Partial<WeekPerPageOptions> = {}): WeekPerPageOptions {
+	return { ...WEEK_PER_PAGE_SPEC.defaults(), year: 2025, weekStart: 1, ...changes }
 }
 
 /** The sheets of paper the layout draws (each `Page` is a `<section>`). */
-function pagesOf(config: WeekPerPageConfig) {
-	const { container } = render(<WeekPerPageLayout config={config} />)
+function pagesOf(options: WeekPerPageOptions) {
+	const { container } = render(<WeekPerPageLayout options={options} />)
 	return container.querySelectorAll('section')
 }
 
@@ -19,18 +19,18 @@ function pagesOf(config: WeekPerPageConfig) {
 describe('WeekPerPageLayout', () => {
 	it('draws a page per week holding a day of the year', () => {
 		// Monday weeks: 2025 runs from Dec 30, 2024 to Jan 4, 2026.
-		expect(pagesOf(configWith())).toHaveLength(53)
+		expect(pagesOf(optionsWith())).toHaveLength(53)
 	})
 
 	it('draws a blank page before the first week when it starts on an even page', () => {
-		const pages = pagesOf(configWith({ startPage: 'even' }))
+		const pages = pagesOf(optionsWith({ startPage: 'even' }))
 		expect(pages).toHaveLength(1 + 53)
 		expect(pages[0].textContent).toBe('')
 		expect(pages[1].textContent).toContain('Mon')
 	})
 
 	it('spreads each week over two pages, with the heading on the first only', () => {
-		const pages = pagesOf(configWith({ weekendDisplay: 'full', twoPagesPerWeek: true }))
+		const pages = pagesOf(optionsWith({ weekendDisplay: 'full', twoPagesPerWeek: true }))
 		expect(pages).toHaveLength(2 * 53)
 		// Monday to Wednesday, then Thursday to Sunday.
 		expect(pages[0].textContent).toContain('Wed')
@@ -46,7 +46,7 @@ describe('WeekPerPageLayout', () => {
 	it('draws the mini month on the second of a week’s two pages, its space kept on the first', () => {
 		const { miniMonth } = WEEK_PER_PAGE_SPEC.defaults()
 		const [first, second] = pagesOf(
-			configWith({ twoPagesPerWeek: true, miniMonth: { ...miniMonth, show: true } }),
+			optionsWith({ twoPagesPerWeek: true, miniMonth: { ...miniMonth, show: true } }),
 		)
 		// The week of 30 December 2024 is mostly in January.
 		const miniMonthOf = (page: Element) =>

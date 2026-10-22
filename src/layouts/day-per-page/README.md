@@ -19,7 +19,7 @@ One sheet per day of the year, or two: a header naming the day, with a corner mi
 
 ## Options
 
-`DayPerPageConfig` (`options.ts`): `CommonConfig`, the schedule (`HourSchedule`, shared with the week layout through `layouts/schedule.ts`), and its own:
+`DayPerPageOptions` (`options.ts`): `CommonOptions`, the schedule (`HourSchedule`, shared with the week layout through `layouts/schedule.ts`), and its own:
 
 | Sidebar section | Fields                                                                                                                                                                           |
 | --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -39,16 +39,16 @@ It has no title: the heading is always the weekday or the date. `normalize` puts
 
 ## Files
 
-| File                                               | What it holds                                                          |
-| -------------------------------------------------- | ---------------------------------------------------------------------- |
-| `index.ts`                                         | The entry point: `DAY_PER_PAGE = defineLayout(…)`                      |
-| `options.ts`                                       | `DayPerPageConfig`, its value sets and bounds, and `DAY_PER_PAGE_SPEC` |
-| `pages.ts`                                         | `planDayPages`, `DayPages`, the fills                                  |
-| `messages.ts`, `migrations.ts`                     | `DAY_PAGE_MESSAGES`, `DAY_PER_PAGE_MIGRATIONS`                         |
-| `ui/index.ts`                                      | The UI's entry point: `DAY_PER_PAGE_VIEW`                              |
-| `ui/DayPerPageLayout.tsx`, `ui/DayPage.tsx`        | Draw the plan: the pages, then each sheet                              |
-| `ui/DayPerPageForm.tsx`                            | The options form, combining the sections                               |
-| `ui/HeaderSection.tsx`, `ui/DayContentSection.tsx` | The layout's own sections                                              |
+| File                                               | What it holds                                                           |
+| -------------------------------------------------- | ----------------------------------------------------------------------- |
+| `index.ts`                                         | The entry point: `DAY_PER_PAGE = defineLayout(…)`                       |
+| `options.ts`                                       | `DayPerPageOptions`, its value sets and bounds, and `DAY_PER_PAGE_SPEC` |
+| `pages.ts`                                         | `planDayPages`, `DayPages`, the fills                                   |
+| `messages.ts`, `migrations.ts`                     | `DAY_PAGE_MESSAGES`, `DAY_PER_PAGE_MIGRATIONS`                          |
+| `ui/index.ts`                                      | The UI's entry point: `DAY_PER_PAGE_VIEW`                               |
+| `ui/DayPerPageLayout.tsx`, `ui/DayPage.tsx`        | Draw the plan: the pages, then each sheet                               |
+| `ui/DayPerPageForm.tsx`                            | The options form, combining the sections                                |
+| `ui/HeaderSection.tsx`, `ui/DayContentSection.tsx` | The layout's own sections                                               |
 
 ## Domain language
 

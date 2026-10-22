@@ -1,4 +1,4 @@
-import type { MonthPerPageConfig } from '../options'
+import type { MonthPerPageOptions } from '../options'
 import { planMonthPages } from '../pages'
 import { CalendarHeader } from '../../../ui/layouts/CalendarHeader'
 import { MiniMonth } from '../../../ui/layouts/MiniMonth'
@@ -8,17 +8,17 @@ import { Page } from '../../../ui/layouts/Page'
 import { usePagePlan } from '../../../ui/layouts/usePagePlan'
 
 interface MonthPerPageLayoutProps {
-	config: MonthPerPageConfig
+	options: MonthPerPageOptions
 }
 
 /**
  * Twelve pages, each one month under a "January 2026" heading, or the title above it, between the
  * previous and the next month drawn small, as `planMonthPages` plans them.
  */
-export function MonthPerPageLayout({ config }: MonthPerPageLayoutProps) {
-	const pages = usePagePlan(planMonthPages, config)
+export function MonthPerPageLayout({ options }: MonthPerPageLayoutProps) {
+	const pages = usePagePlan(planMonthPages, options)
 	return pages.map((page) => (
-		<Page key={page.key} setup={config.page}>
+		<Page key={page.key} setup={options.page}>
 			<div className={styles.layout}>
 				<div
 					className={`${styles.top} ${page.previousMonth || page.nextMonth ? styles.withMiniMonths : ''}`}

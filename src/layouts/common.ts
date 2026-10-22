@@ -12,7 +12,7 @@ import { margins, normalizePage, PAGE_VALIDATORS, type PageSetup } from '../core
 import { isString, oneOf, type Validators } from '../core/validation'
 
 /** Options every layout has, each with the same meaning in all of them. */
-export interface CommonConfig {
+export interface CommonOptions {
 	year: number
 	/** Language of month and weekday names. */
 	locale: Locale
@@ -44,7 +44,7 @@ function defaultLocale(): Locale {
 }
 
 /** The options shared by every layout, with the values all layouts start from. */
-export function commonDefaults(): CommonConfig {
+export function commonDefaults(): CommonOptions {
 	return {
 		year: new Date().getFullYear(),
 		locale: defaultLocale(),
@@ -62,7 +62,7 @@ export function commonDefaults(): CommonConfig {
 }
 
 /** The validators of the options every layout has; each layout's spec extends them. */
-export const COMMON_VALIDATORS: Validators<CommonConfig> = {
+export const COMMON_VALIDATORS: Validators<CommonOptions> = {
 	year: isYear,
 	locale: oneOf(LOCALES),
 	weekStart: isWeekStartSetting,
@@ -71,12 +71,12 @@ export const COMMON_VALIDATORS: Validators<CommonConfig> = {
 }
 
 /**
- * `config` with the rules of the options every layout has applied (`normalizePage`); each
+ * `options` with the rules of the options every layout has applied (`normalizePage`); each
  * layout's `normalize` starts from it. The same object when it already follows them.
  */
-export function normalizeCommon<C extends CommonConfig>(config: C): C {
-	const page = normalizePage(config.page)
-	return page === config.page ? config : { ...config, page }
+export function normalizeCommon<O extends CommonOptions>(options: O): O {
+	const page = normalizePage(options.page)
+	return page === options.page ? options : { ...options, page }
 }
 
 /**
@@ -94,12 +94,12 @@ export interface CalendarModel {
 }
 
 /** The calendar model of a layout's options. */
-export function calendarModel(config: CommonConfig): CalendarModel {
-	const weekStart = resolveWeekStart(config.weekStart, config.locale)
+export function calendarModel(options: CommonOptions): CalendarModel {
+	const weekStart = resolveWeekStart(options.weekStart, options.locale)
 	return {
 		weekStart,
-		months: buildYear(config.year, weekStart),
-		monthNames: monthNames(config.locale),
-		events: parseEvents(config.events),
+		months: buildYear(options.year, weekStart),
+		monthNames: monthNames(options.locale),
+		events: parseEvents(options.events),
 	}
 }

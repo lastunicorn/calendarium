@@ -7,15 +7,15 @@ import { useOpenSectionsContext } from './useOpenSections'
  * Props shared by groups of fields: a layout's options, or the part of them the fields edit, and a
  * way to change some of their fields.
  */
-export interface ConfigFieldsProps<C> {
-	config: C
-	onUpdate: (patch: Partial<C>) => void
+export interface OptionsFieldsProps<O> {
+	options: O
+	onUpdate: (patch: Partial<O>) => void
 }
 
 /** Props shared by the form sections: their fields' props and the defaults their reset restores. */
-export interface ConfigSectionProps<C> extends ConfigFieldsProps<C> {
+export interface OptionsSectionProps<O> extends OptionsFieldsProps<O> {
 	/** The layout's default options, or of the part the section edits. */
-	defaults: C
+	defaults: O
 }
 
 interface SectionProps {

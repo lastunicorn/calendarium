@@ -3,7 +3,7 @@ import { dayMonthName, weekdayNames, yearName } from '../../core/locale'
 import type { CalendarModel } from '../common'
 import type { MiniMonthPlan } from '../monthGrid'
 import { YEAR_PAGE_MESSAGES } from './messages'
-import type { YearPerPageConfig } from './options'
+import type { YearPerPageOptions } from './options'
 
 /** One line of the year's list of events. */
 export interface EventListItem {
@@ -40,19 +40,19 @@ export interface YearPage {
  * The whole year on one page: a heading above a grid of 12 small months, events circled, then the
  * events listed on a second page.
  */
-export function planYearPage(config: YearPerPageConfig, model: CalendarModel): YearPage {
-	const weekdays = weekdayNames(config.locale, model.weekStart, config.weekdayFormat)
-	const heading = config.title.trim() || yearName(config.locale, config.year)
-	const events = eventsOfYear(model.events, config.year)
+export function planYearPage(options: YearPerPageOptions, model: CalendarModel): YearPage {
+	const weekdays = weekdayNames(options.locale, model.weekStart, options.weekdayFormat)
+	const heading = options.title.trim() || yearName(options.locale, options.year)
+	const events = eventsOfYear(model.events, options.year)
 	return {
 		heading,
-		subheading: config.subtitle,
+		subheading: options.subtitle,
 		months: model.months.map((month) => ({
 			month,
 			name: model.monthNames[month.month],
 			weekdays,
-			highlightWeekends: config.highlightWeekends,
-			showWeekNumbers: config.showWeekNumbers,
+			highlightWeekends: options.highlightWeekends,
+			showWeekNumbers: options.showWeekNumbers,
 			eventDays: month.weeks
 				.flat()
 				.filter((day) => day.inMonth && eventNames(model.events, day).length > 0)
@@ -61,11 +61,11 @@ export function planYearPage(config: YearPerPageConfig, model: CalendarModel): Y
 		eventList:
 			events.length > 0
 				? {
-						heading: YEAR_PAGE_MESSAGES[config.locale].events,
+						heading: YEAR_PAGE_MESSAGES[options.locale].events,
 						subheading: heading,
 						events: events.map((event, index) => ({
 							key: `${event.date.key}-${index}`,
-							date: dayMonthName(config.locale, event.date),
+							date: dayMonthName(options.locale, event.date),
 							name: event.name,
 						})),
 					}

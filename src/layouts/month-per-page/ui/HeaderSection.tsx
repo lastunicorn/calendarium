@@ -1,11 +1,11 @@
 import type { HeadingAlign } from '../../heading'
-import type { MonthPerPageConfig } from '../options'
+import type { MonthPerPageOptions } from '../options'
 import { HeaderIcon } from '../../../ui/components/icons'
 import { RadioField } from '../../../ui/fields/RadioField'
 import { TextField } from '../../../ui/fields/TextField'
 import { HEADING_ALIGN_OPTIONS } from '../../../ui/sidebar/fieldOptions'
 import { defaultFields } from '../../../ui/sidebar/defaultFields'
-import { type ConfigSectionProps, Section } from '../../../ui/sidebar/Section'
+import { type OptionsSectionProps, Section } from '../../../ui/sidebar/Section'
 
 const TITLE_DESCRIPTION = [
 	'Printed at the top of every page, with the month and year below it.',
@@ -14,10 +14,10 @@ const TITLE_DESCRIPTION = [
 
 /** The title above every month, and where the heading sits above its grid. */
 export function HeaderSection({
-	config,
+	options,
 	defaults,
 	onUpdate,
-}: ConfigSectionProps<MonthPerPageConfig>) {
+}: OptionsSectionProps<MonthPerPageOptions>) {
 	function handleTitleChange(title: string) {
 		onUpdate({ title })
 	}
@@ -35,12 +35,12 @@ export function HeaderSection({
 			<TextField
 				label="Title"
 				description={TITLE_DESCRIPTION}
-				value={config.title}
+				value={options.title}
 				onChange={handleTitleChange}
 			/>
 			<RadioField
 				label="Title alignment"
-				value={config.monthHeadingAlignment}
+				value={options.monthHeadingAlignment}
 				options={HEADING_ALIGN_OPTIONS}
 				onChange={handleMonthHeadingAlignmentChange}
 			/>

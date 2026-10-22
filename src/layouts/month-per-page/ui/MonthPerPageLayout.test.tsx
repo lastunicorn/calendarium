@@ -7,8 +7,8 @@ import { MonthPerPageLayout } from './MonthPerPageLayout'
 // component draws the plan.
 describe('MonthPerPageLayout', () => {
 	it('draws a page per month', () => {
-		const config = { ...MONTH_PER_PAGE_SPEC.defaults(), year: 2025 }
-		const { container } = render(<MonthPerPageLayout config={config} />)
+		const options = { ...MONTH_PER_PAGE_SPEC.defaults(), year: 2025 }
+		const { container } = render(<MonthPerPageLayout options={options} />)
 		expect(container.querySelectorAll('section')).toHaveLength(12)
 	})
 })

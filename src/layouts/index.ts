@@ -30,7 +30,7 @@ export const LAYOUT_IDS: readonly LayoutId[] = LAYOUTS.map((layout) => layout.id
 export const isLayoutId = oneOf(LAYOUT_IDS)
 
 /** Each layout's own options, declared in its `<layout-id>/options.ts`, keyed by its id. */
-export type LayoutConfigs = {
+export type LayoutOptions = {
 	[L in Layout as L['id']]: ReturnType<L['spec']['defaults']>
 }
 
@@ -42,16 +42,16 @@ type Equals<A, B> =
 
 /** Every type field `K` has, across the layouts that have it. */
 type FieldTypes<K extends PropertyKey> = {
-	[L in LayoutId]: K extends keyof LayoutConfigs[L] ? LayoutConfigs[L][K] : never
+	[L in LayoutId]: K extends keyof LayoutOptions[L] ? LayoutOptions[L][K] : never
 }[LayoutId]
 
 /** The fields whose type differs between two layouts that have them. */
 type MismatchedFields = {
 	[L in LayoutId]: {
-		[K in keyof LayoutConfigs[L]]: Equals<LayoutConfigs[L][K], FieldTypes<K>> extends true
+		[K in keyof LayoutOptions[L]]: Equals<LayoutOptions[L][K], FieldTypes<K>> extends true
 			? never
 			: K
-	}[keyof LayoutConfigs[L]]
+	}[keyof LayoutOptions[L]]
 }[LayoutId]
 
 // Compile-time check: a field name has the same type in every layout that has it, so a file or a
@@ -62,16 +62,16 @@ export type SameFieldTypesCheck = Assert<
 >
 
 /** The options of any one layout. */
-export type LayoutConfig = LayoutConfigs[LayoutId]
+export type AnyLayoutOptions = LayoutOptions[LayoutId]
 
 /** Each layout's spec (defaults, validators, cross-field rules and migrations), by its id. */
 // Built from `LAYOUTS`, where each id comes with its own spec.
 const LAYOUT_SPECS = Object.fromEntries(LAYOUTS.map(({ id, spec }) => [id, spec])) as {
-	[K in LayoutId]: LayoutSpec<LayoutConfigs[K]>
+	[K in LayoutId]: LayoutSpec<LayoutOptions[K]>
 }
 
 /** `layout`'s spec, typed by its own options. */
-export function layoutSpec<K extends LayoutId>(layout: K): LayoutSpec<LayoutConfigs[K]> {
+export function layoutSpec<K extends LayoutId>(layout: K): LayoutSpec<LayoutOptions[K]> {
 	return LAYOUT_SPECS[layout]
 }
 
@@ -90,24 +90,24 @@ export function migrateLayoutOptions(
 }
 
 /** A fresh copy of `layout`'s default options. */
-export function defaultLayoutConfig<K extends LayoutId>(layout: K): LayoutConfigs[K] {
+export function defaultLayoutOptions<K extends LayoutId>(layout: K): LayoutOptions[K] {
 	return layoutSpec(layout).defaults()
 }
 
-/** `config` with its layout's rules applied; the same object when it already follows them. */
+/** `options` with its layout's rules applied; the same object when it already follows them. */
 export function normalizeLayout<K extends LayoutId>(
 	layout: K,
-	config: LayoutConfigs[K],
-): LayoutConfigs[K] {
-	return layoutSpec(layout).normalize(config)
+	options: LayoutOptions[K],
+): LayoutOptions[K] {
+	return layoutSpec(layout).normalize(options)
 }
 
 /** Every layout's options, each built by `build` for that layout. */
 export function mapLayouts(
-	build: <K extends LayoutId>(layout: K) => LayoutConfigs[K],
-): LayoutConfigs {
-	const layouts: Partial<Record<LayoutId, LayoutConfig>> = {}
+	build: <K extends LayoutId>(layout: K) => LayoutOptions[K],
+): LayoutOptions {
+	const layouts: Partial<Record<LayoutId, AnyLayoutOptions>> = {}
 	for (const layout of LAYOUT_IDS) layouts[layout] = build(layout)
 	// Every id was filled in, each by `build` with its own layout's options.
-	return layouts as LayoutConfigs
+	return layouts as LayoutOptions
 }

@@ -11,7 +11,7 @@ import { DAY_PAGE_MESSAGES } from './messages'
 import { contentBox } from '../../core/paper'
 import type { CalendarModel } from '../common'
 import type { MiniMonthPlan } from '../monthGrid'
-import type { DayPerPageConfig, SquareGridAlignment } from './options'
+import type { DayPerPageOptions, SquareGridAlignment } from './options'
 
 /** The dot between the subheading's parts, with en spaces either side for more room than plain ones. */
 const SUBHEADING_SEPARATOR = '\u2002·\u2002'
@@ -71,39 +71,39 @@ export interface DayPages {
  * `squareGridAlignment`; dots mark those squares' corners. A blank fill leaves every sheet empty. The hours are split in half over two sheets, the second,
  * having no header, taking the extra hour of an odd count.
  */
-function planFills(config: DayPerPageConfig): DayFill[] {
-	const sheets = config.twoPagesPerDay ? 2 : 1
-	if (config.dayPageLines === 'ruled') {
-		const spacing = config.ruledLineSpacing
-		const lines = Math.ceil(contentBox(config.page).height / spacing)
+function planFills(options: DayPerPageOptions): DayFill[] {
+	const sheets = options.twoPagesPerDay ? 2 : 1
+	if (options.dayPageLines === 'ruled') {
+		const spacing = options.ruledLineSpacing
+		const lines = Math.ceil(contentBox(options.page).height / spacing)
 		const fill: DayFill = { kind: 'ruled', lines, spacing }
 		return Array.from({ length: sheets }, () => fill)
 	}
-	if (config.dayPageLines === 'blank') {
+	if (options.dayPageLines === 'blank') {
 		const fill: DayFill = { kind: 'blank' }
 		return Array.from({ length: sheets }, () => fill)
 	}
-	if (config.dayPageLines === 'squares') {
-		const { width, height } = contentBox(config.page)
-		const size = config.squareSize
+	if (options.dayPageLines === 'squares') {
+		const { width, height } = contentBox(options.page)
+		const size = options.squareSize
 		const fill: DayFill = {
 			kind: 'squares',
 			rows: Math.floor(height / size),
 			columns: Math.floor(width / size),
 			size,
-			align: config.squareGridAlignment,
+			align: options.squareGridAlignment,
 		}
 		return Array.from({ length: sheets }, () => fill)
 	}
-	if (config.dayPageLines === 'dots') {
+	if (options.dayPageLines === 'dots') {
 		const fill: DayFill = {
 			kind: 'dots',
-			size: config.squareSize,
-			align: config.squareGridAlignment,
+			size: options.squareSize,
+			align: options.squareGridAlignment,
 		}
 		return Array.from({ length: sheets }, () => fill)
 	}
-	const hours = hourNames(config.locale, config.firstHour, config.lastHour, config.hourFormat)
+	const hours = hourNames(options.locale, options.firstHour, options.lastHour, options.hourFormat)
 	const split = Math.floor(hours.length / sheets)
 	return sheets === 1
 		? [{ kind: 'hours', hours }]
@@ -114,30 +114,30 @@ function planFills(config: DayPerPageConfig): DayFill[] {
 }
 
 /** A page, or two, for every day of the year. */
-export function planDayPages(config: DayPerPageConfig, model: CalendarModel): DayPages[] {
-	const { locale, miniMonth } = config
+export function planDayPages(options: DayPerPageOptions, model: CalendarModel): DayPages[] {
+	const { locale, miniMonth } = options
 	const messages = DAY_PAGE_MESSAGES[locale]
 	const miniWeekdays = weekdayNames(locale, model.weekStart, miniMonth.weekdayFormat)
-	const fills = planFills(config)
+	const fills = planFills(options)
 	const days = daysOfYear(model.months)
 
 	return days.map((day) => {
 		const weekday = weekdayName(locale, day)
 		const date = fullDateName(locale, day)
 		const subheading = [
-			config.dayPageTitle === 'weekday' ? date : weekday,
-			config.showHeaderWeek ? messages.week(isoWeek(day)) : '',
-			config.showHeaderDayOfYear ? messages.dayOfYear(dayOfYear(day), days.length) : '',
+			options.dayPageTitle === 'weekday' ? date : weekday,
+			options.showHeaderWeek ? messages.week(isoWeek(day)) : '',
+			options.showHeaderDayOfYear ? messages.dayOfYear(dayOfYear(day), days.length) : '',
 		]
 			.filter(Boolean)
 			.join(SUBHEADING_SEPARATOR)
 		return {
 			day,
-			heading: config.dayPageTitle === 'weekday' ? weekday : date,
-			headingFontSize: config.headingFontSize,
+			heading: options.dayPageTitle === 'weekday' ? weekday : date,
+			headingFontSize: options.headingFontSize,
 			subheading,
 			events: eventNames(model.events, day),
-			weekend: config.highlightWeekendDays && day.isWeekend,
+			weekend: options.highlightWeekendDays && day.isWeekend,
 			miniMonth: miniMonth.show
 				? {
 						month: model.months[day.month],

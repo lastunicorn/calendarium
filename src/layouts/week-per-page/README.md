@@ -18,7 +18,7 @@ One sheet per week of the year, or two, each day getting a writing cell, maybe a
 
 ## Options
 
-`WeekPerPageConfig` (`options.ts`): `CommonConfig`, the schedule (`HourSchedule`, shared with the day layout through `layouts/schedule.ts`), and its own:
+`WeekPerPageOptions` (`options.ts`): `CommonOptions`, the schedule (`HourSchedule`, shared with the day layout through `layouts/schedule.ts`), and its own:
 
 | Sidebar section | Fields                                                                                                                                                                                                                                                            |
 | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -38,17 +38,17 @@ One sheet per week of the year, or two, each day getting a writing cell, maybe a
 
 ## Files
 
-| File                                                | What it holds                                                            |
-| --------------------------------------------------- | ------------------------------------------------------------------------ |
-| `index.ts`                                          | The entry point: `WEEK_PER_PAGE = defineLayout(…)`                       |
-| `options.ts`                                        | `WeekPerPageConfig`, its value sets and bounds, and `WEEK_PER_PAGE_SPEC` |
-| `cells.ts`                                          | The cell rules: `weekCells`, `splitWeekCells`, `stacksDays`              |
-| `pages.ts`                                          | `planWeekPages`, `WeekPages`, `WeekPageDay`                              |
-| `messages.ts`, `migrations.ts`                      | `WEEK_PAGE_MESSAGES`, `WEEK_PER_PAGE_MIGRATIONS`                         |
-| `ui/index.ts`                                       | The UI's entry point: `WEEK_PER_PAGE_VIEW`                               |
-| `ui/WeekPerPageLayout.tsx`, `ui/WeekPage.tsx`       | Draw the plan: the pages, then each sheet                                |
-| `ui/WeekPerPageForm.tsx`                            | The options form, combining the sections                                 |
-| `ui/HeaderSection.tsx`, `ui/WeekContentSection.tsx` | The layout's own sections                                                |
+| File                                                | What it holds                                                             |
+| --------------------------------------------------- | ------------------------------------------------------------------------- |
+| `index.ts`                                          | The entry point: `WEEK_PER_PAGE = defineLayout(…)`                        |
+| `options.ts`                                        | `WeekPerPageOptions`, its value sets and bounds, and `WEEK_PER_PAGE_SPEC` |
+| `cells.ts`                                          | The cell rules: `weekCells`, `splitWeekCells`, `stacksDays`               |
+| `pages.ts`                                          | `planWeekPages`, `WeekPages`, `WeekPageDay`                               |
+| `messages.ts`, `migrations.ts`                      | `WEEK_PAGE_MESSAGES`, `WEEK_PER_PAGE_MIGRATIONS`                          |
+| `ui/index.ts`                                       | The UI's entry point: `WEEK_PER_PAGE_VIEW`                                |
+| `ui/WeekPerPageLayout.tsx`, `ui/WeekPage.tsx`       | Draw the plan: the pages, then each sheet                                 |
+| `ui/WeekPerPageForm.tsx`                            | The options form, combining the sections                                  |
+| `ui/HeaderSection.tsx`, `ui/WeekContentSection.tsx` | The layout's own sections                                                 |
 
 ## Domain language
 

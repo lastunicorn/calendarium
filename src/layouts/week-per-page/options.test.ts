@@ -65,8 +65,8 @@ describe('week-per-page options', () => {
 	})
 
 	it('puts a reversed schedule in order', () => {
-		const config = { ...WEEK_PER_PAGE_SPEC.defaults(), firstHour: 18, lastHour: 9 }
-		expect(WEEK_PER_PAGE_SPEC.normalize(config)).toMatchObject({ firstHour: 9, lastHour: 18 })
+		const options = { ...WEEK_PER_PAGE_SPEC.defaults(), firstHour: 18, lastHour: 9 }
+		expect(WEEK_PER_PAGE_SPEC.normalize(options)).toMatchObject({ firstHour: 9, lastHour: 18 })
 		expect(parseOptions(WEEK_PER_PAGE_SPEC, { firstHour: 22, lastHour: 6 })).toMatchObject({
 			firstHour: 6,
 			lastHour: 22,

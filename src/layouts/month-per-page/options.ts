@@ -1,7 +1,7 @@
 import { WEEKDAY_FORMATS } from '../../core/locale'
 import { margins } from '../../core/paper'
 import { isBoolean, isString, oneOf, type Validators } from '../../core/validation'
-import { COMMON_VALIDATORS, type CommonConfig, commonDefaults, normalizeCommon } from '../common'
+import { COMMON_VALIDATORS, type CommonOptions, commonDefaults, normalizeCommon } from '../common'
 import { HEADING_ALIGNS, type HeadingAlign } from '../heading'
 import type { LayoutSpec } from '../LayoutSpec'
 import { MONTH_GRID_VALIDATORS, type MonthGridOptions, monthGridDefaults } from '../monthGrid'
@@ -70,7 +70,7 @@ export function isWeekdayFontSize(value: unknown): value is number {
 	)
 }
 
-export interface MonthPerPageConfig extends CommonConfig, MonthGridOptions {
+export interface MonthPerPageOptions extends CommonOptions, MonthGridOptions {
 	/**
 	 * Shown above the grid on every page, the month and year then below it; when empty, the month
 	 * and year are the heading.
@@ -94,7 +94,7 @@ export interface MonthPerPageConfig extends CommonConfig, MonthGridOptions {
 	adjacentMonths: AdjacentMonthsOptions
 }
 
-export const MONTH_PER_PAGE_SPEC: LayoutSpec<MonthPerPageConfig> = {
+export const MONTH_PER_PAGE_SPEC: LayoutSpec<MonthPerPageOptions> = {
 	// Large writing cells fit landscape, with room for full weekday names.
 	defaults: () => {
 		const common = commonDefaults()
