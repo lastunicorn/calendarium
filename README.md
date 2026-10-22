@@ -27,11 +27,30 @@ Use Chrome/Chromium: **Print → Destination: Save as PDF, Paper size: matching 
 
 ## Running locally
 
-### Requirements
+### From a release
+
+Each [release](https://github.com/lastunicorn/calendarium/releases) has the built app attached as `printable-calendar-X.Y.Z.zip`, the same files the online app serves. To run it without building:
+
+1. Download the zip from the release's assets and unzip it into a folder.
+2. Serve that folder over HTTP with any static server, for example:
+
+   ```bash
+   python3 -m http.server 8080 -d printable-calendar-X.Y.Z
+   ```
+
+   or, with Node.js, `npx serve printable-calendar-X.Y.Z`.
+
+3. Open http://localhost:8080 (or the address the server prints).
+
+Opening `index.html` directly from the disk doesn't work: browsers don't load the app's scripts from a `file://` page. Settings are saved per address, so the local app starts from the defaults; save a project from the online app and open it locally to carry it over.
+
+### From source
+
+#### Requirements
 
 - Node.js 20+ and npm
 
-### Clone and run
+#### Clone and run
 
 ```bash
 git clone https://github.com/lastunicorn/calendarium.git
@@ -42,7 +61,7 @@ npm run dev
 
 Then open http://localhost:5173.
 
-### Commands
+#### Commands
 
 | Command              | What it does                                 |
 | -------------------- | -------------------------------------------- |
