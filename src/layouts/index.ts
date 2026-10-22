@@ -1,10 +1,9 @@
 import { oneOf, type UntrustedObject } from '../core/validation'
-import type { CommonConfig } from './common'
-import { DAY_PER_PAGE_SPEC, type DayPerPageConfig } from './day-per-page'
+import { DAY_PER_PAGE } from './day-per-page'
 import type { LayoutSpec } from './LayoutSpec'
-import { MONTH_PER_PAGE_SPEC, type MonthPerPageConfig } from './month-per-page'
-import { WEEK_PER_PAGE_SPEC, type WeekPerPageConfig } from './week-per-page'
-import { YEAR_PER_PAGE_SPEC, type YearPerPageConfig } from './year-per-page'
+import { MONTH_PER_PAGE } from './month-per-page'
+import { WEEK_PER_PAGE } from './week-per-page'
+import { YEAR_PER_PAGE } from './year-per-page'
 
 // Each set of allowed values is listed once; the type and the validation in `parseConfig`
 // derive from the array, and the UI labels are keyed by the type. Sets of generic concepts live
@@ -12,43 +11,30 @@ import { YEAR_PER_PAGE_SPEC, type YearPerPageConfig } from './year-per-page'
 // weekend highlights in `core/weekend.ts`. Sets only one layout uses live in its folder here.
 
 /**
- * Ids of the page layouts, in the picker's order; the first is shown by default. Each has a folder
- * here (options, defaults, validators, rules, migrations, printed text), with its UI in `ui/`
- * (component, form, labels).
+ * The layouts, in the picker's order; the first is shown by default. Each is a folder here, named
+ * after its id, holding all it has (options, defaults, validators, rules, migrations, printed
+ * text, and its UI in `ui/`: component, form, labels), and gives its id and spec through its entry
+ * point, the folder's `index.ts`. The ids, the options types and the specs all derive from this
+ * list; the views are listed in `ui/layouts/registry.ts`.
  */
-export const LAYOUT_IDS = [
-	'year-per-page',
-	'month-per-page',
-	'week-per-page',
-	'day-per-page',
-] as const
-export type LayoutId = (typeof LAYOUT_IDS)[number]
+const LAYOUTS = [YEAR_PER_PAGE, MONTH_PER_PAGE, WEEK_PER_PAGE, DAY_PER_PAGE] as const
+
+type Layout = (typeof LAYOUTS)[number]
+
+export type LayoutId = Layout['id']
+
+/** The ids of the layouts, in the picker's order. */
+export const LAYOUT_IDS: readonly LayoutId[] = LAYOUTS.map((layout) => layout.id)
 
 /** Whether untrusted `value` names a layout. */
 export const isLayoutId = oneOf(LAYOUT_IDS)
 
-/**
- * Each layout's own options, declared in its `<layout-id>/options.ts`. Keyed by every `LayoutId`
- * (checked below).
- */
-export interface LayoutConfigs {
-	'year-per-page': YearPerPageConfig
-	'month-per-page': MonthPerPageConfig
-	'week-per-page': WeekPerPageConfig
-	'day-per-page': DayPerPageConfig
+/** Each layout's own options, declared in its `<layout-id>/options.ts`, keyed by its id. */
+export type LayoutConfigs = {
+	[L in Layout as L['id']]: ReturnType<L['spec']['defaults']>
 }
 
-// Compile-time checks: `LayoutConfigs` has exactly the layout ids, each extending `CommonConfig`.
 type Assert<T extends true> = T
-export type LayoutConfigsCheck = Assert<
-	[keyof LayoutConfigs] extends [LayoutId]
-		? [LayoutId] extends [keyof LayoutConfigs]
-			? LayoutConfigs extends Record<LayoutId, CommonConfig>
-				? true
-				: false
-			: false
-		: false
->
 
 /** Whether `A` and `B` are the same type, not just assignable to each other. */
 type Equals<A, B> =
@@ -78,15 +64,10 @@ export type SameFieldTypesCheck = Assert<
 /** The options of any one layout. */
 export type LayoutConfig = LayoutConfigs[LayoutId]
 
-/**
- * Each layout's defaults, validators, cross-field rules and migrations. Keyed by every `LayoutId`, so a new id
- * without a spec won't compile. The views (component, form, labels) are in `ui/layouts/registry.ts`.
- */
-const LAYOUT_SPECS: { [K in LayoutId]: LayoutSpec<LayoutConfigs[K]> } = {
-	'year-per-page': YEAR_PER_PAGE_SPEC,
-	'month-per-page': MONTH_PER_PAGE_SPEC,
-	'week-per-page': WEEK_PER_PAGE_SPEC,
-	'day-per-page': DAY_PER_PAGE_SPEC,
+/** Each layout's spec (defaults, validators, cross-field rules and migrations), by its id. */
+// Built from `LAYOUTS`, where each id comes with its own spec.
+const LAYOUT_SPECS = Object.fromEntries(LAYOUTS.map(({ id, spec }) => [id, spec])) as {
+	[K in LayoutId]: LayoutSpec<LayoutConfigs[K]>
 }
 
 /** `layout`'s spec, typed by its own options. */

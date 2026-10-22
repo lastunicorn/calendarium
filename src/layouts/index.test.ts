@@ -50,6 +50,12 @@ describe.each(LAYOUT_IDS)('the %s spec', (layout) => {
 	})
 })
 
+describe('LAYOUT_IDS', () => {
+	it('names each layout once', () => {
+		expect(new Set(LAYOUT_IDS).size).toBe(LAYOUT_IDS.length)
+	})
+})
+
 describe('migrateLayoutOptions', () => {
 	it('returns the options of an unknown layout, or of a version without a step, as they are', () => {
 		const options = { year: 2030 }

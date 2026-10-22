@@ -102,6 +102,11 @@ describe('layouts', () => {
 	it('have a folder each, named after its id', () => {
 		const folders = new Set(FILES.map(layoutOf).filter((layout) => layout !== null))
 		expect([...folders].sort()).toEqual([...LAYOUT_IDS].sort())
+		for (const layout of folders) {
+			expect(SOURCES[`./layouts/${layout}/index.ts`], layout).toContain(
+				`defineLayout('${layout}',`,
+			)
+		}
 	})
 
 	it('never import one another', () => {

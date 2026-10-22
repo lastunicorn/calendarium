@@ -1,4 +1,5 @@
 import { asObject, copyValid, type UntrustedObject, type Validators } from '../core/validation'
+import type { CommonConfig } from './common'
 
 /**
  * One step that brings a layout's stored options from one config version to the next. Values are
@@ -34,6 +35,27 @@ export interface LayoutSpec<C> {
 	normalize: (config: C) => C
 	/** The steps that changed the layout's own options between config versions. */
 	migrations: LayoutMigrations
+}
+
+/** A layout as the registry knows it, given its id `Id` and its options type `C`. */
+export interface LayoutDefinition<Id extends string, C extends CommonConfig> {
+	/**
+	 * Names the layout in stored settings and files, and its folder, so it never changes once
+	 * released.
+	 */
+	readonly id: Id
+	readonly spec: LayoutSpec<C>
+}
+
+/**
+ * A layout's definition, for its folder's `index.ts` (its entry point) to export and
+ * `layouts/index.ts` to list. Its options must extend `CommonConfig`, the options every layout has.
+ */
+export function defineLayout<const Id extends string, C extends CommonConfig>(
+	id: Id,
+	spec: LayoutSpec<C>,
+): LayoutDefinition<Id, C> {
+	return { id, spec }
 }
 
 /**
