@@ -69,7 +69,7 @@ describe('WorkspaceForm', () => {
 			within(actions)
 				.getAllByRole('button')
 				.map((button) => button.title),
-		).toEqual(['Save project to a file', 'Open a project file', 'New project'])
+		).toEqual(['New project', 'Open a project file', 'Save project to a file'])
 		const toggles = screen.getAllByRole('button', { expanded: false })
 		expect(toggles.map((button) => button.textContent)).toEqual(titles)
 		expect(screen.queryByLabelText('Year')).toBeNull()
@@ -101,7 +101,7 @@ describe('WorkspaceForm', () => {
 			within(actions)
 				.getAllByRole('button')
 				.map((button) => button.title),
-		).toEqual(['Save project to a file', 'Open a project file', 'New project'])
+		).toEqual(['New project', 'Open a project file', 'Save project to a file'])
 	})
 
 	it('keeps a section open on another layout', () => {

@@ -130,14 +130,14 @@ export function LayoutSection({ workspace, onSelect, onNew, onOpen }: LayoutSect
 				>
 					<IconButton label="New project" icon={<NewIcon />} onClick={handleNewClick} />
 					<IconButton
-						label="Save project to a file"
-						icon={<SaveIcon />}
-						onClick={handleSaveClick}
-					/>
-					<IconButton
 						label="Open a project file"
 						icon={<OpenIcon />}
 						onClick={handleOpenClick}
+					/>
+					<IconButton
+						label="Save project to a file"
+						icon={<SaveIcon />}
+						onClick={handleSaveClick}
 					/>
 					<input
 						ref={fileInput}
