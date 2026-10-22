@@ -1,10 +1,10 @@
 import { oneOf, type UntrustedObject } from '../core/validation'
 import type { CommonConfig } from './common'
-import { DAY_PER_PAGE_SPEC, type DayPerPageConfig } from './day-per-page/options'
+import { DAY_PER_PAGE_SPEC, type DayPerPageConfig } from './day-per-page'
 import type { LayoutSpec } from './LayoutSpec'
-import { MONTH_PER_PAGE_SPEC, type MonthPerPageConfig } from './month-per-page/options'
-import { WEEK_PER_PAGE_SPEC, type WeekPerPageConfig } from './week-per-page/options'
-import { YEAR_PER_PAGE_SPEC, type YearPerPageConfig } from './year-per-page/options'
+import { MONTH_PER_PAGE_SPEC, type MonthPerPageConfig } from './month-per-page'
+import { WEEK_PER_PAGE_SPEC, type WeekPerPageConfig } from './week-per-page'
+import { YEAR_PER_PAGE_SPEC, type YearPerPageConfig } from './year-per-page'
 
 // Each set of allowed values is listed once; the type and the validation in `parseConfig`
 // derive from the array, and the UI labels are keyed by the type. Sets of generic concepts live
