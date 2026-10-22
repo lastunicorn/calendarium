@@ -1,0 +1,41 @@
+/* The closed look every dropdown shares, the select's and the combobox's: the chosen label, an arrow at the right end. */
+
+/* Positions the arrow over the control, and the combobox's popup under it. */
+.box {
+	position: relative;
+}
+
+.control {
+	width: 100%;
+	padding: 6px 28px 6px 8px;
+	font: inherit;
+	font-size: 0.875rem;
+	text-align: left;
+	color: var(--color-text);
+	background: var(--color-surface);
+	border: 1px solid var(--color-border);
+	border-radius: 4px;
+	cursor: pointer;
+	appearance: none;
+}
+
+/* Lets clicks on the arrow reach the control under it. */
+.arrow {
+	position: absolute;
+	top: 50%;
+	right: 8px;
+	width: 12px;
+	height: 12px;
+	margin-top: -6px;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 2;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	pointer-events: none;
+}
+
+/* The combobox's arrow points up while its list is open. */
+.control[aria-expanded='true'] + .arrow {
+	transform: rotate(180deg);
+}

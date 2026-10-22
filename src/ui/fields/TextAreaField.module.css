@@ -4,6 +4,10 @@
 	font-size: 0.875rem;
 	line-height: 1.4;
 	resize: vertical;
+	color: var(--color-text);
+	background: var(--color-surface);
+	border: 1px solid var(--color-border);
+	border-radius: 4px;
 }
 
 .error {

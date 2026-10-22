@@ -1,46 +1,9 @@
-/* Positions the popup under the button. */
-.box {
-	position: relative;
-}
-
-/* Looks like the other fields' selects: the chosen label, an arrow at the right end. */
-.button {
-	display: flex;
-	align-items: center;
-	gap: 6px;
-	width: 100%;
-	padding: 6px 8px;
-	font: inherit;
-	font-size: 0.875rem;
-	text-align: left;
-	color: var(--color-text);
-	background: var(--color-surface);
-	border: 1px solid var(--color-border);
-	border-radius: 4px;
-	cursor: pointer;
-}
-
+/* Keeps the chosen label on one line, short of the arrow. */
 .value {
-	flex: 1;
-	min-width: 0;
+	display: block;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
-}
-
-.arrow {
-	width: 12px;
-	height: 12px;
-	flex-shrink: 0;
-	fill: none;
-	stroke: currentColor;
-	stroke-width: 2;
-	stroke-linecap: round;
-	stroke-linejoin: round;
-}
-
-.button[aria-expanded='true'] .arrow {
-	transform: rotate(180deg);
 }
 
 .popup {

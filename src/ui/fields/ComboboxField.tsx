@@ -10,6 +10,8 @@ import {
 	useState,
 } from 'react'
 import styles from './ComboboxField.module.css'
+import dropdown from './Dropdown.module.css'
+import { DropdownArrow } from './DropdownArrow'
 import { Field } from './Field'
 import { type FilterOption, matchesFilter, searchText } from './filter'
 import type { Description } from './description'
@@ -157,22 +159,20 @@ export function ComboboxField<T extends string | number>({
 	return (
 		<Field label={label} description={description}>
 			{(control) => (
-				<div ref={box} className={styles.box}>
+				<div ref={box} className={dropdown.box}>
 					<button
 						{...control}
 						ref={button}
 						type="button"
-						className={styles.button}
+						className={dropdown.control}
 						aria-haspopup="listbox"
 						aria-expanded={open}
 						onClick={handleButtonClick}
 						onKeyDown={handleButtonKeyDown}
 					>
 						<span className={styles.value}>{selected?.label}</span>
-						<svg className={styles.arrow} viewBox="0 0 16 16" aria-hidden="true">
-							<path d="M4 6l4 4 4-4" />
-						</svg>
 					</button>
+					<DropdownArrow />
 					{open && (
 						<div className={styles.popup} onMouseDown={handlePopupMouseDown}>
 							<input
