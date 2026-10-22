@@ -278,7 +278,7 @@ describe('WorkspaceForm', () => {
 		expect(screen.queryByRole('alertdialog')).toBeNull()
 	})
 
-	it('cancels a section’s reset on a click outside it, on Escape, or when it collapses', () => {
+	it('cancels a section’s reset from its close button, on a click outside it, on Escape, or when it collapses', () => {
 		const onUpdate = vi.fn()
 		render(
 			<Form
@@ -291,6 +291,12 @@ describe('WorkspaceForm', () => {
 		)
 		fireEvent.click(screen.getByRole('button', { name: 'Calendar' }))
 		const reset = screen.getByRole('button', { name: 'Reset Calendar settings' })
+
+		fireEvent.click(reset)
+		fireEvent.click(
+			within(screen.getByRole('alertdialog')).getByRole('button', { name: 'Cancel' }),
+		)
+		expect(screen.queryByRole('alertdialog')).toBeNull()
 
 		fireEvent.click(reset)
 		fireEvent.pointerDown(screen.getByLabelText('Year'))

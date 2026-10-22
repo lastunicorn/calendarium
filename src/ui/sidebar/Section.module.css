@@ -133,3 +133,33 @@
 	font-size: 0.875rem;
 	color: var(--color-text);
 }
+
+/* A little larger than a bare button, to match the question above it. */
+.resetConfirm {
+	padding: 4px 16px;
+	font-size: 0.875rem;
+}
+
+/* A bare icon in the veil's top right corner, faint until hovered or focused, like the reset button. */
+.resetCancel {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	display: inline-flex;
+	padding: 4px;
+	color: var(--color-text-faint);
+	background: none;
+	border: none;
+	border-radius: 50%;
+	cursor: pointer;
+}
+
+.resetCancel:hover,
+.resetCancel:focus-visible {
+	color: var(--color-text);
+}
+
+.resetCancel svg {
+	width: 16px;
+	height: 16px;
+}

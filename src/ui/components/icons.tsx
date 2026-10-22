@@ -146,6 +146,16 @@ export function InfoIcon() {
 	)
 }
 
+/** An "X": closes what it sits on without acting. */
+export function CloseIcon() {
+	return (
+		<Icon>
+			<path d="M18 6L6 18" />
+			<path d="M6 6l12 12" />
+		</Icon>
+	)
+}
+
 /** A chevron pointing right; turned down when the section it toggles is open. */
 export function ChevronIcon() {
 	return (

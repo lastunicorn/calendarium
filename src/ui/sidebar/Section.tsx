@@ -1,5 +1,5 @@
 import { type ReactNode, useEffect, useId, useRef, useState } from 'react'
-import { ChevronIcon, ResetIcon } from '../components/icons'
+import { ChevronIcon, CloseIcon, ResetIcon } from '../components/icons'
 import styles from './Section.module.css'
 import { useOpenSectionsContext } from './openSections'
 
@@ -37,8 +37,8 @@ interface SectionProps {
  * shows or hides the fields, closing any other open section, and the `WorkspaceForm` remembers which
  * one is open, by title. With `onReset`, an open section ends with a small reset button on the
  * right, styled like a field's info button. It covers the fields with a veil asking to confirm,
- * which keeps them out of reach; a click outside the section, Escape or collapsing the section
- * cancels.
+ * which keeps them out of reach; its close button, a click outside the section, Escape or
+ * collapsing the section cancels.
  */
 export function Section({
 	title,
@@ -80,6 +80,10 @@ export function Section({
 
 	function handleResetClick() {
 		setConfirmingReset(true)
+	}
+
+	function handleResetCancelClick() {
+		setConfirmingReset(false)
 	}
 
 	function handleResetConfirmClick() {
@@ -138,10 +142,24 @@ export function Section({
 			</div>
 			{confirmingReset && (
 				<div className={styles.veil} role="alertdialog" aria-labelledby={questionId}>
+					<button
+						type="button"
+						className={styles.resetCancel}
+						title="Cancel"
+						aria-label="Cancel"
+						onClick={handleResetCancelClick}
+					>
+						<CloseIcon />
+					</button>
 					<p id={questionId} className={styles.resetQuestion}>
 						Reset {title} settings to their defaults?
 					</p>
-					<button type="button" autoFocus onClick={handleResetConfirmClick}>
+					<button
+						type="button"
+						className={styles.resetConfirm}
+						autoFocus
+						onClick={handleResetConfirmClick}
+					>
 						Reset
 					</button>
 				</div>
