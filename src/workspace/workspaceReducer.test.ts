@@ -65,7 +65,7 @@ describe('workspaceReducer', () => {
 		expect(workspace).toEqual(before)
 	})
 
-	it('resetLayout restores one layout’s defaults and keeps the active layout and the others', () => {
+	it('newProject restores one layout’s defaults and keeps the active layout and the others', () => {
 		let workspace = defaultWorkspace()
 		workspace = workspaceReducer(workspace, {
 			type: 'update',
@@ -77,20 +77,19 @@ describe('workspaceReducer', () => {
 			layout: 'year-per-page',
 			patch: { title: 'Hi' },
 		})
-		const reset = workspaceReducer(workspace, { type: 'resetLayout', layout: 'day-per-page' })
-		expect(reset.layouts['day-per-page']).toEqual(defaultLayoutOptions('day-per-page'))
-		expect(reset.layouts['year-per-page']).toBe(workspace.layouts['year-per-page'])
-		expect(reset.layout).toBe('year-per-page')
+		const started = workspaceReducer(workspace, { type: 'newProject', layout: 'day-per-page' })
+		expect(started.layouts['day-per-page']).toEqual(defaultLayoutOptions('day-per-page'))
+		expect(started.layouts['year-per-page']).toBe(workspace.layouts['year-per-page'])
+		expect(started.layout).toBe('year-per-page')
 	})
 
-	it('importLayout swaps one layout’s options and shows that layout', () => {
+	it('openProject swaps in one layout’s project and shows that layout', () => {
 		const next = { ...defaultLayoutOptions('month-per-page'), year: 1999 }
-		const imported = workspaceReducer(defaultWorkspace(), {
-			type: 'importLayout',
-			layout: 'month-per-page',
-			options: next,
+		const opened = workspaceReducer(defaultWorkspace(), {
+			type: 'openProject',
+			project: { layout: 'month-per-page', options: next },
 		})
-		expect(imported.layout).toBe('month-per-page')
-		expect(imported.layouts['month-per-page']).toBe(next)
+		expect(opened.layout).toBe('month-per-page')
+		expect(opened.layouts['month-per-page']).toBe(next)
 	})
 })

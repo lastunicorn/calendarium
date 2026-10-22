@@ -1,4 +1,4 @@
-import type { Workspace } from './Workspace'
+import type { Project, Workspace } from './Workspace'
 import {
 	defaultLayoutOptions,
 	type LayoutOptions,
@@ -15,10 +15,10 @@ export type WorkspaceAction =
 	| { type: 'selectLayout'; layout: LayoutId }
 	/** Changes some of one layout's options, keeping the rest. */
 	| { [K in LayoutId]: { type: 'update'; layout: K; patch: Partial<LayoutOptions[K]> } }[LayoutId]
-	/** Restores one layout's default options; the active layout stays as it was. */
-	| { type: 'resetLayout'; layout: LayoutId }
-	/** Swaps in one layout's options and shows that layout (an imported file). */
-	| { [K in LayoutId]: { type: 'importLayout'; layout: K; options: LayoutOptions[K] } }[LayoutId]
+	/** Starts `layout` over from its default options; the active layout stays as it was. */
+	| { type: 'newProject'; layout: LayoutId }
+	/** Swaps in a project for the last one of its layout and shows that layout (an opened file). */
+	| { type: 'openProject'; project: Project }
 
 /** `workspace` with `layout`'s options replaced, after applying that layout's rules. */
 function withLayout<K extends LayoutId>(
@@ -42,12 +42,11 @@ export function workspaceReducer(workspace: Workspace, action: WorkspaceAction):
 				...workspace.layouts[action.layout],
 				...action.patch,
 			})
-		case 'resetLayout':
+		case 'newProject':
 			return withLayout(workspace, action.layout, defaultLayoutOptions(action.layout))
-		case 'importLayout':
-			return {
-				...withLayout(workspace, action.layout, action.options),
-				layout: action.layout,
-			}
+		case 'openProject': {
+			const { layout, options } = action.project
+			return { ...withLayout(workspace, layout, options), layout }
+		}
 	}
 }

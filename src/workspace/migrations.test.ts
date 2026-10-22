@@ -5,7 +5,7 @@ import {
 	FILE_FORMAT,
 	FILE_MIGRATIONS,
 	FIRST_FORMAT_VERSION,
-	isLayoutFile,
+	isProjectFile,
 	isFromLaterVersion,
 	STORAGE_MIGRATIONS,
 	upgradeFile,
@@ -126,10 +126,10 @@ describe('each layout’s own steps', () => {
 	})
 })
 
-describe('isLayoutFile', () => {
+describe('isProjectFile', () => {
 	it('accepts only files marked with the format', () => {
-		expect(isLayoutFile({ format: FILE_FORMAT })).toBe(true)
-		expect(isLayoutFile({ year: 2030 })).toBe(false)
-		expect(isLayoutFile({ format: 'other' })).toBe(false)
+		expect(isProjectFile({ format: FILE_FORMAT })).toBe(true)
+		expect(isProjectFile({ year: 2030 })).toBe(false)
+		expect(isProjectFile({ format: 'other' })).toBe(false)
 	})
 })

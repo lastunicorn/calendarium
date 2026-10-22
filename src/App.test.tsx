@@ -2,10 +2,10 @@ import { fireEvent, render, screen, waitFor, within } from '@testing-library/rea
 import { describe, expect, it, vi } from 'vitest'
 import App from './App'
 import { defaultLayoutOptions } from './layouts'
-import { serializeLayoutOptions } from './workspace/layoutFile'
+import { serializeProject } from './workspace/projectFile'
 
-/** Chooses `file` in the layout section's hidden file input, as the import button's dialog would. */
-function chooseImportFile(container: HTMLElement, file: File) {
+/** Chooses `file` in the layout section's hidden file input, as the open button's dialog would. */
+function chooseProjectFile(container: HTMLElement, file: File) {
 	const input = container.querySelector<HTMLInputElement>('input[type="file"]')!
 	fireEvent.change(input, { target: { files: [file] } })
 }
@@ -20,14 +20,14 @@ function layoutSelect(): HTMLSelectElement {
 	return screen.getByRole('group', { name: 'Layout' }).querySelector('select')!
 }
 
-describe('App import', () => {
-	it('switches to the layout of an imported file and draws its pages', async () => {
+describe('App open project', () => {
+	it('switches to the layout of an opened file and draws its pages', async () => {
 		const { container } = render(<App />)
 		expect(layoutSelect().value).toBe('year-per-page')
 
 		const options = { ...defaultLayoutOptions('month-per-page'), year: 2030 }
-		const text = serializeLayoutOptions('month-per-page', options)
-		chooseImportFile(container, new File([text], 'month.json', { type: 'application/json' }))
+		const text = serializeProject({ layout: 'month-per-page', options })
+		chooseProjectFile(container, new File([text], 'month.json', { type: 'application/json' }))
 
 		await waitFor(() => expect(layoutSelect().value).toBe('month-per-page'))
 		openSection('Calendar')
@@ -36,13 +36,13 @@ describe('App import', () => {
 		expect(screen.queryByRole('alert')).toBeNull()
 	})
 
-	it('shows an error for a file that is not a configuration, and keeps the settings', async () => {
+	it('shows an error for a file that is not a project, and keeps the settings', async () => {
 		const { container } = render(<App />)
 
-		chooseImportFile(container, new File(['{"year": 2030}'], 'other.json'))
+		chooseProjectFile(container, new File(['{"year": 2030}'], 'other.json'))
 
 		expect((await screen.findByRole('alert')).textContent).toBe(
-			'other.json is not a valid configuration file.',
+			'other.json is not a calendar project file.',
 		)
 		expect(layoutSelect().value).toBe('year-per-page')
 		openSection('Calendar')
@@ -52,17 +52,19 @@ describe('App import', () => {
 	})
 })
 
-describe('App reset', () => {
+describe('App new project', () => {
 	it('restores the shown layout’s defaults after confirming, and keeps it shown', async () => {
 		const { container } = render(<App />)
 		const options = { ...defaultLayoutOptions('month-per-page'), year: 2030 }
-		const text = serializeLayoutOptions('month-per-page', options)
-		chooseImportFile(container, new File([text], 'month.json', { type: 'application/json' }))
+		const text = serializeProject({ layout: 'month-per-page', options })
+		chooseProjectFile(container, new File([text], 'month.json', { type: 'application/json' }))
 		await waitFor(() => expect(layoutSelect().value).toBe('month-per-page'))
 
 		const confirm = vi.spyOn(window, 'confirm').mockReturnValue(true)
-		fireEvent.click(screen.getByRole('button', { name: 'Reset layout settings' }))
-		expect(confirm).toHaveBeenCalledWith('Reset Month settings to their defaults?')
+		fireEvent.click(screen.getByRole('button', { name: 'New project' }))
+		expect(confirm).toHaveBeenCalledWith(
+			'Start a new Month project? Its settings go back to their defaults; save the current project to a file first to keep it.',
+		)
 		confirm.mockRestore()
 
 		expect(layoutSelect().value).toBe('month-per-page')
@@ -79,8 +81,8 @@ describe('App reset', () => {
 			year: 2030,
 			events: '0000-12-25 Christmas',
 		}
-		const text = serializeLayoutOptions('month-per-page', options)
-		chooseImportFile(container, new File([text], 'month.json', { type: 'application/json' }))
+		const text = serializeProject({ layout: 'month-per-page', options })
+		chooseProjectFile(container, new File([text], 'month.json', { type: 'application/json' }))
 		await waitFor(() => expect(layoutSelect().value).toBe('month-per-page'))
 
 		openSection('Calendar')

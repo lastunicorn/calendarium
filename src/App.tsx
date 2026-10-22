@@ -6,7 +6,7 @@ import { Toolbar } from './ui/sidebar/Toolbar'
 import { useWorkspace } from './ui/useWorkspace'
 
 export default function App() {
-	const { workspace, selectLayout, update, resetLayout, importLayout } = useWorkspace()
+	const { workspace, selectLayout, update, newProject, openProject } = useWorkspace()
 
 	return (
 		<div className={styles.app}>
@@ -16,11 +16,11 @@ export default function App() {
 					workspace={workspace}
 					onSelectLayout={selectLayout}
 					onUpdate={update}
-					onResetLayout={resetLayout}
-					onImportLayout={importLayout}
+					onNewProject={newProject}
+					onOpenProject={openProject}
 				/>
 			</Sidebar>
-			<Preview workspace={workspace} onResetLayout={resetLayout} />
+			<Preview workspace={workspace} onNewProject={newProject} />
 		</div>
 	)
 }

@@ -4,10 +4,10 @@ import styles from './PreviewErrorBoundary.module.css'
 
 interface PreviewErrorBoundaryProps {
 	layout: LayoutId
-	/** The options being drawn; a new value (an edit, an import, a reset) tries drawing again. */
+	/** The options being drawn; a new value (an edit, an opened file, a new project) tries drawing again. */
 	options: AnyLayoutOptions
-	/** Restores the layout's default options. */
-	onReset: (layout: LayoutId) => void
+	/** Starts the layout's project over from its default options. */
+	onNewProject: (layout: LayoutId) => void
 	children: ReactNode
 }
 
@@ -20,7 +20,7 @@ interface PreviewErrorBoundaryState {
 
 /**
  * Catches an error while drawing the pages, so the sidebar keeps working and the settings that
- * caused it can be changed or reset, instead of the whole app going blank.
+ * caused it can be changed or a new project started, instead of the whole app going blank.
  */
 export class PreviewErrorBoundary extends Component<
 	PreviewErrorBoundaryProps,
@@ -48,8 +48,8 @@ export class PreviewErrorBoundary extends Component<
 		console.error('The preview failed to render:', error, info.componentStack)
 	}
 
-	handleResetClick = () => {
-		this.props.onReset(this.props.layout)
+	handleNewProjectClick = () => {
+		this.props.onNewProject(this.props.layout)
 	}
 
 	render() {
@@ -60,10 +60,11 @@ export class PreviewErrorBoundary extends Component<
 				<h2 className={styles.title}>The calendar can't be drawn with these settings</h2>
 				<p className={styles.message}>{error.message}</p>
 				<p className={styles.hint}>
-					Change the settings in the sidebar, or reset this layout to its defaults.
+					Change the settings in the sidebar, or start a new project from this layout's
+					defaults.
 				</p>
-				<button type="button" onClick={this.handleResetClick}>
-					Reset this layout's settings
+				<button type="button" onClick={this.handleNewProjectClick}>
+					Start a new project
 				</button>
 			</div>
 		)

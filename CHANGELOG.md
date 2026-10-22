@@ -4,6 +4,10 @@ The features each release brought, newest first. Versions follow the app version
 
 ## Unreleased
 
+### Changed
+
+- Sidebar: the Export, Import and Reset buttons under the layout picker are now Save project, Open a project file and New project. A project is a layout with its settings, which is what the file holds; files exported by earlier versions open as they are. When the calendar can't be drawn, the offered fix is likewise to start a new project.
+
 ## 4.5.0 — 2026-10-22
 
 Settings and files from 4.4.0 are read as they are; the new options start at their defaults, and saved settings keep the values whose default changed.

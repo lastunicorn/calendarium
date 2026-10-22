@@ -1,5 +1,5 @@
 import type { Workspace } from '../../workspace/Workspace'
-import type { ImportedLayoutOptions } from '../../workspace/layoutFile'
+import type { OpenedProject } from '../../workspace/projectFile'
 import { useMemo } from 'react'
 import { defaultLayoutOptions, type LayoutOptions, type LayoutId } from '../../layouts'
 import { layoutView } from '../layouts/registry'
@@ -12,8 +12,8 @@ interface WorkspaceFormProps {
 	workspace: Workspace
 	onSelectLayout: (layout: LayoutId) => void
 	onUpdate: UpdateLayoutOptions
-	onResetLayout: (layout: LayoutId) => void
-	onImportLayout: (imported: ImportedLayoutOptions) => void
+	onNewProject: (layout: LayoutId) => void
+	onOpenProject: (opened: OpenedProject) => void
 }
 
 interface LayoutFormProps<K extends LayoutId> {
@@ -39,15 +39,15 @@ function LayoutForm<K extends LayoutId>({ layout, options, onUpdate }: LayoutFor
 }
 
 /**
- * The layout picker with the export, import and reset of its options, and the chosen layout's options, grouped by what they affect, in sections
- * of which one at a time is open, staying open across layouts and reloads.
+ * The layout picker with the saving, opening and starting over of its project, and the chosen layout's
+ * options, grouped by what they affect, in sections of which one at a time is open, staying open across layouts and reloads.
  */
 export function WorkspaceForm({
 	workspace,
 	onSelectLayout,
 	onUpdate,
-	onResetLayout,
-	onImportLayout,
+	onNewProject,
+	onOpenProject,
 }: WorkspaceFormProps) {
 	const { layout } = workspace
 	const openSections = useOpenSections()
@@ -57,8 +57,8 @@ export function WorkspaceForm({
 				<LayoutSection
 					workspace={workspace}
 					onSelect={onSelectLayout}
-					onReset={onResetLayout}
-					onImport={onImportLayout}
+					onNew={onNewProject}
+					onOpen={onOpenProject}
 				/>
 				{/* Keyed so half-typed field drafts don't carry over to another layout. */}
 				<LayoutForm

@@ -7,8 +7,8 @@ import { PreviewErrorBoundary } from './PreviewErrorBoundary'
 
 interface PreviewProps {
 	workspace: Workspace
-	/** Restores one layout's default options, offered when its pages fail to render. */
-	onResetLayout: (layout: LayoutId) => void
+	/** Starts one layout's project over from its defaults, offered when its pages fail to render. */
+	onNewProject: (layout: LayoutId) => void
 }
 
 interface ActiveLayoutProps<K extends LayoutId> {
@@ -23,14 +23,14 @@ function ActiveLayout<K extends LayoutId>({ layout, options }: ActiveLayoutProps
 }
 
 /** The scrollable area showing the chosen layout's pages, which is all that gets printed. */
-export function Preview({ workspace, onResetLayout }: PreviewProps) {
+export function Preview({ workspace, onNewProject }: PreviewProps) {
 	const { layout } = workspace
 	const options = workspace.layouts[layout]
 	return (
 		<main className={styles.preview}>
 			{/* The printed paper size. Every page shares it, so one rule covers the document. */}
 			<style>{`@page { size: ${pageSizeCss(options.page.paperSize, options.page.orientation)}; }`}</style>
-			<PreviewErrorBoundary layout={layout} options={options} onReset={onResetLayout}>
+			<PreviewErrorBoundary layout={layout} options={options} onNewProject={onNewProject}>
 				<ActiveLayout layout={layout} options={options} />
 			</PreviewErrorBoundary>
 		</main>

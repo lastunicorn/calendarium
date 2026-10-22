@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { defaultLayoutOptions, LAYOUT_IDS } from '../layouts'
-import { defaultWorkspace } from './Workspace'
-import { exportLayoutFile, parseLayoutFile, serializeLayoutOptions } from './layoutFile'
+import { activeProject, defaultWorkspace } from './Workspace'
+import { parseProjectFile, projectFile, serializeProject } from './projectFile'
 import { FILE_FORMAT } from './migrations'
 import { APP_VERSION, FORMAT_VERSION } from './version'
 
@@ -10,8 +10,8 @@ function fileText(fields: Record<string, unknown>): string {
 	return JSON.stringify({ format: FILE_FORMAT, version: FORMAT_VERSION, ...fields })
 }
 
-describe('layout files', () => {
-	it('round-trips one layout through serializeLayoutOptions', () => {
+describe('project files', () => {
+	it('round-trips a project through serializeProject', () => {
 		const defaults = defaultLayoutOptions('day-per-page')
 		const options = {
 			...defaults,
@@ -19,8 +19,8 @@ describe('layout files', () => {
 			firstHour: 5,
 			page: { ...defaults.page, paperSize: 'a3' as const },
 		}
-		const text = serializeLayoutOptions('day-per-page', options)
-		expect(parseLayoutFile(text, 'year-per-page')).toEqual({
+		const text = serializeProject({ layout: 'day-per-page', options })
+		expect(parseProjectFile(text, 'year-per-page')).toEqual({
 			layout: 'day-per-page',
 			options,
 			ignored: [],
@@ -28,19 +28,22 @@ describe('layout files', () => {
 		})
 	})
 
-	it('exports the active layout, named after it and its year', () => {
+	it('saves the active project, named after its layout and year', () => {
 		const workspace = { ...defaultWorkspace(), layout: 'week-per-page' as const }
 		workspace.layouts['week-per-page'] = { ...workspace.layouts['week-per-page'], year: 2031 }
-		const file = exportLayoutFile(workspace)
+		const file = projectFile(activeProject(workspace))
 		expect(file.fileName).toBe('calendar-week-per-page-2031.json')
 		expect(file.text).toBe(
-			serializeLayoutOptions('week-per-page', workspace.layouts['week-per-page']),
+			serializeProject({
+				layout: 'week-per-page',
+				options: workspace.layouts['week-per-page'],
+			}),
 		)
 	})
 
 	it('writes the format, the versions, the layout and only that layout’s options', () => {
 		const options = defaultLayoutOptions('month-per-page')
-		const data = JSON.parse(serializeLayoutOptions('month-per-page', options))
+		const data = JSON.parse(serializeProject({ layout: 'month-per-page', options }))
 		expect(data).toEqual({
 			format: FILE_FORMAT,
 			version: FORMAT_VERSION,
@@ -52,50 +55,50 @@ describe('layout files', () => {
 		expect(data).not.toHaveProperty('layouts')
 	})
 
-	it('imports into the current layout when the file names none or an unknown one', () => {
-		expect(parseLayoutFile(fileText({ year: 2031 }), 'month-per-page')?.layout).toBe(
+	it('opens into the current layout when the file names none or an unknown one', () => {
+		expect(parseProjectFile(fileText({ year: 2031 }), 'month-per-page')?.layout).toBe(
 			'month-per-page',
 		)
-		expect(parseLayoutFile(fileText({ layout: 'week' }), 'day-per-page')?.layout).toBe(
+		expect(parseProjectFile(fileText({ layout: 'week' }), 'day-per-page')?.layout).toBe(
 			'day-per-page',
 		)
 	})
 
-	it('keeps only the fields of the layout it imports into', () => {
-		const imported = parseLayoutFile(
+	it('keeps only the fields of the layout it opens into', () => {
+		const opened = parseProjectFile(
 			fileText({ layout: 'month-per-page', subtitle: 'Office' }),
 			'year-per-page',
 		)
-		expect(imported?.options).not.toHaveProperty('subtitle')
+		expect(opened?.options).not.toHaveProperty('subtitle')
 	})
 
 	it('rejects files that are not a JSON object', () => {
 		for (const text of ['not json', '[]', 'null', '2030']) {
-			expect(parseLayoutFile(text, 'year-per-page')).toBeNull()
+			expect(parseProjectFile(text, 'year-per-page')).toBeNull()
 		}
 	})
 
-	it('rejects JSON objects that are not a layout file', () => {
+	it('rejects JSON objects that are not a project file', () => {
 		const files = [
 			{ name: 'package', version: 3 },
 			{ version: FORMAT_VERSION, year: 2030 },
 			{ format: 'something-else', version: FORMAT_VERSION, year: 2030 },
 		]
 		for (const file of files) {
-			expect(parseLayoutFile(JSON.stringify(file), 'year-per-page')).toBeNull()
+			expect(parseProjectFile(JSON.stringify(file), 'year-per-page')).toBeNull()
 		}
 	})
 
 	it('rejects files without a version this app knows', () => {
 		for (const version of [undefined, 1, 2, '3']) {
 			const file = JSON.stringify({ format: FILE_FORMAT, version, year: 2030 })
-			expect(parseLayoutFile(file, 'year-per-page')).toBeNull()
+			expect(parseProjectFile(file, 'year-per-page')).toBeNull()
 		}
 	})
 
 	it('accepts a file holding no options', () => {
 		const file = JSON.stringify({ format: FILE_FORMAT, version: FORMAT_VERSION })
-		expect(parseLayoutFile(file, 'month-per-page')?.options).toEqual(
+		expect(parseProjectFile(file, 'month-per-page')?.options).toEqual(
 			defaultLayoutOptions('month-per-page'),
 		)
 	})
@@ -108,18 +111,18 @@ describe('layout files', () => {
 			year: 2031,
 			futureOption: 'x',
 		})
-		const imported = parseLayoutFile(file, 'year-per-page')
-		expect(imported?.newer).toBe(true)
-		expect(imported?.options.year).toBe(2031)
-		expect(imported?.options).not.toHaveProperty('futureOption')
+		const opened = parseProjectFile(file, 'year-per-page')
+		expect(opened?.newer).toBe(true)
+		expect(opened?.options.year).toBe(2031)
+		expect(opened?.options).not.toHaveProperty('futureOption')
 	})
 
 	it('reports a file made by a later app version of the same format version', () => {
 		const file = (app: string) =>
 			JSON.stringify({ format: FILE_FORMAT, version: FORMAT_VERSION, app, year: 2031 })
-		expect(parseLayoutFile(file(`${FORMAT_VERSION}.999.0`), 'year-per-page')?.newer).toBe(true)
-		expect(parseLayoutFile(file(APP_VERSION), 'year-per-page')?.newer).toBe(false)
-		expect(parseLayoutFile(file('0.1.0'), 'year-per-page')?.newer).toBe(false)
+		expect(parseProjectFile(file(`${FORMAT_VERSION}.999.0`), 'year-per-page')?.newer).toBe(true)
+		expect(parseProjectFile(file(APP_VERSION), 'year-per-page')?.newer).toBe(false)
+		expect(parseProjectFile(file('0.1.0'), 'year-per-page')?.newer).toBe(false)
 	})
 
 	it('falls back to the layout’s defaults for invalid fields', () => {
@@ -130,7 +133,7 @@ describe('layout files', () => {
 				year: 2030,
 				page: { orientation: 'up' },
 			})
-			expect(parseLayoutFile(file, layout)).toEqual({
+			expect(parseProjectFile(file, layout)).toEqual({
 				layout,
 				options: { ...defaultLayoutOptions(layout), year: 2030 },
 				ignored: ['page.orientation'],
@@ -150,7 +153,7 @@ describe('layout files', () => {
 			title: 'Not a day-per-page field',
 			page: { paperSize: 'a4', margins: { top: 99, left: 5, right: 'wide' } },
 		})
-		expect(parseLayoutFile(file, 'year-per-page')?.ignored).toEqual([
+		expect(parseProjectFile(file, 'year-per-page')?.ignored).toEqual([
 			'page.margins.top',
 			'page.margins.right',
 			'hourFormat',
@@ -161,6 +164,6 @@ describe('layout files', () => {
 			version: FORMAT_VERSION,
 			page: 'big',
 		})
-		expect(parseLayoutFile(badPage, 'year-per-page')?.ignored).toEqual(['page'])
+		expect(parseProjectFile(badPage, 'year-per-page')?.ignored).toEqual(['page'])
 	})
 })

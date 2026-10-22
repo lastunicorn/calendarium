@@ -30,8 +30,8 @@ export function PrintIcon() {
 	)
 }
 
-/** Arrow up out of a tray: loads a layout's options from a file. */
-export function ImportIcon() {
+/** Arrow down into a tray: opens a project file. */
+export function OpenIcon() {
 	return (
 		<Icon>
 			<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -41,8 +41,8 @@ export function ImportIcon() {
 	)
 }
 
-/** Arrow down into a tray: saves a layout's options to a file. */
-export function ExportIcon() {
+/** Arrow up out of a tray: saves the project to a file. */
+export function SaveIcon() {
 	return (
 		<Icon>
 			<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -53,7 +53,7 @@ export function ExportIcon() {
 }
 
 /**
- * A power symbol whose ring breaks into dashes on the upper right: restores a layout's default options.
+ * A power symbol whose ring breaks into dashes on the upper right: restores default settings, of a section or a whole project.
  * Flat ends, so the narrow gaps between the dashes stay open.
  */
 export function ResetIcon() {

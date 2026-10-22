@@ -16,14 +16,14 @@ function workspaceFor(layout: LayoutId): Workspace {
 describe('Preview', () => {
 	it.each(LAYOUT_IDS)('draws the pages of %s', (layout) => {
 		const { container } = render(
-			<Preview workspace={workspaceFor(layout)} onResetLayout={noop} />,
+			<Preview workspace={workspaceFor(layout)} onNewProject={noop} />,
 		)
 		expect(container.querySelectorAll('section').length).toBeGreaterThan(0)
 	})
 
 	it('sets the printed paper size from the layout', () => {
 		const { container } = render(
-			<Preview workspace={workspaceFor('month-per-page')} onResetLayout={noop} />,
+			<Preview workspace={workspaceFor('month-per-page')} onNewProject={noop} />,
 		)
 		expect(container.querySelector('style')?.textContent).toBe('@page { size: A4 landscape; }')
 	})

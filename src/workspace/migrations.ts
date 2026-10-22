@@ -57,7 +57,10 @@ export const STORAGE_MIGRATIONS: readonly Migration[] = [layoutsInStorage(3)]
  */
 export const FILE_MIGRATIONS: readonly Migration[] = [layoutInFile(3)]
 
-/** Marks a JSON file as one of this app's layout files. */
+/**
+ * Marks a JSON file as one of this app's project files. It names a layout, as projects were called
+ * when files were first written, and stays as it is: every file carries it.
+ */
 export const FILE_FORMAT = 'printable-calendar/layout'
 
 /** The format version `data` is tagged with; `null` when it has none this app knows. */
@@ -105,6 +108,6 @@ export function upgradeFile(data: StoredData): StoredData | null {
 }
 
 /** Whether `data` is one of this app's files: it carries `FILE_FORMAT`. */
-export function isLayoutFile(data: StoredData): boolean {
+export function isProjectFile(data: StoredData): boolean {
 	return data.format === FILE_FORMAT
 }

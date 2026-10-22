@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { defaultLayoutOptions, LAYOUT_IDS, normalizeLayout } from '../layouts'
-import { defaultWorkspace } from './Workspace'
+import { defaultWorkspace, type Project } from './Workspace'
 import { workspaceReducer } from './workspaceReducer'
 import { parseWorkspace, toStoredWorkspace } from './parseWorkspace'
 
@@ -47,11 +47,13 @@ describe('normalizeLayout', () => {
 		})
 		expect(updated.layouts[layout].page.equalMargins).toBe(false)
 
-		const imported = workspaceReducer(defaultWorkspace(), {
-			type: 'importLayout',
-			layout,
-			options: { ...defaultLayoutOptions(layout), page: { ...page, margins: DIFFERING } },
+		const opened = workspaceReducer(defaultWorkspace(), {
+			type: 'openProject',
+			project: {
+				layout,
+				options: { ...defaultLayoutOptions(layout), page: { ...page, margins: DIFFERING } },
+			} as Project,
 		})
-		expect(imported.layouts[layout].page.equalMargins).toBe(false)
+		expect(opened.layouts[layout].page.equalMargins).toBe(false)
 	})
 })

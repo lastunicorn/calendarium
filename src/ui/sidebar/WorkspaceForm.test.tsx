@@ -18,8 +18,8 @@ function sectionTitles(layout: LayoutId): string[] {
 			workspace={workspace}
 			onSelectLayout={noop}
 			onUpdate={noop}
-			onResetLayout={noop}
-			onImportLayout={noop}
+			onNewProject={noop}
+			onOpenProject={noop}
 		/>,
 	)
 	return screen
@@ -46,11 +46,7 @@ describe('WorkspaceForm', () => {
 			within(actions)
 				.getAllByRole('button')
 				.map((button) => button.title),
-		).toEqual([
-			'Export settings to a file',
-			'Import settings from a file',
-			'Reset layout settings',
-		])
+		).toEqual(['Save project to a file', 'Open a project file', 'New project'])
 		const toggles = screen.getAllByRole('button', { expanded: false })
 		expect(toggles.map((button) => button.textContent)).toEqual(titles)
 		expect(screen.queryByLabelText('Year')).toBeNull()
@@ -80,11 +76,7 @@ describe('WorkspaceForm', () => {
 			within(actions)
 				.getAllByRole('button')
 				.map((button) => button.title),
-		).toEqual([
-			'Export settings to a file',
-			'Import settings from a file',
-			'Reset layout settings',
-		])
+		).toEqual(['Save project to a file', 'Open a project file', 'New project'])
 	})
 
 	it('keeps a section open on another layout and after a reload', () => {
@@ -94,8 +86,8 @@ describe('WorkspaceForm', () => {
 				workspace={workspace}
 				onSelectLayout={noop}
 				onUpdate={noop}
-				onResetLayout={noop}
-				onImportLayout={noop}
+				onNewProject={noop}
+				onOpenProject={noop}
 			/>,
 		)
 		fireEvent.click(screen.getByRole('button', { name: 'Calendar' }))
@@ -105,8 +97,8 @@ describe('WorkspaceForm', () => {
 				workspace={{ ...workspace, layout: 'day-per-page' }}
 				onSelectLayout={noop}
 				onUpdate={noop}
-				onResetLayout={noop}
-				onImportLayout={noop}
+				onNewProject={noop}
+				onOpenProject={noop}
 			/>,
 		)
 		expect(screen.getByLabelText('Year')).not.toBeNull()
@@ -120,8 +112,8 @@ describe('WorkspaceForm', () => {
 				workspace={workspace}
 				onSelectLayout={noop}
 				onUpdate={noop}
-				onResetLayout={noop}
-				onImportLayout={noop}
+				onNewProject={noop}
+				onOpenProject={noop}
 			/>,
 		)
 		expect(screen.getByLabelText('Year')).not.toBeNull()
@@ -134,8 +126,8 @@ describe('WorkspaceForm', () => {
 				workspace={workspace}
 				onSelectLayout={noop}
 				onUpdate={noop}
-				onResetLayout={noop}
-				onImportLayout={noop}
+				onNewProject={noop}
+				onOpenProject={noop}
 			/>,
 		)
 		fireEvent.click(screen.getByRole('button', { name: 'Page' }))
@@ -154,8 +146,8 @@ describe('WorkspaceForm', () => {
 				workspace={mirrored}
 				onSelectLayout={noop}
 				onUpdate={noop}
-				onResetLayout={noop}
-				onImportLayout={noop}
+				onNewProject={noop}
+				onOpenProject={noop}
 			/>,
 		)
 		expect(screen.getByRole('group', { name: 'Spine' })).not.toBeNull()
@@ -179,8 +171,8 @@ describe('WorkspaceForm', () => {
 				workspace={workspace}
 				onSelectLayout={noop}
 				onUpdate={onUpdate}
-				onResetLayout={noop}
-				onImportLayout={noop}
+				onNewProject={noop}
+				onOpenProject={noop}
 			/>,
 		)
 		fireEvent.click(screen.getByRole('button', { name: 'Page' }))
@@ -200,8 +192,8 @@ describe('WorkspaceForm', () => {
 				workspace={withPage({ mirrorMargins: true, equalMargins: false })}
 				onSelectLayout={noop}
 				onUpdate={onUpdate}
-				onResetLayout={noop}
-				onImportLayout={noop}
+				onNewProject={noop}
+				onOpenProject={noop}
 			/>,
 		)
 		const equal = screen.getByRole<HTMLInputElement>('checkbox', { name: 'Use equal margins' })
@@ -216,8 +208,8 @@ describe('WorkspaceForm', () => {
 				})}
 				onSelectLayout={noop}
 				onUpdate={onUpdate}
-				onResetLayout={noop}
-				onImportLayout={noop}
+				onNewProject={noop}
+				onOpenProject={noop}
 			/>,
 		)
 		fireEvent.click(equal)
@@ -226,27 +218,27 @@ describe('WorkspaceForm', () => {
 		})
 	})
 
-	it('labels the hovered or focused layout action under the buttons', () => {
+	it('labels the hovered or focused project action under the buttons', () => {
 		render(
 			<WorkspaceForm
 				workspace={defaultWorkspace()}
 				onSelectLayout={noop}
 				onUpdate={noop}
-				onResetLayout={noop}
-				onImportLayout={noop}
+				onNewProject={noop}
+				onOpenProject={noop}
 			/>,
 		)
-		const actions = screen.getByRole('toolbar', { name: 'Layout settings' })
+		const actions = screen.getByRole('toolbar', { name: 'Project' })
 		const hint = actions.nextElementSibling!
 		expect(hint.textContent).toBe('')
 
-		fireEvent.pointerOver(screen.getByRole('button', { name: 'Reset layout settings' }))
-		expect(hint.textContent).toBe('Reset layout settings')
+		fireEvent.pointerOver(screen.getByRole('button', { name: 'New project' }))
+		expect(hint.textContent).toBe('New project')
 		fireEvent.pointerLeave(actions)
 		expect(hint.textContent).toBe('')
 
-		fireEvent.focus(screen.getByRole('button', { name: 'Export settings to a file' }))
-		expect(hint.textContent).toBe('Export settings to a file')
+		fireEvent.focus(screen.getByRole('button', { name: 'Save project to a file' }))
+		expect(hint.textContent).toBe('Save project to a file')
 	})
 
 	it('asks before resetting a section, and resets only that section’s fields', () => {
@@ -257,8 +249,8 @@ describe('WorkspaceForm', () => {
 				workspace={workspace}
 				onSelectLayout={noop}
 				onUpdate={onUpdate}
-				onResetLayout={noop}
-				onImportLayout={noop}
+				onNewProject={noop}
+				onOpenProject={noop}
 			/>,
 		)
 		fireEvent.click(screen.getByRole('button', { name: 'Calendar' }))
@@ -280,8 +272,8 @@ describe('WorkspaceForm', () => {
 				workspace={defaultWorkspace()}
 				onSelectLayout={noop}
 				onUpdate={onUpdate}
-				onResetLayout={noop}
-				onImportLayout={noop}
+				onNewProject={noop}
+				onOpenProject={noop}
 			/>,
 		)
 		fireEvent.click(screen.getByRole('button', { name: 'Calendar' }))
