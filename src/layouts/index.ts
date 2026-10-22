@@ -5,7 +5,7 @@ import { MONTH_PER_PAGE } from './month-per-page'
 import { WEEK_PER_PAGE } from './week-per-page'
 import { YEAR_PER_PAGE } from './year-per-page'
 
-// Each set of allowed values is listed once; the type and the validation in `parseConfig`
+// Each set of allowed values is listed once; the type and the validation in `parseWorkspace`
 // derive from the array, and the UI labels are keyed by the type. Sets of generic concepts live
 // in `core/`: locales in `core/locale.ts`, paper sizes and orientations in `core/paper.ts`,
 // weekend highlights in `core/weekend.ts`. Sets only one layout uses live in its folder here.
@@ -76,7 +76,7 @@ export function layoutSpec<K extends LayoutId>(layout: K): LayoutSpec<LayoutOpti
 }
 
 /**
- * Untrusted options stored for `layout`, brought from config `version` to the next by that
+ * Untrusted options stored for `layout`, brought from format `version` to the next by that
  * layout's own step; returned as is for an unknown layout, or one whose options did not change.
  */
 export function migrateLayoutOptions(

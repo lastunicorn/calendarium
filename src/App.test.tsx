@@ -2,7 +2,7 @@ import { fireEvent, render, screen, waitFor, within } from '@testing-library/rea
 import { describe, expect, it, vi } from 'vitest'
 import App from './App'
 import { defaultLayoutOptions } from './layouts'
-import { serializeLayoutOptions } from './config/configFile'
+import { serializeLayoutOptions } from './workspace/layoutFile'
 
 /** Chooses `file` in the layout section's hidden file input, as the import button's dialog would. */
 function chooseImportFile(container: HTMLElement, file: File) {

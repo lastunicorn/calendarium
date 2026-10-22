@@ -43,7 +43,7 @@ describe.each(LAYOUT_IDS)('the %s spec', (layout) => {
 		expect(spec.normalize(normalized)).toBe(normalized)
 	})
 
-	it('keys its migrations by config version', () => {
+	it('keys its migrations by format version', () => {
 		for (const version of Object.keys(spec.migrations)) {
 			expect(Number.isInteger(Number(version)), version).toBe(true)
 		}

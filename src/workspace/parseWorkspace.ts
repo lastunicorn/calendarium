@@ -1,13 +1,13 @@
-import { type AppConfig, defaultAppConfig } from './AppConfig'
+import { type Workspace, defaultWorkspace } from './Workspace'
 import { isLayoutId, type LayoutOptions, type LayoutId, layoutSpec, mapLayouts } from '../layouts'
 import { parseOptions } from '../layouts/LayoutSpec'
 import { type StoredData, upgradeStorage } from './migrations'
 import { asObject } from '../core/validation'
-import { APP_VERSION, CONFIG_VERSION } from './version'
+import { APP_VERSION, FORMAT_VERSION } from './version'
 
-/** The app config as written to storage: tagged with its config version and the app version. */
-export function toStoredConfig(config: AppConfig) {
-	return { version: CONFIG_VERSION, app: APP_VERSION, ...config }
+/** The workspace as written to storage: tagged with its format version and the app version. */
+export function toStoredWorkspace(workspace: Workspace) {
+	return { version: FORMAT_VERSION, app: APP_VERSION, ...workspace }
 }
 
 /**
@@ -55,14 +55,14 @@ export function parseLayoutId(data: StoredData): LayoutId | null {
  * Data from a later version is read as the current shape, as far as it matches; data without a
  * valid version is not read at all.
  */
-export function parseConfig(data: unknown): AppConfig {
-	const config = defaultAppConfig()
+export function parseWorkspace(data: unknown): Workspace {
+	const workspace = defaultWorkspace()
 	const raw = asObject(data)
 	const stored = raw === null ? null : upgradeStorage(raw)
-	if (stored === null) return config
+	if (stored === null) return workspace
 
-	if (isLayoutId(stored.layout)) config.layout = stored.layout
+	if (isLayoutId(stored.layout)) workspace.layout = stored.layout
 	const layouts = asObject(stored.layouts) ?? {}
-	config.layouts = mapLayouts((layout) => parseCurrentLayoutOptions(layout, layouts[layout]))
-	return config
+	workspace.layouts = mapLayouts((layout) => parseCurrentLayoutOptions(layout, layouts[layout]))
+	return workspace
 }

@@ -3,9 +3,9 @@ import { LAYOUT_IDS } from './layouts'
 
 // The folders, from the bottom up. Each may import only itself and the folders below it:
 // `core/` (generic: calendar, languages, paper) ← `layouts/` (each layout's options, rules and
-// pages) ← `config/` (the saved settings) ← `ui/`. Only `ui/` may use React. A layout's UI, in
+// pages) ← `workspace/` (the saved settings) ← `ui/`. Only `ui/` may use React. A layout's UI, in
 // `layouts/<layout-id>/ui/`, is in `ui/`.
-const LAYERS = ['core', 'layouts', 'config', 'ui'] as const
+const LAYERS = ['core', 'layouts', 'workspace', 'ui'] as const
 
 // Each layout is one unit, like a plugin of the host (everything outside the layouts' folders):
 // its files import only their own layout's files and the host's, and the host knows a layout only

@@ -1,5 +1,5 @@
 import type { KeyboardEvent, PointerEvent, ReactNode } from 'react'
-import { APP_VERSION } from '../../config/version'
+import { APP_VERSION } from '../../workspace/version'
 import styles from './Sidebar.module.css'
 import { SIDEBAR_MIN_WIDTH, sidebarMaxWidth, useSidebarWidth } from './useSidebarWidth'
 

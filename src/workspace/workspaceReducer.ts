@@ -1,4 +1,4 @@
-import type { AppConfig } from './AppConfig'
+import type { Workspace } from './Workspace'
 import {
 	defaultLayoutOptions,
 	type LayoutOptions,
@@ -7,10 +7,10 @@ import {
 } from '../layouts'
 
 /**
- * The commands that change the `AppConfig` aggregate, the only way it changes. The per-layout ones
+ * The commands that change the `Workspace` aggregate, the only way it changes. The per-layout ones
  * have one variant per layout, so a patch or the options have that layout's type.
  */
-export type ConfigAction =
+export type WorkspaceAction =
 	/** Shows another layout; every layout's options stay as they were. */
 	| { type: 'selectLayout'; layout: LayoutId }
 	/** Changes some of one layout's options, keeping the rest. */
@@ -20,28 +20,34 @@ export type ConfigAction =
 	/** Swaps in one layout's options and shows that layout (an imported file). */
 	| { [K in LayoutId]: { type: 'importLayout'; layout: K; options: LayoutOptions[K] } }[LayoutId]
 
-/** `config` with `layout`'s options replaced, after applying that layout's rules. */
+/** `workspace` with `layout`'s options replaced, after applying that layout's rules. */
 function withLayout<K extends LayoutId>(
-	config: AppConfig,
+	workspace: Workspace,
 	layout: K,
 	options: LayoutOptions[K],
-): AppConfig {
-	return { ...config, layouts: { ...config.layouts, [layout]: normalizeLayout(layout, options) } }
+): Workspace {
+	return {
+		...workspace,
+		layouts: { ...workspace.layouts, [layout]: normalizeLayout(layout, options) },
+	}
 }
 
-/** `config` after `action`, each changed layout's options passed through its `normalize`. */
-export function configReducer(config: AppConfig, action: ConfigAction): AppConfig {
+/** `workspace` after `action`, each changed layout's options passed through its `normalize`. */
+export function workspaceReducer(workspace: Workspace, action: WorkspaceAction): Workspace {
 	switch (action.type) {
 		case 'selectLayout':
-			return { ...config, layout: action.layout }
+			return { ...workspace, layout: action.layout }
 		case 'update':
-			return withLayout(config, action.layout, {
-				...config.layouts[action.layout],
+			return withLayout(workspace, action.layout, {
+				...workspace.layouts[action.layout],
 				...action.patch,
 			})
 		case 'resetLayout':
-			return withLayout(config, action.layout, defaultLayoutOptions(action.layout))
+			return withLayout(workspace, action.layout, defaultLayoutOptions(action.layout))
 		case 'importLayout':
-			return { ...withLayout(config, action.layout, action.options), layout: action.layout }
+			return {
+				...withLayout(workspace, action.layout, action.options),
+				layout: action.layout,
+			}
 	}
 }

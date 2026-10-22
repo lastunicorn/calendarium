@@ -34,7 +34,7 @@ interface SectionProps {
 /**
  * A titled group of related fields, its title on a tinted band after an icon, optionally with a
  * short description under the title. A collapsible section starts collapsed: clicking the title
- * shows or hides the fields, closing any other open section, and the `ConfigForm` remembers which
+ * shows or hides the fields, closing any other open section, and the `WorkspaceForm` remembers which
  * one is open, by title. With `onReset`, an open section ends with a small reset button on the
  * right, styled like a field's info button. It covers the fields with a veil asking to confirm,
  * which keeps them out of reach; a click outside the section, Escape or collapsing the section

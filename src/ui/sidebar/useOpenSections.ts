@@ -8,13 +8,13 @@ export interface OpenSections {
 	toggle: (title: string) => void
 }
 
-/** Given by the `ConfigForm` to its `Section`s, so their state outlives a layout's form. */
+/** Given by the `WorkspaceForm` to its `Section`s, so their state outlives a layout's form. */
 export const OpenSectionsContext = createContext<OpenSections | null>(null)
 
-/** The `OpenSections` of the enclosing `ConfigForm`. */
+/** The `OpenSections` of the enclosing `WorkspaceForm`. */
 export function useOpenSectionsContext(): OpenSections {
 	const sections = useContext(OpenSectionsContext)
-	if (sections === null) throw new Error('A Section must be inside a ConfigForm')
+	if (sections === null) throw new Error('A Section must be inside a WorkspaceForm')
 	return sections
 }
 
@@ -32,7 +32,7 @@ function loadTitle(): string | null {
 /**
  * The open sidebar section, none at first: opening one closes the one open before, so the sidebar
  * shows one group of fields at a time. Remembered by title in `localStorage` (a viewer
- * preference, not part of the calendar config). Layouts share titles, so a section open on one
+ * preference, not part of the workspace). Layouts share titles, so a section open on one
  * layout, like "Calendar", is open on the others too.
  */
 export function useOpenSections(): OpenSections {

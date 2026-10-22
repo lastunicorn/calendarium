@@ -1,26 +1,26 @@
 import styles from './App.module.css'
 import { Preview } from './ui/preview/Preview'
-import { ConfigForm } from './ui/sidebar/ConfigForm'
+import { WorkspaceForm } from './ui/sidebar/WorkspaceForm'
 import { Sidebar } from './ui/sidebar/Sidebar'
 import { Toolbar } from './ui/sidebar/Toolbar'
-import { useCalendarConfig } from './ui/useCalendarConfig'
+import { useWorkspace } from './ui/useWorkspace'
 
 export default function App() {
-	const { config, selectLayout, update, resetLayout, importLayout } = useCalendarConfig()
+	const { workspace, selectLayout, update, resetLayout, importLayout } = useWorkspace()
 
 	return (
 		<div className={styles.app}>
 			<Sidebar>
 				<Toolbar />
-				<ConfigForm
-					config={config}
+				<WorkspaceForm
+					workspace={workspace}
 					onSelectLayout={selectLayout}
 					onUpdate={update}
 					onResetLayout={resetLayout}
 					onImportLayout={importLayout}
 				/>
 			</Sidebar>
-			<Preview config={config} onResetLayout={resetLayout} />
+			<Preview workspace={workspace} onResetLayout={resetLayout} />
 		</div>
 	)
 }

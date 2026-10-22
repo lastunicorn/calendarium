@@ -1,15 +1,15 @@
-import type { AppConfig } from '../../config/AppConfig'
-import type { ImportedLayoutOptions } from '../../config/configFile'
+import type { Workspace } from '../../workspace/Workspace'
+import type { ImportedLayoutOptions } from '../../workspace/layoutFile'
 import { useMemo } from 'react'
 import { defaultLayoutOptions, type LayoutOptions, type LayoutId } from '../../layouts'
 import { layoutView } from '../layouts/registry'
-import type { UpdateLayoutOptions } from '../useCalendarConfig'
-import styles from './ConfigForm.module.css'
+import type { UpdateLayoutOptions } from '../useWorkspace'
+import styles from './WorkspaceForm.module.css'
 import { LayoutSection } from './LayoutSection'
 import { OpenSectionsContext, useOpenSections } from './useOpenSections'
 
-interface ConfigFormProps {
-	config: AppConfig
+interface WorkspaceFormProps {
+	workspace: Workspace
 	onSelectLayout: (layout: LayoutId) => void
 	onUpdate: UpdateLayoutOptions
 	onResetLayout: (layout: LayoutId) => void
@@ -42,20 +42,20 @@ function LayoutForm<K extends LayoutId>({ layout, options, onUpdate }: LayoutFor
  * The layout picker with the export, import and reset of its options, and the chosen layout's options, grouped by what they affect, in sections
  * of which one at a time is open, staying open across layouts and reloads.
  */
-export function ConfigForm({
-	config,
+export function WorkspaceForm({
+	workspace,
 	onSelectLayout,
 	onUpdate,
 	onResetLayout,
 	onImportLayout,
-}: ConfigFormProps) {
-	const { layout } = config
+}: WorkspaceFormProps) {
+	const { layout } = workspace
 	const openSections = useOpenSections()
 	return (
 		<OpenSectionsContext value={openSections}>
 			<div className={styles.form}>
 				<LayoutSection
-					config={config}
+					workspace={workspace}
 					onSelect={onSelectLayout}
 					onReset={onResetLayout}
 					onImport={onImportLayout}
@@ -64,7 +64,7 @@ export function ConfigForm({
 				<LayoutForm
 					key={layout}
 					layout={layout}
-					options={config.layouts[layout]}
+					options={workspace.layouts[layout]}
 					onUpdate={onUpdate}
 				/>
 			</div>

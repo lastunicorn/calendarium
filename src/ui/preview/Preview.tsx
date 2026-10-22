@@ -1,4 +1,4 @@
-import type { AppConfig } from '../../config/AppConfig'
+import type { Workspace } from '../../workspace/Workspace'
 import type { LayoutOptions, LayoutId } from '../../layouts'
 import { pageSizeCss } from '../../core/paper'
 import { layoutView } from '../layouts/registry'
@@ -6,7 +6,7 @@ import styles from './Preview.module.css'
 import { PreviewErrorBoundary } from './PreviewErrorBoundary'
 
 interface PreviewProps {
-	config: AppConfig
+	workspace: Workspace
 	/** Restores one layout's default options, offered when its pages fail to render. */
 	onResetLayout: (layout: LayoutId) => void
 }
@@ -23,9 +23,9 @@ function ActiveLayout<K extends LayoutId>({ layout, options }: ActiveLayoutProps
 }
 
 /** The scrollable area showing the chosen layout's pages, which is all that gets printed. */
-export function Preview({ config, onResetLayout }: PreviewProps) {
-	const { layout } = config
-	const options = config.layouts[layout]
+export function Preview({ workspace, onResetLayout }: PreviewProps) {
+	const { layout } = workspace
+	const options = workspace.layouts[layout]
 	return (
 		<main className={styles.preview}>
 			{/* The printed paper size. Every page shares it, so one rule covers the document. */}

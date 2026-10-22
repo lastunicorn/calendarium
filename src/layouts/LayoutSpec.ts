@@ -2,15 +2,15 @@ import { asObject, copyValid, type UntrustedObject, type Validators } from '../c
 import type { CommonOptions } from './common'
 
 /**
- * One step that brings a layout's stored options from one config version to the next. Values are
+ * One step that brings a layout's stored options from one format version to the next. Values are
  * moved as they are; parsing checks them afterwards. The options may carry other fields (a file's
  * tags), which a step keeps.
  */
 export type OptionsMigration = (options: UntrustedObject) => UntrustedObject
 
 /**
- * A layout's migration steps, keyed by the config version each starts from; a version in which
- * the layout's options did not change has none. `config/migrations.ts` applies them, in storage
+ * A layout's migration steps, keyed by the format version each starts from; a version in which
+ * the layout's options did not change has none. `workspace/migrations.ts` applies them, in storage
  * and in files.
  */
 export type LayoutMigrations = Readonly<Partial<Record<number, OptionsMigration>>>
@@ -33,7 +33,7 @@ export interface LayoutSpec<O> {
 	 * the options every layout has.
 	 */
 	normalize: (options: O) => O
-	/** The steps that changed the layout's own options between config versions. */
+	/** The steps that changed the layout's own options between format versions. */
 	migrations: LayoutMigrations
 }
 

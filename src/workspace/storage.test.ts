@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { defaultAppConfig } from './AppConfig'
-import { loadConfig, saveConfig } from './storage'
-import { APP_VERSION, CONFIG_VERSION } from './version'
+import { defaultWorkspace } from './Workspace'
+import { loadWorkspace, saveWorkspace } from './storage'
+import { APP_VERSION, FORMAT_VERSION } from './version'
 
 /** A minimal in-memory `localStorage`, since tests run without a DOM. */
 function memoryStorage(): Storage {
@@ -18,7 +18,7 @@ function memoryStorage(): Storage {
 	}
 }
 
-describe('config storage', () => {
+describe('workspace storage', () => {
 	beforeEach(() => {
 		vi.stubGlobal('localStorage', memoryStorage())
 	})
@@ -27,40 +27,40 @@ describe('config storage', () => {
 		vi.unstubAllGlobals()
 	})
 
-	it('round-trips the config', () => {
-		const config = defaultAppConfig()
-		config.layout = 'month-per-page'
-		config.layouts['month-per-page'].year = 2031
-		saveConfig(config)
-		expect(loadConfig()).toEqual(config)
+	it('round-trips the workspace', () => {
+		const workspace = defaultWorkspace()
+		workspace.layout = 'month-per-page'
+		workspace.layouts['month-per-page'].year = 2031
+		saveWorkspace(workspace)
+		expect(loadWorkspace()).toEqual(workspace)
 	})
 
 	it('loads defaults when storage is empty or corrupt', () => {
-		expect(loadConfig()).toEqual(defaultAppConfig())
+		expect(loadWorkspace()).toEqual(defaultWorkspace())
 		localStorage.setItem('calendarium-config', '{not json')
-		expect(loadConfig()).toEqual(defaultAppConfig())
+		expect(loadWorkspace()).toEqual(defaultWorkspace())
 	})
 
 	it('backs up data from a later version before overwriting it', () => {
 		const later = [
-			{ version: CONFIG_VERSION + 1, layouts: {}, future: 1 },
-			{ version: CONFIG_VERSION, app: `${CONFIG_VERSION}.99.0`, layouts: {} },
+			{ version: FORMAT_VERSION + 1, layouts: {}, future: 1 },
+			{ version: FORMAT_VERSION, app: `${FORMAT_VERSION}.99.0`, layouts: {} },
 		]
 		for (const data of later) {
 			const text = JSON.stringify(data)
 			localStorage.setItem('calendarium-config', text)
-			saveConfig(defaultAppConfig())
+			saveWorkspace(defaultWorkspace())
 			expect(localStorage.getItem('calendarium-config-backup')).toBe(text)
 			expect(JSON.parse(localStorage.getItem('calendarium-config')!)).toMatchObject({
-				version: CONFIG_VERSION,
+				version: FORMAT_VERSION,
 				app: APP_VERSION,
 			})
 		}
 	})
 
 	it('does not back up data of the current version', () => {
-		saveConfig(defaultAppConfig())
-		saveConfig(defaultAppConfig())
+		saveWorkspace(defaultWorkspace())
+		saveWorkspace(defaultWorkspace())
 		expect(localStorage.getItem('calendarium-config-backup')).toBeNull()
 	})
 })

@@ -1,9 +1,9 @@
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import { LAYOUT_IDS, type LayoutId } from '../../layouts'
-import { defaultAppConfig } from '../../config/AppConfig'
+import { defaultWorkspace } from '../../workspace/Workspace'
 import { margins } from '../../core/paper'
-import { ConfigForm } from './ConfigForm'
+import { WorkspaceForm } from './WorkspaceForm'
 
 function noop() {}
 
@@ -12,10 +12,10 @@ function noop() {}
  * (like the margins) are part of that section.
  */
 function sectionTitles(layout: LayoutId): string[] {
-	const config = { ...defaultAppConfig(), layout }
+	const workspace = { ...defaultWorkspace(), layout }
 	render(
-		<ConfigForm
-			config={config}
+		<WorkspaceForm
+			workspace={workspace}
 			onSelectLayout={noop}
 			onUpdate={noop}
 			onResetLayout={noop}
@@ -28,7 +28,7 @@ function sectionTitles(layout: LayoutId): string[] {
 		.map((section) => section.querySelector('legend')!.textContent)
 }
 
-describe('ConfigForm', () => {
+describe('WorkspaceForm', () => {
 	// Each layout's sections are tested next to its form, in `layouts/<layout-id>/ui/`.
 	it.each(LAYOUT_IDS)('shows the layout picker above the %s form', (layout) => {
 		const [first, ...rest] = sectionTitles(layout)
@@ -88,10 +88,10 @@ describe('ConfigForm', () => {
 	})
 
 	it('keeps a section open on another layout and after a reload', () => {
-		const config = defaultAppConfig()
+		const workspace = defaultWorkspace()
 		const { rerender, unmount } = render(
-			<ConfigForm
-				config={config}
+			<WorkspaceForm
+				workspace={workspace}
 				onSelectLayout={noop}
 				onUpdate={noop}
 				onResetLayout={noop}
@@ -101,8 +101,8 @@ describe('ConfigForm', () => {
 		fireEvent.click(screen.getByRole('button', { name: 'Calendar' }))
 
 		rerender(
-			<ConfigForm
-				config={{ ...config, layout: 'day-per-page' }}
+			<WorkspaceForm
+				workspace={{ ...workspace, layout: 'day-per-page' }}
 				onSelectLayout={noop}
 				onUpdate={noop}
 				onResetLayout={noop}
@@ -116,8 +116,8 @@ describe('ConfigForm', () => {
 
 		unmount()
 		render(
-			<ConfigForm
-				config={config}
+			<WorkspaceForm
+				workspace={workspace}
 				onSelectLayout={noop}
 				onUpdate={noop}
 				onResetLayout={noop}
@@ -128,10 +128,10 @@ describe('ConfigForm', () => {
 	})
 
 	it('shows the spine only with mirrored margins', () => {
-		const config = defaultAppConfig()
+		const workspace = defaultWorkspace()
 		const { rerender } = render(
-			<ConfigForm
-				config={config}
+			<WorkspaceForm
+				workspace={workspace}
 				onSelectLayout={noop}
 				onUpdate={noop}
 				onResetLayout={noop}
@@ -141,17 +141,17 @@ describe('ConfigForm', () => {
 		fireEvent.click(screen.getByRole('button', { name: 'Page' }))
 		expect(screen.queryByRole('group', { name: 'Spine' })).toBeNull()
 
-		const layout = config.layouts[config.layout]
+		const layout = workspace.layouts[workspace.layout]
 		const mirrored = {
-			...config,
+			...workspace,
 			layouts: {
-				...config.layouts,
-				[config.layout]: { ...layout, page: { ...layout.page, mirrorMargins: true } },
+				...workspace.layouts,
+				[workspace.layout]: { ...layout, page: { ...layout.page, mirrorMargins: true } },
 			},
 		}
 		rerender(
-			<ConfigForm
-				config={mirrored}
+			<WorkspaceForm
+				workspace={mirrored}
 				onSelectLayout={noop}
 				onUpdate={noop}
 				onResetLayout={noop}
@@ -162,21 +162,21 @@ describe('ConfigForm', () => {
 	})
 
 	it('sets every margin from the top one with equal margins, unavailable with mirror margins', () => {
-		const config = defaultAppConfig()
-		const layout = config.layouts[config.layout]
+		const workspace = defaultWorkspace()
+		const layout = workspace.layouts[workspace.layout]
 		const onUpdate = vi.fn()
 		function withPage(page: Partial<typeof layout.page>) {
 			return {
-				...config,
+				...workspace,
 				layouts: {
-					...config.layouts,
-					[config.layout]: { ...layout, page: { ...layout.page, ...page } },
+					...workspace.layouts,
+					[workspace.layout]: { ...layout, page: { ...layout.page, ...page } },
 				},
 			}
 		}
 		const { rerender } = render(
-			<ConfigForm
-				config={config}
+			<WorkspaceForm
+				workspace={workspace}
 				onSelectLayout={noop}
 				onUpdate={onUpdate}
 				onResetLayout={noop}
@@ -189,15 +189,15 @@ describe('ConfigForm', () => {
 		const top = screen.getByRole<HTMLInputElement>('spinbutton', { name: 'Top margin' })
 		expect(top.readOnly).toBe(false)
 		fireEvent.change(top, { target: { value: '20' } })
-		expect(onUpdate).toHaveBeenLastCalledWith(config.layout, {
+		expect(onUpdate).toHaveBeenLastCalledWith(workspace.layout, {
 			page: expect.objectContaining({
 				margins: { top: 20, right: 20, bottom: 20, left: 20 },
 			}),
 		})
 
 		rerender(
-			<ConfigForm
-				config={withPage({ mirrorMargins: true, equalMargins: false })}
+			<WorkspaceForm
+				workspace={withPage({ mirrorMargins: true, equalMargins: false })}
 				onSelectLayout={noop}
 				onUpdate={onUpdate}
 				onResetLayout={noop}
@@ -209,8 +209,8 @@ describe('ConfigForm', () => {
 		expect(left.readOnly).toBe(false)
 
 		rerender(
-			<ConfigForm
-				config={withPage({
+			<WorkspaceForm
+				workspace={withPage({
 					equalMargins: false,
 					margins: { top: 5, right: 10, bottom: 15, left: 20 },
 				})}
@@ -221,15 +221,15 @@ describe('ConfigForm', () => {
 			/>,
 		)
 		fireEvent.click(equal)
-		expect(onUpdate).toHaveBeenLastCalledWith(config.layout, {
+		expect(onUpdate).toHaveBeenLastCalledWith(workspace.layout, {
 			page: expect.objectContaining({ equalMargins: true, margins: margins(5) }),
 		})
 	})
 
 	it('labels the hovered or focused layout action under the buttons', () => {
 		render(
-			<ConfigForm
-				config={defaultAppConfig()}
+			<WorkspaceForm
+				workspace={defaultWorkspace()}
 				onSelectLayout={noop}
 				onUpdate={noop}
 				onResetLayout={noop}
@@ -251,10 +251,10 @@ describe('ConfigForm', () => {
 
 	it('asks before resetting a section, and resets only that section’s fields', () => {
 		const onUpdate = vi.fn()
-		const config = defaultAppConfig()
+		const workspace = defaultWorkspace()
 		render(
-			<ConfigForm
-				config={config}
+			<WorkspaceForm
+				workspace={workspace}
 				onSelectLayout={noop}
 				onUpdate={onUpdate}
 				onResetLayout={noop}
@@ -268,16 +268,16 @@ describe('ConfigForm', () => {
 		const question = screen.getByRole('alertdialog')
 		expect(document.activeElement).toBe(within(question).getByRole('button', { name: 'Reset' }))
 		fireEvent.click(within(question).getByRole('button', { name: 'Reset' }))
-		const { year, locale, weekStart } = config.layouts[config.layout]
-		expect(onUpdate).toHaveBeenCalledWith(config.layout, { year, locale, weekStart })
+		const { year, locale, weekStart } = workspace.layouts[workspace.layout]
+		expect(onUpdate).toHaveBeenCalledWith(workspace.layout, { year, locale, weekStart })
 		expect(screen.queryByRole('alertdialog')).toBeNull()
 	})
 
 	it('cancels a section’s reset on a click outside it, on Escape, or when it collapses', () => {
 		const onUpdate = vi.fn()
 		render(
-			<ConfigForm
-				config={defaultAppConfig()}
+			<WorkspaceForm
+				workspace={defaultWorkspace()}
 				onSelectLayout={noop}
 				onUpdate={onUpdate}
 				onResetLayout={noop}

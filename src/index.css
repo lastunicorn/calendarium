@@ -35,7 +35,7 @@ body {
 	margin: 0;
 }
 
-/* The paper size is set per config by a generated `@page` rule (see ui/preview/Preview.tsx). */
+/* The paper size is set from the active layout's options by a generated `@page` rule (see ui/preview/Preview.tsx). */
 @page {
 	margin: 0;
 }

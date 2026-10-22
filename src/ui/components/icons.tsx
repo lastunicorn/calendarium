@@ -30,7 +30,7 @@ export function PrintIcon() {
 	)
 }
 
-/** Arrow up out of a tray: loads the config from a file. */
+/** Arrow up out of a tray: loads a layout's options from a file. */
 export function ImportIcon() {
 	return (
 		<Icon>
@@ -41,7 +41,7 @@ export function ImportIcon() {
 	)
 }
 
-/** Arrow down into a tray: saves the config to a file. */
+/** Arrow down into a tray: saves a layout's options to a file. */
 export function ExportIcon() {
 	return (
 		<Icon>
@@ -53,7 +53,7 @@ export function ExportIcon() {
 }
 
 /**
- * A power symbol whose ring breaks into dashes on the upper right: restores the default config.
+ * A power symbol whose ring breaks into dashes on the upper right: restores a layout's default options.
  * Flat ends, so the narrow gaps between the dashes stay open.
  */
 export function ResetIcon() {

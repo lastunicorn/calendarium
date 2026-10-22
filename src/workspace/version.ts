@@ -20,7 +20,7 @@ export function isLaterAppVersion(text: unknown): boolean {
 }
 
 /**
- * Version of the config format, in storage and in files: the app's major version, so a major
+ * Version of the data format, in storage and in files: the app's major version, so a major
  * release is one whose saved data older builds would misread.
  */
-export const CONFIG_VERSION = parseVersion(APP_VERSION)?.[0] ?? 0
+export const FORMAT_VERSION = parseVersion(APP_VERSION)?.[0] ?? 0

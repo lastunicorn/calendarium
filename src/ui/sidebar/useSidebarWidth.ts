@@ -25,7 +25,7 @@ function loadWidth(): number {
 
 /**
  * The sidebar's width, chosen by dragging its edge, kept between `SIDEBAR_MIN_WIDTH` and half the
- * window and remembered in `localStorage` (a viewer preference, not part of the calendar config).
+ * window and remembered in `localStorage` (a viewer preference, not part of the workspace).
  */
 export function useSidebarWidth(): [number, (width: number) => void] {
 	const [width, setWidth] = useState(loadWidth)

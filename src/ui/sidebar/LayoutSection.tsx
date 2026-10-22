@@ -1,11 +1,11 @@
 import { type ChangeEvent, type FocusEvent, type PointerEvent, useRef, useState } from 'react'
-import type { AppConfig } from '../../config/AppConfig'
+import type { Workspace } from '../../workspace/Workspace'
 import { LAYOUT_IDS, type LayoutId } from '../../layouts'
 import {
 	exportLayoutFile,
 	type ImportedLayoutOptions,
-	parseConfigFile,
-} from '../../config/configFile'
+	parseLayoutFile,
+} from '../../workspace/layoutFile'
 import { IconButton } from '../components/IconButton'
 import { ExportIcon, ImportIcon, LayoutIcon, ResetIcon } from '../components/icons'
 import { downloadFile } from '../download'
@@ -20,7 +20,7 @@ const LAYOUT_OPTIONS = LAYOUT_IDS.map((layout) => ({
 }))
 
 interface LayoutSectionProps {
-	config: AppConfig
+	workspace: Workspace
 	/** Shows another layout, with the options it had last. */
 	onSelect: (layout: LayoutId) => void
 	/** Restores one layout's default options. */
@@ -59,8 +59,8 @@ function actionLabel(target: EventTarget): string {
  * How the calendar is spread over pages, above the export, import and reset of the shown
  * layout's options; each layout keeps its own options. Always open.
  */
-export function LayoutSection({ config, onSelect, onReset, onImport }: LayoutSectionProps) {
-	const { layout } = config
+export function LayoutSection({ workspace, onSelect, onReset, onImport }: LayoutSectionProps) {
+	const { layout } = workspace
 
 	const fileInput = useRef<HTMLInputElement>(null)
 	const [importError, setImportError] = useState('')
@@ -80,7 +80,7 @@ export function LayoutSection({ config, onSelect, onReset, onImport }: LayoutSec
 	}
 
 	function handleExportClick() {
-		const file = exportLayoutFile(config)
+		const file = exportLayoutFile(workspace)
 		downloadFile(file.fileName, file.text, 'application/json')
 	}
 
@@ -103,7 +103,7 @@ export function LayoutSection({ config, onSelect, onReset, onImport }: LayoutSec
 		input.value = ''
 		if (!file) return
 
-		const imported = parseConfigFile(await file.text(), layout)
+		const imported = parseLayoutFile(await file.text(), layout)
 		if (imported === null) {
 			setImportError(`${file.name} is not a valid configuration file.`)
 			setImportNotice('')
