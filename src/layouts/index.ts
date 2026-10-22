@@ -1,3 +1,4 @@
+import { sameData } from '../core/data'
 import { oneOf, type UntrustedObject } from '../core/validation'
 import { DAY_PER_PAGE } from './day-per-page'
 import type { LayoutSpec } from './LayoutSpec'
@@ -92,6 +93,14 @@ export function migrateLayoutOptions(
 /** A fresh copy of `layout`'s default options. */
 export function defaultLayoutOptions<K extends LayoutId>(layout: K): LayoutOptions[K] {
 	return layoutSpec(layout).defaults()
+}
+
+/** Whether `options` are `layout`'s defaults, nested fields included: nothing a new project would change. */
+export function hasDefaultOptions<K extends LayoutId>(
+	layout: K,
+	options: LayoutOptions[K],
+): boolean {
+	return sameData(options, defaultLayoutOptions(layout))
 }
 
 /** `options` with its layout's rules applied; the same object when it already follows them. */

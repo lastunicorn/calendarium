@@ -1,5 +1,6 @@
 import {
 	defaultLayoutOptions,
+	hasDefaultOptions,
 	LAYOUT_IDS,
 	type LayoutOptions,
 	type LayoutId,
@@ -32,4 +33,9 @@ export function defaultWorkspace(): Workspace {
 export function activeProject({ layout, layouts }: Workspace): Project {
 	// `layouts[layout]` is that layout's options, which TypeScript can't follow through the union.
 	return { layout, options: layouts[layout] } as Project
+}
+
+/** Whether the shown project still has its layout's defaults, so starting a new one changes nothing. */
+export function isNewProject({ layout, layouts }: Workspace): boolean {
+	return hasDefaultOptions(layout, layouts[layout])
 }

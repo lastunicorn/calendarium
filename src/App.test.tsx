@@ -68,6 +68,9 @@ describe('App new project', () => {
 		confirm.mockRestore()
 
 		expect(layoutSelect().value).toBe('month-per-page')
+		expect(
+			screen.getByRole<HTMLButtonElement>('button', { name: 'New project' }).disabled,
+		).toBe(true)
 		openSection('Calendar')
 		expect(screen.getByLabelText<HTMLInputElement>('Year').value).toBe(
 			String(new Date().getFullYear()),

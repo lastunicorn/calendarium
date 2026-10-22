@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { LAYOUT_IDS, layoutSpec, migrateLayoutOptions } from './index'
+import { hasDefaultOptions, LAYOUT_IDS, layoutSpec, migrateLayoutOptions } from './index'
 import { parseOptions } from './LayoutSpec'
 
 // What every layout's spec must do, whatever its options: a new layout is checked here as soon as
@@ -41,6 +41,16 @@ describe.each(LAYOUT_IDS)('the %s spec', (layout) => {
 		const normalized = spec.normalize({ ...defaults, page: { ...defaults.page, margins } })
 		expect(normalized).not.toBe(defaults)
 		expect(spec.normalize(normalized)).toBe(normalized)
+	})
+
+	it('tells its defaults from options with a field changed, nested ones included', () => {
+		const defaults = spec.defaults()
+		expect(hasDefaultOptions(layout, defaults)).toBe(true)
+		expect(hasDefaultOptions(layout, { ...defaults, year: defaults.year + 1 })).toBe(false)
+		const margins = { ...defaults.page.margins, top: defaults.page.margins.top + 1 }
+		expect(
+			hasDefaultOptions(layout, { ...defaults, page: { ...defaults.page, margins } }),
+		).toBe(false)
 	})
 
 	it('keys its migrations by format version', () => {

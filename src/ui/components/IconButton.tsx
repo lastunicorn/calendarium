@@ -6,15 +6,17 @@ interface IconButtonProps {
 	label: string
 	icon: ReactNode
 	onClick: MouseEventHandler<HTMLButtonElement>
+	disabled?: boolean
 }
 
-export function IconButton({ label, icon, onClick }: IconButtonProps) {
+export function IconButton({ label, icon, onClick, disabled = false }: IconButtonProps) {
 	return (
 		<button
 			type="button"
 			className={styles.iconButton}
 			title={label}
 			aria-label={label}
+			disabled={disabled}
 			onClick={onClick}
 		>
 			{icon}

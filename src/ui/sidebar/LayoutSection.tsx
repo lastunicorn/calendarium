@@ -1,5 +1,5 @@
 import { type ChangeEvent, type FocusEvent, type PointerEvent, useRef, useState } from 'react'
-import { activeProject, type Workspace } from '../../workspace/Workspace'
+import { activeProject, isNewProject, type Workspace } from '../../workspace/Workspace'
 import { LAYOUT_IDS, type LayoutId } from '../../layouts'
 import { type OpenedProject, parseProjectFile, projectFile } from '../../workspace/projectFile'
 import { IconButton } from '../components/IconButton'
@@ -53,7 +53,8 @@ function actionLabel(target: EventTarget): string {
 
 /**
  * How the calendar is spread over pages, above the saving, opening and starting over of the shown
- * layout's project; each layout keeps its own last project. Always open.
+ * layout's project (disabled while it still has its defaults); each layout keeps its own last
+ * project. Always open.
  */
 export function LayoutSection({ workspace, onSelect, onNew, onOpen }: LayoutSectionProps) {
 	const { layout } = workspace
@@ -128,7 +129,12 @@ export function LayoutSection({ workspace, onSelect, onNew, onOpen }: LayoutSect
 					onFocus={handleActionsFocus}
 					onBlur={handleActionsLeave}
 				>
-					<IconButton label="New project" icon={<NewIcon />} onClick={handleNewClick} />
+					<IconButton
+						label="New project"
+						icon={<NewIcon />}
+						disabled={isNewProject(workspace)}
+						onClick={handleNewClick}
+					/>
 					<IconButton
 						label="Open a project file"
 						icon={<OpenIcon />}

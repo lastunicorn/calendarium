@@ -231,6 +231,39 @@ describe('WorkspaceForm', () => {
 		})
 	})
 
+	it('disables New project while the shown project still has its defaults', () => {
+		const workspace = defaultWorkspace()
+		const { rerender } = render(
+			<Form
+				workspace={workspace}
+				onSelectLayout={noop}
+				onUpdate={noop}
+				onNewProject={noop}
+				onOpenProject={noop}
+			/>,
+		)
+		const button = screen.getByRole<HTMLButtonElement>('button', { name: 'New project' })
+		expect(button.disabled).toBe(true)
+
+		const changed = {
+			...workspace,
+			layouts: {
+				...workspace.layouts,
+				[workspace.layout]: { ...workspace.layouts[workspace.layout], year: 2030 },
+			},
+		}
+		rerender(
+			<Form
+				workspace={changed}
+				onSelectLayout={noop}
+				onUpdate={noop}
+				onNewProject={noop}
+				onOpenProject={noop}
+			/>,
+		)
+		expect(button.disabled).toBe(false)
+	})
+
 	it('labels the hovered or focused project action under the buttons', () => {
 		render(
 			<Form
