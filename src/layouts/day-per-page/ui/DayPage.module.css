@@ -168,3 +168,18 @@
 	color: var(--color-text-muted);
 	border-right: 0.2mm solid var(--color-cell-border);
 }
+
+/*
+ * The footer, right under the fill, which stretches down to it; at the bottom of the sheet under a
+ * blank fill too. Ruled lines, squares and dots don't end on a line of their own, so it draws its
+ * top edge, except under the schedule, whose last hour's border draws it.
+ */
+.footer {
+	flex: none;
+	margin-top: auto;
+	border: 0.2mm solid var(--color-cell-border);
+}
+
+.schedule + .footer {
+	border-top: none;
+}

@@ -173,6 +173,15 @@ describe('planDayPages', () => {
 		})
 	})
 
+	it('keeps an empty footer at the bottom of every day only when shown', () => {
+		expect(plan(2026).every((day) => day.footerHeight === undefined)).toBe(true)
+		expect(
+			plan(2026, { showFooter: true, footerHeight: 35 }).every(
+				(day) => day.footerHeight === 35,
+			),
+		).toBe(true)
+	})
+
 	it('lists the day’s events, yearly ones every year', () => {
 		const events = '0000-02-29 Leap day\n0000-12-25 Christmas\n2026-12-25 Snow'
 		expect(day(plan(2026, { events }), '2026-12-25').events).toEqual(['Christmas', 'Snow'])

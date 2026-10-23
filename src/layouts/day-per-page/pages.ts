@@ -61,6 +61,8 @@ export interface DayPages {
 	miniMonth?: MiniMonthPlan
 	/** What fills each sheet: one, or two with `twoPagesPerDay`, the second without a header. */
 	fills: DayFill[]
+	/** The height of the empty footer at the bottom of each sheet, in mm; none without `showFooter`. */
+	footerHeight?: number
 }
 
 /**
@@ -119,6 +121,7 @@ export function planDayPages(options: DayPerPageOptions, model: CalendarModel): 
 	const messages = DAY_PAGE_MESSAGES[locale]
 	const miniWeekdays = weekdayNames(locale, model.weekStart, miniMonth.weekdayFormat)
 	const fills = planFills(options)
+	const footerHeight = options.showFooter ? options.footerHeight : undefined
 	const days = daysOfYear(model.months)
 
 	return days.map((day) => {
@@ -152,6 +155,7 @@ export function planDayPages(options: DayPerPageOptions, model: CalendarModel): 
 					}
 				: undefined,
 			fills,
+			footerHeight,
 		}
 	})
 }

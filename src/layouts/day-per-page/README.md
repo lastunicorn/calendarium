@@ -14,18 +14,19 @@ One sheet per day of the year, or two: a header naming the day, with a corner mi
   - `squares`: as many whole squares `squareSize` mm a side as fit (the grid is cut down in CSS, the header's height being known only once drawn), set across the page per `squareGridAlignment`, filling the `contentBox`;
   - `dots`: the dots at those squares' corners, one SVG pattern a sheet;
   - `blank`: nothing.
+- **Footer:** with `showFooter`, each sheet, the second one too, keeps an empty bordered footer, `footerHeight` whole mm tall (`isFooterHeight`), at its bottom under the fill (`footerHeight`, the same for every day).
 
 `DayPage` is memoized, so the plan builds its shared label arrays (weekday names, hour labels) once.
 
 ## Options
 
-`DayPerPageOptions` (`options.ts`): `CommonOptions`, the schedule (`HourSchedule`, shared with the week layout through `layouts/schedule.ts`), and its own:
+`DayPerPageOptions` (`options.ts`): `CommonOptions`, the schedule (`HourSchedule`, shared with the week layout through `layouts/schedule.ts`), the footer (`PageFooter`, shared with the week layout through `layouts/footer.ts` and `ui/sidebar/FooterFields`), and its own:
 
-| Sidebar section | Fields                                                                                                                                                                           |
-| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Header          | `dayPageTitle`, `headingFontSize` (`isHeadingFontSize`, the shared `HeadingFontSizeField`), `showHeaderWeek`, `showHeaderDayOfYear`, `highlightWeekendDays` (`ui/HeaderSection`) |
-| Mini calendar   | `miniMonth` (`MiniMonthOptions`, the shared `MiniMonthSection`)                                                                                                                  |
-| Content         | `twoPagesPerDay`, `dayPageLines`, the schedule (`hourFormat`, `firstHour`, `lastHour`), `ruledLineSpacing`, `squareSize`, `squareGridAlignment` (`ui/DayContentSection`)         |
+| Sidebar section | Fields                                                                                                                                                                                                 |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Header          | `dayPageTitle`, `headingFontSize` (`isHeadingFontSize`, the shared `HeadingFontSizeField`), `showHeaderWeek`, `showHeaderDayOfYear`, `highlightWeekendDays` (`ui/HeaderSection`)                       |
+| Mini calendar   | `miniMonth` (`MiniMonthOptions`, the shared `MiniMonthSection`)                                                                                                                                        |
+| Content         | `twoPagesPerDay`, `dayPageLines`, the schedule (`hourFormat`, `firstHour`, `lastHour`), `ruledLineSpacing`, `squareSize`, `squareGridAlignment`, `showFooter`, `footerHeight` (`ui/DayContentSection`) |
 
 It has no title: the heading is always the weekday or the date. `normalize` puts a reversed schedule in order (`orderHours`).
 

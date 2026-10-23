@@ -133,6 +133,16 @@ function DayLines({ fill }: DayLinesProps) {
 	)
 }
 
+interface DayFooterProps {
+	/** Its height, in mm. */
+	height: number
+}
+
+/** The empty bordered footer at the bottom of a day's sheet, under its fill. */
+function DayFooter({ height }: DayFooterProps) {
+	return <div className={styles.footer} style={{ height: `${height}mm` }} />
+}
+
 interface DayPageProps {
 	/** The day as `planDayPages` plans it. */
 	plan: DayPages
@@ -146,6 +156,7 @@ interface DayPageProps {
 export const DayPage = memo(function DayPage({ plan, setup }: DayPageProps) {
 	const { miniMonth, events } = plan
 	const [firstFill, ...nextFills] = plan.fills
+	const footer = plan.footerHeight !== undefined && <DayFooter height={plan.footerHeight} />
 	return (
 		<>
 			<Page setup={setup}>
@@ -174,6 +185,7 @@ export const DayPage = memo(function DayPage({ plan, setup }: DayPageProps) {
 						)}
 					</div>
 					<DayLines fill={firstFill} />
+					{footer}
 				</div>
 			</Page>
 			{nextFills.map((fill, index) => (
@@ -181,6 +193,7 @@ export const DayPage = memo(function DayPage({ plan, setup }: DayPageProps) {
 				<Page key={index} setup={setup}>
 					<div className={styles.layout}>
 						<DayLines fill={fill} />
+						{footer}
 					</div>
 				</Page>
 			))}

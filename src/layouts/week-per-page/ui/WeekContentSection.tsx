@@ -5,9 +5,6 @@ import {
 	type WeekendDisplay,
 } from '../cells'
 import {
-	isFooterHeight,
-	MAX_FOOTER_HEIGHT,
-	MIN_FOOTER_HEIGHT,
 	START_PAGES,
 	type StartPage,
 	WEEK_PAGE_LINES,
@@ -17,10 +14,10 @@ import {
 import type { WeekdayFormat } from '../../../core/locale'
 import { ContentIcon } from '../../../ui/components/icons'
 import { CheckboxField } from '../../../ui/fields/CheckboxField'
-import { NumberField } from '../../../ui/fields/NumberField'
 import { optionsFrom } from '../../../ui/fields/options'
 import { RadioField } from '../../../ui/fields/RadioField'
 import { WEEKDAY_FORMAT_OPTIONS } from '../../../ui/sidebar/fieldOptions'
+import { FooterFields } from '../../../ui/sidebar/FooterFields'
 import { ScheduleFields } from '../../../ui/sidebar/ScheduleFields'
 import { defaultFields } from '../../../ui/sidebar/defaultFields'
 import { type OptionsSectionProps, Section } from '../../../ui/sidebar/Section'
@@ -93,14 +90,6 @@ export function WeekContentSection({
 
 	function handleStartPageChange(startPage: StartPage) {
 		onUpdate({ startPage })
-	}
-
-	function handleShowFooterChange(showFooter: boolean) {
-		onUpdate({ showFooter })
-	}
-
-	function handleFooterHeightChange(footerHeight: number) {
-		onUpdate({ footerHeight })
 	}
 
 	function handleReset() {
@@ -181,24 +170,7 @@ export function WeekContentSection({
 			{options.weekPageLines === 'hours' && (
 				<ScheduleFields options={options} onUpdate={onUpdate} />
 			)}
-			<CheckboxField
-				label="Footer"
-				description={FOOTER_DESCRIPTION}
-				checked={options.showFooter}
-				onChange={handleShowFooterChange}
-			/>
-			{options.showFooter && (
-				<NumberField
-					label="Footer height (mm)"
-					description={`Whole mm, from ${MIN_FOOTER_HEIGHT} to ${MAX_FOOTER_HEIGHT}.`}
-					value={options.footerHeight}
-					min={MIN_FOOTER_HEIGHT}
-					max={MAX_FOOTER_HEIGHT}
-					step={1}
-					isValid={isFooterHeight}
-					onChange={handleFooterHeightChange}
-				/>
-			)}
+			<FooterFields options={options} description={FOOTER_DESCRIPTION} onUpdate={onUpdate} />
 		</Section>
 	)
 }

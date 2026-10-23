@@ -2,6 +2,7 @@ import { WEEKDAY_FORMATS, type WeekdayFormat } from '../../core/locale'
 import { margins } from '../../core/paper'
 import { isBoolean, oneOf } from '../../core/validation'
 import { COMMON_VALIDATORS, type CommonOptions, commonDefaults, normalizeCommon } from '../common'
+import { FOOTER_VALIDATORS, footerDefaults, type PageFooter } from '../footer'
 import { HEADING_ALIGNMENTS, type HeadingAlignment, isHeadingFontSize } from '../heading'
 import type { LayoutSpec } from '../LayoutSpec'
 import { WEEK_PER_PAGE_MIGRATIONS } from './migrations'
@@ -25,20 +26,7 @@ export type WeekPageLines = (typeof WEEK_PAGE_LINES)[number]
 export const START_PAGES = ['odd', 'even'] as const
 export type StartPage = (typeof START_PAGES)[number]
 
-/** Bounds of the height of the empty footer under a week's cells, in mm. */
-export const MIN_FOOTER_HEIGHT = 5
-export const MAX_FOOTER_HEIGHT = 100
-
-/** A footer's height: whole mm, from `MIN_FOOTER_HEIGHT` to `MAX_FOOTER_HEIGHT`. */
-export function isFooterHeight(value: unknown): value is number {
-	return (
-		Number.isInteger(value) &&
-		(value as number) >= MIN_FOOTER_HEIGHT &&
-		(value as number) <= MAX_FOOTER_HEIGHT
-	)
-}
-
-export interface WeekPerPageOptions extends CommonOptions, HourSchedule {
+export interface WeekPerPageOptions extends CommonOptions, HourSchedule, PageFooter {
 	/** How the weekday name in each day's cell is written: in full or abbreviated. */
 	weekdayFormat: WeekdayFormat
 	/** Whether the weekend days of the year get the weekend color; other years' days stay gray. */
@@ -69,10 +57,6 @@ export interface WeekPerPageOptions extends CommonOptions, HourSchedule {
 	startPage: StartPage
 	/** Whether the days are columns side by side or stacked rows. */
 	weekDayDirection: WeekDayDirection
-	/** Whether each sheet keeps an empty footer, `footerHeight` mm tall, under its cells. */
-	showFooter: boolean
-	/** The footer's height, in whole mm (`isFooterHeight`). */
-	footerHeight: number
 	/** The week's month (`weekMonth`), drawn small beside the heading with the week marked. */
 	miniMonth: MiniMonthOptions
 }
@@ -94,8 +78,7 @@ export const WEEK_PER_PAGE_SPEC: LayoutSpec<WeekPerPageOptions> = {
 			twoPagesPerWeek: false,
 			startPage: 'odd',
 			weekDayDirection: 'vertical',
-			showFooter: false,
-			footerHeight: 20,
+			...footerDefaults(),
 			...scheduleDefaults(),
 			miniMonth: miniMonthDefaults(),
 			page: { ...common.page, orientation: 'landscape', margins: margins(10) },
@@ -113,8 +96,7 @@ export const WEEK_PER_PAGE_SPEC: LayoutSpec<WeekPerPageOptions> = {
 		twoPagesPerWeek: isBoolean,
 		startPage: oneOf(START_PAGES),
 		weekDayDirection: oneOf(WEEK_DAY_DIRECTIONS),
-		showFooter: isBoolean,
-		footerHeight: isFooterHeight,
+		...FOOTER_VALIDATORS,
 		...SCHEDULE_VALIDATORS,
 		miniMonth: MINI_MONTH_VALIDATORS,
 	},

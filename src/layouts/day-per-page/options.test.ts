@@ -22,6 +22,8 @@ describe('day-per-page options', () => {
 			hourFormat: '24h',
 			firstHour: 0,
 			lastHour: 23,
+			showFooter: true,
+			footerHeight: 42,
 			highlightWeekendDays: false,
 			miniMonth: {
 				...grid,
@@ -50,6 +52,8 @@ describe('day-per-page options', () => {
 			hourFormat: '25h',
 			firstHour: 24,
 			lastHour: 7.5,
+			showFooter: 'yes',
+			footerHeight: 2.5,
 			highlightWeekendDays: 'yes',
 			miniMonth: { weekdayFormat: 'long', show: 'no', size: 'tiny' },
 			showHeaderWeek: 1,

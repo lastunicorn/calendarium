@@ -1,4 +1,5 @@
 import { isBoolean, oneOf } from '../../core/validation'
+import { FOOTER_VALIDATORS, footerDefaults, type PageFooter } from '../footer'
 import { isHeadingFontSize } from '../heading'
 import { COMMON_VALIDATORS, type CommonOptions, commonDefaults, normalizeCommon } from '../common'
 import type { LayoutSpec } from '../LayoutSpec'
@@ -53,7 +54,7 @@ export function isSquareSize(value: unknown): value is number {
 export const SQUARE_GRID_ALIGNMENTS = ['left', 'center', 'right'] as const
 export type SquareGridAlignment = (typeof SQUARE_GRID_ALIGNMENTS)[number]
 
-export interface DayPerPageOptions extends CommonOptions, HourSchedule {
+export interface DayPerPageOptions extends CommonOptions, HourSchedule, PageFooter {
 	/** Whether the heading is the weekday ("Thursday") or the date ("1 January 2026"). */
 	dayPageTitle: DayPageTitle
 	/** The heading's font size, in pt; the subheading keeps its own. */
@@ -100,6 +101,7 @@ export const DAY_PER_PAGE_SPEC: LayoutSpec<DayPerPageOptions> = {
 		squareGridAlignment: 'center',
 		twoPagesPerDay: false,
 		...scheduleDefaults(),
+		...footerDefaults(),
 		highlightWeekendDays: true,
 		miniMonth: miniMonthDefaults(),
 		showHeaderWeek: true,
@@ -115,6 +117,7 @@ export const DAY_PER_PAGE_SPEC: LayoutSpec<DayPerPageOptions> = {
 		squareGridAlignment: oneOf(SQUARE_GRID_ALIGNMENTS),
 		twoPagesPerDay: isBoolean,
 		...SCHEDULE_VALIDATORS,
+		...FOOTER_VALIDATORS,
 		highlightWeekendDays: isBoolean,
 		miniMonth: MINI_MONTH_VALIDATORS,
 		showHeaderWeek: isBoolean,

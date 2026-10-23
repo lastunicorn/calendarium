@@ -9,6 +9,7 @@ Settings and files from 4.x are migrated: the week layout's automatic days direc
 ### Added
 
 - A size for the mini calendars of the month, week and day layouts: small, medium (the default), large (their size before) or extra large.
+- Day layout: each page can keep an empty bordered footer under the fill (off by default), its height set from 5 to 100 mm (20 mm by default), like the week layout's.
 
 ### Changed
 
