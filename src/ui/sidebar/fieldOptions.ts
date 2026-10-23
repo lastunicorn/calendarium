@@ -36,4 +36,5 @@ export const MINI_MONTH_SIZE_OPTIONS = optionsFrom(MINI_MONTH_SIZES, {
 	small: 'Small',
 	medium: 'Medium',
 	large: 'Large',
+	extraLarge: 'Extra large',
 })

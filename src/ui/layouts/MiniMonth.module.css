@@ -114,6 +114,15 @@
 	--mini-month-week-number-size: 6pt;
 }
 
+.extraLarge {
+	--mini-month-width: 45mm;
+	--mini-month-height: 33mm;
+	--mini-month-name-size: 10pt;
+	--mini-month-day-size: 8.5pt;
+	--mini-month-weekday-size: 7.5pt;
+	--mini-month-week-number-size: 7pt;
+}
+
 .sized .name {
 	margin-bottom: 0.8mm;
 	font-size: var(--mini-month-name-size);

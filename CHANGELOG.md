@@ -6,7 +6,7 @@ The features each release brought, newest first. Versions follow the app version
 
 ### Added
 
-- A size for the mini calendars of the month, week and day layouts: small, medium (the default) or large (their size before).
+- A size for the mini calendars of the month, week and day layouts: small, medium (the default), large (their size before) or extra large.
 
 ### Changed
 

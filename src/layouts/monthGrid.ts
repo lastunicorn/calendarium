@@ -35,7 +35,7 @@ export const MONTH_GRID_VALIDATORS: Validators<MonthGridOptions> = {
 }
 
 /** How large a mini month is drawn in its corner of a page, its box and its text together. */
-export const MINI_MONTH_SIZES = ['small', 'medium', 'large'] as const
+export const MINI_MONTH_SIZES = ['small', 'medium', 'large', 'extraLarge'] as const
 export type MiniMonthSize = (typeof MINI_MONTH_SIZES)[number]
 
 /** A month drawn small beside a page's main content, for context; it can be left out. */
