@@ -1,19 +1,48 @@
-/* Pages are stacked vertically, centered horizontally. */
+/* Positions the zoom bar over the scrolling preview, so it stays put as the pages scroll. */
+.previewArea {
+	position: relative;
+	flex: 1;
+	display: flex;
+	min-width: 0;
+}
+
+/* The scrolling area, its pages centered horizontally. */
 .preview {
 	flex: 1;
 	display: flex;
 	flex-direction: column;
-	/* `safe` keeps the page's left edge reachable when it is wider than the preview area. */
+	/* `safe` keeps the pages' left edge reachable when they are wider than the preview area. */
 	align-items: safe center;
-	gap: 24px;
 	padding: 24px;
 	overflow: auto;
 }
 
+/* Pages are stacked vertically, centered horizontally. */
+.pages {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 24px;
+}
+
+/* The viewer's zoom (`--preview-zoom`, set by `Preview`), on screen only: print keeps the paper size. */
+@media screen {
+	.pages {
+		zoom: var(--preview-zoom);
+	}
+}
+
 @media print {
+	.previewArea {
+		display: block;
+	}
+
 	.preview {
-		gap: 0;
 		padding: 0;
 		overflow: visible;
+	}
+
+	.pages {
+		gap: 0;
 	}
 }

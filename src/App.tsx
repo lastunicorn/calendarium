@@ -8,7 +8,7 @@ import { useWorkspace } from './ui/useWorkspace'
 
 export default function App() {
 	const { workspace, selectLayout, update, newProject, openProject } = useWorkspace()
-	const { preferences, resizeSidebar, toggleSection } = usePreferences()
+	const { preferences, resizeSidebar, toggleSection, zoomPreview } = usePreferences()
 
 	return (
 		<div className={styles.app}>
@@ -24,7 +24,12 @@ export default function App() {
 					onToggleSection={toggleSection}
 				/>
 			</Sidebar>
-			<Preview workspace={workspace} onNewProject={newProject} />
+			<Preview
+				workspace={workspace}
+				onNewProject={newProject}
+				zoom={preferences.previewZoom}
+				onZoom={zoomPreview}
+			/>
 		</div>
 	)
 }

@@ -17,7 +17,11 @@ describe('preferences storage', () => {
 	})
 
 	it('round-trips the preferences', () => {
-		const preferences = { sidebarWidth: 512, openSection: 'Events' }
+		const preferences = {
+			sidebarWidth: 512,
+			openSection: 'Events',
+			previewZoom: 'fit-width' as const,
+		}
 		savePreferences(preferences)
 		expect(loadPreferences()).toEqual(preferences)
 	})
@@ -26,7 +30,11 @@ describe('preferences storage', () => {
 		localStorage.setItem('calendarium-sidebar-width', '400')
 		localStorage.setItem('calendarium-open-sections', '["Calendar"]')
 		const preferences = loadPreferences()
-		expect(preferences).toEqual({ sidebarWidth: 400, openSection: 'Calendar' })
+		expect(preferences).toEqual({
+			...defaultPreferences(),
+			sidebarWidth: 400,
+			openSection: 'Calendar',
+		})
 
 		savePreferences(preferences)
 		expect(localStorage.getItem('calendarium-sidebar-width')).toBeNull()
@@ -35,18 +43,19 @@ describe('preferences storage', () => {
 	})
 
 	it('ignores the earlier builds’ keys once the preferences were saved', () => {
-		savePreferences({ sidebarWidth: 360, openSection: null })
+		savePreferences({ ...defaultPreferences(), sidebarWidth: 360 })
 		localStorage.setItem('calendarium-sidebar-width', '400')
 		expect(loadPreferences().sidebarWidth).toBe(360)
 	})
 
 	it('keeps the fields a later version stored when saving', () => {
 		localStorage.setItem('calendarium-preferences', '{"theme":"dark","sidebarWidth":400}')
-		savePreferences({ sidebarWidth: 420, openSection: null })
+		savePreferences({ ...defaultPreferences(), sidebarWidth: 420 })
 		expect(JSON.parse(localStorage.getItem('calendarium-preferences')!)).toEqual({
 			theme: 'dark',
 			sidebarWidth: 420,
 			openSection: null,
+			previewZoom: 100,
 		})
 	})
 

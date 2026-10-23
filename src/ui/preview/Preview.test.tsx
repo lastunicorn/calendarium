@@ -1,5 +1,5 @@
-import { render } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import { fireEvent, render, screen } from '@testing-library/react'
+import { describe, expect, it, vi } from 'vitest'
 import { type Workspace, defaultWorkspace } from '../../workspace/Workspace'
 import { LAYOUT_IDS, type LayoutId } from '../../layouts'
 import { Preview } from './Preview'
@@ -16,14 +16,24 @@ function workspaceFor(layout: LayoutId): Workspace {
 describe('Preview', () => {
 	it.each(LAYOUT_IDS)('draws the pages of %s', (layout) => {
 		const { container } = render(
-			<Preview workspace={workspaceFor(layout)} onNewProject={noop} />,
+			<Preview
+				workspace={workspaceFor(layout)}
+				onNewProject={noop}
+				zoom={100}
+				onZoom={noop}
+			/>,
 		)
 		expect(container.querySelectorAll('section').length).toBeGreaterThan(0)
 	})
 
 	it('sets the printed paper size from the layout', () => {
 		const { container } = render(
-			<Preview workspace={workspaceFor('month-per-page')} onNewProject={noop} />,
+			<Preview
+				workspace={workspaceFor('month-per-page')}
+				onNewProject={noop}
+				zoom={100}
+				onZoom={noop}
+			/>,
 		)
 		expect(container.querySelector('style')?.textContent).toBe('@page { size: A4 landscape; }')
 	})
@@ -41,6 +51,8 @@ describe('Preview', () => {
 					},
 				}}
 				onNewProject={noop}
+				zoom={100}
+				onZoom={noop}
 			/>,
 		)
 		// Two A4 landscape pages, one above the other.
@@ -58,8 +70,58 @@ describe('Preview', () => {
 					layouts: { ...workspace.layouts, 'year-per-page': options },
 				}}
 				onNewProject={noop}
+				zoom={100}
+				onZoom={noop}
 			/>,
 		)
 		expect(container.querySelector('main')?.lang).toBe('el-GR')
+	})
+
+	it('zooms a level in or out from the bar, and back to the printed size', () => {
+		const onZoom = vi.fn()
+		const { rerender } = render(
+			<Preview
+				workspace={workspaceFor('year-per-page')}
+				onNewProject={noop}
+				zoom={100}
+				onZoom={onZoom}
+			/>,
+		)
+		expect(
+			(screen.getByRole('button', { name: /reset zoom/i }) as HTMLButtonElement).disabled,
+		).toBe(true)
+		fireEvent.click(screen.getByRole('button', { name: 'Zoom in' }))
+		fireEvent.click(screen.getByRole('button', { name: 'Zoom out' }))
+		expect(onZoom.mock.calls).toEqual([[125], [75]])
+
+		rerender(
+			<Preview
+				workspace={workspaceFor('year-per-page')}
+				onNewProject={noop}
+				zoom={200}
+				onZoom={onZoom}
+			/>,
+		)
+		expect(
+			(screen.getByRole('button', { name: 'Zoom in' }) as HTMLButtonElement).disabled,
+		).toBe(true)
+		fireEvent.click(screen.getByRole('button', { name: /reset zoom/i }))
+		expect(onZoom).toHaveBeenLastCalledWith(100)
+	})
+
+	it('chooses a level or a fit from the zoom menu', () => {
+		const onZoom = vi.fn()
+		render(
+			<Preview
+				workspace={workspaceFor('year-per-page')}
+				onNewProject={noop}
+				zoom={100}
+				onZoom={onZoom}
+			/>,
+		)
+		fireEvent.change(screen.getByRole('combobox', { name: 'Zoom level' }), {
+			target: { value: 'fit-width' },
+		})
+		expect(onZoom).toHaveBeenLastCalledWith('fit-width')
 	})
 })

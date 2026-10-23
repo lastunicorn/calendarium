@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { withSectionToggled } from '../preferences/Preferences'
+import type { PreviewZoom } from '../preferences/zoom'
 import { loadPreferences, savePreferences } from '../preferences/storage'
 
 /** The viewer's preferences: loaded from and saved to `localStorage`, apart from the workspace. */
@@ -22,5 +23,9 @@ export function usePreferences() {
 		setPreferences((current) => withSectionToggled(current, title))
 	}
 
-	return { preferences, resizeSidebar, toggleSection }
+	function zoomPreview(previewZoom: PreviewZoom) {
+		setPreferences((current) => ({ ...current, previewZoom }))
+	}
+
+	return { preferences, resizeSidebar, toggleSection, zoomPreview }
 }

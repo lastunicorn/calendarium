@@ -172,3 +172,26 @@ export function ChevronIcon() {
 		</Icon>
 	)
 }
+
+/** A magnifying glass with a plus: zooms in. */
+export function ZoomInIcon() {
+	return (
+		<Icon>
+			<circle cx="11" cy="11" r="7" />
+			<path d="M21 21l-4.35-4.35" />
+			<path d="M11 8v6" />
+			<path d="M8 11h6" />
+		</Icon>
+	)
+}
+
+/** A magnifying glass with a minus: zooms out. */
+export function ZoomOutIcon() {
+	return (
+		<Icon>
+			<circle cx="11" cy="11" r="7" />
+			<path d="M21 21l-4.35-4.35" />
+			<path d="M8 11h6" />
+		</Icon>
+	)
+}

@@ -1,4 +1,5 @@
-import { asObject, copyValid, isString, type Validators } from '../core/validation'
+import { asObject, copyValid, isString, oneOf, type Validators } from '../core/validation'
+import { DEFAULT_ZOOM, PREVIEW_ZOOMS, type PreviewZoom } from './zoom'
 
 /**
  * How the app looks and behaves for the viewer, apart from any calendar: never printed, never in a
@@ -12,6 +13,8 @@ export interface Preferences {
 	 * section open on one layout, like "Calendar", is open on the others too.
 	 */
 	openSection: string | null
+	/** How large the preview draws the pages: a level, or a fit following the preview's size. */
+	previewZoom: PreviewZoom
 }
 
 /** The sidebar's default width, and the narrowest it can be, in px. */
@@ -19,7 +22,7 @@ export const SIDEBAR_MIN_WIDTH = 320
 
 /** The preferences of a viewer who has changed none. */
 export function defaultPreferences(): Preferences {
-	return { sidebarWidth: SIDEBAR_MIN_WIDTH, openSection: null }
+	return { sidebarWidth: SIDEBAR_MIN_WIDTH, openSection: null, previewZoom: DEFAULT_ZOOM }
 }
 
 function isSidebarWidth(value: unknown): value is number {
@@ -34,6 +37,7 @@ function isOpenSection(value: unknown): value is string | null {
 export const PREFERENCE_VALIDATORS: Validators<Preferences> = {
 	sidebarWidth: isSidebarWidth,
 	openSection: isOpenSection,
+	previewZoom: oneOf(PREVIEW_ZOOMS),
 }
 
 /**
