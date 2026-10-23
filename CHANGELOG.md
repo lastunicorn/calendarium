@@ -4,6 +4,8 @@ The features each release brought, newest first. Versions follow the app version
 
 ## Unreleased
 
+## 5.0.0 — 2026-10-24
+
 Settings and files from 4.x are migrated: the week layout's automatic days direction becomes horizontal on portrait paper with one page per week, vertical otherwise, as it was drawn.
 
 ### Added
