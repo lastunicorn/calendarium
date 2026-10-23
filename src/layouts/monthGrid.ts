@@ -34,21 +34,33 @@ export const MONTH_GRID_VALIDATORS: Validators<MonthGridOptions> = {
 	showWeekNumbers: isBoolean,
 }
 
+/** How large a mini month is drawn in its corner of a page, its box and its text together. */
+export const MINI_MONTH_SIZES = ['small', 'medium', 'large'] as const
+export type MiniMonthSize = (typeof MINI_MONTH_SIZES)[number]
+
 /** A month drawn small beside a page's main content, for context; it can be left out. */
 export interface MiniMonthOptions extends MonthGridOptions {
 	show: boolean
 	/** Whether the title above the grid names the year after the month, or the month alone. */
 	showYear: boolean
+	size: MiniMonthSize
 }
 
-/** The default mini month: shown, titled with its month alone, with week numbers. */
+/** The default mini month: shown, medium, titled with its month alone, with week numbers. */
 export function miniMonthDefaults(): MiniMonthOptions {
-	return { show: true, showYear: false, ...monthGridDefaults(), showWeekNumbers: true }
+	return {
+		show: true,
+		showYear: false,
+		size: 'medium',
+		...monthGridDefaults(),
+		showWeekNumbers: true,
+	}
 }
 
 export const MINI_MONTH_VALIDATORS: Validators<MiniMonthOptions> = {
 	show: isBoolean,
 	showYear: isBoolean,
+	size: oneOf(MINI_MONTH_SIZES),
 	...MONTH_GRID_VALIDATORS,
 }
 
@@ -61,6 +73,8 @@ export interface MiniMonthPlan {
 	weekdays: string[]
 	highlightWeekends: WeekendHighlight
 	showWeekNumbers: boolean
+	/** The size of a mini month in a page's corner; left out for a month grid drawn full size. */
+	size?: MiniMonthSize
 	/** Day of the month to mark, e.g. the day a page is about. */
 	markedDay?: number
 	/** Key of any day of the week to mark as a row, e.g. the week a page is about. */

@@ -13,10 +13,11 @@
 
 /*
  * The heading between the previous and the next month, each in its corner. Both side columns keep
- * a mini month's width when only one is shown, so a centered heading stays centered on the page.
+ * a mini month's width (set by its size's class) when only one is shown, so a centered heading
+ * stays centered on the page.
  */
 .withMiniMonths {
-	grid-template-columns: 40mm minmax(0, 1fr) 40mm;
+	grid-template-columns: var(--mini-month-width) minmax(0, 1fr) var(--mini-month-width);
 	column-gap: 6mm;
 }
 
@@ -33,11 +34,11 @@
 	margin-bottom: 0;
 }
 
-/* A grid, so the mini month stretches to this fixed box. */
+/* A grid, so the mini month stretches to the fixed box of its size. */
 .miniMonth {
 	display: grid;
 	grid-row: 1;
-	height: 29mm;
+	height: var(--mini-month-height);
 }
 
 .previous {

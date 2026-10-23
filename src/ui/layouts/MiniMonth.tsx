@@ -3,13 +3,12 @@ import { weekNumber } from '../../core/calendar'
 import { isHighlightedColumn, isHighlightedDay } from '../../core/weekend'
 import type { MiniMonthPlan } from '../../layouts/monthGrid'
 import styles from './MiniMonth.module.css'
+import { miniMonthSizeClass } from './miniMonthSize'
 
-/** A small month as a page plans it (`MiniMonthPlan`), drawn at a size. */
-interface MiniMonthProps extends MiniMonthPlan {
-	/** `small` shrinks the text, for a mini month in the corner of a page. */
-	size?: 'normal' | 'small'
-}
-
+/**
+ * A small month as a page plans it (`MiniMonthPlan`): with a `size`, it fills a corner of the page,
+ * whose box its layout sizes by `miniMonthSizeClass`; without one, a full-size grid.
+ */
 export function MiniMonth({
 	month,
 	name,
@@ -19,12 +18,14 @@ export function MiniMonth({
 	markedDay,
 	markedWeek,
 	eventDays = [],
-	size = 'normal',
-}: MiniMonthProps) {
+	size,
+}: MiniMonthPlan) {
 	const weekendColumns = month.weeks[0].map((day) => isHighlightedColumn(day, highlightWeekends))
 
 	return (
-		<div className={`${styles.month} ${size === 'small' ? styles.small : ''}`}>
+		<div
+			className={`${styles.month} ${size === undefined ? '' : styles.sized} ${miniMonthSizeClass(size)}`}
+		>
 			<h2 className={styles.name}>{name}</h2>
 			<div className={`${styles.days} ${showWeekNumbers ? styles.withWeekNumbers : ''}`}>
 				{showWeekNumbers && <div className={`${styles.weekday} ${styles.weekNumber}`} />}

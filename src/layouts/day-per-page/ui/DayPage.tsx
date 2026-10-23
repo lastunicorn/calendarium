@@ -5,6 +5,7 @@ import type { DayFill, DayPages } from '../pages'
 import { CalendarHeader } from '../../../ui/layouts/CalendarHeader'
 import styles from './DayPage.module.css'
 import { MiniMonth } from '../../../ui/layouts/MiniMonth'
+import { miniMonthSizeClass } from '../../../ui/layouts/miniMonthSize'
 import { Page } from '../../../ui/layouts/Page'
 
 /** The inline style of the squares, with their side as a custom property the stylesheet sizes the grid by. */
@@ -149,7 +150,7 @@ export const DayPage = memo(function DayPage({ plan, setup }: DayPageProps) {
 		<>
 			<Page setup={setup}>
 				<div className={styles.layout}>
-					<div className={styles.top}>
+					<div className={`${styles.top} ${miniMonthSizeClass(miniMonth?.size)}`}>
 						<div className={styles.heading}>
 							<CalendarHeader
 								heading={plan.heading}
@@ -168,7 +169,7 @@ export const DayPage = memo(function DayPage({ plan, setup }: DayPageProps) {
 						</div>
 						{miniMonth && (
 							<div className={styles.miniMonth}>
-								<MiniMonth {...miniMonth} size="small" />
+								<MiniMonth {...miniMonth} />
 							</div>
 						)}
 					</div>

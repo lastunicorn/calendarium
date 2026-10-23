@@ -23,12 +23,12 @@
 	color: var(--color-text-muted);
 }
 
-/* A grid, so the mini month stretches to this fixed box. */
+/* A grid, so the mini month stretches to the fixed box of its size. */
 .miniMonth {
 	display: grid;
 	flex-shrink: 0;
-	width: 40mm;
-	height: 29mm;
+	width: var(--mini-month-width);
+	height: var(--mini-month-height);
 }
 
 /*

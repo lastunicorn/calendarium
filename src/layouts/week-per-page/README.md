@@ -10,7 +10,7 @@ One sheet per week of the year, or two, each day getting a writing cell, maybe a
 - **Cells:** per `weekendDisplay` (`weekCells`, `cells.ts`): Saturday and Sunday get a cell each, share one, or are left out, and a week whose only days of the year are a hidden weekend gets no page. They are side by side or stacked per `weekDayDirection` (`stacksDays`: `auto` stacks them in portrait unless the week spans two pages).
 - **Days:** each is a `WeekPageDay` with its weekday label (`weekdayFormat`), its month's name where the month changes and on each sheet's first day, its weekend highlight (`highlightWeekendDays`, never for a day of another year, `WeekDay.inYear`, drawn in gray) and whether it holds the hourly schedule (`weekPageLines` is `hours`, not in a cell two days share, nor for a day of another year).
 - **Two pages per week:** with `twoPagesPerWeek`, `splitWeekCells` puts the first three days on a first sheet whose header row shows the heading, and the rest on a second showing the mini month, each keeping the other part's space hidden.
-- **Mini month:** with `miniMonth.show`, a `MiniMonth` of the `weekMonth` beside the heading fills the week's row in black (`markedWeek`).
+- **Mini month:** with `miniMonth.show`, a `MiniMonth` of the `weekMonth` beside the heading fills the week's row in black (`markedWeek`), at `miniMonth.size`.
 - **Start page:** with `startPage` set to `even`, a blank page comes first (`blankFirstPage`).
 - **Footer:** with `showFooter`, each sheet keeps an empty bordered footer, `footerHeight` whole mm tall (`isFooterHeight`), under its cells.
 

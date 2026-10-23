@@ -1,6 +1,6 @@
 import { WEEKDAY_FORMATS } from '../../core/locale'
 import { HEADING_ALIGNMENTS, HEADING_ALIGNS } from '../../layouts/heading'
-import { MONTH_GRID_WEEKDAY_FORMATS } from '../../layouts/monthGrid'
+import { MINI_MONTH_SIZES, MONTH_GRID_WEEKDAY_FORMATS } from '../../layouts/monthGrid'
 import { optionsFrom } from '../fields/options'
 
 const WEEKDAY_FORMAT_LABELS = {
@@ -30,3 +30,10 @@ export const HEADING_ALIGNMENT_OPTIONS = optionsFrom(HEADING_ALIGNMENTS, HEADING
 
 /** The choices of where a heading sits, for a layout with nothing beside it. */
 export const HEADING_ALIGN_OPTIONS = optionsFrom(HEADING_ALIGNS, HEADING_ALIGNMENT_LABELS)
+
+/** The choices of a mini month's size. */
+export const MINI_MONTH_SIZE_OPTIONS = optionsFrom(MINI_MONTH_SIZES, {
+	small: 'Small',
+	medium: 'Medium',
+	large: 'Large',
+})

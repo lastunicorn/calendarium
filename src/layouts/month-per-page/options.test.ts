@@ -28,6 +28,7 @@ describe('month-per-page options', () => {
 				showPreviousMonth: false,
 				showNextMonth: true,
 				showYear: false,
+				size: 'small',
 			},
 		}
 		const ignored: string[] = []

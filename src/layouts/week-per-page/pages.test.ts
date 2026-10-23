@@ -186,12 +186,15 @@ describe('planWeekPages', () => {
 		expect(shown.weeks[0].miniMonth).toMatchObject({
 			name: 'January',
 			markedWeek: '2024-12-30',
+			size: 'medium',
 		})
 		expect(shown.weeks[0].miniMonth!.month.month).toBe(0)
 		const withYear = { ...defaultLayoutOptions('week-per-page').miniMonth, showYear: true }
 		expect(plan(2025, { miniMonth: withYear }).weeks[0].miniMonth).toMatchObject({
 			name: 'January 2025',
 		})
+		const small = { ...defaultLayoutOptions('week-per-page').miniMonth, size: 'small' } as const
+		expect(plan(2025, { miniMonth: small }).weeks[0].miniMonth).toMatchObject({ size: 'small' })
 		const hidden = { ...defaultLayoutOptions('week-per-page').miniMonth, show: false }
 		expect(plan(2025, { miniMonth: hidden }).weeks[0].miniMonth).toBeUndefined()
 	})

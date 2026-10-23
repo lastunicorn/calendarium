@@ -1,6 +1,8 @@
-import type { MiniMonthOptions } from '../../layouts/monthGrid'
+import type { MiniMonthOptions, MiniMonthSize } from '../../layouts/monthGrid'
 import { CalendarIcon } from '../components/icons'
 import { CheckboxField } from '../fields/CheckboxField'
+import { RadioField } from '../fields/RadioField'
+import { MINI_MONTH_SIZE_OPTIONS } from './fieldOptions'
 import { MonthGridFields } from './MonthGridFields'
 import { type OptionsSectionProps, Section } from './Section'
 
@@ -18,6 +20,10 @@ export function MiniMonthSection({
 		onUpdate({ showYear })
 	}
 
+	function handleSizeChange(size: MiniMonthSize) {
+		onUpdate({ size })
+	}
+
 	function handleReset() {
 		onUpdate(defaults)
 	}
@@ -31,6 +37,12 @@ export function MiniMonthSection({
 			/>
 			{options.show && (
 				<>
+					<RadioField
+						label="Size"
+						value={options.size}
+						options={MINI_MONTH_SIZE_OPTIONS}
+						onChange={handleSizeChange}
+					/>
 					<CheckboxField
 						label="Show year in title"
 						checked={options.showYear}

@@ -3,6 +3,7 @@ import type { PageSetup } from '../../../core/paper'
 import type { WeekHeaderPart, WeekPageDay, WeekPages, WeekSheet } from '../pages'
 import { CalendarHeader } from '../../../ui/layouts/CalendarHeader'
 import { MiniMonth } from '../../../ui/layouts/MiniMonth'
+import { miniMonthSizeClass } from '../../../ui/layouts/miniMonthSize'
 import { Page } from '../../../ui/layouts/Page'
 import styles from './WeekPage.module.css'
 
@@ -144,7 +145,7 @@ export const WeekPage = memo(function WeekPage({ plan, hours, setup }: WeekPageP
 			)
 		}
 		return (
-			<div className={styles.top}>
+			<div className={`${styles.top} ${miniMonthSizeClass(miniMonth.size)}`}>
 				<div
 					className={[
 						styles.heading,
@@ -159,7 +160,7 @@ export const WeekPage = memo(function WeekPage({ plan, hours, setup }: WeekPageP
 					className={`${styles.miniMonth} ${hideMiniMonth ? styles.hidden : ''}`}
 					aria-hidden={hideMiniMonth || undefined}
 				>
-					<MiniMonth {...miniMonth} size="small" />
+					<MiniMonth {...miniMonth} />
 				</div>
 			</div>
 		)

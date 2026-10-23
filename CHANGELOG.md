@@ -4,9 +4,14 @@ The features each release brought, newest first. Versions follow the app version
 
 ## Unreleased
 
+### Added
+
+- A size for the mini calendars of the month, week and day layouts: small, medium (the default) or large (their size before).
+
 ### Changed
 
 - The browser tab is titled Calendarium, the app's name, instead of Printable Calendar.
+- The mini calendars of the month, week and day layouts are a little smaller by default.
 
 ## 4.6.0 — 2026-10-23
 

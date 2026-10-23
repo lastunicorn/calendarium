@@ -143,4 +143,12 @@ describe('planMonthPages', () => {
 		expect(page.previousMonth).toMatchObject({ name: 'December' })
 		expect(page.nextMonth).toMatchObject({ name: 'February' })
 	})
+
+	it('draws the adjacent months at their size', () => {
+		const shown = defaultLayoutOptions('month-per-page').adjacentMonths
+		expect(plan(2026)[0].previousMonth).toMatchObject({ size: 'medium' })
+		const page = plan(2026, { adjacentMonths: { ...shown, size: 'large' } })[0]
+		expect(page.previousMonth).toMatchObject({ size: 'large' })
+		expect(page.nextMonth).toMatchObject({ size: 'large' })
+	})
 })

@@ -4,7 +4,13 @@ import { isBoolean, isString, oneOf, type Validators } from '../../core/validati
 import { COMMON_VALIDATORS, type CommonOptions, commonDefaults, normalizeCommon } from '../common'
 import { HEADING_ALIGNS, type HeadingAlign } from '../heading'
 import type { LayoutSpec } from '../LayoutSpec'
-import { MONTH_GRID_VALIDATORS, type MonthGridOptions, monthGridDefaults } from '../monthGrid'
+import {
+	MINI_MONTH_SIZES,
+	MONTH_GRID_VALIDATORS,
+	type MiniMonthSize,
+	type MonthGridOptions,
+	monthGridDefaults,
+} from '../monthGrid'
 
 /** The previous and the next month, drawn small at the top left and top right of each page. */
 export interface AdjacentMonthsOptions extends MonthGridOptions {
@@ -12,14 +18,16 @@ export interface AdjacentMonthsOptions extends MonthGridOptions {
 	showNextMonth: boolean
 	/** Whether each one's title names its year after the month, or the month alone. */
 	showYear: boolean
+	size: MiniMonthSize
 }
 
-/** Both adjacent months shown, titled with their month and year, without week numbers. */
+/** Both adjacent months shown, medium, titled with their month and year, without week numbers. */
 function adjacentMonthsDefaults(): AdjacentMonthsOptions {
 	return {
 		showPreviousMonth: true,
 		showNextMonth: true,
 		showYear: true,
+		size: 'medium',
 		...monthGridDefaults(),
 	}
 }
@@ -28,6 +36,7 @@ const ADJACENT_MONTHS_VALIDATORS: Validators<AdjacentMonthsOptions> = {
 	showPreviousMonth: isBoolean,
 	showNextMonth: isBoolean,
 	showYear: isBoolean,
+	size: oneOf(MINI_MONTH_SIZES),
 	...MONTH_GRID_VALIDATORS,
 }
 

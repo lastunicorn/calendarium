@@ -6,7 +6,7 @@
 
 /*
  * The heading beside the mini month, in one row as tall as the taller of them. The mini month
- * keeps a fixed box (a grid, so the month stretches to it).
+ * keeps the fixed box of its size (a grid, so the month stretches to it).
  */
 .top {
 	display: grid;
@@ -34,8 +34,8 @@
 	grid-row: 1;
 	grid-column: 2;
 	display: grid;
-	width: 40mm;
-	height: 29mm;
+	width: var(--mini-month-width);
+	height: var(--mini-month-height);
 }
 
 /* A header part one of a week's two pages leaves out, keeping its space so their cells line up. */

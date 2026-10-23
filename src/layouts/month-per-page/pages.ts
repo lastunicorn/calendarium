@@ -78,6 +78,7 @@ export function planMonthPages(options: MonthPerPageOptions, model: CalendarMode
 			weekdays: miniWeekdays,
 			highlightWeekends: adjacentMonths.highlightWeekends,
 			showWeekNumbers: adjacentMonths.showWeekNumbers,
+			size: adjacentMonths.size,
 		}
 	}
 

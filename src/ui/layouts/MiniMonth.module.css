@@ -83,22 +83,52 @@
 	border-radius: 50%;
 }
 
-/* Smaller text, for a mini month in the corner of a page. */
-.small .name {
+/*
+ * The sizes of a mini month in a page's corner, each defined once: its box, which the layouts size
+ * their corner by (`miniMonthSizeClass` sets it on their header too), and its text.
+ */
+.small {
+	--mini-month-width: 30mm;
+	--mini-month-height: 22mm;
+	--mini-month-name-size: 7pt;
+	--mini-month-day-size: 5.5pt;
+	--mini-month-weekday-size: 5pt;
+	--mini-month-week-number-size: 4.5pt;
+}
+
+.medium {
+	--mini-month-width: 35mm;
+	--mini-month-height: 25.5mm;
+	--mini-month-name-size: 8pt;
+	--mini-month-day-size: 6.5pt;
+	--mini-month-weekday-size: 5.5pt;
+	--mini-month-week-number-size: 5.5pt;
+}
+
+.large {
+	--mini-month-width: 40mm;
+	--mini-month-height: 29mm;
+	--mini-month-name-size: 9pt;
+	--mini-month-day-size: 7.5pt;
+	--mini-month-weekday-size: 6.5pt;
+	--mini-month-week-number-size: 6pt;
+}
+
+.sized .name {
 	margin-bottom: 0.8mm;
-	font-size: 9pt;
+	font-size: var(--mini-month-name-size);
 }
 
-.small .days {
-	font-size: 7.5pt;
+.sized .days {
+	font-size: var(--mini-month-day-size);
 }
 
-.small .weekday {
-	font-size: 6.5pt;
+.sized .weekday {
+	font-size: var(--mini-month-weekday-size);
 }
 
-.small .weekNumber {
-	font-size: 6pt;
+.sized .weekNumber {
+	font-size: var(--mini-month-week-number-size);
 }
 
 @media print {

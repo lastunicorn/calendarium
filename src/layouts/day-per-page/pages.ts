@@ -147,6 +147,7 @@ export function planDayPages(options: DayPerPageOptions, model: CalendarModel): 
 						weekdays: miniWeekdays,
 						highlightWeekends: miniMonth.highlightWeekends,
 						showWeekNumbers: miniMonth.showWeekNumbers,
+						size: miniMonth.size,
 						markedDay: day.day,
 					}
 				: undefined,

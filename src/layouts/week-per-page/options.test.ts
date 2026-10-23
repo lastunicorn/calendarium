@@ -27,7 +27,7 @@ describe('week-per-page options', () => {
 			hourFormat: '12h',
 			firstHour: 8,
 			lastHour: 18,
-			miniMonth: { ...grid, show: true, showYear: true },
+			miniMonth: { ...grid, show: true, showYear: true, size: 'large' },
 		}
 		const ignored: string[] = []
 		expect(parseOptions(WEEK_PER_PAGE_SPEC, options, ignored)).toEqual(options)

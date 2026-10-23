@@ -23,7 +23,13 @@ describe('day-per-page options', () => {
 			firstHour: 0,
 			lastHour: 23,
 			highlightWeekendDays: false,
-			miniMonth: { ...grid, show: false, showYear: true, highlightWeekends: 'columns' },
+			miniMonth: {
+				...grid,
+				show: false,
+				showYear: true,
+				size: 'small',
+				highlightWeekends: 'columns',
+			},
 			showHeaderWeek: false,
 			showHeaderDayOfYear: false,
 		}
@@ -45,7 +51,7 @@ describe('day-per-page options', () => {
 			firstHour: 24,
 			lastHour: 7.5,
 			highlightWeekendDays: 'yes',
-			miniMonth: { weekdayFormat: 'long', show: 'no' },
+			miniMonth: { weekdayFormat: 'long', show: 'no', size: 'tiny' },
 			showHeaderWeek: 1,
 			showHeaderDayOfYear: null,
 		}
@@ -54,7 +60,8 @@ describe('day-per-page options', () => {
 		)
 		expect(ignored).toContain('miniMonth.weekdayFormat')
 		expect(ignored).toContain('miniMonth.show')
-		expect(ignored).toHaveLength(Object.keys(options).length + 1)
+		expect(ignored).toContain('miniMonth.size')
+		expect(ignored).toHaveLength(Object.keys(options).length + 2)
 	})
 
 	it('keeps the mini month to abbreviated weekday names', () => {
