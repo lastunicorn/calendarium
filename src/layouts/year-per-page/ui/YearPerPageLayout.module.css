@@ -21,3 +21,25 @@
 	grid-template-columns: repeat(4, 1fr);
 	grid-template-rows: repeat(3, 1fr);
 }
+
+/* The months' text by `monthSize`, through the `MiniMonth`'s variables; `medium` is its own size. */
+.small {
+	--mini-month-name-size: 10pt;
+	--mini-month-day-size: 8pt;
+	--mini-month-weekday-size: 6.5pt;
+	--mini-month-week-number-size: 6pt;
+}
+
+.medium {
+	--mini-month-name-size: 12pt;
+	--mini-month-day-size: 10pt;
+	--mini-month-weekday-size: 8pt;
+	--mini-month-week-number-size: 7.5pt;
+}
+
+.large {
+	--mini-month-name-size: 14pt;
+	--mini-month-day-size: 12pt;
+	--mini-month-weekday-size: 9.5pt;
+	--mini-month-week-number-size: 9pt;
+}

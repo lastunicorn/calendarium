@@ -14,10 +14,12 @@ The whole year on one sheet: the title, or else the year, above the 12 months as
 
 `YearPerPageOptions` (`options.ts`): `CommonOptions`, the month grid options (`MonthGridOptions`) for its 12 months, and its own:
 
-| Sidebar section | Fields                                                                                                                                                                   |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Header          | `title`, `subtitle` (`ui/HeaderSection`)                                                                                                                                 |
-| Content         | `weekdayFormat` (abbreviated only, `MONTH_GRID_WEEKDAY_FORMATS`), `highlightWeekends`, `showWeekNumbers` (`ui/YearContentSection`, through the shared `MonthGridFields`) |
+| Sidebar section | Fields                                                                                                                                                                                     |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Header          | `title`, `subtitle` (`ui/HeaderSection`)                                                                                                                                                   |
+| Content         | `monthSize`, then `weekdayFormat` (abbreviated only, `MONTH_GRID_WEEKDAY_FORMATS`), `highlightWeekends`, `showWeekNumbers` (`ui/YearContentSection`, through the shared `MonthGridFields`) |
+
+`monthSize`, one of `MONTH_SIZES` (`small`, `medium` by default, `large`), sizes the months' text: each month fills its share of the page whatever its size. The component sets the size's class (`ui/YearPerPageLayout.module.css`) on the grid, defining the `MiniMonth`'s text variables (`--mini-month-name-size`, …), `medium` being its own size.
 
 It has no cross-field rules of its own (`normalize: normalizeCommon`) and no migration steps.
 
@@ -27,14 +29,15 @@ It has no cross-field rules of its own (`normalize: normalizeCommon`) and no mig
 
 ## Files
 
-| File                                                | What it holds                                      |
-| --------------------------------------------------- | -------------------------------------------------- |
-| `index.ts`                                          | The entry point: `YEAR_PER_PAGE = defineLayout(…)` |
-| `options.ts`                                        | `YearPerPageOptions` and `YEAR_PER_PAGE_SPEC`      |
-| `pages.ts`                                          | `planYearPage`, `YearPage`, `EventListPage`        |
-| `messages.ts`                                       | `YEAR_PAGE_MESSAGES`                               |
-| `ui/index.ts`                                       | The UI's entry point: `YEAR_PER_PAGE_VIEW`         |
-| `ui/YearPerPageLayout.tsx`                          | Draws the plan: the year page and the event list   |
-| `ui/EventList.tsx`                                  | The event list's page                              |
-| `ui/YearPerPageForm.tsx`                            | The options form, combining the sections           |
-| `ui/HeaderSection.tsx`, `ui/YearContentSection.tsx` | The layout's own sections                          |
+| File                                                | What it holds                                                |
+| --------------------------------------------------- | ------------------------------------------------------------ |
+| `index.ts`                                          | The entry point: `YEAR_PER_PAGE = defineLayout(…)`           |
+| `options.ts`                                        | `YearPerPageOptions`, `MONTH_SIZES` and `YEAR_PER_PAGE_SPEC` |
+| `pages.ts`                                          | `planYearPage`, `YearPage`, `EventListPage`                  |
+| `messages.ts`                                       | `YEAR_PAGE_MESSAGES`                                         |
+| `ui/index.ts`                                       | The UI's entry point: `YEAR_PER_PAGE_VIEW`                   |
+| `ui/YearPerPageLayout.tsx`                          | Draws the plan: the year page and the event list             |
+| `ui/EventList.tsx`                                  | The event list's page                                        |
+| `ui/YearPerPageForm.tsx`                            | The options form, combining the sections                     |
+| `ui/HeaderSection.tsx`, `ui/YearContentSection.tsx` | The layout's own sections                                    |
+| `ui/fieldOptions.ts`                                | `MONTH_SIZE_OPTIONS`, the month size's labels                |

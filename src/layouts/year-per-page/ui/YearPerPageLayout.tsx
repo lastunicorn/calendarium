@@ -25,7 +25,9 @@ export function YearPerPageLayout({ options }: YearPerPageLayoutProps) {
 				<div className={styles.layout}>
 					<CalendarHeader heading={heading} subheading={subheading} />
 
-					<div className={`${styles.grid} ${styles[page.orientation]}`}>
+					<div
+						className={`${styles.grid} ${styles[page.orientation]} ${styles[options.monthSize]}`}
+					>
 						{months.map((month) => (
 							<MiniMonth key={month.month.month} {...month} />
 						))}

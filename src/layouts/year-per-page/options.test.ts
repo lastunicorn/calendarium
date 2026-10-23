@@ -5,10 +5,11 @@ import { YEAR_PER_PAGE_SPEC } from './options'
 const grid = { weekdayFormat: 'short', highlightWeekends: 'off', showWeekNumbers: true }
 
 describe('year-per-page options', () => {
-	it('start portrait, with one-letter weekdays', () => {
+	it('start portrait, with one-letter weekdays, the months medium', () => {
 		const defaults = YEAR_PER_PAGE_SPEC.defaults()
 		expect(defaults.page.orientation).toBe('portrait')
 		expect(defaults.weekdayFormat).toBe('narrow')
+		expect(defaults.monthSize).toBe('medium')
 	})
 
 	it('keeps valid fields', () => {
@@ -17,6 +18,7 @@ describe('year-per-page options', () => {
 			...grid,
 			title: 'Family',
 			subtitle: 'Birthdays',
+			monthSize: 'large',
 		}
 		const ignored: string[] = []
 		expect(parseOptions(YEAR_PER_PAGE_SPEC, options, ignored)).toEqual(options)
@@ -31,6 +33,7 @@ describe('year-per-page options', () => {
 			showWeekNumbers: 'yes',
 			title: 7,
 			subtitle: null,
+			monthSize: 'huge',
 		}
 		expect(parseOptions(YEAR_PER_PAGE_SPEC, options, ignored)).toEqual(
 			YEAR_PER_PAGE_SPEC.defaults(),

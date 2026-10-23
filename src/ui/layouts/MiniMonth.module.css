@@ -6,7 +6,7 @@
 
 .name {
 	margin: 0 0 1.5mm;
-	font-size: 12pt;
+	font-size: var(--mini-month-name-size, 12pt);
 	font-weight: 700;
 	text-align: center;
 }
@@ -16,7 +16,7 @@
 	display: grid;
 	grid-template-columns: repeat(7, 1fr);
 	grid-template-rows: repeat(7, 1fr);
-	font-size: 10pt;
+	font-size: var(--mini-month-day-size, 10pt);
 	text-align: center;
 }
 
@@ -33,7 +33,7 @@
 }
 
 .weekday {
-	font-size: 8pt;
+	font-size: var(--mini-month-weekday-size, 8pt);
 	font-weight: 600;
 	text-transform: uppercase;
 	border-bottom: 0.3mm solid var(--color-rule);
@@ -41,7 +41,7 @@
 
 .weekNumber {
 	padding-right: 1mm;
-	font-size: 7.5pt;
+	font-size: var(--mini-month-week-number-size, 7.5pt);
 	color: var(--color-week-number);
 	border-right: 0.3mm solid var(--color-rule-light);
 }
@@ -85,7 +85,8 @@
 
 /*
  * The sizes of a mini month in a page's corner, each defined once: its box, which the layouts size
- * their corner by (`miniMonthSizeClass` sets it on their header too), and its text.
+ * their corner by (`miniMonthSizeClass` sets it on their header too), and its text. A full-size
+ * month's text is sized by the same variables, set by its layout, or else by the fallbacks above.
  */
 .small {
 	--mini-month-width: 30mm;
@@ -125,19 +126,6 @@
 
 .sized .name {
 	margin-bottom: 0.8mm;
-	font-size: var(--mini-month-name-size);
-}
-
-.sized .days {
-	font-size: var(--mini-month-day-size);
-}
-
-.sized .weekday {
-	font-size: var(--mini-month-weekday-size);
-}
-
-.sized .weekNumber {
-	font-size: var(--mini-month-week-number-size);
 }
 
 @media print {
