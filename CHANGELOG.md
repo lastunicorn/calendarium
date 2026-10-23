@@ -12,6 +12,7 @@ The features each release brought, newest first. Versions follow the app version
 
 - The browser tab is titled Calendarium, the app's name, instead of Printable Calendar.
 - The mini calendars of the month, week and day layouts are a little smaller by default.
+- The week layout's days direction is vertical or horizontal, no longer automatic; vertical, the new default, replaces automatic in older settings and files.
 
 ## 4.6.0 — 2026-10-23
 

@@ -7,7 +7,7 @@ One sheet per week of the year, or two, each day getting a writing cell, maybe a
 `planWeekPages` (`pages.ts`) plans a `WeekPages` for each week from `weeksOfYear`, 53 or 54 (a week reaches into the previous or next year):
 
 - **Heading:** the `dateRangeName` of its days, set per `headingAlignment` (`headingAlign`: `auto` is left beside the mini month or over two pages, centered otherwise; `HEADING_ALIGNMENTS` in `layouts/heading.ts`), in `headingFontSize` pt, with the week's ISO number below it per `showHeaderWeek` (`WEEK_PAGE_MESSAGES`).
-- **Cells:** per `weekendDisplay` (`weekCells`, `cells.ts`): Saturday and Sunday get a cell each, share one, or are left out, and a week whose only days of the year are a hidden weekend gets no page. They are side by side or stacked per `weekDayDirection` (`stacksDays`: `auto` stacks them in portrait unless the week spans two pages).
+- **Cells:** per `weekendDisplay` (`weekCells`, `cells.ts`): Saturday and Sunday get a cell each, share one, or are left out, and a week whose only days of the year are a hidden weekend gets no page. They are side by side or stacked per `weekDayDirection`.
 - **Days:** each is a `WeekPageDay` with its weekday label (`weekdayFormat`), its month's name where the month changes and on each sheet's first day, its weekend highlight (`highlightWeekendDays`, never for a day of another year, `WeekDay.inYear`, drawn in gray) and whether it holds the hourly schedule (`weekPageLines` is `hours`, not in a cell two days share, nor for a day of another year).
 - **Two pages per week:** with `twoPagesPerWeek`, `splitWeekCells` puts the first three days on a first sheet whose header row shows the heading, and the rest on a second showing the mini month, each keeping the other part's space hidden.
 - **Mini month:** with `miniMonth.show`, a `MiniMonth` of the `weekMonth` beside the heading fills the week's row in black (`markedWeek`), at `miniMonth.size`.
@@ -42,7 +42,7 @@ One sheet per week of the year, or two, each day getting a writing cell, maybe a
 | --------------------------------------------------- | ------------------------------------------------------------------------- |
 | `index.ts`                                          | The entry point: `WEEK_PER_PAGE = defineLayout(…)`                        |
 | `options.ts`                                        | `WeekPerPageOptions`, its value sets and bounds, and `WEEK_PER_PAGE_SPEC` |
-| `cells.ts`                                          | The cell rules: `weekCells`, `splitWeekCells`, `stacksDays`               |
+| `cells.ts`                                          | The cell rules: `weekCells`, `splitWeekCells`                             |
 | `pages.ts`                                          | `planWeekPages`, `WeekPages`, `WeekPageDay`                               |
 | `messages.ts`, `migrations.ts`                      | `WEEK_PAGE_MESSAGES`, `WEEK_PER_PAGE_MIGRATIONS`                          |
 | `ui/index.ts`                                       | The UI's entry point: `WEEK_PER_PAGE_VIEW`                                |
@@ -52,9 +52,9 @@ One sheet per week of the year, or two, each day getting a writing cell, maybe a
 
 ## Domain language
 
-| Term               | Meaning                                                                        | In code                          | Sidebar label      |
-| ------------------ | ------------------------------------------------------------------------------ | -------------------------------- | ------------------ |
-| Cell               | A week page's writing area for one day, or for Saturday and Sunday sharing one | `WeekCell` (`weekCells`)         | —                  |
-| Weekend display    | Saturday and Sunday get a cell each, share one, or are left out                | `WeekendDisplay`                 | Weekend            |
-| Direction          | Days as columns side by side (`vertical`) or as stacked rows (`horizontal`)    | `WeekDayDirection`, `stacksDays` | Days               |
-| Two pages per week | A week spread over two sheets                                                  | `twoPagesPerWeek`                | Two pages per week |
+| Term               | Meaning                                                                        | In code                  | Sidebar label      |
+| ------------------ | ------------------------------------------------------------------------------ | ------------------------ | ------------------ |
+| Cell               | A week page's writing area for one day, or for Saturday and Sunday sharing one | `WeekCell` (`weekCells`) | —                  |
+| Weekend display    | Saturday and Sunday get a cell each, share one, or are left out                | `WeekendDisplay`         | Weekend            |
+| Direction          | Days as columns side by side (`vertical`) or as stacked rows (`horizontal`)    | `WeekDayDirection`       | Days               |
+| Two pages per week | A week spread over two sheets                                                  | `twoPagesPerWeek`        | Two pages per week |

@@ -39,14 +39,13 @@ const WEEKEND_DISPLAY_OPTIONS = optionsFrom(WEEKEND_DISPLAYS, {
 })
 
 const WEEK_DAY_DIRECTION_OPTIONS = optionsFrom(WEEK_DAY_DIRECTIONS, {
-	auto: 'Automatic (by orientation)',
 	vertical: 'Vertical (columns)',
 	horizontal: 'Horizontal (rows)',
 })
 
 const START_PAGE_OPTIONS = optionsFrom(START_PAGES, {
-	odd: 'Odd page',
-	even: 'Even page (a blank page first)',
+	odd: 'Odd page (first page)',
+	even: 'Even page (second page)',
 })
 
 const START_PAGE_DESCRIPTION =
@@ -140,11 +139,6 @@ export function WeekContentSection({
 			/>
 			<RadioField
 				label="Days direction"
-				description={
-					options.weekDayDirection === 'auto'
-						? 'Columns on landscape paper or over two pages, rows on portrait.'
-						: undefined
-				}
 				value={options.weekDayDirection}
 				options={WEEK_DAY_DIRECTION_OPTIONS}
 				onChange={handleWeekDayDirectionChange}

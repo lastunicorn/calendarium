@@ -199,14 +199,17 @@ describe('planWeekPages', () => {
 		expect(plan(2025, { miniMonth: hidden }).weeks[0].miniMonth).toBeUndefined()
 	})
 
-	it('stacks the days in portrait unless the week takes two sheets', () => {
+	it('stacks the days only when horizontal, whatever the page', () => {
 		const portrait = {
 			...defaultLayoutOptions('week-per-page').page,
 			orientation: 'portrait' as const,
 		}
-		expect(plan(2026, { page: portrait }).weeks[0].stacked).toBe(true)
-		expect(plan(2026, { page: portrait, twoPagesPerWeek: true }).weeks[0].stacked).toBe(false)
 		expect(plan(2026).weeks[0].stacked).toBe(false)
+		expect(plan(2026, { page: portrait }).weeks[0].stacked).toBe(false)
+		expect(plan(2026, { weekDayDirection: 'horizontal' }).weeks[0].stacked).toBe(true)
+		expect(
+			plan(2026, { weekDayDirection: 'horizontal', twoPagesPerWeek: true }).weeks[0].stacked,
+		).toBe(true)
 	})
 
 	it('lists the events of the days of the year under their labels', () => {

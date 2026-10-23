@@ -67,7 +67,7 @@ export interface WeekPerPageOptions extends CommonOptions, HourSchedule {
 	twoPagesPerWeek: boolean
 	/** Whether the first week starts on the first page, or on the second after a blank one. */
 	startPage: StartPage
-	/** Whether the days are columns or rows (`stacksDays`). */
+	/** Whether the days are columns side by side or stacked rows. */
 	weekDayDirection: WeekDayDirection
 	/** Whether each sheet keeps an empty footer, `footerHeight` mm tall, under its cells. */
 	showFooter: boolean
@@ -93,7 +93,7 @@ export const WEEK_PER_PAGE_SPEC: LayoutSpec<WeekPerPageOptions> = {
 			weekPageLines: 'hours',
 			twoPagesPerWeek: false,
 			startPage: 'odd',
-			weekDayDirection: 'auto',
+			weekDayDirection: 'vertical',
 			showFooter: false,
 			footerHeight: 20,
 			...scheduleDefaults(),

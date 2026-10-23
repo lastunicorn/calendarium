@@ -1,5 +1,4 @@
 import type { Week, WeekDay } from '../../core/calendar'
-import type { Orientation } from '../../core/paper'
 
 // How a week page divides its week: into cells, over one sheet or two, as rows or columns.
 
@@ -46,18 +45,7 @@ export function splitWeekCells(cells: WeekCell[]): [WeekCell[], WeekCell[]] {
 
 /**
  * How a `week-per-page` page lays out its days: `vertical` as columns side by side, left to right;
- * `horizontal` as rows stacked top to bottom; `auto` columns on landscape paper or over two pages,
- * rows otherwise.
+ * `horizontal` as rows stacked top to bottom.
  */
-export const WEEK_DAY_DIRECTIONS = ['auto', 'vertical', 'horizontal'] as const
+export const WEEK_DAY_DIRECTIONS = ['vertical', 'horizontal'] as const
 export type WeekDayDirection = (typeof WEEK_DAY_DIRECTIONS)[number]
-
-/** Whether a week page stacks its days as rows (true) or sets them side by side as columns. */
-export function stacksDays(
-	direction: WeekDayDirection,
-	orientation: Orientation,
-	twoPages: boolean,
-): boolean {
-	if (direction === 'auto') return orientation === 'portrait' && !twoPages
-	return direction === 'horizontal'
-}

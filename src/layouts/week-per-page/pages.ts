@@ -11,7 +11,7 @@ import { isHighlightedWeekDay } from '../../core/weekend'
 import type { CalendarModel } from '../common'
 import type { HeadingAlign } from '../heading'
 import type { MiniMonthPlan } from '../monthGrid'
-import { splitWeekCells, stacksDays, type WeekCell, weekCells } from './cells'
+import { splitWeekCells, type WeekCell, weekCells } from './cells'
 import { WEEK_PAGE_MESSAGES } from './messages'
 import type { WeekPerPageOptions } from './options'
 
@@ -66,7 +66,7 @@ export interface WeekPages {
 	headingFontSize: number
 	/** The month holding most of the week's days, the week marked; none when hidden. */
 	miniMonth?: MiniMonthPlan
-	/** Whether the days are stacked rows rather than columns side by side (`stacksDays`). */
+	/** Whether the days are stacked rows rather than columns side by side (`weekDayDirection`). */
 	stacked: boolean
 	/** One sheet, or two with `twoPagesPerWeek` (`splitWeekCells`). */
 	sheets: WeekSheet[]
@@ -107,7 +107,7 @@ export function planWeekPages(options: WeekPerPageOptions, model: CalendarModel)
 	const weekdays = weekdayNames(locale, weekStart, options.weekdayFormat)
 	const miniWeekdays = weekdayNames(locale, weekStart, miniMonth.weekdayFormat)
 	const withSchedule = options.weekPageLines === 'hours'
-	const stacked = stacksDays(options.weekDayDirection, options.page.orientation, twoPagesPerWeek)
+	const stacked = options.weekDayDirection === 'horizontal'
 
 	function planDay(day: WeekDay, firstOnSheet: boolean, shared: boolean): WeekPageDay {
 		return {
