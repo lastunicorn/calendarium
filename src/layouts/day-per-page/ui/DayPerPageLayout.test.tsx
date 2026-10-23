@@ -18,7 +18,7 @@ function pagesOf(options: DayPerPageOptions) {
 // component draws the plan, and what only the markup shows.
 describe('DayPerPageLayout', () => {
 	it('draws a page per day', () => {
-		expect(pagesOf(optionsWith())).toHaveLength(365)
+		expect(pagesOf(optionsWith({ dayPageLines: 'blank' }))).toHaveLength(365)
 	})
 
 	it('draws a day’s second page with the rest of its hours and no header', () => {

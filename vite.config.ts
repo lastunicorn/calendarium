@@ -35,6 +35,8 @@ export default defineConfig({
 					include: ['src/**/*.test.tsx'],
 					environment: 'jsdom',
 					setupFiles: ['src/test/setupDom.ts'],
+					// Drawing a year of pages in jsdom takes seconds on a shared CI runner.
+					testTimeout: 15_000,
 				},
 			},
 		],

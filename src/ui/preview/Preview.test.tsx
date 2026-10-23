@@ -11,6 +11,27 @@ function workspaceFor(layout: LayoutId): Workspace {
 	return { ...defaultWorkspace(), layout }
 }
 
+/** The class of the box around the pages of `layout`, with `changes` and `page` changed. */
+function pagesBoxClass(layout: LayoutId, changes: object, page: object) {
+	const workspace = workspaceFor(layout)
+	const options = workspace.layouts[layout]
+	const { container } = render(
+		<Preview
+			workspace={{
+				...workspace,
+				layouts: {
+					...workspace.layouts,
+					[layout]: { ...options, ...changes, page: { ...options.page, ...page } },
+				},
+			}}
+			onNewProject={noop}
+			zoom={100}
+			onZoom={noop}
+		/>,
+	)
+	return container.querySelector('section')?.parentElement?.className
+}
+
 // What each layout draws is tested in its folder, `layouts/<layout-id>/ui/`; these check that the
 // preview draws the chosen one, whichever it is.
 describe('Preview', () => {
@@ -60,45 +81,27 @@ describe('Preview', () => {
 		expect(container.querySelectorAll('section')).toHaveLength(12)
 	})
 
-	it.each([
-		['week-per-page', { twoPagesPerWeek: true }],
-		['day-per-page', { twoPagesPerDay: true }],
-	] as const)(
-		'shows the two pages of %s as facing spreads, but not in a booklet',
+	// Two pages per week or day, without the hours, which only slow these renders of over a hundred
+	// pages down.
+	const facingPages = [
+		['week-per-page', { twoPagesPerWeek: true, weekPageLines: 'none' }],
+		['day-per-page', { twoPagesPerDay: true, dayPageLines: 'blank' }],
+	] as const
+
+	it.each(facingPages)('shows the two pages of %s as facing spreads', (layout, changes) => {
+		expect(pagesBoxClass(layout, changes, {})).toMatch(/sideBySideSpreads/)
+	})
+
+	it.each(facingPages)(
+		'stacks the facing pages of %s with the spine at the top',
 		(layout, changes) => {
-			const workspace = workspaceFor(layout)
-
-			/** The class of the box around the pages, with `page` changed. */
-			function pagesBoxClass(page: object) {
-				const options = workspace.layouts[layout]
-				const { container, unmount } = render(
-					<Preview
-						workspace={{
-							...workspace,
-							layouts: {
-								...workspace.layouts,
-								[layout]: {
-									...options,
-									...changes,
-									page: { ...options.page, ...page },
-								},
-							},
-						}}
-						onNewProject={noop}
-						zoom={100}
-						onZoom={noop}
-					/>,
-				)
-				const className = container.querySelector('section')?.parentElement?.className
-				unmount()
-				return className
-			}
-
-			expect(pagesBoxClass({})).toMatch(/sideBySideSpreads/)
-			expect(pagesBoxClass({ spine: 'top' })).toMatch(/stackedSpreads/)
-			expect(pagesBoxClass({ booklet: true })).not.toMatch(/Spreads/)
+			expect(pagesBoxClass(layout, changes, { spine: 'top' })).toMatch(/stackedSpreads/)
 		},
 	)
+
+	it.each(facingPages)('shows the two pages of %s as sheets in a booklet', (layout, changes) => {
+		expect(pagesBoxClass(layout, changes, { booklet: true })).not.toMatch(/Spreads/)
+	})
 
 	it('marks the pages with the calendar’s language', () => {
 		const workspace = workspaceFor('year-per-page')
