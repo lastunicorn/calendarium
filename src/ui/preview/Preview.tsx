@@ -8,6 +8,7 @@ import styles from './Preview.module.css'
 import { PreviewErrorBoundary } from './PreviewErrorBoundary'
 import { Booklet } from './Booklet'
 import { Spreads } from './Spreads'
+import { spreadDimensions } from './spreadLayout'
 import { useScrollAreaSize } from './useScrollAreaSize'
 import { useCurrentPage } from './useCurrentPage'
 import { PageIndicator } from './PageIndicator'
@@ -75,12 +76,10 @@ export function Preview({ workspace, onNewProject, zoom, onZoom }: PreviewProps)
 	const { count, current, goToPage } = useCurrentPage(areaRef, pagesRef)
 	const spreads = showsSpreads(layout, options)
 	// What a fit fits: a sheet, or a spread of two pages.
-	const sheet = sheetDimensions(options.page)
-	const across = spreads && options.page.spine === 'left' ? 2 : 1
-	const down = spreads && options.page.spine === 'top' ? 2 : 1
+	const shown = spreads ? spreadDimensions(options.page) : sheetDimensions(options.page)
 	const scale = zoomScale(
 		zoom,
-		{ width: across * sheet.width * PX_PER_MM, height: down * sheet.height * PX_PER_MM },
+		{ width: shown.width * PX_PER_MM, height: shown.height * PX_PER_MM },
 		room,
 	)
 
@@ -116,11 +115,7 @@ export function Preview({ workspace, onNewProject, zoom, onZoom }: PreviewProps)
 	useZoomGestures(previewRef, scale, handleZoom)
 
 	const layoutPages = <ActiveLayout layout={layout} options={options} />
-	const pages = spreads ? (
-		<Spreads spine={options.page.spine}>{layoutPages}</Spreads>
-	) : (
-		layoutPages
-	)
+	const pages = spreads ? <Spreads setup={options.page}>{layoutPages}</Spreads> : layoutPages
 	return (
 		<div
 			ref={previewRef}

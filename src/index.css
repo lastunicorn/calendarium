@@ -22,6 +22,9 @@
 	--color-cell-border: #bbb;
 	--color-adjacent-day: #aaa;
 
+	/* Preview */
+	--color-binding: #777;
+
 	font-family: system-ui, sans-serif;
 	color: var(--color-text);
 	background: var(--color-app-background);

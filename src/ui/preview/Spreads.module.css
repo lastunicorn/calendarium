@@ -1,26 +1,62 @@
 /*
- * Facing pages, on screen only: two pages meeting at the spine, the first page alone on its far
- * side, the space between spreads as between the pages of other layouts.
+ * Facing pages, on screen only, placed on the grid by `Spreads`: two pages either side of the
+ * binding (`--binding-width`), whose rings show they are separate sheets, the space between
+ * spreads as between the pages of other layouts. `data-spread-start` marks the first page of
+ * every spread but the first.
  */
 @media screen {
 	.sideBySideSpreads {
 		display: grid;
-		grid-template-columns: repeat(2, max-content);
+		grid-template-columns: max-content var(--binding-width) max-content;
 		row-gap: 24px;
 	}
 
-	/* The first page is on the right of the spine; the next ones fill the rows after it. */
-	.sideBySideSpreads > :first-child {
-		grid-column: 2;
+	.stackedSpreads {
+		display: grid;
 	}
 
-	.stackedSpreads {
+	.stackedSpreads > .binding {
+		height: var(--binding-width);
+	}
+
+	.stackedSpreads > [data-spread-start] {
+		margin-top: 24px;
+	}
+
+	/* The rings, spread evenly along the spine, each reaching over both pages' edges. */
+	.binding {
+		/* Over the pages' edges. */
+		z-index: 1;
 		display: flex;
+		justify-content: space-evenly;
+		align-items: center;
+	}
+
+	.sideBySideSpreads > .binding {
 		flex-direction: column;
 	}
 
-	/* Every even page starts a spread, above the odd page after it. */
-	.stackedSpreads > :nth-child(even) {
-		margin-top: 24px;
+	.ring {
+		flex-shrink: 0;
+		box-sizing: border-box;
+		border: 0.7mm solid var(--color-binding);
+		border-radius: 1.2mm;
+		box-shadow: 0 0.3mm 0.6mm var(--color-page-shadow);
+	}
+
+	.sideBySideSpreads .ring {
+		width: calc(var(--binding-width) + 6mm);
+		height: 2.4mm;
+	}
+
+	.stackedSpreads .ring {
+		width: 2.4mm;
+		height: calc(var(--binding-width) + 6mm);
+	}
+}
+
+@media print {
+	.binding {
+		display: none;
 	}
 }
