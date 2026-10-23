@@ -24,7 +24,7 @@ interface WeekDayCellProps {
 
 /** A day's cell: its label in the top-left corner, the rest space to write in, maybe by the hour. */
 function WeekDayCell({ plan, hours, stacked }: WeekDayCellProps) {
-	const { day, weekday, monthName, highlighted, events, eventLines, schedule } = plan
+	const { day, weekday, highlighted, events, eventLines, schedule } = plan
 	return (
 		<div
 			className={[
@@ -36,7 +36,6 @@ function WeekDayCell({ plan, hours, stacked }: WeekDayCellProps) {
 			<div className={styles.label}>
 				<span className={styles.number}>{day.day}</span>
 				<span className={styles.weekday}>{weekday}</span>
-				{monthName && <span className={styles.month}>{monthName}</span>}
 			</div>
 			{eventLines > 0 && (
 				<div className={styles.events}>

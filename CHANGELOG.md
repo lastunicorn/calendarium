@@ -17,6 +17,7 @@ Settings and files from 4.x are migrated: the week layout's automatic days direc
 - The browser tab is titled Calendarium, the app's name, instead of Printable Calendar.
 - The mini calendars of the month, week and day layouts are a little smaller by default.
 - The week layout's days direction is vertical (the default) or horizontal, no longer automatic.
+- Week layout: the days no longer name their month, already in the page's title.
 
 ### Fixed
 

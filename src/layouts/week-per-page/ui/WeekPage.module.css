@@ -12,7 +12,7 @@
 .top {
 	display: grid;
 	grid-template-columns: 1fr auto;
-	column-gap: 6mm;
+	column-gap: 4mm;
 	align-items: start;
 	margin-bottom: 3mm;
 }
@@ -127,11 +127,6 @@
 	text-transform: uppercase;
 }
 
-.month {
-	font-size: 9pt;
-	color: var(--color-text-muted);
-}
-
 /* The day's events under its label, one line each, cut short when the cell is too narrow. */
 .events {
 	display: flex;
@@ -156,8 +151,7 @@
 }
 
 /* After `.weekend`, so days of the previous and next year stay gray on weekends too. */
-.otherYear,
-.otherYear .month {
+.otherYear {
 	color: var(--color-adjacent-day);
 }
 

@@ -114,19 +114,6 @@ describe('planWeekPages', () => {
 		).toBe(true)
 	})
 
-	it('names the month where it changes and on each sheet’s first day', () => {
-		// January 26 – February 1, 2026.
-		const monthNames = (options: Partial<WeekPerPageOptions>) =>
-			week(plan(2026, { weekendDisplay: 'full', ...options }).weeks, '2026-01-26').sheets.map(
-				(sheet) => sheet.cells.flat().map((day) => day.monthName ?? ''),
-			)
-		expect(monthNames({})).toEqual([['January', '', '', '', '', '', 'February']])
-		expect(monthNames({ twoPagesPerWeek: true })).toEqual([
-			['January', '', ''],
-			['January', '', '', 'February'],
-		])
-	})
-
 	it('labels each day with its weekday from the week start, in the chosen format', () => {
 		const saturdays = plan(2026, { weekStart: 6, weekendDisplay: 'full' }).weeks[1]
 		expect(days(saturdays).map((day) => day.weekday)).toEqual([

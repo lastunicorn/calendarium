@@ -21,8 +21,6 @@ export interface WeekPageDay {
 	day: WeekDay
 	/** Its weekday, in the layout's `weekdayFormat`. */
 	weekday: string
-	/** Its month's name: where the month changes, and on each sheet's first day for context. */
-	monthName?: string
 	/** In the weekend color: a weekend day of the year, with `highlightWeekendDays`. */
 	highlighted: boolean
 	/** The names of its events, under its label; none for a day of another year. */
@@ -127,15 +125,10 @@ export function planWeekPages(options: WeekPerPageOptions, model: CalendarModel)
 		return Math.max(0, ...days.map((day) => dayEvents(day).length))
 	}
 
-	function planDay(
-		day: WeekDay,
-		firstOnSheet: boolean,
-		shared: boolean,
-	): Omit<WeekPageDay, 'eventLines'> {
+	function planDay(day: WeekDay, shared: boolean): Omit<WeekPageDay, 'eventLines'> {
 		return {
 			day,
 			weekday: weekdays[weekdayColumn(day.weekday, weekStart)],
-			monthName: firstOnSheet || day.day === 1 ? monthNames[day.month] : undefined,
 			highlighted: isHighlightedWeekDay(day, options.highlightWeekendDays),
 			events: dayEvents(day),
 			schedule: withSchedule && !shared && day.inYear,
@@ -167,14 +160,13 @@ export function planWeekPages(options: WeekPerPageOptions, model: CalendarModel)
 
 	/** A sheet of `cells`, a cell of one day keeping `singleLines` event lines. */
 	function planSheet(cells: WeekCell[], header: WeekHeaderPart, singleLines: number): WeekSheet {
-		const firstDay = cells[0][0]
 		return {
 			header,
 			cells: cells.map((cell) => {
 				const shared = cell.length > 1
 				const eventLines = shared ? mostEvents(cell) : singleLines
 				return cell.map((day) => ({
-					...planDay(day, day === firstDay, shared),
+					...planDay(day, shared),
 					eventLines,
 				}))
 			}),
