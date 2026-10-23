@@ -22,11 +22,10 @@ import { ScheduleFields } from '../../../ui/sidebar/ScheduleFields'
 import { defaultFields } from '../../../ui/sidebar/defaultFields'
 import { type OptionsSectionProps, Section } from '../../../ui/sidebar/Section'
 
-const HOURS_DESCRIPTION = 'Not drawn for the grayed days of the previous or next year.'
-
-const HOURS_SHARED_WEEKEND_DESCRIPTION = [
-	HOURS_DESCRIPTION,
-	'Nor for Saturday and Sunday while they share a cell: there is no room.',
+const HOURS_DESCRIPTION = [
+	'Display a grid with hours for each day.',
+	'Hours are not drawn for the days of the previous or next year.',
+	'Hours are not drawn for Saturday and Sunday while they share the same cell: there is no room.',
 ]
 
 const WEEKEND_DISPLAY_OPTIONS = optionsFrom(WEEKEND_DISPLAYS, {
@@ -156,13 +155,7 @@ export function WeekContentSection({
 			/>
 			<RadioField
 				label="Hours"
-				description={
-					options.weekPageLines !== 'hours'
-						? undefined
-						: options.weekendDisplay === 'reduced'
-							? HOURS_SHARED_WEEKEND_DESCRIPTION
-							: HOURS_DESCRIPTION
-				}
+				description={HOURS_DESCRIPTION}
 				value={options.weekPageLines}
 				options={WEEK_PAGE_LINES_OPTIONS}
 				onChange={handleWeekPageLinesChange}
