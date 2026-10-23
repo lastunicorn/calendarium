@@ -1,0 +1,23 @@
+/*
+ * The look of the bars floating over the preview's corners, the zoom bar and the page indicator;
+ * each places its own, inside the scrollbars (`--scrollbar-width`, `--scrollbar-height`, set by
+ * `Preview`).
+ */
+.floatingBar {
+	position: absolute;
+	z-index: 1;
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	padding: 4px;
+	background: var(--color-surface);
+	border: 1px solid var(--color-border);
+	border-radius: 6px;
+	box-shadow: 0 2px 8px var(--color-page-shadow);
+}
+
+@media print {
+	.floatingBar {
+		display: none;
+	}
+}

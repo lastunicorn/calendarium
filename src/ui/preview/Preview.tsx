@@ -8,6 +8,8 @@ import styles from './Preview.module.css'
 import { PreviewErrorBoundary } from './PreviewErrorBoundary'
 import { Booklet } from './Booklet'
 import { useScrollAreaSize } from './useScrollAreaSize'
+import { useCurrentPage } from './useCurrentPage'
+import { PageIndicator } from './PageIndicator'
 import { ZoomBar } from './ZoomBar'
 
 /** CSS px in a mm, the unit the pages are sized in. */
@@ -27,7 +29,7 @@ interface ActiveLayoutProps<K extends LayoutId> {
 	options: LayoutOptions[K]
 }
 
-type AreaStyle = CSSProperties & Record<'--scrollbar-width', string>
+type AreaStyle = CSSProperties & Record<'--scrollbar-width' | '--scrollbar-height', string>
 type PagesStyle = CSSProperties & Record<'--preview-zoom', number>
 
 /** Where the middle of the preview falls on the pages, as a fraction of their width and height. */
@@ -50,8 +52,8 @@ function ActiveLayout<K extends LayoutId>({ layout, options }: ActiveLayoutProps
 
 /**
  * The scrollable area showing the chosen layout's pages, which is all that gets printed, at the
- * viewer's zoom, with the zoom bar over it. Zooming from the bar keeps the middle of the view in
- * place.
+ * viewer's zoom, with the zoom bar and the page indicator over it. Zooming from the bar keeps the
+ * middle of the view in place.
  */
 export function Preview({ workspace, onNewProject, zoom, onZoom }: PreviewProps) {
 	const { layout } = workspace
@@ -59,7 +61,8 @@ export function Preview({ workspace, onNewProject, zoom, onZoom }: PreviewProps)
 	const areaRef = useRef<HTMLElement>(null)
 	const pagesRef = useRef<HTMLDivElement>(null)
 	const anchor = useRef<ZoomAnchor | null>(null)
-	const { scrollbarWidth, ...room } = useScrollAreaSize(areaRef)
+	const { scrollbarWidth, scrollbarHeight, ...room } = useScrollAreaSize(areaRef)
+	const { count, current, goToPage } = useCurrentPage(areaRef, pagesRef)
 	const sheet = sheetDimensions(options.page)
 	const scale = zoomScale(
 		zoom,
@@ -97,7 +100,12 @@ export function Preview({ workspace, onNewProject, zoom, onZoom }: PreviewProps)
 	return (
 		<div
 			className={styles.previewArea}
-			style={{ '--scrollbar-width': `${scrollbarWidth}px` } as AreaStyle}
+			style={
+				{
+					'--scrollbar-width': `${scrollbarWidth}px`,
+					'--scrollbar-height': `${scrollbarHeight}px`,
+				} as AreaStyle
+			}
 		>
 			{/* In the calendar's language, so the browser writes it as such: Greek capitals without
 			 accents, Chinese and Japanese characters in their own glyphs. */}
@@ -123,6 +131,12 @@ export function Preview({ workspace, onNewProject, zoom, onZoom }: PreviewProps)
 				</div>
 			</main>
 			<ZoomBar zoom={zoom} scale={scale} onZoom={handleZoom} />
+			<PageIndicator
+				current={current}
+				count={count}
+				booklet={options.page.booklet}
+				onGoToPage={goToPage}
+			/>
 		</div>
 	)
 }

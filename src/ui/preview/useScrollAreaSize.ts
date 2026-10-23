@@ -4,6 +4,8 @@ import type { Size } from '../../preferences/zoom'
 interface ScrollAreaSize extends Size {
 	/** The width of its vertical scrollbar, in px; 0 when it has none or it overlays the content. */
 	scrollbarWidth: number
+	/** The height of its horizontal scrollbar, in px, likewise. */
+	scrollbarHeight: number
 }
 
 /** The room inside `element`'s padding and scrollbars, in px. */
@@ -14,11 +16,17 @@ function measure(element: HTMLElement): ScrollAreaSize {
 		height:
 			element.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom),
 		scrollbarWidth: element.offsetWidth - element.clientWidth,
+		scrollbarHeight: element.offsetHeight - element.clientHeight,
 	}
 }
 
 function sameSize(a: ScrollAreaSize, b: ScrollAreaSize): boolean {
-	return a.width === b.width && a.height === b.height && a.scrollbarWidth === b.scrollbarWidth
+	return (
+		a.width === b.width &&
+		a.height === b.height &&
+		a.scrollbarWidth === b.scrollbarWidth &&
+		a.scrollbarHeight === b.scrollbarHeight
+	)
 }
 
 /**
@@ -26,7 +34,12 @@ function sameSize(a: ScrollAreaSize, b: ScrollAreaSize): boolean {
  * comes and goes. Measured before the first paint, so what is sized from it doesn't jump.
  */
 export function useScrollAreaSize(ref: RefObject<HTMLElement | null>): ScrollAreaSize {
-	const [size, setSize] = useState<ScrollAreaSize>({ width: 0, height: 0, scrollbarWidth: 0 })
+	const [size, setSize] = useState<ScrollAreaSize>({
+		width: 0,
+		height: 0,
+		scrollbarWidth: 0,
+		scrollbarHeight: 0,
+	})
 
 	useLayoutEffect(() => {
 		const element = ref.current

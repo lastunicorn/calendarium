@@ -195,3 +195,12 @@ export function ZoomOutIcon() {
 		</Icon>
 	)
 }
+
+/** A chevron pointing left: goes back. */
+export function ChevronLeftIcon() {
+	return (
+		<Icon>
+			<path d="M15 6l-6 6 6 6" />
+		</Icon>
+	)
+}

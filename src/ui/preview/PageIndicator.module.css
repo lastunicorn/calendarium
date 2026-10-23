@@ -1,0 +1,27 @@
+/* In the preview's bottom right corner. */
+.pageIndicator {
+	right: calc(var(--scrollbar-width, 0px) + 12px);
+	bottom: calc(var(--scrollbar-height, 0px) + 12px);
+	font-size: 0.875rem;
+}
+
+/* As wide as the page count's digits (`size`). */
+.number {
+	padding: 4px;
+	font: inherit;
+	text-align: center;
+	color: var(--color-text);
+	background: var(--color-surface);
+	border: 1px solid var(--color-border);
+	border-radius: 4px;
+}
+
+.count {
+	padding-right: 4px;
+}
+
+.side {
+	padding: 0 4px;
+	color: var(--color-text-muted);
+	border-left: 1px solid var(--color-border);
+}

@@ -1,17 +1,7 @@
-/* Floats over the preview's top right corner, left of its scrollbar (`--scrollbar-width`, set by `Preview`). */
+/* In the preview's top right corner. */
 .zoomBar {
-	position: absolute;
 	top: 12px;
 	right: calc(var(--scrollbar-width, 0px) + 12px);
-	z-index: 1;
-	display: flex;
-	align-items: center;
-	gap: 4px;
-	padding: 4px;
-	background: var(--color-surface);
-	border: 1px solid var(--color-border);
-	border-radius: 6px;
-	box-shadow: 0 2px 8px var(--color-page-shadow);
 }
 
 /* As wide as its label, not the whole bar; doubled class to win over the shared dropdown width. */
@@ -19,10 +9,4 @@
 	width: auto;
 	padding-top: 4px;
 	padding-bottom: 4px;
-}
-
-@media print {
-	.zoomBar {
-		display: none;
-	}
 }

@@ -11,6 +11,7 @@ import { IconButton } from '../components/IconButton'
 import { ResetIcon, ZoomInIcon, ZoomOutIcon } from '../components/icons'
 import dropdown from '../fields/Dropdown.module.css'
 import { DropdownArrow } from '../fields/DropdownArrow'
+import floating from './FloatingBar.module.css'
 import styles from './ZoomBar.module.css'
 
 const ZOOM_FIT_LABELS: Record<ZoomFit, string> = {
@@ -58,7 +59,11 @@ export function ZoomBar({ zoom, scale, onZoom }: ZoomBarProps) {
 	}
 
 	return (
-		<div className={styles.zoomBar} role="toolbar" aria-label="Zoom">
+		<div
+			className={`${floating.floatingBar} ${styles.zoomBar}`}
+			role="toolbar"
+			aria-label="Zoom"
+		>
 			<IconButton
 				label="Zoom out"
 				icon={<ZoomOutIcon />}

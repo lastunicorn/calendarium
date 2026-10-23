@@ -9,6 +9,7 @@ Settings and files from 4.x are migrated: the week layout's automatic days direc
 ### Added
 
 - A zoom bar over the preview's top right corner: zoom out or in a level (25% to 200%), pick a level, Fit width or Fit page from its menu, or reset to the printed size (100%, the default). Zooming keeps the middle of the view in place, and the zoom is remembered.
+- A page indicator in the preview's bottom right corner: the page shown out of all of them (and for a booklet, the side of a sheet it is printed on), with buttons to the page before or after, and a field to type the page to go to. Hidden when there is one page only.
 - A size for the mini calendars of the month, week and day layouts: small, medium (the default), large (their size before) or extra large.
 - Day layout: each page can keep an empty bordered footer under the fill (off by default), its height set from 5 to 100 mm (20 mm by default), like the week layout's.
 - Week layout: the next month can be drawn as a second mini calendar, right of the week's month (Show next month, off by default); the first one's checkbox is now Show current month.

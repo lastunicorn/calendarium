@@ -124,4 +124,70 @@ describe('Preview', () => {
 		})
 		expect(onZoom).toHaveBeenLastCalledWith('fit-width')
 	})
+
+	it('counts the pages, and goes to the one before, after or typed in', () => {
+		render(
+			<Preview
+				workspace={workspaceFor('month-per-page')}
+				onNewProject={noop}
+				zoom={100}
+				onZoom={noop}
+			/>,
+		)
+		const number = screen.getByRole('textbox', { name: 'Page number' }) as HTMLInputElement
+		expect(number.value).toBe('1')
+		expect(screen.getByText('/ 12')).toBeTruthy()
+		expect(
+			(screen.getByRole('button', { name: 'Previous page' }) as HTMLButtonElement).disabled,
+		).toBe(true)
+
+		fireEvent.click(screen.getByRole('button', { name: 'Next page' }))
+		expect(number.value).toBe('2')
+
+		fireEvent.change(number, { target: { value: '40' } })
+		fireEvent.keyDown(number, { key: 'Enter' })
+		expect(number.value).toBe('12')
+		expect(
+			(screen.getByRole('button', { name: 'Next page' }) as HTMLButtonElement).disabled,
+		).toBe(true)
+
+		fireEvent.change(number, { target: { value: 'x' } })
+		fireEvent.blur(number)
+		expect(number.value).toBe('12')
+	})
+
+	it('counts a booklet’s sheet sides too', () => {
+		const workspace = workspaceFor('month-per-page')
+		const options = workspace.layouts['month-per-page']
+		render(
+			<Preview
+				workspace={{
+					...workspace,
+					layouts: {
+						...workspace.layouts,
+						'month-per-page': { ...options, page: { ...options.page, booklet: true } },
+					},
+				}}
+				onNewProject={noop}
+				zoom={100}
+				onZoom={noop}
+			/>,
+		)
+		// The first page is on the first sheet's front, the second on its back.
+		expect(screen.getByText('side 1 / 6')).toBeTruthy()
+		fireEvent.click(screen.getByRole('button', { name: 'Next page' }))
+		expect(screen.getByText('side 2 / 6')).toBeTruthy()
+	})
+
+	it('hides the page indicator for a single page', () => {
+		render(
+			<Preview
+				workspace={workspaceFor('year-per-page')}
+				onNewProject={noop}
+				zoom={100}
+				onZoom={noop}
+			/>,
+		)
+		expect(screen.queryByRole('toolbar', { name: 'Pages' })).toBeNull()
+	})
 })
