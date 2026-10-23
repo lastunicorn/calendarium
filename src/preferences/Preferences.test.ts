@@ -34,9 +34,9 @@ describe('preferences', () => {
 			openSection: 'Page',
 			previewZoom: 50,
 		})
-		expect(parsePreferences({ sidebarWidth: 400.5, openSection: 3, previewZoom: 60 })).toEqual(
-			defaultPreferences(),
-		)
+		expect(
+			parsePreferences({ sidebarWidth: 400.5, openSection: 3, previewZoom: 60.5 }),
+		).toEqual(defaultPreferences())
 		expect(parsePreferences('wide')).toEqual(defaultPreferences())
 	})
 

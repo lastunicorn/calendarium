@@ -17,6 +17,11 @@
 	overflow: auto;
 }
 
+/* Focusable, for the zoom shortcuts and scrolling from the keyboard: its ring drawn inside, where it shows. */
+.preview:focus-visible {
+	outline-offset: -2px;
+}
+
 /* Pages are stacked vertically, centered horizontally. */
 .pages {
 	display: flex;

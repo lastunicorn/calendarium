@@ -1,5 +1,5 @@
-import { asObject, copyValid, isString, oneOf, type Validators } from '../core/validation'
-import { DEFAULT_ZOOM, PREVIEW_ZOOMS, type PreviewZoom } from './zoom'
+import { asObject, copyValid, isString, type Validators } from '../core/validation'
+import { DEFAULT_ZOOM, isPreviewZoom, type PreviewZoom } from './zoom'
 
 /**
  * How the app looks and behaves for the viewer, apart from any calendar: never printed, never in a
@@ -13,7 +13,7 @@ export interface Preferences {
 	 * section open on one layout, like "Calendar", is open on the others too.
 	 */
 	openSection: string | null
-	/** How large the preview draws the pages: a level, or a fit following the preview's size. */
+	/** How large the preview draws the pages: a percent, or a fit following the preview's size. */
 	previewZoom: PreviewZoom
 }
 
@@ -37,7 +37,7 @@ function isOpenSection(value: unknown): value is string | null {
 export const PREFERENCE_VALIDATORS: Validators<Preferences> = {
 	sidebarWidth: isSidebarWidth,
 	openSection: isOpenSection,
-	previewZoom: oneOf(PREVIEW_ZOOMS),
+	previewZoom: isPreviewZoom,
 }
 
 /**

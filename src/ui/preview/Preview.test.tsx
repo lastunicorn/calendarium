@@ -190,4 +190,64 @@ describe('Preview', () => {
 		)
 		expect(screen.queryByRole('toolbar', { name: 'Pages' })).toBeNull()
 	})
+
+	it('lists an in-between zoom in the menu', () => {
+		render(
+			<Preview
+				workspace={workspaceFor('year-per-page')}
+				onNewProject={noop}
+				zoom={87}
+				onZoom={noop}
+			/>,
+		)
+		const menu = screen.getByRole('combobox', { name: 'Zoom level' }) as HTMLSelectElement
+		expect(menu.value).toBe('87')
+		expect([...menu.options].map((option) => option.text).slice(2, 5)).toEqual([
+			'75%',
+			'87%',
+			'100%',
+		])
+	})
+
+	it('zooms with Ctrl and the wheel, as a pinch does, leaving the plain wheel to scroll', () => {
+		const onZoom = vi.fn()
+		render(
+			<Preview
+				workspace={workspaceFor('month-per-page')}
+				onNewProject={noop}
+				zoom={100}
+				onZoom={onZoom}
+			/>,
+		)
+		const preview = screen.getByRole('main', { name: 'Preview' })
+		fireEvent.wheel(preview, { deltaY: 100 })
+		expect(onZoom).not.toHaveBeenCalled()
+		const pinch = new WheelEvent('wheel', {
+			deltaY: -10,
+			ctrlKey: true,
+			bubbles: true,
+			cancelable: true,
+		})
+		preview.dispatchEvent(pinch)
+		expect(pinch.defaultPrevented).toBe(true)
+		expect(onZoom).toHaveBeenLastCalledWith(102)
+	})
+
+	it('zooms with the keyboard shortcuts, in place of the browser', () => {
+		const onZoom = vi.fn()
+		render(
+			<Preview
+				workspace={workspaceFor('month-per-page')}
+				onNewProject={noop}
+				zoom={50}
+				onZoom={onZoom}
+			/>,
+		)
+		const preview = screen.getByRole('main', { name: 'Preview' })
+		fireEvent.keyDown(preview, { key: '=', ctrlKey: true })
+		fireEvent.keyDown(preview, { key: '-', metaKey: true })
+		fireEvent.keyDown(preview, { key: '0', ctrlKey: true })
+		fireEvent.keyDown(preview, { key: '0' })
+		expect(onZoom.mock.calls).toEqual([[75], [25], [100]])
+	})
 })

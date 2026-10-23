@@ -4,6 +4,7 @@ import {
 	PREVIEW_ZOOMS,
 	type PreviewZoom,
 	type ZoomFit,
+	ZOOM_LEVELS,
 	zoomedIn,
 	zoomedOut,
 } from '../../preferences/zoom'
@@ -26,6 +27,16 @@ interface ZoomBarProps {
 	onZoom: (zoom: PreviewZoom) => void
 }
 
+/**
+ * The zooms the menu lists: the levels and the fits, and among the levels `zoom` when it is in
+ * between, as pinching or the wheel leave it, so the menu can show it.
+ */
+function zoomMenu(zoom: PreviewZoom): readonly PreviewZoom[] {
+	if (typeof zoom !== 'number' || PREVIEW_ZOOMS.includes(zoom)) return PREVIEW_ZOOMS
+	const at = ZOOM_LEVELS.findIndex((level) => level > zoom)
+	return [...PREVIEW_ZOOMS.slice(0, at), zoom, ...PREVIEW_ZOOMS.slice(at)]
+}
+
 /** A zoom's menu label; a fit's names the level it comes to while chosen. */
 function zoomLabel(zoom: PreviewZoom, chosen: PreviewZoom, scale: number): string {
 	if (typeof zoom === 'number') return `${zoom}%`
@@ -40,6 +51,7 @@ function zoomLabel(zoom: PreviewZoom, chosen: PreviewZoom, scale: number): strin
 export function ZoomBar({ zoom, scale, onZoom }: ZoomBarProps) {
 	const levelIn = zoomedIn(scale)
 	const levelOut = zoomedOut(scale)
+	const menu = zoomMenu(zoom)
 
 	function handleZoomOutClick() {
 		if (levelOut !== null) onZoom(levelOut)
@@ -50,8 +62,8 @@ export function ZoomBar({ zoom, scale, onZoom }: ZoomBarProps) {
 	}
 
 	function handleZoomSelectChange(event: ChangeEvent<HTMLSelectElement>) {
-		// The <option>s are rendered from `PREVIEW_ZOOMS` in order, so the index maps back to a zoom.
-		onZoom(PREVIEW_ZOOMS[event.currentTarget.selectedIndex])
+		// The <option>s are rendered from `menu` in order, so the index maps back to a zoom.
+		onZoom(menu[event.currentTarget.selectedIndex])
 	}
 
 	function handleResetClick() {
@@ -77,7 +89,7 @@ export function ZoomBar({ zoom, scale, onZoom }: ZoomBarProps) {
 					value={String(zoom)}
 					onChange={handleZoomSelectChange}
 				>
-					{PREVIEW_ZOOMS.map((option) => (
+					{menu.map((option) => (
 						<option key={option} value={String(option)}>
 							{zoomLabel(option, zoom, scale)}
 						</option>

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { zoomedIn, zoomedOut, zoomScale } from './zoom'
+import { isPreviewZoom, zoomAt, zoomedIn, zoomedOut, zoomScale } from './zoom'
 
 const SHEET = { width: 200, height: 300 }
 
@@ -35,5 +35,21 @@ describe('preview zoom', () => {
 	it('stops at the lowest and the highest levels', () => {
 		expect(zoomedOut(0.25)).toBeNull()
 		expect(zoomedIn(2)).toBeNull()
+	})
+
+	it('takes a whole percent between the lowest and the highest levels, or a fit', () => {
+		expect([25, 87, 200, 'fit-page'].every(isPreviewZoom)).toBe(true)
+		expect([24, 87.5, 201, '100', 'fit', null].some(isPreviewZoom)).toBe(false)
+	})
+
+	it('rounds a scale to the zoom drawing it, within the range', () => {
+		expect(zoomAt(0.8666)).toBe(87)
+		expect(zoomAt(0.1)).toBe(25)
+		expect(zoomAt(3)).toBe(200)
+	})
+
+	it('steps from an in-between zoom to the level either side', () => {
+		expect(zoomedIn(0.87)).toBe(100)
+		expect(zoomedOut(0.87)).toBe(75)
 	})
 })

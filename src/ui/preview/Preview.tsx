@@ -11,6 +11,7 @@ import { useScrollAreaSize } from './useScrollAreaSize'
 import { useCurrentPage } from './useCurrentPage'
 import { PageIndicator } from './PageIndicator'
 import { ZoomBar } from './ZoomBar'
+import { type ScreenPoint, useZoomGestures } from './useZoomGestures'
 
 /** CSS px in a mm, the unit the pages are sized in. */
 const PX_PER_MM = 96 / 25.4
@@ -32,14 +33,15 @@ interface ActiveLayoutProps<K extends LayoutId> {
 type AreaStyle = CSSProperties & Record<'--scrollbar-width' | '--scrollbar-height', string>
 type PagesStyle = CSSProperties & Record<'--preview-zoom', number>
 
-/** Where the middle of the preview falls on the pages, as a fraction of their width and height. */
+/** A point on screen kept in place by a zoom, and where it falls on the pages, as a fraction. */
 interface ZoomAnchor {
+	point: ScreenPoint
 	x: number
 	y: number
 }
 
 /** The middle of `area`'s visible part, on screen. */
-function areaMiddle(area: HTMLElement) {
+function areaMiddle(area: HTMLElement): ScreenPoint {
 	const rect = area.getBoundingClientRect()
 	return { x: rect.left + area.clientWidth / 2, y: rect.top + area.clientHeight / 2 }
 }
@@ -52,12 +54,14 @@ function ActiveLayout<K extends LayoutId>({ layout, options }: ActiveLayoutProps
 
 /**
  * The scrollable area showing the chosen layout's pages, which is all that gets printed, at the
- * viewer's zoom, with the zoom bar and the page indicator over it. Zooming from the bar keeps the
- * middle of the view in place.
+ * viewer's zoom, with the zoom bar and the page indicator over it. Zooming keeps the middle of
+ * the view in place, or with the wheel the point under the pointer. The preview takes the focus, so
+ * its zoom shortcuts work once it is clicked.
  */
 export function Preview({ workspace, onNewProject, zoom, onZoom }: PreviewProps) {
 	const { layout } = workspace
 	const options = workspace.layouts[layout]
+	const previewRef = useRef<HTMLDivElement>(null)
 	const areaRef = useRef<HTMLElement>(null)
 	const pagesRef = useRef<HTMLDivElement>(null)
 	const anchor = useRef<ZoomAnchor | null>(null)
@@ -70,35 +74,41 @@ export function Preview({ workspace, onNewProject, zoom, onZoom }: PreviewProps)
 		room,
 	)
 
-	// Scrolls the point that was in the middle before the zoom back there.
+	// Scrolls the point of the pages that was at the anchor before the zoom back there.
 	useLayoutEffect(() => {
 		const area = areaRef.current
 		const pages = pagesRef.current
 		if (anchor.current === null || area === null || pages === null) return
+		const { point, x, y } = anchor.current
 		const rect = pages.getBoundingClientRect()
-		const middle = areaMiddle(area)
-		area.scrollLeft += rect.left + anchor.current.x * rect.width - middle.x
-		area.scrollTop += rect.top + anchor.current.y * rect.height - middle.y
+		area.scrollLeft += rect.left + x * rect.width - point.x
+		area.scrollTop += rect.top + y * rect.height - point.y
 		anchor.current = null
-	}, [scale])
+	}, [zoom, scale])
 
-	function handleZoom(next: PreviewZoom) {
+	/** Zooms to `next`, keeping `point` (the middle of the view by default) in place. */
+	function handleZoom(next: PreviewZoom, point?: ScreenPoint) {
+		if (next === zoom) return
 		const area = areaRef.current
 		const pages = pagesRef.current
 		if (area !== null && pages !== null) {
 			const rect = pages.getBoundingClientRect()
-			const middle = areaMiddle(area)
+			const at = point ?? areaMiddle(area)
 			anchor.current = {
-				x: (middle.x - rect.left) / rect.width,
-				y: (middle.y - rect.top) / rect.height,
+				point: at,
+				x: (at.x - rect.left) / rect.width,
+				y: (at.y - rect.top) / rect.height,
 			}
 		}
 		onZoom(next)
 	}
 
+	useZoomGestures(previewRef, scale, handleZoom)
+
 	const pages = <ActiveLayout layout={layout} options={options} />
 	return (
 		<div
+			ref={previewRef}
 			className={styles.previewArea}
 			style={
 				{
@@ -109,7 +119,13 @@ export function Preview({ workspace, onNewProject, zoom, onZoom }: PreviewProps)
 		>
 			{/* In the calendar's language, so the browser writes it as such: Greek capitals without
 			 accents, Chinese and Japanese characters in their own glyphs. */}
-			<main ref={areaRef} className={styles.preview} lang={options.locale}>
+			<main
+				ref={areaRef}
+				className={styles.preview}
+				lang={options.locale}
+				tabIndex={0}
+				aria-label="Preview"
+			>
 				{/* The printed paper size. Every sheet shares it, so one rule covers the document. */}
 				<style>{`@page { size: ${pageSizeCss(options.page)}; }`}</style>
 				<div
