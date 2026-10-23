@@ -18,15 +18,13 @@ interface WeekPageProps {
 interface WeekDayCellProps {
 	plan: WeekPageDay
 	hours?: string[]
-	/** The lines kept for events under the label, blank ones after the day's own. */
-	eventLines: number
 	/** Whether the schedule runs down the cell (side-by-side cells) or across it (stacked ones). */
 	stacked: boolean
 }
 
 /** A day's cell: its label in the top-left corner, the rest space to write in, maybe by the hour. */
-function WeekDayCell({ plan, hours, eventLines, stacked }: WeekDayCellProps) {
-	const { day, weekday, monthName, highlighted, events, schedule } = plan
+function WeekDayCell({ plan, hours, stacked }: WeekDayCellProps) {
+	const { day, weekday, monthName, highlighted, events, eventLines, schedule } = plan
 	return (
 		<div
 			className={[
@@ -72,7 +70,7 @@ function WeekDayCell({ plan, hours, eventLines, stacked }: WeekDayCellProps) {
 }
 
 interface WeekGridProps {
-	/** The sheet as planned: its cells, in order, and the event lines each keeps. */
+	/** The sheet as planned: its cells, in order. */
 	sheet: WeekSheet
 	hours?: string[]
 	stacked: boolean
@@ -80,7 +78,7 @@ interface WeekGridProps {
 
 /** One sheet's cells: side by side, or stacked; a shared weekend cell split in half. */
 function WeekGrid({ sheet, hours, stacked }: WeekGridProps) {
-	const { cells, eventLines } = sheet
+	const { cells } = sheet
 	return (
 		<div className={`${styles.week} ${stacked ? styles.rows : styles.columns}`}>
 			{cells.map((cell) =>
@@ -89,7 +87,6 @@ function WeekGrid({ sheet, hours, stacked }: WeekGridProps) {
 						key={cell[0].day.key}
 						plan={cell[0]}
 						hours={hours}
-						eventLines={eventLines}
 						stacked={stacked}
 					/>
 				) : (
@@ -99,7 +96,6 @@ function WeekGrid({ sheet, hours, stacked }: WeekGridProps) {
 								key={day.day.key}
 								plan={day}
 								hours={hours}
-								eventLines={eventLines}
 								stacked={stacked}
 							/>
 						))}

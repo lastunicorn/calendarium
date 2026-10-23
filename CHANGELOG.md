@@ -17,6 +17,10 @@ Settings and files from 4.x are migrated: the week layout's automatic days direc
 - The mini calendars of the month, week and day layouts are a little smaller by default.
 - The week layout's days direction is vertical (the default) or horizontal, no longer automatic.
 
+### Fixed
+
+- Week layout: the events of a weekend sharing a cell no longer make room for event lines in the other days' cells.
+
 ## 4.6.0 — 2026-10-23
 
 Settings and files from 4.5.0 are read as they are; the new options start at their defaults, and files exported by earlier versions open as projects.

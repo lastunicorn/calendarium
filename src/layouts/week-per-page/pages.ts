@@ -27,6 +27,12 @@ export interface WeekPageDay {
 	/** The names of its events, under its label; none for a day of another year. */
 	events: string[]
 	/**
+	 * The lines its cell keeps for events under its label. A day in a cell of its own keeps as many
+	 * as the busiest such day of its sheet, so the cells' schedules start at the same height; Saturday
+	 * and Sunday sharing a cell, which never hold a schedule, keep as many as the busier of the two.
+	 */
+	eventLines: number
+	/**
 	 * Whether its cell holds the hourly schedule: with `weekPageLines` set to `hours`, a day of the
 	 * year in a cell of its own. Saturday and Sunday sharing a cell have no room for one.
 	 */
@@ -45,11 +51,6 @@ export interface WeekSheet {
 	header: WeekHeaderPart
 	/** Its cells in order, each holding one day, or Saturday and Sunday sharing it. */
 	cells: WeekPageDay[][]
-	/**
-	 * The lines every cell keeps for events under its label: the most any of its days has, so the
-	 * cells' schedules start at the same height.
-	 */
-	eventLines: number
 }
 
 /** Everything one week prints, on one sheet or two. */
@@ -97,6 +98,11 @@ export function headingAlign({
 	return miniMonth.show || twoPagesPerWeek ? 'left' : 'center'
 }
 
+/** The most events any of `days` has, 0 for none. */
+function mostEvents(days: Pick<WeekPageDay, 'events'>[]): number {
+	return Math.max(0, ...days.map((day) => day.events.length))
+}
+
 /**
  * The year's week pages: every week holding a day of the year, from the one with January 1 to the
  * one with December 31, except a week whose only days of the year are a hidden weekend.
@@ -109,7 +115,11 @@ export function planWeekPages(options: WeekPerPageOptions, model: CalendarModel)
 	const withSchedule = options.weekPageLines === 'hours'
 	const stacked = options.weekDayDirection === 'horizontal'
 
-	function planDay(day: WeekDay, firstOnSheet: boolean, shared: boolean): WeekPageDay {
+	function planDay(
+		day: WeekDay,
+		firstOnSheet: boolean,
+		shared: boolean,
+	): Omit<WeekPageDay, 'eventLines'> {
 		return {
 			day,
 			weekday: weekdays[weekdayColumn(day.weekday, weekStart)],
@@ -125,10 +135,13 @@ export function planWeekPages(options: WeekPerPageOptions, model: CalendarModel)
 		const planned = cells.map((cell) =>
 			cell.map((day) => planDay(day, day === firstDay, cell.length > 1)),
 		)
+		const singleLines = mostEvents(planned.filter((cell) => cell.length === 1).flat())
 		return {
 			header,
-			cells: planned,
-			eventLines: Math.max(...planned.flat().map((day) => day.events.length)),
+			cells: planned.map((cell) => {
+				const eventLines = cell.length === 1 ? singleLines : mostEvents(cell)
+				return cell.map((day) => ({ ...day, eventLines }))
+			}),
 		}
 	}
 

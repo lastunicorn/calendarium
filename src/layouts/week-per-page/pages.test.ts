@@ -26,6 +26,11 @@ function days(week: WeekPages): WeekPageDay[] {
 	return week.sheets.flatMap((sheet) => sheet.cells.flat())
 }
 
+/** Each sheet of `week` as the event lines of its days, in order. */
+function sheetEventLines(week: WeekPages): number[][] {
+	return week.sheets.map((sheet) => sheet.cells.flat().map((day) => day.eventLines))
+}
+
 /** Each sheet of `week` as the weekdays of its cells, 0 = Sunday. */
 function sheetWeekdays(week: WeekPages): number[][][] {
 	return week.sheets.map((sheet) => sheet.cells.map((cell) => cell.map((day) => day.day.weekday)))
@@ -225,8 +230,22 @@ describe('planWeekPages', () => {
 	it('keeps as many event lines in every cell of a sheet as its busiest day has', () => {
 		// The first sheet holds Monday to Wednesday, the second Thursday on.
 		const events = '2026-01-01 One\n2026-01-01 Two\n2026-01-07 Three'
-		const weeks = plan(2026, { events, twoPagesPerWeek: true }).weeks
-		expect(week(weeks, '2025-12-29').sheets.map((sheet) => sheet.eventLines)).toEqual([0, 2])
-		expect(week(weeks, '2026-01-05').sheets.map((sheet) => sheet.eventLines)).toEqual([1, 0])
+		const weeks = plan(2026, { events, twoPagesPerWeek: true, weekendDisplay: 'full' }).weeks
+		expect(sheetEventLines(week(weeks, '2025-12-29'))).toEqual([
+			[0, 0, 0],
+			[2, 2, 2, 2],
+		])
+		expect(sheetEventLines(week(weeks, '2026-01-05'))).toEqual([
+			[1, 1, 1],
+			[0, 0, 0, 0],
+		])
+	})
+
+	it('leaves a shared weekend cell out of the event lines of the cells of one day', () => {
+		// August 15, 2027 is a Sunday, sharing its cell with Saturday.
+		const events = '2027-08-15 One\n2027-08-15 Two\n2027-08-16 Three'
+		const weeks = plan(2027, { events, weekendDisplay: 'reduced' }).weeks
+		expect(sheetEventLines(week(weeks, '2027-08-09'))).toEqual([[0, 0, 0, 0, 0, 2, 2]])
+		expect(sheetEventLines(week(weeks, '2027-08-16'))).toEqual([[1, 1, 1, 1, 1, 0, 0]])
 	})
 })
