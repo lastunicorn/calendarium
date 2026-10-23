@@ -60,6 +60,46 @@ describe('Preview', () => {
 		expect(container.querySelectorAll('section')).toHaveLength(12)
 	})
 
+	it.each([
+		['week-per-page', { twoPagesPerWeek: true }],
+		['day-per-page', { twoPagesPerDay: true }],
+	] as const)(
+		'shows the two pages of %s as facing spreads, but not in a booklet',
+		(layout, changes) => {
+			const workspace = workspaceFor(layout)
+
+			/** The class of the box around the pages, with `page` changed. */
+			function pagesBoxClass(page: object) {
+				const options = workspace.layouts[layout]
+				const { container, unmount } = render(
+					<Preview
+						workspace={{
+							...workspace,
+							layouts: {
+								...workspace.layouts,
+								[layout]: {
+									...options,
+									...changes,
+									page: { ...options.page, ...page },
+								},
+							},
+						}}
+						onNewProject={noop}
+						zoom={100}
+						onZoom={noop}
+					/>,
+				)
+				const className = container.querySelector('section')?.parentElement?.className
+				unmount()
+				return className
+			}
+
+			expect(pagesBoxClass({})).toMatch(/sideBySideSpreads/)
+			expect(pagesBoxClass({ spine: 'top' })).toMatch(/stackedSpreads/)
+			expect(pagesBoxClass({ booklet: true })).not.toMatch(/Spreads/)
+		},
+	)
+
 	it('marks the pages with the calendar’s language', () => {
 		const workspace = workspaceFor('year-per-page')
 		const options = { ...workspace.layouts['year-per-page'], locale: 'el-GR' as const }

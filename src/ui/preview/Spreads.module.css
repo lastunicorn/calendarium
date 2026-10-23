@@ -1,0 +1,26 @@
+/*
+ * Facing pages, on screen only: two pages meeting at the spine, the first page alone on its far
+ * side, the space between spreads as between the pages of other layouts.
+ */
+@media screen {
+	.sideBySideSpreads {
+		display: grid;
+		grid-template-columns: repeat(2, max-content);
+		row-gap: 24px;
+	}
+
+	/* The first page is on the right of the spine; the next ones fill the rows after it. */
+	.sideBySideSpreads > :first-child {
+		grid-column: 2;
+	}
+
+	.stackedSpreads {
+		display: flex;
+		flex-direction: column;
+	}
+
+	/* Every even page starts a spread, above the odd page after it. */
+	.stackedSpreads > :nth-child(even) {
+		margin-top: 24px;
+	}
+}

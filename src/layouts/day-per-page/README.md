@@ -16,6 +16,8 @@ One sheet per day of the year, or two: a header naming the day, with a corner mi
   - `blank`: nothing.
 - **Footer:** with `showFooter`, each sheet, the second one too, keeps an empty bordered footer, `footerHeight` whole mm tall (`isFooterHeight`), at its bottom under the fill (`footerHeight`, the same for every day).
 
+With `twoPagesPerDay`, the view's `facingPages` has the preview show the pages as facing spreads, as the bound calendar opens.
+
 `DayPage` is memoized, so the plan builds its shared label arrays (weekday names, hour labels) once.
 
 ## Options
@@ -46,7 +48,7 @@ It has no title: the heading is always the weekday or the date. `normalize` puts
 | `options.ts`                                       | `DayPerPageOptions`, its value sets and bounds, and `DAY_PER_PAGE_SPEC` |
 | `pages.ts`                                         | `planDayPages`, `DayPages`, the fills                                   |
 | `messages.ts`, `migrations.ts`                     | `DAY_PAGE_MESSAGES`, `DAY_PER_PAGE_MIGRATIONS`                          |
-| `ui/index.ts`                                      | The UI's entry point: `DAY_PER_PAGE_VIEW`                               |
+| `ui/index.ts`                                      | The UI's entry point: `DAY_PER_PAGE_VIEW`, with its `facingPages`       |
 | `ui/DayPerPageLayout.tsx`, `ui/DayPage.tsx`        | Draw the plan: the pages, then each sheet                               |
 | `ui/DayPerPageForm.tsx`                            | The options form, combining the sections                                |
 | `ui/HeaderSection.tsx`, `ui/DayContentSection.tsx` | The layout's own sections                                               |

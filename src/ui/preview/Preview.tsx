@@ -7,6 +7,7 @@ import { layoutView } from '../layouts/registry'
 import styles from './Preview.module.css'
 import { PreviewErrorBoundary } from './PreviewErrorBoundary'
 import { Booklet } from './Booklet'
+import { Spreads } from './Spreads'
 import { useScrollAreaSize } from './useScrollAreaSize'
 import { useCurrentPage } from './useCurrentPage'
 import { PageIndicator } from './PageIndicator'
@@ -46,6 +47,11 @@ function areaMiddle(area: HTMLElement): ScreenPoint {
 	return { x: rect.left + area.clientWidth / 2, y: rect.top + area.clientHeight / 2 }
 }
 
+/** Whether `layout` reads its pages as facing pairs with `options`, shown as spreads outside a booklet. */
+function showsSpreads<K extends LayoutId>(layout: K, options: LayoutOptions[K]): boolean {
+	return !options.page.booklet && (layoutView(layout).facingPages?.(options) ?? false)
+}
+
 /** Draws `layout` with its own options; generic so the component and its options stay paired. */
 function ActiveLayout<K extends LayoutId>({ layout, options }: ActiveLayoutProps<K>) {
 	const Layout = layoutView(layout).Component
@@ -67,10 +73,14 @@ export function Preview({ workspace, onNewProject, zoom, onZoom }: PreviewProps)
 	const anchor = useRef<ZoomAnchor | null>(null)
 	const { scrollbarWidth, scrollbarHeight, ...room } = useScrollAreaSize(areaRef)
 	const { count, current, goToPage } = useCurrentPage(areaRef, pagesRef)
+	const spreads = showsSpreads(layout, options)
+	// What a fit fits: a sheet, or a spread of two pages.
 	const sheet = sheetDimensions(options.page)
+	const across = spreads && options.page.spine === 'left' ? 2 : 1
+	const down = spreads && options.page.spine === 'top' ? 2 : 1
 	const scale = zoomScale(
 		zoom,
-		{ width: sheet.width * PX_PER_MM, height: sheet.height * PX_PER_MM },
+		{ width: across * sheet.width * PX_PER_MM, height: down * sheet.height * PX_PER_MM },
 		room,
 	)
 
@@ -105,7 +115,12 @@ export function Preview({ workspace, onNewProject, zoom, onZoom }: PreviewProps)
 
 	useZoomGestures(previewRef, scale, handleZoom)
 
-	const pages = <ActiveLayout layout={layout} options={options} />
+	const layoutPages = <ActiveLayout layout={layout} options={options} />
+	const pages = spreads ? (
+		<Spreads spine={options.page.spine}>{layoutPages}</Spreads>
+	) : (
+		layoutPages
+	)
 	return (
 		<div
 			ref={previewRef}
