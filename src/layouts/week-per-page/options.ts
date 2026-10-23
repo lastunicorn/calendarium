@@ -57,8 +57,13 @@ export interface WeekPerPageOptions extends CommonOptions, HourSchedule, PageFoo
 	startPage: StartPage
 	/** Whether the days are columns side by side or stacked rows. */
 	weekDayDirection: WeekDayDirection
-	/** The week's month (`weekMonth`), drawn small beside the heading with the week marked. */
+	/**
+	 * The week's month (`weekMonth`), drawn small beside the heading with the week marked; its
+	 * `show` is the sidebar's "Show current month".
+	 */
 	miniMonth: MiniMonthOptions
+	/** Whether the month after the week's is drawn small too, right of it, looking like it. */
+	showNextMonth: boolean
 }
 
 export const WEEK_PER_PAGE_SPEC: LayoutSpec<WeekPerPageOptions> = {
@@ -81,6 +86,7 @@ export const WEEK_PER_PAGE_SPEC: LayoutSpec<WeekPerPageOptions> = {
 			...footerDefaults(),
 			...scheduleDefaults(),
 			miniMonth: miniMonthDefaults(),
+			showNextMonth: false,
 			page: { ...common.page, orientation: 'landscape', margins: margins(10) },
 		}
 	},
@@ -99,6 +105,7 @@ export const WEEK_PER_PAGE_SPEC: LayoutSpec<WeekPerPageOptions> = {
 		...FOOTER_VALIDATORS,
 		...SCHEDULE_VALIDATORS,
 		miniMonth: MINI_MONTH_VALIDATORS,
+		showNextMonth: isBoolean,
 	},
 	normalize: (options) => orderHours(normalizeCommon(options)),
 	migrations: WEEK_PER_PAGE_MIGRATIONS,

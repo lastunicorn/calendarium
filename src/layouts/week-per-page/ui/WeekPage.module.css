@@ -5,8 +5,9 @@
 }
 
 /*
- * The heading beside the mini month, in one row as tall as the taller of them. The mini month
- * keeps the fixed box of its size (a grid, so the month stretches to it).
+ * The heading beside the mini months, in one row as tall as the taller of them. Each mini month
+ * keeps the fixed box of its size (a grid, so the month stretches to it), the next month right of
+ * the week's.
  */
 .top {
 	display: grid;
@@ -24,15 +25,20 @@
 
 /*
  * On a week's two pages, where only one of the two shows, the heading takes the whole row,
- * under the mini month's box, so it wraps only where the page is too narrow for it.
+ * under the mini months' boxes, so it wraps only where the page is too narrow for it.
  */
 .heading.wide {
 	grid-column: 1 / -1;
 }
 
-.miniMonth {
+.miniMonths {
 	grid-row: 1;
 	grid-column: 2;
+	display: flex;
+	column-gap: 4mm;
+}
+
+.miniMonth {
 	display: grid;
 	width: var(--mini-month-width);
 	height: var(--mini-month-height);

@@ -111,7 +111,7 @@ function WeekGrid({ sheet, hours, stacked }: WeekGridProps) {
  * year has 53 of them and an unchanged plan keeps its page objects.
  */
 export const WeekPage = memo(function WeekPage({ plan, hours, setup }: WeekPageProps) {
-	const { miniMonth, stacked } = plan
+	const { miniMonths, stacked } = plan
 	const heading = (
 		<CalendarHeader
 			heading={plan.heading}
@@ -123,14 +123,14 @@ export const WeekPage = memo(function WeekPage({ plan, hours, setup }: WeekPageP
 	)
 
 	/**
-	 * The header row showing `part`. With the mini month, the heading is set to its left, as on a
+	 * The header row showing `part`. With mini months, the heading is set to their left, as on a
 	 * day page; on two sheets, where they never show together, the heading may run under the mini
-	 * month's box.
+	 * months' boxes.
 	 */
 	function header(part: WeekHeaderPart) {
 		const hideHeading = part === 'miniMonth'
 		const hideMiniMonth = part === 'heading'
-		if (!miniMonth) {
+		if (miniMonths.length === 0) {
 			return (
 				<div
 					className={hideHeading ? styles.hidden : undefined}
@@ -141,7 +141,7 @@ export const WeekPage = memo(function WeekPage({ plan, hours, setup }: WeekPageP
 			)
 		}
 		return (
-			<div className={`${styles.top} ${miniMonthSizeClass(miniMonth.size)}`}>
+			<div className={`${styles.top} ${miniMonthSizeClass(miniMonths[0].size)}`}>
 				<div
 					className={[
 						styles.heading,
@@ -153,10 +153,14 @@ export const WeekPage = memo(function WeekPage({ plan, hours, setup }: WeekPageP
 					{heading}
 				</div>
 				<div
-					className={`${styles.miniMonth} ${hideMiniMonth ? styles.hidden : ''}`}
+					className={`${styles.miniMonths} ${hideMiniMonth ? styles.hidden : ''}`}
 					aria-hidden={hideMiniMonth || undefined}
 				>
-					<MiniMonth {...miniMonth} />
+					{miniMonths.map((miniMonth) => (
+						<div key={miniMonth.month.weeks[0][0].key} className={styles.miniMonth}>
+							<MiniMonth {...miniMonth} />
+						</div>
+					))}
 				</div>
 			</div>
 		)

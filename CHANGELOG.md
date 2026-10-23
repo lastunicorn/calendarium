@@ -10,6 +10,7 @@ Settings and files from 4.x are migrated: the week layout's automatic days direc
 
 - A size for the mini calendars of the month, week and day layouts: small, medium (the default), large (their size before) or extra large.
 - Day layout: each page can keep an empty bordered footer under the fill (off by default), its height set from 5 to 100 mm (20 mm by default), like the week layout's.
+- Week layout: the next month can be drawn as a second mini calendar, right of the week's month (Show next month, off by default); the first one's checkbox is now Show current month.
 
 ### Changed
 

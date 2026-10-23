@@ -56,4 +56,11 @@ describe('WeekPerPageLayout', () => {
 		expect(first.querySelector('h1')?.closest('[aria-hidden]')).toBeNull()
 		expect(second.querySelector('h1')?.closest('[aria-hidden]')).not.toBeNull()
 	})
+
+	it('draws the next month right of the week’s', () => {
+		const [first] = pagesOf(optionsWith({ showNextMonth: true }))
+		const names = [...first.querySelectorAll('h2')].map((name) => name.textContent)
+		// The week of 30 December 2024 is mostly in January.
+		expect(names).toEqual(['January', 'February'])
+	})
 })

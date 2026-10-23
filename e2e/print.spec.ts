@@ -116,12 +116,13 @@ test('week-per-page prints two pages per week when asked', async ({ page }) => {
 	expect(evenSizes).toHaveLength(1 + 2 * 53)
 })
 
-test('week-per-page fits its content with the mini calendar, on one page or two', async ({
+test('week-per-page fits its content with both mini calendars, on one page or two', async ({
 	page,
 }) => {
 	await showLayout(page, 'week-per-page', YEAR)
 	await openSection(page, 'Mini calendar')
-	await page.getByRole('checkbox', { name: 'Show mini calendar' }).check()
+	await page.getByRole('checkbox', { name: 'Show current month' }).check()
+	await page.getByRole('checkbox', { name: 'Show next month' }).check()
 	expect(await clippedPages(page), 'pages whose content is cut off').toEqual([])
 
 	await page.emulateMedia({ media: 'screen' })

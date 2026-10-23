@@ -1,4 +1,5 @@
 import {
+	buildMonth,
 	type WeekDay,
 	weekdayColumn,
 	weekMonth,
@@ -42,7 +43,7 @@ export interface WeekPageDay {
 
 /**
  * The part of the header row a sheet shows: a single sheet both, the first of two the heading, the
- * second the mini month. The part left out keeps its space, hidden, so both sheets' cells start at
+ * second the mini months. The part left out keeps its space, hidden, so both sheets' cells start at
  * the same height.
  */
 export type WeekHeaderPart = 'both' | 'heading' | 'miniMonth'
@@ -66,8 +67,12 @@ export interface WeekPages {
 	headingAlign: HeadingAlign
 	/** The heading's font size, in pt (`headingFontSize`). */
 	headingFontSize: number
-	/** The month holding most of the week's days, the week marked; none when hidden. */
-	miniMonth?: MiniMonthPlan
+	/**
+	 * The mini months, left to right: the month holding most of the week's days (with
+	 * `miniMonth.show`), then the next (with `showNextMonth`), the week marked; none when both are
+	 * hidden.
+	 */
+	miniMonths: MiniMonthPlan[]
 	/** Whether the days are stacked rows rather than columns side by side (`weekDayDirection`). */
 	stacked: boolean
 	/** One sheet, or two with `twoPagesPerWeek` (`splitWeekCells`). */
@@ -87,16 +92,17 @@ export interface WeekPlan {
 
 /**
  * Where a week's heading sits: as `headingAlignment` says, or for `auto` to the left beside the
- * mini month and on the first of two pages, where the second's header is the mini month's, and
- * centered over a single page without it.
+ * mini months and on the first of two pages, where the second's header is the mini months', and
+ * centered over a single page without them.
  */
 export function headingAlign({
 	headingAlignment,
 	miniMonth,
+	showNextMonth,
 	twoPagesPerWeek,
 }: WeekPerPageOptions): HeadingAlign {
 	if (headingAlignment !== 'auto') return headingAlignment
-	return miniMonth.show || twoPagesPerWeek ? 'left' : 'center'
+	return miniMonth.show || showNextMonth || twoPagesPerWeek ? 'left' : 'center'
 }
 
 /**
@@ -104,7 +110,7 @@ export function headingAlign({
  * one with December 31, except a week whose only days of the year are a hidden weekend.
  */
 export function planWeekPages(options: WeekPerPageOptions, model: CalendarModel): WeekPlan {
-	const { locale, miniMonth, twoPagesPerWeek } = options
+	const { locale, year, miniMonth, twoPagesPerWeek } = options
 	const { weekStart, months, monthNames } = model
 	const weekdays = weekdayNames(locale, weekStart, options.weekdayFormat)
 	const miniWeekdays = weekdayNames(locale, weekStart, miniMonth.weekdayFormat)
@@ -133,6 +139,29 @@ export function planWeekPages(options: WeekPerPageOptions, model: CalendarModel)
 			highlighted: isHighlightedWeekDay(day, options.highlightWeekendDays),
 			events: dayEvents(day),
 			schedule: withSchedule && !shared && day.inYear,
+		}
+	}
+
+	/**
+	 * The month `offset` (0 or 1) months after the week's `month`, maybe in the next year, named
+	 * with its year per `showYear`, the week holding `firstDay` marked.
+	 */
+	function planMiniMonth(month: number, offset: number, firstDay: WeekDay): MiniMonthPlan {
+		const otherYear = year + Math.floor((month + offset) / 12)
+		const otherMonth = (month + offset) % 12
+		return {
+			month:
+				otherYear === year
+					? months[otherMonth]
+					: buildMonth(otherYear, otherMonth, weekStart),
+			name: miniMonth.showYear
+				? monthYearName(locale, otherYear, otherMonth)
+				: monthNames[otherMonth],
+			weekdays: miniWeekdays,
+			highlightWeekends: miniMonth.highlightWeekends,
+			showWeekNumbers: miniMonth.showWeekNumbers,
+			size: miniMonth.size,
+			markedWeek: firstDay.key,
 		}
 	}
 
@@ -165,19 +194,10 @@ export function planWeekPages(options: WeekPerPageOptions, model: CalendarModel)
 				: '',
 			headingAlign: headingAlign(options),
 			headingFontSize: options.headingFontSize,
-			miniMonth: miniMonth.show
-				? {
-						month: months[month],
-						name: miniMonth.showYear
-							? monthYearName(locale, options.year, month)
-							: monthNames[month],
-						weekdays: miniWeekdays,
-						highlightWeekends: miniMonth.highlightWeekends,
-						showWeekNumbers: miniMonth.showWeekNumbers,
-						size: miniMonth.size,
-						markedWeek: days[0].key,
-					}
-				: undefined,
+			miniMonths: [
+				...(miniMonth.show ? [planMiniMonth(month, 0, days[0])] : []),
+				...(options.showNextMonth ? [planMiniMonth(month, 1, days[0])] : []),
+			],
 			stacked,
 			sheets: twoPagesPerWeek
 				? [
@@ -189,7 +209,7 @@ export function planWeekPages(options: WeekPerPageOptions, model: CalendarModel)
 		}
 	}
 
-	const weeks = weeksOfYear(options.year, weekStart)
+	const weeks = weeksOfYear(year, weekStart)
 		.map((week) => weekCells(week, options.weekendDisplay))
 		.filter((cells) => cells.some((cell) => cell.some((day) => day.inYear)))
 		.map(planWeek)

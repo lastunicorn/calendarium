@@ -6,11 +6,11 @@ One sheet per week of the year, or two, each day getting a writing cell, maybe a
 
 `planWeekPages` (`pages.ts`) plans a `WeekPages` for each week from `weeksOfYear`, 53 or 54 (a week reaches into the previous or next year):
 
-- **Heading:** the `dateRangeName` of its days, set per `headingAlignment` (`headingAlign`: `auto` is left beside the mini month or over two pages, centered otherwise; `HEADING_ALIGNMENTS` in `layouts/heading.ts`), in `headingFontSize` pt, with the week's ISO number below it per `showHeaderWeek` (`WEEK_PAGE_MESSAGES`).
+- **Heading:** the `dateRangeName` of its days, set per `headingAlignment` (`headingAlign`: `auto` is left beside the mini months or over two pages, centered otherwise; `HEADING_ALIGNMENTS` in `layouts/heading.ts`), in `headingFontSize` pt, with the week's ISO number below it per `showHeaderWeek` (`WEEK_PAGE_MESSAGES`).
 - **Cells:** per `weekendDisplay` (`weekCells`, `cells.ts`): Saturday and Sunday get a cell each, share one, or are left out, and a week whose only days of the year are a hidden weekend gets no page. They are side by side or stacked per `weekDayDirection`.
 - **Days:** each is a `WeekPageDay` with its weekday label (`weekdayFormat`), its month's name where the month changes and on each sheet's first day, its weekend highlight (`highlightWeekendDays`, never for a day of another year, `WeekDay.inYear`, drawn in gray) and whether it holds the hourly schedule (`weekPageLines` is `hours`, not in a cell two days share, nor for a day of another year), and its events under its label, with the lines its cell keeps for them: a day in a cell of its own as many as the busiest such day of its week, on either sheet, so the schedules start at the same height; Saturday and Sunday sharing a cell as many as the busier of the two.
-- **Two pages per week:** with `twoPagesPerWeek`, `splitWeekCells` puts the first three days on a first sheet whose header row shows the heading, and the rest on a second showing the mini month, each keeping the other part's space hidden.
-- **Mini month:** with `miniMonth.show`, a `MiniMonth` of the `weekMonth` beside the heading fills the week's row in black (`markedWeek`), at `miniMonth.size`.
+- **Two pages per week:** with `twoPagesPerWeek`, `splitWeekCells` puts the first three days on a first sheet whose header row shows the heading, and the rest on a second showing the mini months, each keeping the other part's space hidden.
+- **Mini months:** with `miniMonth.show`, a `MiniMonth` of the `weekMonth` beside the heading fills the week's row in black (`markedWeek`), at `miniMonth.size`; with `showNextMonth`, the month after it (January of the next year after December) is drawn right of it the same way, alone when the first is hidden. Both take the look of `miniMonth`.
 - **Start page:** with `startPage` set to `even`, a blank page comes first (`blankFirstPage`).
 - **Footer:** with `showFooter`, each sheet keeps an empty bordered footer, `footerHeight` whole mm tall (`isFooterHeight`), under its cells. The footer options (`PageFooter`) are shared with the day layout through `layouts/footer.ts` and `ui/sidebar/FooterFields`.
 
@@ -23,7 +23,7 @@ One sheet per week of the year, or two, each day getting a writing cell, maybe a
 | Sidebar section | Fields                                                                                                                                                                                                                                                            |
 | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Header          | `headingAlignment`, `headingFontSize` (`isHeadingFontSize`, the shared `HeadingFontSizeField`), `showHeaderWeek` (`ui/HeaderSection`)                                                                                                                             |
-| Mini calendar   | `miniMonth` (`MiniMonthOptions`, the shared `MiniMonthSection`)                                                                                                                                                                                                   |
+| Mini calendar   | `miniMonth` (`MiniMonthOptions`, its `show` labeled "Show current month"), `showNextMonth` (`ui/MiniMonthsSection`, the look through the shared `MiniMonthFields`)                                                                                                |
 | Content         | `twoPagesPerWeek`, `startPage`, `weekDayDirection`, `weekdayFormat` (full names allowed), `highlightWeekendDays`, `weekendDisplay`, `weekPageLines`, the schedule (`hourFormat`, `firstHour`, `lastHour`), `showFooter`, `footerHeight` (`ui/WeekContentSection`) |
 
 `normalize` puts a reversed schedule in order (`orderHours`).
@@ -38,17 +38,17 @@ One sheet per week of the year, or two, each day getting a writing cell, maybe a
 
 ## Files
 
-| File                                                | What it holds                                                             |
-| --------------------------------------------------- | ------------------------------------------------------------------------- |
-| `index.ts`                                          | The entry point: `WEEK_PER_PAGE = defineLayout(…)`                        |
-| `options.ts`                                        | `WeekPerPageOptions`, its value sets and bounds, and `WEEK_PER_PAGE_SPEC` |
-| `cells.ts`                                          | The cell rules: `weekCells`, `splitWeekCells`                             |
-| `pages.ts`                                          | `planWeekPages`, `WeekPages`, `WeekPageDay`                               |
-| `messages.ts`, `migrations.ts`                      | `WEEK_PAGE_MESSAGES`, `WEEK_PER_PAGE_MIGRATIONS`                          |
-| `ui/index.ts`                                       | The UI's entry point: `WEEK_PER_PAGE_VIEW`                                |
-| `ui/WeekPerPageLayout.tsx`, `ui/WeekPage.tsx`       | Draw the plan: the pages, then each sheet                                 |
-| `ui/WeekPerPageForm.tsx`                            | The options form, combining the sections                                  |
-| `ui/HeaderSection.tsx`, `ui/WeekContentSection.tsx` | The layout's own sections                                                 |
+| File                                                                            | What it holds                                                             |
+| ------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `index.ts`                                                                      | The entry point: `WEEK_PER_PAGE = defineLayout(…)`                        |
+| `options.ts`                                                                    | `WeekPerPageOptions`, its value sets and bounds, and `WEEK_PER_PAGE_SPEC` |
+| `cells.ts`                                                                      | The cell rules: `weekCells`, `splitWeekCells`                             |
+| `pages.ts`                                                                      | `planWeekPages`, `WeekPages`, `WeekPageDay`                               |
+| `messages.ts`, `migrations.ts`                                                  | `WEEK_PAGE_MESSAGES`, `WEEK_PER_PAGE_MIGRATIONS`                          |
+| `ui/index.ts`                                                                   | The UI's entry point: `WEEK_PER_PAGE_VIEW`                                |
+| `ui/WeekPerPageLayout.tsx`, `ui/WeekPage.tsx`                                   | Draw the plan: the pages, then each sheet                                 |
+| `ui/WeekPerPageForm.tsx`                                                        | The options form, combining the sections                                  |
+| `ui/HeaderSection.tsx`, `ui/MiniMonthsSection.tsx`, `ui/WeekContentSection.tsx` | The layout's own sections                                                 |
 
 ## Domain language
 

@@ -37,7 +37,7 @@ export function HeaderSection({
 				label="Title alignment"
 				description={
 					options.headingAlignment === 'auto'
-						? 'Left beside the mini calendar or over two pages, centered otherwise.'
+						? 'Left beside the mini calendars or over two pages, centered otherwise.'
 						: undefined
 				}
 				value={options.headingAlignment}

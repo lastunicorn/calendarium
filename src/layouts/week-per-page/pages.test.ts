@@ -72,12 +72,13 @@ describe('planWeekPages', () => {
 		)
 	})
 
-	it('sets the heading left beside the mini month or over two pages, unless told where', () => {
+	it('sets the heading left beside the mini months or over two pages, unless told where', () => {
 		const align = (options: Partial<WeekPerPageOptions>) =>
 			week(plan(2026, options).weeks, '2026-10-19').headingAlign
 		const miniMonth = { ...defaultLayoutOptions('week-per-page').miniMonth, show: false }
 		expect(align({ miniMonth })).toBe('center')
 		expect(align({})).toBe('left')
+		expect(align({ miniMonth, showNextMonth: true })).toBe('left')
 		expect(align({ twoPagesPerWeek: true, miniMonth })).toBe('left')
 		expect(align({ headingAlignment: 'right' })).toBe('right')
 		expect(align({ headingAlignment: 'center', twoPagesPerWeek: true, miniMonth })).toBe(
@@ -188,20 +189,43 @@ describe('planWeekPages', () => {
 	it('shows the month holding most of the week, framing the week, when asked', () => {
 		const shown = plan(2025)
 		// The week of December 30, 2024 is mostly in January.
-		expect(shown.weeks[0].miniMonth).toMatchObject({
+		expect(shown.weeks[0].miniMonths).toHaveLength(1)
+		expect(shown.weeks[0].miniMonths[0]).toMatchObject({
 			name: 'January',
 			markedWeek: '2024-12-30',
 			size: 'medium',
 		})
-		expect(shown.weeks[0].miniMonth!.month.month).toBe(0)
+		expect(shown.weeks[0].miniMonths[0].month.month).toBe(0)
 		const withYear = { ...defaultLayoutOptions('week-per-page').miniMonth, showYear: true }
-		expect(plan(2025, { miniMonth: withYear }).weeks[0].miniMonth).toMatchObject({
+		expect(plan(2025, { miniMonth: withYear }).weeks[0].miniMonths[0]).toMatchObject({
 			name: 'January 2025',
 		})
 		const small = { ...defaultLayoutOptions('week-per-page').miniMonth, size: 'small' } as const
-		expect(plan(2025, { miniMonth: small }).weeks[0].miniMonth).toMatchObject({ size: 'small' })
+		expect(plan(2025, { miniMonth: small }).weeks[0].miniMonths[0]).toMatchObject({
+			size: 'small',
+		})
 		const hidden = { ...defaultLayoutOptions('week-per-page').miniMonth, show: false }
-		expect(plan(2025, { miniMonth: hidden }).weeks[0].miniMonth).toBeUndefined()
+		expect(plan(2025, { miniMonth: hidden }).weeks[0].miniMonths).toEqual([])
+	})
+
+	it('shows the next month right of the week’s, alone or not, when asked', () => {
+		const both = week(plan(2026, { showNextMonth: true }).weeks, '2026-10-26').miniMonths
+		// The week of October 26 reaches into November, its row marked in both months.
+		expect(both.map((miniMonth) => miniMonth.name)).toEqual(['October', 'November'])
+		expect(both.map((miniMonth) => miniMonth.markedWeek)).toEqual(['2026-10-26', '2026-10-26'])
+		const hidden = { ...defaultLayoutOptions('week-per-page').miniMonth, show: false }
+		const alone = plan(2026, { miniMonth: hidden, showNextMonth: true }).weeks
+		expect(week(alone, '2026-10-26').miniMonths.map((miniMonth) => miniMonth.name)).toEqual([
+			'November',
+		])
+	})
+
+	it('takes December’s next month from the next year', () => {
+		const withYear = { ...defaultLayoutOptions('week-per-page').miniMonth, showYear: true }
+		const next = plan(2026, { miniMonth: withYear, showNextMonth: true }).weeks.at(-1)!
+			.miniMonths[1]
+		expect(next.name).toBe('January 2027')
+		expect(next.month).toMatchObject({ year: 2027, month: 0 })
 	})
 
 	it('stacks the days only when horizontal, whatever the page', () => {
