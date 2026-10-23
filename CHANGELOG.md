@@ -4,6 +4,8 @@ The features each release brought, newest first. Versions follow the app version
 
 ## Unreleased
 
+Settings and files from 4.x are migrated: the week layout's automatic days direction becomes horizontal on portrait paper with one page per week, vertical otherwise, as it was drawn.
+
 ### Added
 
 - A size for the mini calendars of the month, week and day layouts: small, medium (the default), large (their size before) or extra large.
@@ -12,7 +14,7 @@ The features each release brought, newest first. Versions follow the app version
 
 - The browser tab is titled Calendarium, the app's name, instead of Printable Calendar.
 - The mini calendars of the month, week and day layouts are a little smaller by default.
-- The week layout's days direction is vertical or horizontal, no longer automatic; vertical, the new default, replaces automatic in older settings and files.
+- The week layout's days direction is vertical (the default) or horizontal, no longer automatic.
 
 ## 4.6.0 — 2026-10-23
 

@@ -46,16 +46,18 @@ function layoutInFile(version: number): Migration {
  *
  * - 3: `{ version, app, layout, layouts: { <id>: {...} } }`, one set of options per layout.
  * - 4: the same; the week and day layouts' options changed (see their `migrations.ts`).
+ * - 5: the same; the week layout's options changed (see its `migrations.ts`).
  */
-export const STORAGE_MIGRATIONS: readonly Migration[] = [layoutsInStorage(3)]
+export const STORAGE_MIGRATIONS: readonly Migration[] = [layoutsInStorage(3), layoutsInStorage(4)]
 
 /**
  * File steps; the step at index `i` migrates version `FIRST_FORMAT_VERSION + i` to the next.
  *
  * - 3: `{ format, version, app, layout, ...options }`, one layout's options, flat.
  * - 4: the same; the week and day layouts' options changed (see their `migrations.ts`).
+ * - 5: the same; the week layout's options changed (see its `migrations.ts`).
  */
-export const FILE_MIGRATIONS: readonly Migration[] = [layoutInFile(3)]
+export const FILE_MIGRATIONS: readonly Migration[] = [layoutInFile(3), layoutInFile(4)]
 
 /**
  * Marks a JSON file as one of this app's project files. It names a layout, as projects were called

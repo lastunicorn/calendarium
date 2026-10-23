@@ -22,4 +22,23 @@ describe('week-per-page migrations', () => {
 			highlightWeekendDays: 'always',
 		})
 	})
+
+	const from4 = WEEK_PER_PAGE_MIGRATIONS[4]!
+
+	it('turn the automatic days direction into what it drew', () => {
+		const portrait = { orientation: 'portrait' }
+		const landscape = { orientation: 'landscape' }
+		const direction = (options: object) =>
+			from4({ weekDayDirection: 'auto', ...options }).weekDayDirection
+		expect(direction({ page: portrait })).toBe('horizontal')
+		expect(direction({ page: portrait, twoPagesPerWeek: true })).toBe('vertical')
+		expect(direction({ page: landscape })).toBe('vertical')
+		expect(direction({ page: landscape, twoPagesPerWeek: true })).toBe('vertical')
+		expect(direction({})).toBe('vertical')
+	})
+
+	it('keep any other days direction as is', () => {
+		const options = { weekDayDirection: 'horizontal', page: { orientation: 'landscape' } }
+		expect(from4(options)).toBe(options)
+	})
 })

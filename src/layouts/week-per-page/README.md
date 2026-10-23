@@ -30,7 +30,7 @@ One sheet per week of the year, or two, each day getting a writing cell, maybe a
 
 ## Migrations
 
-`migrations.ts`, from 3 to 4: the month grid options went; `highlightWeekends` became `highlightWeekendDays`, on or off, and `showWeekNumbers` (the heading's "Week N") `showHeaderWeek`; the new `miniMonth` starts from its defaults.
+`migrations.ts`, from 3 to 4: the month grid options went; `highlightWeekends` became `highlightWeekendDays`, on or off, and `showWeekNumbers` (the heading's "Week N") `showHeaderWeek`; the new `miniMonth` starts from its defaults. From 4 to 5: `weekDayDirection` lost `auto`, which became what it drew: `horizontal` on portrait paper with one page per week, `vertical` otherwise.
 
 ## Printed text
 

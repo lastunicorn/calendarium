@@ -109,7 +109,7 @@ test('week-per-page prints two pages per week when asked', async ({ page }) => {
 	const sizes = pdfPageSizes(await page.pdf({ preferCSSPageSize: true, printBackground: true }))
 	expect(sizes).toHaveLength(2 * 53)
 
-	await page.getByRole('radio', { name: 'Even page (a blank page first)' }).check()
+	await page.getByRole('radio', { name: 'Even page (second page)' }).check()
 	const evenSizes = pdfPageSizes(
 		await page.pdf({ preferCSSPageSize: true, printBackground: true }),
 	)
