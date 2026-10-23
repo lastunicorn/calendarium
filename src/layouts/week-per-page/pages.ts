@@ -28,8 +28,9 @@ export interface WeekPageDay {
 	events: string[]
 	/**
 	 * The lines its cell keeps for events under its label. A day in a cell of its own keeps as many
-	 * as the busiest such day of its sheet, so the cells' schedules start at the same height; Saturday
-	 * and Sunday sharing a cell, which never hold a schedule, keep as many as the busier of the two.
+	 * as the busiest such day of its week, on either sheet, so the cells' schedules start at the same
+	 * height; Saturday and Sunday sharing a cell, which never hold a schedule, keep as many as the
+	 * busier of the two.
 	 */
 	eventLines: number
 	/**
@@ -98,11 +99,6 @@ export function headingAlign({
 	return miniMonth.show || twoPagesPerWeek ? 'left' : 'center'
 }
 
-/** The most events any of `days` has, 0 for none. */
-function mostEvents(days: Pick<WeekPageDay, 'events'>[]): number {
-	return Math.max(0, ...days.map((day) => day.events.length))
-}
-
 /**
  * The year's week pages: every week holding a day of the year, from the one with January 1 to the
  * one with December 31, except a week whose only days of the year are a hidden weekend.
@@ -115,6 +111,16 @@ export function planWeekPages(options: WeekPerPageOptions, model: CalendarModel)
 	const withSchedule = options.weekPageLines === 'hours'
 	const stacked = options.weekDayDirection === 'horizontal'
 
+	/** The names of `day`'s events; none for a day of another year. */
+	function dayEvents(day: WeekDay): string[] {
+		return day.inYear ? eventNames(model.events, day) : []
+	}
+
+	/** The most events any of `days` has, 0 for none. */
+	function mostEvents(days: WeekDay[]): number {
+		return Math.max(0, ...days.map((day) => dayEvents(day).length))
+	}
+
 	function planDay(
 		day: WeekDay,
 		firstOnSheet: boolean,
@@ -125,22 +131,23 @@ export function planWeekPages(options: WeekPerPageOptions, model: CalendarModel)
 			weekday: weekdays[weekdayColumn(day.weekday, weekStart)],
 			monthName: firstOnSheet || day.day === 1 ? monthNames[day.month] : undefined,
 			highlighted: isHighlightedWeekDay(day, options.highlightWeekendDays),
-			events: day.inYear ? eventNames(model.events, day) : [],
+			events: dayEvents(day),
 			schedule: withSchedule && !shared && day.inYear,
 		}
 	}
 
-	function planSheet(cells: WeekCell[], header: WeekHeaderPart): WeekSheet {
+	/** A sheet of `cells`, a cell of one day keeping `singleLines` event lines. */
+	function planSheet(cells: WeekCell[], header: WeekHeaderPart, singleLines: number): WeekSheet {
 		const firstDay = cells[0][0]
-		const planned = cells.map((cell) =>
-			cell.map((day) => planDay(day, day === firstDay, cell.length > 1)),
-		)
-		const singleLines = mostEvents(planned.filter((cell) => cell.length === 1).flat())
 		return {
 			header,
-			cells: planned.map((cell) => {
-				const eventLines = cell.length === 1 ? singleLines : mostEvents(cell)
-				return cell.map((day) => ({ ...day, eventLines }))
+			cells: cells.map((cell) => {
+				const shared = cell.length > 1
+				const eventLines = shared ? mostEvents(cell) : singleLines
+				return cell.map((day) => ({
+					...planDay(day, day === firstDay, shared),
+					eventLines,
+				}))
 			}),
 		}
 	}
@@ -149,6 +156,7 @@ export function planWeekPages(options: WeekPerPageOptions, model: CalendarModel)
 		const days = cells.flat()
 		const month = weekMonth(days)
 		const [firstCells, secondCells] = splitWeekCells(cells)
+		const singleLines = mostEvents(cells.filter((cell) => cell.length === 1).flat())
 		return {
 			key: days[0].key,
 			heading: dateRangeName(locale, days[0], days.at(-1)!),
@@ -172,8 +180,11 @@ export function planWeekPages(options: WeekPerPageOptions, model: CalendarModel)
 				: undefined,
 			stacked,
 			sheets: twoPagesPerWeek
-				? [planSheet(firstCells, 'heading'), planSheet(secondCells, 'miniMonth')]
-				: [planSheet(cells, 'both')],
+				? [
+						planSheet(firstCells, 'heading', singleLines),
+						planSheet(secondCells, 'miniMonth', singleLines),
+					]
+				: [planSheet(cells, 'both', singleLines)],
 			footerHeight: options.showFooter ? options.footerHeight : undefined,
 		}
 	}

@@ -227,16 +227,20 @@ describe('planWeekPages', () => {
 		expect(named['2025-12-31']).toEqual([])
 	})
 
-	it('keeps as many event lines in every cell of a sheet as its busiest day has', () => {
+	it('keeps as many event lines in every cell of a week as its busiest day has, on both sheets', () => {
 		// The first sheet holds Monday to Wednesday, the second Thursday on.
 		const events = '2026-01-01 One\n2026-01-01 Two\n2026-01-07 Three'
 		const weeks = plan(2026, { events, twoPagesPerWeek: true, weekendDisplay: 'full' }).weeks
 		expect(sheetEventLines(week(weeks, '2025-12-29'))).toEqual([
-			[0, 0, 0],
+			[2, 2, 2],
 			[2, 2, 2, 2],
 		])
 		expect(sheetEventLines(week(weeks, '2026-01-05'))).toEqual([
 			[1, 1, 1],
+			[1, 1, 1, 1],
+		])
+		expect(sheetEventLines(week(weeks, '2026-01-12'))).toEqual([
+			[0, 0, 0],
 			[0, 0, 0, 0],
 		])
 	})
@@ -247,5 +251,15 @@ describe('planWeekPages', () => {
 		const weeks = plan(2027, { events, weekendDisplay: 'reduced' }).weeks
 		expect(sheetEventLines(week(weeks, '2027-08-09'))).toEqual([[0, 0, 0, 0, 0, 2, 2]])
 		expect(sheetEventLines(week(weeks, '2027-08-16'))).toEqual([[1, 1, 1, 1, 1, 0, 0]])
+	})
+
+	it('leaves a shared weekend cell out of the event lines of the other sheet', () => {
+		// The first sheet holds Monday to Wednesday, the second Thursday, Friday and the weekend.
+		const events = '2027-08-15 One\n2027-08-15 Two'
+		const weeks = plan(2027, { events, twoPagesPerWeek: true, weekendDisplay: 'reduced' }).weeks
+		expect(sheetEventLines(week(weeks, '2027-08-09'))).toEqual([
+			[0, 0, 0],
+			[0, 0, 2, 2],
+		])
 	})
 })

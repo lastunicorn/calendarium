@@ -20,6 +20,7 @@ Settings and files from 4.x are migrated: the week layout's automatic days direc
 ### Fixed
 
 - Week layout: the events of a weekend sharing a cell no longer make room for event lines in the other days' cells.
+- Week layout: over two pages, the days of both pages keep the same room for events, so the hours line up across the spread.
 
 ## 4.6.0 — 2026-10-23
 
