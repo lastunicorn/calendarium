@@ -35,7 +35,7 @@
 	grid-row: 1;
 	grid-column: 2;
 	display: flex;
-	column-gap: 4mm;
+	column-gap: 6mm;
 }
 
 .miniMonth {
