@@ -6,7 +6,7 @@ The features each release brought, newest first. Versions follow the app version
 
 ### Added
 
-- Week layout: the mini calendars circle the days with an event, as the year layout's months do.
+- Week and day layouts: the mini calendars circle the days with an event, as the year layout's months do.
 
 ### Changed
 

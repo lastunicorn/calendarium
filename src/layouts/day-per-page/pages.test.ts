@@ -79,6 +79,13 @@ describe('planDayPages', () => {
 		expect(day(plan(2026, { miniMonth: hidden }), '2026-03-17').miniMonth).toBeUndefined()
 	})
 
+	it('circles the days with an event in the mini month', () => {
+		const events =
+			'2026-03-05 Trip\n0000-03-17 Birthday\n2027-03-20 Next year\n2026-04-01 April'
+		expect(day(plan(2026, { events }), '2026-03-17').miniMonth!.eventDays).toEqual([5, 17])
+		expect(day(plan(2026), '2026-03-17').miniMonth!.eventDays).toEqual([])
+	})
+
 	describe('fills', () => {
 		const hours = { dayPageLines: 'hours', hourFormat: '24h' } as const
 

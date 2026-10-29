@@ -10,7 +10,7 @@ import {
 import { DAY_PAGE_MESSAGES } from './messages'
 import { contentBox } from '../../core/paper'
 import type { CalendarModel } from '../common'
-import type { MiniMonthPlan } from '../monthGrid'
+import { type MiniMonthPlan, monthEventDays } from '../monthGrid'
 import type { DayPerPageOptions, SquareGridAlignment } from './options'
 
 /** The dot between the subheading's parts, with en spaces either side for more room than plain ones. */
@@ -57,7 +57,10 @@ export interface DayPages {
 	events: string[]
 	/** Whether the heading takes the weekend color: a Saturday or Sunday, with `highlightWeekendDays`. */
 	weekend: boolean
-	/** The day's month with the day marked, in the corner; none when hidden. */
+	/**
+	 * The day's month with the day marked and the days with an event circled, in the corner; none
+	 * when hidden.
+	 */
 	miniMonth?: MiniMonthPlan
 	/** What fills each sheet: one, or two with `twoPagesPerDay`, the second without a header. */
 	fills: DayFill[]
@@ -123,6 +126,7 @@ export function planDayPages(options: DayPerPageOptions, model: CalendarModel): 
 	const fills = planFills(options)
 	const footerHeight = options.showFooter ? options.footerHeight : undefined
 	const days = daysOfYear(model.months)
+	const eventDays = model.months.map((month) => monthEventDays(model.events, month))
 
 	return days.map((day) => {
 		const weekday = weekdayName(locale, day)
@@ -152,6 +156,7 @@ export function planDayPages(options: DayPerPageOptions, model: CalendarModel): 
 						showWeekNumbers: miniMonth.showWeekNumbers,
 						size: miniMonth.size,
 						markedDay: day.day,
+						eventDays: eventDays[day.month],
 					}
 				: undefined,
 			fills,
