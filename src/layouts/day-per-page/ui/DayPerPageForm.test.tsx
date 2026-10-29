@@ -12,6 +12,7 @@ describe('DayPerPageForm', () => {
 			'Header',
 			'Mini calendar',
 			'Content',
+			'Footer',
 			'Page',
 		])
 		expect(screen.queryByLabelText('Title')).toBeNull()

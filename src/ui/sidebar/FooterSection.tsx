@@ -4,19 +4,21 @@ import {
 	MIN_FOOTER_HEIGHT,
 	type PageFooter,
 } from '../../layouts/footer'
+import { FooterIcon } from '../components/icons'
 import { CheckboxField } from '../fields/CheckboxField'
 import { NumberField } from '../fields/NumberField'
-import type { OptionsFieldsProps } from './Section'
+import { defaultFields } from './defaultFields'
+import { type OptionsSectionProps, Section } from './Section'
 
 const FOOTER_HEIGHT_DESCRIPTION = `Whole mm, from ${MIN_FOOTER_HEIGHT} to ${MAX_FOOTER_HEIGHT}.`
 
-interface FooterFieldsProps extends OptionsFieldsProps<PageFooter> {
+interface FooterSectionProps extends OptionsSectionProps<PageFooter> {
 	/** What the footer is, under the checkbox. */
 	description: string
 }
 
 /** Whether a layout's sheets keep an empty footer, and its height. */
-export function FooterFields({ options, description, onUpdate }: FooterFieldsProps) {
+export function FooterSection({ options, defaults, description, onUpdate }: FooterSectionProps) {
 	function handleShowFooterChange(showFooter: boolean) {
 		onUpdate({ showFooter })
 	}
@@ -25,10 +27,14 @@ export function FooterFields({ options, description, onUpdate }: FooterFieldsPro
 		onUpdate({ footerHeight })
 	}
 
+	function handleReset() {
+		onUpdate(defaultFields(defaults, ['showFooter', 'footerHeight']))
+	}
+
 	return (
-		<>
+		<Section title="Footer" icon={<FooterIcon />} onReset={handleReset}>
 			<CheckboxField
-				label="Footer"
+				label="Show footer"
 				description={description}
 				checked={options.showFooter}
 				onChange={handleShowFooterChange}
@@ -45,6 +51,6 @@ export function FooterFields({ options, description, onUpdate }: FooterFieldsPro
 					onChange={handleFooterHeightChange}
 				/>
 			)}
-		</>
+		</Section>
 	)
 }

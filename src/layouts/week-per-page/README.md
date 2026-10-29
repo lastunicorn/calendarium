@@ -12,7 +12,7 @@ One sheet per week of the year, or two, each day getting a writing cell, maybe a
 - **Two pages per week:** with `twoPagesPerWeek`, `splitWeekCells` puts the first three days on a first sheet whose header row shows the heading, and the rest on a second showing the mini months, each keeping the other part's space hidden. The view's `facingPages` then has the preview show the pages as facing spreads, as the bound calendar opens, so `startPage` `even` puts each week's two pages side by side.
 - **Mini months:** with `miniMonth.show`, a `MiniMonth` of the `weekMonth` beside the heading fills the week's row in black (`markedWeek`), at `miniMonth.size`; with `showNextMonth`, the month after it (January of the next year after December) is drawn right of it the same way, alone when the first is hidden. Both take the look of `miniMonth`.
 - **Start page:** with `startPage` set to `even`, a blank page comes first (`blankFirstPage`).
-- **Footer:** with `showFooter`, each sheet keeps an empty bordered footer, `footerHeight` whole mm tall (`isFooterHeight`), under its cells. The footer options (`PageFooter`) are shared with the day layout through `layouts/footer.ts` and `ui/sidebar/FooterFields`.
+- **Footer:** with `showFooter`, each sheet keeps an empty bordered footer, `footerHeight` whole mm tall (`isFooterHeight`), under its cells. The footer options (`PageFooter`) are shared with the day layout through `layouts/footer.ts` and `ui/sidebar/FooterSection`.
 
 `WeekPage` is memoized, so the plan builds its shared label arrays (weekday names, hour labels) once.
 
@@ -20,11 +20,12 @@ One sheet per week of the year, or two, each day getting a writing cell, maybe a
 
 `WeekPerPageOptions` (`options.ts`): `CommonOptions`, the schedule (`HourSchedule`, shared with the day layout through `layouts/schedule.ts`), and its own:
 
-| Sidebar section | Fields                                                                                                                                                                                                                                                            |
-| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Header          | `headingAlignment`, `headingFontSize` (`isHeadingFontSize`, the shared `HeadingFontSizeField`), `showHeaderWeek` (`ui/HeaderSection`)                                                                                                                             |
-| Mini calendar   | `miniMonth` (`MiniMonthOptions`, its `show` labeled "Show current month"), `showNextMonth` (`ui/MiniMonthsSection`, the look through the shared `MiniMonthFields`)                                                                                                |
-| Content         | `twoPagesPerWeek`, `startPage`, `weekDayDirection`, `weekdayFormat` (full names allowed), `highlightWeekendDays`, `weekendDisplay`, `weekPageLines`, the schedule (`hourFormat`, `firstHour`, `lastHour`), `showFooter`, `footerHeight` (`ui/WeekContentSection`) |
+| Sidebar section | Fields                                                                                                                                                                                                                              |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Header          | `headingAlignment`, `headingFontSize` (`isHeadingFontSize`, the shared `HeadingFontSizeField`), `showHeaderWeek` (`ui/HeaderSection`)                                                                                               |
+| Mini calendar   | `miniMonth` (`MiniMonthOptions`, its `show` labeled "Show current month"), `showNextMonth` (`ui/MiniMonthsSection`, the look through the shared `MiniMonthFields`)                                                                  |
+| Content         | `twoPagesPerWeek`, `startPage`, `weekDayDirection`, `weekdayFormat` (full names allowed), `highlightWeekendDays`, `weekendDisplay`, `weekPageLines`, the schedule (`hourFormat`, `firstHour`, `lastHour`) (`ui/WeekContentSection`) |
+| Footer          | `showFooter`, `footerHeight` (the shared `FooterSection`)                                                                                                                                                                           |
 
 `normalize` puts a reversed schedule in order (`orderHours`).
 

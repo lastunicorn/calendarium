@@ -12,6 +12,7 @@ describe('WeekPerPageForm', () => {
 			'Header',
 			'Mini calendar',
 			'Content',
+			'Footer',
 			'Page',
 		])
 	})

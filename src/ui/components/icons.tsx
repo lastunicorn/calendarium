@@ -143,6 +143,16 @@ export function PageIcon() {
 	)
 }
 
+/** A sheet with a band across its bottom: the footer section. */
+export function FooterIcon() {
+	return (
+		<Icon>
+			<rect x="4" y="2" width="16" height="20" rx="2" />
+			<path d="M4 16h16" />
+		</Icon>
+	)
+}
+
 /** An "i" in a circle: opens a note about a field. */
 export function InfoIcon() {
 	return (

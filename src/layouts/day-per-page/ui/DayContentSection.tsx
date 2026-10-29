@@ -14,7 +14,6 @@ import { CheckboxField } from '../../../ui/fields/CheckboxField'
 import { NumberField } from '../../../ui/fields/NumberField'
 import { optionsFrom } from '../../../ui/fields/options'
 import { RadioField } from '../../../ui/fields/RadioField'
-import { FooterFields } from '../../../ui/sidebar/FooterFields'
 import { ScheduleFields } from '../../../ui/sidebar/ScheduleFields'
 import { defaultFields } from '../../../ui/sidebar/defaultFields'
 import { type OptionsSectionProps, Section } from '../../../ui/sidebar/Section'
@@ -27,8 +26,6 @@ const DAY_PAGE_LINES_OPTIONS = optionsFrom(DAY_PAGE_LINES, {
 	blank: 'Blank',
 })
 
-const FOOTER_DESCRIPTION = 'An empty space under the fill, on every page.'
-
 const SQUARE_GRID_ALIGNMENT_OPTIONS = optionsFrom(SQUARE_GRID_ALIGNMENTS, {
 	left: 'Left',
 	center: 'Center',
@@ -37,8 +34,7 @@ const SQUARE_GRID_ALIGNMENT_OPTIONS = optionsFrom(SQUARE_GRID_ALIGNMENTS, {
 
 /**
  * What fills a day's page: an hourly schedule and its hours, ruled lines and their spacing, or
- * squares or dots, their size and where they sit, or nothing, on one page or two, and the footer
- * under it.
+ * squares or dots, their size and where they sit, or nothing, on one page or two.
  */
 export function DayContentSection({
 	options,
@@ -76,8 +72,6 @@ export function DayContentSection({
 				'ruledLineSpacing',
 				'squareSize',
 				'squareGridAlignment',
-				'showFooter',
-				'footerHeight',
 			]),
 		)
 	}
@@ -150,7 +144,6 @@ export function DayContentSection({
 					/>
 				</>
 			)}
-			<FooterFields options={options} description={FOOTER_DESCRIPTION} onUpdate={onUpdate} />
 		</Section>
 	)
 }

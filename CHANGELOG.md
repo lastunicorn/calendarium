@@ -4,6 +4,10 @@ The features each release brought, newest first. Versions follow the app version
 
 ## Unreleased
 
+### Changed
+
+- Week and day layouts: the footer and its height moved from the Content section to a Footer section of their own, with its own reset.
+
 ## 5.0.0 — 2026-10-24
 
 Settings and files from 4.x are migrated: the week layout's automatic days direction becomes horizontal on portrait paper with one page per week, vertical otherwise, as it was drawn.

@@ -22,13 +22,14 @@ With `twoPagesPerDay`, the view's `facingPages` has the preview show the pages a
 
 ## Options
 
-`DayPerPageOptions` (`options.ts`): `CommonOptions`, the schedule (`HourSchedule`, shared with the week layout through `layouts/schedule.ts`), the footer (`PageFooter`, shared with the week layout through `layouts/footer.ts` and `ui/sidebar/FooterFields`), and its own:
+`DayPerPageOptions` (`options.ts`): `CommonOptions`, the schedule (`HourSchedule`, shared with the week layout through `layouts/schedule.ts`), the footer (`PageFooter`, shared with the week layout through `layouts/footer.ts` and `ui/sidebar/FooterSection`), and its own:
 
-| Sidebar section | Fields                                                                                                                                                                                                 |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Header          | `dayPageTitle`, `headingFontSize` (`isHeadingFontSize`, the shared `HeadingFontSizeField`), `showHeaderWeek`, `showHeaderDayOfYear`, `highlightWeekendDays` (`ui/HeaderSection`)                       |
-| Mini calendar   | `miniMonth` (`MiniMonthOptions`, the shared `MiniMonthSection`)                                                                                                                                        |
-| Content         | `twoPagesPerDay`, `dayPageLines`, the schedule (`hourFormat`, `firstHour`, `lastHour`), `ruledLineSpacing`, `squareSize`, `squareGridAlignment`, `showFooter`, `footerHeight` (`ui/DayContentSection`) |
+| Sidebar section | Fields                                                                                                                                                                           |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Header          | `dayPageTitle`, `headingFontSize` (`isHeadingFontSize`, the shared `HeadingFontSizeField`), `showHeaderWeek`, `showHeaderDayOfYear`, `highlightWeekendDays` (`ui/HeaderSection`) |
+| Mini calendar   | `miniMonth` (`MiniMonthOptions`, the shared `MiniMonthSection`)                                                                                                                  |
+| Content         | `twoPagesPerDay`, `dayPageLines`, the schedule (`hourFormat`, `firstHour`, `lastHour`), `ruledLineSpacing`, `squareSize`, `squareGridAlignment` (`ui/DayContentSection`)         |
+| Footer          | `showFooter`, `footerHeight` (the shared `FooterSection`)                                                                                                                        |
 
 It has no title: the heading is always the weekday or the date. `normalize` puts a reversed schedule in order (`orderHours`).
 

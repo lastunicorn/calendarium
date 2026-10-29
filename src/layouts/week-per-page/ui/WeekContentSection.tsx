@@ -17,7 +17,6 @@ import { CheckboxField } from '../../../ui/fields/CheckboxField'
 import { optionsFrom } from '../../../ui/fields/options'
 import { RadioField } from '../../../ui/fields/RadioField'
 import { WEEKDAY_FORMAT_OPTIONS } from '../../../ui/sidebar/fieldOptions'
-import { FooterFields } from '../../../ui/sidebar/FooterFields'
 import { ScheduleFields } from '../../../ui/sidebar/ScheduleFields'
 import { defaultFields } from '../../../ui/sidebar/defaultFields'
 import { type OptionsSectionProps, Section } from '../../../ui/sidebar/Section'
@@ -46,8 +45,6 @@ const START_PAGE_OPTIONS = optionsFrom(START_PAGES, {
 
 const START_PAGE_DESCRIPTION =
 	'Printed double-sided, a week starting on an even page faces the next page, so each week’s two pages lie open side by side.'
-
-const FOOTER_DESCRIPTION = 'An empty space under the days, on every page.'
 
 const WEEK_PAGE_LINES_OPTIONS = optionsFrom(WEEK_PAGE_LINES, {
 	none: 'Off',
@@ -104,8 +101,6 @@ export function WeekContentSection({
 				'hourFormat',
 				'firstHour',
 				'lastHour',
-				'showFooter',
-				'footerHeight',
 			]),
 		)
 	}
@@ -163,7 +158,6 @@ export function WeekContentSection({
 			{options.weekPageLines === 'hours' && (
 				<ScheduleFields options={options} onUpdate={onUpdate} />
 			)}
-			<FooterFields options={options} description={FOOTER_DESCRIPTION} onUpdate={onUpdate} />
 		</Section>
 	)
 }
