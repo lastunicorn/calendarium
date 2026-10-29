@@ -6,7 +6,10 @@ import { defaultFields } from '../../../ui/sidebar/defaultFields'
 import { MiniMonthFields } from '../../../ui/sidebar/MiniMonthFields'
 import { type OptionsSectionProps, Section } from '../../../ui/sidebar/Section'
 
-/** Whether the week's month and the next are drawn small beside the heading, and how they look. */
+/**
+ * Whether the week's month and the next are drawn small beside the heading, how they look and
+ * whether they circle events.
+ */
 export function MiniMonthsSection({
 	options,
 	defaults,
@@ -26,6 +29,10 @@ export function MiniMonthsSection({
 		onUpdate({ showNextMonth })
 	}
 
+	function handleShowEventsChange(showEvents: boolean) {
+		handleMiniMonthUpdate({ showEvents })
+	}
+
 	function handleReset() {
 		onUpdate(defaultFields(defaults, ['miniMonth', 'showNextMonth']))
 	}
@@ -43,7 +50,15 @@ export function MiniMonthsSection({
 				onChange={handleShowNextMonthChange}
 			/>
 			{(miniMonth.show || showNextMonth) && (
-				<MiniMonthFields options={miniMonth} onUpdate={handleMiniMonthUpdate} />
+				<>
+					<MiniMonthFields options={miniMonth} onUpdate={handleMiniMonthUpdate} />
+					<CheckboxField
+						label="Show events"
+						checked={miniMonth.showEvents}
+						onChange={handleShowEventsChange}
+						description="Circle the days with an event"
+					/>
+				</>
 			)}
 		</Section>
 	)

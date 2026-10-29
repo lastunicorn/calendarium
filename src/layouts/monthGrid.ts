@@ -44,14 +44,20 @@ export interface MiniMonthOptions extends MonthGridOptions {
 	show: boolean
 	/** Whether the title above the grid names the year after the month, or the month alone. */
 	showYear: boolean
+	/** Whether the days with an event are circled. */
+	showEvents: boolean
 	size: MiniMonthSize
 }
 
-/** The default mini month: shown, medium, titled with its month alone, with week numbers. */
+/**
+ * The default mini month: shown, medium, titled with its month alone, its days with an event
+ * circled, with week numbers.
+ */
 export function miniMonthDefaults(): MiniMonthOptions {
 	return {
 		show: true,
 		showYear: false,
+		showEvents: true,
 		size: 'medium',
 		...monthGridDefaults(),
 		showWeekNumbers: true,
@@ -61,6 +67,7 @@ export function miniMonthDefaults(): MiniMonthOptions {
 export const MINI_MONTH_VALIDATORS: Validators<MiniMonthOptions> = {
 	show: isBoolean,
 	showYear: isBoolean,
+	showEvents: isBoolean,
 	size: oneOf(MINI_MONTH_SIZES),
 	...MONTH_GRID_VALIDATORS,
 }

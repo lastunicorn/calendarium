@@ -27,7 +27,7 @@ describe('week-per-page options', () => {
 			hourFormat: '12h',
 			firstHour: 8,
 			lastHour: 18,
-			miniMonth: { ...grid, show: true, showYear: true, size: 'large' },
+			miniMonth: { ...grid, show: true, showYear: true, showEvents: false, size: 'large' },
 			showNextMonth: true,
 		}
 		const ignored: string[] = []

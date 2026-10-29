@@ -221,6 +221,9 @@ describe('planWeekPages', () => {
 		const last = plan(2026, { events, showNextMonth: true }).weeks.at(-1)!.miniMonths
 		expect(last.map((miniMonth) => miniMonth.eventDays)).toEqual([[8, 25], [6]])
 		expect(plan(2026).weeks[0].miniMonths[0].eventDays).toEqual([])
+		const hidden = { ...defaultLayoutOptions('week-per-page').miniMonth, showEvents: false }
+		const without = plan(2026, { events, miniMonth: hidden, showNextMonth: true }).weeks.at(-1)!
+		expect(without.miniMonths.map((miniMonth) => miniMonth.eventDays)).toEqual([[], []])
 	})
 
 	it('stacks the days only when horizontal, whatever the page', () => {

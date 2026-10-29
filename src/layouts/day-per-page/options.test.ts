@@ -29,6 +29,7 @@ describe('day-per-page options', () => {
 				...grid,
 				show: false,
 				showYear: true,
+				showEvents: false,
 				size: 'small',
 				highlightWeekends: 'columns',
 			},

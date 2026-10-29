@@ -67,8 +67,8 @@ export interface WeekPages {
 	headingFontSize: number
 	/**
 	 * The mini months, left to right: the month holding most of the week's days (with
-	 * `miniMonth.show`), then the next (with `showNextMonth`), the week marked and the days with an
-	 * event circled; none when both are hidden.
+	 * `miniMonth.show`), then the next (with `showNextMonth`), the week marked and, with
+	 * `miniMonth.showEvents`, the days with an event circled; none when both are hidden.
 	 */
 	miniMonths: MiniMonthPlan[]
 	/** Whether the days are stacked rows rather than columns side by side (`weekDayDirection`). */
@@ -137,8 +137,8 @@ export function planWeekPages(options: WeekPerPageOptions, model: CalendarModel)
 
 	/**
 	 * The month `offset` (0 or 1) months after the week's `month`, maybe in the next year, named
-	 * with its year per `showYear`, the week holding `firstDay` marked and the days with an event
-	 * circled.
+	 * with its year per `showYear`, the week holding `firstDay` marked and, with `showEvents`, the days
+	 * with an event circled.
 	 */
 	function planMiniMonth(month: number, offset: number, firstDay: WeekDay): MiniMonthPlan {
 		const otherYear = year + Math.floor((month + offset) / 12)
@@ -155,7 +155,7 @@ export function planWeekPages(options: WeekPerPageOptions, model: CalendarModel)
 			showWeekNumbers: miniMonth.showWeekNumbers,
 			size: miniMonth.size,
 			markedWeek: firstDay.key,
-			eventDays: monthEventDays(model.events, shown),
+			eventDays: miniMonth.showEvents ? monthEventDays(model.events, shown) : [],
 		}
 	}
 

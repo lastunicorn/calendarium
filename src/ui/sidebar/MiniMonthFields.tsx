@@ -9,7 +9,7 @@ import type { OptionsFieldsProps } from './Section'
 export function MiniMonthFields({
 	options,
 	onUpdate,
-}: OptionsFieldsProps<Omit<MiniMonthOptions, 'show'>>) {
+}: OptionsFieldsProps<Omit<MiniMonthOptions, 'show' | 'showEvents'>>) {
 	function handleShowYearChange(showYear: boolean) {
 		onUpdate({ showYear })
 	}

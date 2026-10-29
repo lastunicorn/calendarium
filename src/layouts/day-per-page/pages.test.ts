@@ -84,6 +84,9 @@ describe('planDayPages', () => {
 			'2026-03-05 Trip\n0000-03-17 Birthday\n2027-03-20 Next year\n2026-04-01 April'
 		expect(day(plan(2026, { events }), '2026-03-17').miniMonth!.eventDays).toEqual([5, 17])
 		expect(day(plan(2026), '2026-03-17').miniMonth!.eventDays).toEqual([])
+		const hidden = { ...defaultLayoutOptions('day-per-page').miniMonth, showEvents: false }
+		const without = day(plan(2026, { events, miniMonth: hidden }), '2026-03-17').miniMonth!
+		expect(without.eventDays).toEqual([])
 	})
 
 	describe('fills', () => {

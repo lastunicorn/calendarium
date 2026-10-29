@@ -58,8 +58,8 @@ export interface DayPages {
 	/** Whether the heading takes the weekend color: a Saturday or Sunday, with `highlightWeekendDays`. */
 	weekend: boolean
 	/**
-	 * The day's month with the day marked and the days with an event circled, in the corner; none
-	 * when hidden.
+	 * The day's month with the day marked and, with `miniMonth.showEvents`, the days with an event
+	 * circled, in the corner; none when hidden.
 	 */
 	miniMonth?: MiniMonthPlan
 	/** What fills each sheet: one, or two with `twoPagesPerDay`, the second without a header. */
@@ -126,7 +126,9 @@ export function planDayPages(options: DayPerPageOptions, model: CalendarModel): 
 	const fills = planFills(options)
 	const footerHeight = options.showFooter ? options.footerHeight : undefined
 	const days = daysOfYear(model.months)
-	const eventDays = model.months.map((month) => monthEventDays(model.events, month))
+	const eventDays = model.months.map((month) =>
+		miniMonth.showEvents ? monthEventDays(model.events, month) : [],
+	)
 
 	return days.map((day) => {
 		const weekday = weekdayName(locale, day)

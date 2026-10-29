@@ -7,7 +7,7 @@ One sheet per day of the year, or two: a header naming the day, with a corner mi
 `planDayPages` (`pages.ts`) plans a `DayPages` for each day from `daysOfYear`:
 
 - **Heading:** the weekday or the date per `dayPageTitle`, in `headingFontSize` pt and in the weekend color on Saturdays and Sundays per `highlightWeekendDays`; the other one below it, followed on its line by the details line ("Week N · Day N / 365", dot-separated, each part per `showHeaderWeek` and `showHeaderDayOfYear`, from `DAY_PAGE_MESSAGES`).
-- **Mini month:** per `miniMonth.show`, a corner `MiniMonth` of the day's month marking the day (`markedDay`) and circling the days with an event (`eventDays`, by `monthEventDays`), as the year layout's months do, at `miniMonth.size`.
+- **Mini month:** per `miniMonth.show`, a corner `MiniMonth` of the day's month marking the day (`markedDay`) and, with `miniMonth.showEvents`, circling the days with an event (`eventDays`, by `monthEventDays`), as the year layout's months do, at `miniMonth.size`.
 - **Fills:** the `fills` of its one or two sheets, the same for every day, per `dayPageLines`:
   - `hours`: an hourly schedule from `firstHour` to `lastHour`, labeled by `hourNames` in `hourFormat`. With `twoPagesPerDay` it is split in half over two sheets, the second, without a header, taking an odd count's extra hour;
   - `ruled`: ruled lines `ruledLineSpacing` mm apart;
@@ -27,7 +27,7 @@ With `twoPagesPerDay`, the view's `facingPages` has the preview show the pages a
 | Sidebar section | Fields                                                                                                                                                                           |
 | --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Header          | `dayPageTitle`, `headingFontSize` (`isHeadingFontSize`, the shared `HeadingFontSizeField`), `showHeaderWeek`, `showHeaderDayOfYear`, `highlightWeekendDays` (`ui/HeaderSection`) |
-| Mini calendar   | `miniMonth` (`MiniMonthOptions`, the shared `MiniMonthSection`)                                                                                                                  |
+| Mini calendar   | `miniMonth` (`MiniMonthOptions`, `showEvents` labeled "Show events", the shared `MiniMonthSection`)                                                                              |
 | Content         | `twoPagesPerDay`, `dayPageLines`, the schedule (`hourFormat`, `firstHour`, `lastHour`), `ruledLineSpacing`, `squareSize`, `squareGridAlignment` (`ui/DayContentSection`)         |
 | Footer          | `showFooter`, `footerHeight` (the shared `FooterSection`)                                                                                                                        |
 
