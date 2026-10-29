@@ -7,7 +7,7 @@ The whole year on one sheet: the title, or else the year, above the 12 months as
 `planYearPage` (`pages.ts`) plans one `YearPage`:
 
 - the heading: the `title`, or the year (`yearName`) when the title is empty; the `subtitle` below it, hidden when empty;
-- the 12 months, each a `MiniMonthPlan` spread into `MiniMonth`. Every month has 6 rows, so they line up, and the days with an event are circled (`eventDays`);
+- the 12 months, each a `MiniMonthPlan` spread into `MiniMonth`. Every month has 6 rows, so they line up, and the days with an event are circled (`eventDays`, by `monthEventDays`);
 - when the year has events (`eventsOfYear`), an `eventList` page: headed by `YEAR_PAGE_MESSAGES[locale].events` above the year page's heading, listing each event with its `dayMonthName`, drawn by `ui/EventList`.
 
 ## Options

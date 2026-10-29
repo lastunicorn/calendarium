@@ -1,4 +1,5 @@
 import type { CalendarMonth } from '../core/calendar'
+import { type CalendarEvent, eventNames } from '../core/events'
 import type { WeekdayFormat } from '../core/locale'
 import { WEEKEND_HIGHLIGHTS, type WeekendHighlight } from '../core/weekend'
 import { isBoolean, oneOf, type Validators } from '../core/validation'
@@ -81,4 +82,12 @@ export interface MiniMonthPlan {
 	markedWeek?: string
 	/** Days of the month that have an event, each circled. */
 	eventDays?: number[]
+}
+
+/** The days of `month` that have an event, for its `eventDays`; none of the days of other months. */
+export function monthEventDays(events: readonly CalendarEvent[], month: CalendarMonth): number[] {
+	return month.weeks
+		.flat()
+		.filter((day) => day.inMonth && eventNames(events, day).length > 0)
+		.map((day) => day.day)
 }

@@ -4,6 +4,10 @@ The features each release brought, newest first. Versions follow the app version
 
 ## Unreleased
 
+### Added
+
+- Week layout: the mini calendars circle the days with an event, as the year layout's months do.
+
 ### Changed
 
 - Week and day layouts: the footer and its height moved from the Content section to a Footer section of their own, with its own reset.

@@ -11,7 +11,7 @@ import { dateRangeName, hourNames, monthYearName, weekdayNames } from '../../cor
 import { isHighlightedWeekDay } from '../../core/weekend'
 import type { CalendarModel } from '../common'
 import type { HeadingAlign } from '../heading'
-import type { MiniMonthPlan } from '../monthGrid'
+import { type MiniMonthPlan, monthEventDays } from '../monthGrid'
 import { splitWeekCells, type WeekCell, weekCells } from './cells'
 import { WEEK_PAGE_MESSAGES } from './messages'
 import type { WeekPerPageOptions } from './options'
@@ -67,8 +67,8 @@ export interface WeekPages {
 	headingFontSize: number
 	/**
 	 * The mini months, left to right: the month holding most of the week's days (with
-	 * `miniMonth.show`), then the next (with `showNextMonth`), the week marked; none when both are
-	 * hidden.
+	 * `miniMonth.show`), then the next (with `showNextMonth`), the week marked and the days with an
+	 * event circled; none when both are hidden.
 	 */
 	miniMonths: MiniMonthPlan[]
 	/** Whether the days are stacked rows rather than columns side by side (`weekDayDirection`). */
@@ -137,16 +137,16 @@ export function planWeekPages(options: WeekPerPageOptions, model: CalendarModel)
 
 	/**
 	 * The month `offset` (0 or 1) months after the week's `month`, maybe in the next year, named
-	 * with its year per `showYear`, the week holding `firstDay` marked.
+	 * with its year per `showYear`, the week holding `firstDay` marked and the days with an event
+	 * circled.
 	 */
 	function planMiniMonth(month: number, offset: number, firstDay: WeekDay): MiniMonthPlan {
 		const otherYear = year + Math.floor((month + offset) / 12)
 		const otherMonth = (month + offset) % 12
+		const shown =
+			otherYear === year ? months[otherMonth] : buildMonth(otherYear, otherMonth, weekStart)
 		return {
-			month:
-				otherYear === year
-					? months[otherMonth]
-					: buildMonth(otherYear, otherMonth, weekStart),
+			month: shown,
 			name: miniMonth.showYear
 				? monthYearName(locale, otherYear, otherMonth)
 				: monthNames[otherMonth],
@@ -155,6 +155,7 @@ export function planWeekPages(options: WeekPerPageOptions, model: CalendarModel)
 			showWeekNumbers: miniMonth.showWeekNumbers,
 			size: miniMonth.size,
 			markedWeek: firstDay.key,
+			eventDays: monthEventDays(model.events, shown),
 		}
 	}
 

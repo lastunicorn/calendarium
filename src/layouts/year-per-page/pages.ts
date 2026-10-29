@@ -1,7 +1,7 @@
-import { eventNames, eventsOfYear } from '../../core/events'
+import { eventsOfYear } from '../../core/events'
 import { dayMonthName, weekdayNames, yearName } from '../../core/locale'
 import type { CalendarModel } from '../common'
-import type { MiniMonthPlan } from '../monthGrid'
+import { type MiniMonthPlan, monthEventDays } from '../monthGrid'
 import { YEAR_PAGE_MESSAGES } from './messages'
 import type { YearPerPageOptions } from './options'
 
@@ -53,10 +53,7 @@ export function planYearPage(options: YearPerPageOptions, model: CalendarModel):
 			weekdays,
 			highlightWeekends: options.highlightWeekends,
 			showWeekNumbers: options.showWeekNumbers,
-			eventDays: month.weeks
-				.flat()
-				.filter((day) => day.inMonth && eventNames(model.events, day).length > 0)
-				.map((day) => day.day),
+			eventDays: monthEventDays(model.events, month),
 		})),
 		eventList:
 			events.length > 0

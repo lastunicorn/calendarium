@@ -215,6 +215,14 @@ describe('planWeekPages', () => {
 		expect(next.month).toMatchObject({ year: 2027, month: 0 })
 	})
 
+	it('circles the days with an event in the mini months, the next year’s too', () => {
+		const events =
+			'2026-12-08 Trip\n0000-12-25 Christmas\n0000-01-06 Epiphany\n2026-01-06 Other'
+		const last = plan(2026, { events, showNextMonth: true }).weeks.at(-1)!.miniMonths
+		expect(last.map((miniMonth) => miniMonth.eventDays)).toEqual([[8, 25], [6]])
+		expect(plan(2026).weeks[0].miniMonths[0].eventDays).toEqual([])
+	})
+
 	it('stacks the days only when horizontal, whatever the page', () => {
 		const portrait = {
 			...defaultLayoutOptions('week-per-page').page,
