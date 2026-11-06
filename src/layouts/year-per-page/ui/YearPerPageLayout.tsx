@@ -33,7 +33,7 @@ export function YearPerPageLayout({ options }: YearPerPageLayoutProps) {
 					/>
 
 					<div
-						className={`${styles.grid} ${styles[page.orientation]} ${styles[options.monthSize]}`}
+						className={`${styles.grid} ${styles[page.orientation]} ${styles[options.monthSize]} ${options.showWeekNumbers ? styles.withWeekNumbers : ''}`}
 					>
 						{months.map((month) => (
 							<MiniMonth key={month.month.month} {...month} />

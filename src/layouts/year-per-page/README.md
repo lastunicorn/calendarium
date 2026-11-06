@@ -19,7 +19,7 @@ The whole year on one sheet: the title, or else the year, above the 12 months as
 | Header          | `title`, `subtitle`, `headingFontSize` (`isHeadingFontSize`, the shared `HeadingFontSizeField`) (`ui/HeaderSection`)                                                                       |
 | Content         | `monthSize`, then `weekdayFormat` (abbreviated only, `MONTH_GRID_WEEKDAY_FORMATS`), `highlightWeekends`, `showWeekNumbers` (`ui/YearContentSection`, through the shared `MonthGridFields`) |
 
-`monthSize`, one of `MONTH_SIZES` (`small`, `medium` by default, `large`), sizes the months' text: each month fills its share of the page whatever its size. The component sets the size's class (`ui/YearPerPageLayout.module.css`) on the grid, defining the `MiniMonth`'s text variables (`--mini-month-name-size`, …), `medium` being its own size.
+`monthSize`, one of `MONTH_SIZES` (`small`, `medium` by default, `large`), sizes the months' text, and the months with it: each month's columns and rows are multiples of its day size, so smaller text draws a smaller month, centered in its share of the page and never larger than it (so `large` fills it on most papers). The component sets the size's class (`ui/YearPerPageLayout.module.css`) on the grid, defining the `MiniMonth`'s text variables (`--mini-month-name-size`, …), `medium` being its own size.
 
 It has no cross-field rules of its own (`normalize: normalizeCommon`) and no migration steps.
 

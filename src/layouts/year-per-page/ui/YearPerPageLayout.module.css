@@ -12,14 +12,31 @@
 	min-height: 0;
 }
 
+/*
+ * Each month sized by its text: 7 columns and 7 rows (the weekdays and 6 weeks) in multiples of
+ * the day size under its name, a week number column wider, in the middle of its cell and never
+ * larger than it, so smaller text draws a smaller month.
+ */
+.grid > * {
+	place-self: center;
+	width: calc(7 * 2.2 * var(--mini-month-day-size) + var(--week-number-width, 0mm));
+	height: calc(1.25 * var(--mini-month-name-size) + 1.5mm + 7 * 1.9 * var(--mini-month-day-size));
+	max-width: 100%;
+	max-height: 100%;
+}
+
+.withWeekNumbers {
+	--week-number-width: calc(2 * var(--mini-month-week-number-size) + 1mm);
+}
+
 .portrait {
-	grid-template-columns: repeat(3, 1fr);
-	grid-template-rows: repeat(4, 1fr);
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	grid-template-rows: repeat(4, minmax(0, 1fr));
 }
 
 .landscape {
-	grid-template-columns: repeat(4, 1fr);
-	grid-template-rows: repeat(3, 1fr);
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	grid-template-rows: repeat(3, minmax(0, 1fr));
 }
 
 /* The months' text by `monthSize`, through the `MiniMonth`'s variables; `medium` is its own size. */
