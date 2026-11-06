@@ -97,21 +97,6 @@ const LOCALE_OPTIONS = optionsFrom(LOCALES, {
 	.map((option) => ({ ...option, keywords: localeKeywords(option.value) }))
 	.sort((a, b) => a.label.localeCompare(b.label, 'en'))
 
-const YEAR_DESCRIPTION = [
-	`From ${MIN_YEAR} to ${MAX_YEAR}.`,
-	`${MIN_YEAR} is the first full year of the Gregorian calendar.`,
-]
-
-const LOCALE_DESCRIPTION = [
-	'The language the calendar is printed in. It applies to the printable calendar only.',
-	'The language of the editor stays in English.',
-]
-
-const WEEK_START_DESCRIPTION = [
-	'Choose the day to be used as the first day of the week.',
-	'Language default picks the language’s own day, e.g. Sunday in American English, Monday in German.',
-]
-
 /** Which year the calendar shows, in which language, and the day its weeks start on. */
 export function CalendarSection({
 	options,
@@ -138,7 +123,10 @@ export function CalendarSection({
 		<Section title="Calendar" icon={<CalendarIcon />} onReset={handleReset}>
 			<NumberField
 				label="Year"
-				description={YEAR_DESCRIPTION}
+				description={[
+					`From ${MIN_YEAR} to ${MAX_YEAR}.`,
+					`${MIN_YEAR} is the first full year of the Gregorian calendar.`,
+				]}
 				value={options.year}
 				min={MIN_YEAR}
 				max={MAX_YEAR}
@@ -147,14 +135,20 @@ export function CalendarSection({
 			/>
 			<ComboboxField
 				label="Language"
-				description={LOCALE_DESCRIPTION}
+				description={[
+					'The language the calendar is printed in. It applies to the printable calendar only.',
+					'The language of the editor stays in English.',
+				]}
 				value={options.locale}
 				options={LOCALE_OPTIONS}
 				onChange={handleLocaleChange}
 			/>
 			<SelectField
 				label="Week starts on"
-				description={WEEK_START_DESCRIPTION}
+				description={[
+					'Choose the day to be used as the first day of the week.',
+					'"Language default" picks the language’s own day, e.g. Sunday in American English, Monday in German.',
+				]}
 				value={options.weekStart}
 				options={WEEK_START_OPTIONS}
 				onChange={handleWeekStartChange}

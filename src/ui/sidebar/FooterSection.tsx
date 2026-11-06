@@ -10,15 +10,8 @@ import { NumberField } from '../fields/NumberField'
 import { defaultFields } from './defaultFields'
 import { type OptionsSectionProps, Section } from './Section'
 
-const FOOTER_HEIGHT_DESCRIPTION = `Whole mm, from ${MIN_FOOTER_HEIGHT} to ${MAX_FOOTER_HEIGHT}.`
-
-interface FooterSectionProps extends OptionsSectionProps<PageFooter> {
-	/** What the footer is, under the checkbox. */
-	description: string
-}
-
 /** Whether a layout's sheets keep an empty footer, and its height. */
-export function FooterSection({ options, defaults, description, onUpdate }: FooterSectionProps) {
+export function FooterSection({ options, defaults, onUpdate }: OptionsSectionProps<PageFooter>) {
 	function handleShowFooterChange(showFooter: boolean) {
 		onUpdate({ showFooter })
 	}
@@ -35,14 +28,14 @@ export function FooterSection({ options, defaults, description, onUpdate }: Foot
 		<Section title="Footer" icon={<FooterIcon />} onReset={handleReset}>
 			<CheckboxField
 				label="Show footer"
-				description={description}
+				description={'Displays an empty space at the bottom of the page under the content.'}
 				checked={options.showFooter}
 				onChange={handleShowFooterChange}
 			/>
 			{options.showFooter && (
 				<NumberField
 					label="Footer height (mm)"
-					description={FOOTER_HEIGHT_DESCRIPTION}
+					description={`Whole mm, from ${MIN_FOOTER_HEIGHT} to ${MAX_FOOTER_HEIGHT}.`}
 					value={options.footerHeight}
 					min={MIN_FOOTER_HEIGHT}
 					max={MAX_FOOTER_HEIGHT}

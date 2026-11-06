@@ -11,6 +11,7 @@ The features each release brought, newest first. Versions follow the app version
 ### Changed
 
 - Week and day layouts: the footer and its height moved from the Content section to a Footer section of their own, with its own reset.
+- Clearer descriptions under several sidebar options (year, language, week start, events, footer, booklet, margins, spine).
 
 ## 5.0.0 — 2026-10-24
 

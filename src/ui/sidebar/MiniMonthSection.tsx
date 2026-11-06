@@ -36,7 +36,7 @@ export function MiniMonthSection({
 						label="Show events"
 						checked={options.showEvents}
 						onChange={handleShowEventsChange}
-						description="Circle the days with an event"
+						description="Circle the days that have an event."
 					/>
 				</>
 			)}

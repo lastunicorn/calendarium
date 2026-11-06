@@ -80,7 +80,10 @@ export function DayContentSection({
 		<Section title="Content" icon={<ContentIcon />} onReset={handleReset}>
 			<CheckboxField
 				label="Two pages per day"
-				description="The header goes on the first page only; an hourly schedule is split in half across the two."
+				description={[
+					'The header goes on the first page only.',
+					'An hourly schedule is split in half across the two.',
+				]}
 				checked={options.twoPagesPerDay}
 				onChange={handleTwoPagesPerDayChange}
 			/>

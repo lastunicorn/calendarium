@@ -9,8 +9,6 @@ import type { OptionsSectionProps } from '../../../ui/sidebar/Section'
 import { DayContentSection } from './DayContentSection'
 import { HeaderSection } from './HeaderSection'
 
-const FOOTER_DESCRIPTION = 'An empty space under the fill, on every page.'
-
 /** The `day-per-page` options, including its header, what fills each day and its mini calendar. */
 export function DayPerPageForm({
 	options,
@@ -32,12 +30,7 @@ export function DayPerPageForm({
 				onUpdate={handleMiniMonthUpdate}
 			/>
 			<DayContentSection options={options} defaults={defaults} onUpdate={onUpdate} />
-			<FooterSection
-				options={options}
-				defaults={defaults}
-				description={FOOTER_DESCRIPTION}
-				onUpdate={onUpdate}
-			/>
+			<FooterSection options={options} defaults={defaults} onUpdate={onUpdate} />
 			<PageSection options={options} defaults={defaults} onUpdate={onUpdate} />
 		</>
 	)

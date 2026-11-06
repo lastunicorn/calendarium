@@ -34,16 +34,6 @@ const SPINE_OPTIONS = optionsFrom(SPINES, {
 	top: 'Top (flip calendar)',
 })
 
-const SPINE_DESCRIPTION = [
-	'The bound edge of the first page.',
-	'Even pages swap the left and right margins with a left spine, the top and bottom ones with a top spine.',
-]
-
-const BOOKLET_DESCRIPTION = [
-	'Prints two pages on each side of a paper twice the paper size (A3 for A4 pages): portrait pages side by side, landscape ones one above the other, in the order that makes a booklet. Blank pages at the end complete the last sheet.',
-	'In the print dialog, choose the larger paper and double-sided printing, flipping on the short edge; then stack the sheets in order and fold them in half together.',
-]
-
 /**
  * The sheet of paper: size, orientation and margins, optionally mirrored around a spine on even
  * pages, and whether the pages make a booklet.
@@ -100,13 +90,20 @@ export function PageSection({ options, defaults, onUpdate }: OptionsSectionProps
 			/>
 			<CheckboxField
 				label="Print as a booklet"
-				description={BOOKLET_DESCRIPTION}
+				description={[
+					'Prints two pages per side, on both sides of a paper. When all are stacked together and folded in half, they are in the correct order.',
+					'A paper twice the desired size is required (A3 for A4 pages). Portrait pages are printed side by side, landscape ones one above the other.',
+					'Blank pages at the end complete the last sheet.',
+				]}
 				checked={page.booklet}
 				onChange={handleBookletChange}
 			/>
 			<CheckboxField
 				label="Use equal margins"
-				description="Every side takes the top margin: editing it sets them all. Not available with mirror margins."
+				description={[
+					'Every side takes the same margin (the top value).',
+					'Not available with mirror margins.',
+				]}
 				checked={page.equalMargins}
 				disabled={page.mirrorMargins}
 				onChange={handleEqualMarginsChange}
@@ -128,7 +125,10 @@ export function PageSection({ options, defaults, onUpdate }: OptionsSectionProps
 			{page.mirrorMargins && !page.booklet && (
 				<RadioField
 					label="Spine"
-					description={SPINE_DESCRIPTION}
+					description={[
+						'Specifies on which edge the pages are bound.',
+						'Even pages have their margins swapped according to the spine position.',
+					]}
 					value={page.spine}
 					options={SPINE_OPTIONS}
 					onChange={handleSpineChange}
