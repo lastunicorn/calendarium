@@ -6,7 +6,7 @@ The whole year on one sheet: the title, or else the year, above the 12 months as
 
 `planYearPage` (`pages.ts`) plans one `YearPage`:
 
-- the heading: the `title`, or the year (`yearName`) when the title is empty; the `subtitle` below it, hidden when empty;
+- the heading: the `title`, or the year (`yearName`) when the title is empty, in `headingFontSize` pt; the `subtitle` below it, hidden when empty;
 - the 12 months, each a `MiniMonthPlan` spread into `MiniMonth`. Every month has 6 rows, so they line up, and the days with an event are circled (`eventDays`, by `monthEventDays`);
 - when the year has events (`eventsOfYear`), an `eventList` page: headed by `YEAR_PAGE_MESSAGES[locale].events` above the year page's heading, listing each event with its `dayMonthName`, drawn by `ui/EventList`.
 
@@ -16,7 +16,7 @@ The whole year on one sheet: the title, or else the year, above the 12 months as
 
 | Sidebar section | Fields                                                                                                                                                                                     |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Header          | `title`, `subtitle` (`ui/HeaderSection`)                                                                                                                                                   |
+| Header          | `title`, `subtitle`, `headingFontSize` (`isHeadingFontSize`, the shared `HeadingFontSizeField`) (`ui/HeaderSection`)                                                                       |
 | Content         | `monthSize`, then `weekdayFormat` (abbreviated only, `MONTH_GRID_WEEKDAY_FORMATS`), `highlightWeekends`, `showWeekNumbers` (`ui/YearContentSection`, through the shared `MonthGridFields`) |
 
 `monthSize`, one of `MONTH_SIZES` (`small`, `medium` by default, `large`), sizes the months' text: each month fills its share of the page whatever its size. The component sets the size's class (`ui/YearPerPageLayout.module.css`) on the grid, defining the `MiniMonth`'s text variables (`--mini-month-name-size`, …), `medium` being its own size.

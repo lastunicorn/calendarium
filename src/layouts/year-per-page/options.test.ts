@@ -18,6 +18,7 @@ describe('year-per-page options', () => {
 			...grid,
 			title: 'Family',
 			subtitle: 'Birthdays',
+			headingFontSize: 40,
 			monthSize: 'large',
 		}
 		const ignored: string[] = []
@@ -33,6 +34,7 @@ describe('year-per-page options', () => {
 			showWeekNumbers: 'yes',
 			title: 7,
 			subtitle: null,
+			headingFontSize: 8,
 			monthSize: 'huge',
 		}
 		expect(parseOptions(YEAR_PER_PAGE_SPEC, options, ignored)).toEqual(

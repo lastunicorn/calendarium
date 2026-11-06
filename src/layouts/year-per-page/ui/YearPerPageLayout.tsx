@@ -16,14 +16,21 @@ interface YearPerPageLayoutProps {
  * the year's events on a page of their own when it has any.
  */
 export function YearPerPageLayout({ options }: YearPerPageLayoutProps) {
-	const { heading, subheading, months, eventList } = usePagePlan(planYearPage, options)
+	const { heading, subheading, headingFontSize, months, eventList } = usePagePlan(
+		planYearPage,
+		options,
+	)
 	const { page } = options
 
 	return (
 		<>
 			<Page setup={page}>
 				<div className={styles.layout}>
-					<CalendarHeader heading={heading} subheading={subheading} />
+					<CalendarHeader
+						heading={heading}
+						subheading={subheading}
+						headingFontSize={headingFontSize}
+					/>
 
 					<div
 						className={`${styles.grid} ${styles[page.orientation]} ${styles[options.monthSize]}`}

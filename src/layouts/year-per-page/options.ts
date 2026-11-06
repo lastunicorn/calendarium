@@ -1,5 +1,6 @@
 import { isString, oneOf } from '../../core/validation'
 import { COMMON_VALIDATORS, type CommonOptions, commonDefaults, normalizeCommon } from '../common'
+import { isHeadingFontSize } from '../heading'
 import type { LayoutSpec } from '../LayoutSpec'
 import { MONTH_GRID_VALIDATORS, type MonthGridOptions, monthGridDefaults } from '../monthGrid'
 
@@ -12,6 +13,8 @@ export interface YearPerPageOptions extends CommonOptions, MonthGridOptions {
 	title: string
 	/** Shown below the title; hidden when empty. */
 	subtitle: string
+	/** The heading's font size, in pt; the subtitle keeps its own. */
+	headingFontSize: number
 	monthSize: MonthSize
 }
 
@@ -22,6 +25,7 @@ export const YEAR_PER_PAGE_SPEC: LayoutSpec<YearPerPageOptions> = {
 		...monthGridDefaults(),
 		title: '',
 		subtitle: '',
+		headingFontSize: 32,
 		monthSize: 'medium',
 	}),
 	validators: {
@@ -29,6 +33,7 @@ export const YEAR_PER_PAGE_SPEC: LayoutSpec<YearPerPageOptions> = {
 		...MONTH_GRID_VALIDATORS,
 		title: isString,
 		subtitle: isString,
+		headingFontSize: isHeadingFontSize,
 		monthSize: oneOf(MONTH_SIZES),
 	},
 	normalize: normalizeCommon,

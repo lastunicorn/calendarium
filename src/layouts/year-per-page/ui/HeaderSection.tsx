@@ -2,10 +2,11 @@ import { yearName } from '../../../core/locale'
 import type { YearPerPageOptions } from '../options'
 import { HeaderIcon } from '../../../ui/components/icons'
 import { TextField } from '../../../ui/fields/TextField'
+import { HeadingFontSizeField } from '../../../ui/sidebar/HeadingFontSizeField'
 import { defaultFields } from '../../../ui/sidebar/defaultFields'
 import { type OptionsSectionProps, Section } from '../../../ui/sidebar/Section'
 
-/** The heading printed above the calendar. */
+/** The heading printed above the calendar, and its size. */
 export function HeaderSection({
 	options,
 	defaults,
@@ -19,8 +20,12 @@ export function HeaderSection({
 		onUpdate({ subtitle })
 	}
 
+	function handleHeadingFontSizeChange(headingFontSize: number) {
+		onUpdate({ headingFontSize })
+	}
+
 	function handleReset() {
-		onUpdate(defaultFields(defaults, ['title', 'subtitle']))
+		onUpdate(defaultFields(defaults, ['title', 'subtitle', 'headingFontSize']))
 	}
 
 	return (
@@ -32,6 +37,10 @@ export function HeaderSection({
 				onChange={handleTitleChange}
 			/>
 			<TextField label="Subtitle" value={options.subtitle} onChange={handleSubtitleChange} />
+			<HeadingFontSizeField
+				value={options.headingFontSize}
+				onChange={handleHeadingFontSizeChange}
+			/>
 		</Section>
 	)
 }

@@ -30,6 +30,8 @@ export interface YearPage {
 	heading: string
 	/** The subtitle; hidden when empty. */
 	subheading: string
+	/** The heading's font size, in pt (`headingFontSize`); the event list's keeps its own. */
+	headingFontSize: number
 	/** The 12 months, each 6 rows so they line up, their days with an event circled. */
 	months: MiniMonthPlan[]
 	/** The list of the year's events on a page of its own; none when the year has none. */
@@ -47,6 +49,7 @@ export function planYearPage(options: YearPerPageOptions, model: CalendarModel):
 	return {
 		heading,
 		subheading: options.subtitle,
+		headingFontSize: options.headingFontSize,
 		months: model.months.map((month) => ({
 			month,
 			name: model.monthNames[month.month],

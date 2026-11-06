@@ -26,6 +26,11 @@ describe('planYearPage', () => {
 		expect(plan({ title: '', locale: 'ja-JP' }).heading).toBe('2026年')
 	})
 
+	it('sets the heading in 32 pt unless told another size', () => {
+		expect(plan().headingFontSize).toBe(32)
+		expect(plan({ headingFontSize: 20 }).headingFontSize).toBe(20)
+	})
+
 	it('draws the 12 months, each 6 rows so they line up', () => {
 		const { months } = plan()
 		expect(months.map((month) => month.name)).toEqual([
