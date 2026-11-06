@@ -41,6 +41,7 @@ export function MonthPerPageLayout({ options }: MonthPerPageLayoutProps) {
 								subheading={page.subheading}
 								size="compact"
 								align={page.headingAlign}
+								headingFontSize={page.headingFontSize}
 							/>
 						</div>
 						{page.nextMonth && (

@@ -17,6 +17,7 @@ describe('month-per-page options', () => {
 			...grid,
 			title: 'Office',
 			monthHeadingAlignment: 'left',
+			headingFontSize: 32,
 			showAdjacentMonthDays: false,
 			showGridLines: false,
 			weekdayFontSize: 11,
@@ -43,6 +44,7 @@ describe('month-per-page options', () => {
 			highlightWeekends: true,
 			showWeekNumbers: 'yes',
 			monthHeadingAlignment: 'auto',
+			headingFontSize: 60,
 			showGridLines: 1,
 		}
 		expect(parseOptions(MONTH_PER_PAGE_SPEC, options, ignored)).toEqual(

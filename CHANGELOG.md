@@ -7,6 +7,7 @@ The features each release brought, newest first. Versions follow the app version
 ### Added
 
 - Week and day layouts: the mini calendars circle the days with an event, as the year layout's months do, unless "Show events" is unchecked in the Mini calendar section.
+- Month layout: a "Title size (pt)" option in the Header section, as the week and day layouts have.
 
 ### Changed
 

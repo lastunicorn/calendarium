@@ -49,6 +49,8 @@ export interface MonthPage {
 	subheading: string
 	/** Where the heading sits above the grid. */
 	headingAlign: HeadingAlign
+	/** The heading's font size, in pt (`headingFontSize`). */
+	headingFontSize: number
 	grid: MonthGridPlan
 	/** The month before, drawn small at the top left; left out when hidden. */
 	previousMonth?: MiniMonthPlan
@@ -89,6 +91,7 @@ export function planMonthPages(options: MonthPerPageOptions, model: CalendarMode
 			heading: title || monthYear,
 			subheading: title ? monthYear : '',
 			headingAlign: options.monthHeadingAlignment,
+			headingFontSize: options.headingFontSize,
 			grid: {
 				weeks: visibleWeeks(month).map((week) =>
 					week.map((day) => ({

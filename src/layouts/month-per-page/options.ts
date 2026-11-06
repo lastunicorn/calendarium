@@ -2,7 +2,7 @@ import { WEEKDAY_FORMATS } from '../../core/locale'
 import { margins } from '../../core/paper'
 import { isBoolean, isString, oneOf, type Validators } from '../../core/validation'
 import { COMMON_VALIDATORS, type CommonOptions, commonDefaults, normalizeCommon } from '../common'
-import { HEADING_ALIGNS, type HeadingAlign } from '../heading'
+import { HEADING_ALIGNS, type HeadingAlign, isHeadingFontSize } from '../heading'
 import type { LayoutSpec } from '../LayoutSpec'
 import {
 	MINI_MONTH_SIZES,
@@ -90,6 +90,8 @@ export interface MonthPerPageOptions extends CommonOptions, MonthGridOptions {
 	 * `headingAlignment` it has no `auto`.
 	 */
 	monthHeadingAlignment: HeadingAlign
+	/** The heading's font size, in pt; the subheading keeps its own. */
+	headingFontSize: number
 	/** Whether the grid's grayed days of the previous and next month show their numbers. */
 	showAdjacentMonthDays: boolean
 	/** Whether the grid's cells are ruled, or only their contents are drawn. */
@@ -114,6 +116,7 @@ export const MONTH_PER_PAGE_SPEC: LayoutSpec<MonthPerPageOptions> = {
 			title: '',
 			highlightWeekends: 'columns',
 			monthHeadingAlignment: 'center',
+			headingFontSize: 24,
 			showAdjacentMonthDays: false,
 			showGridLines: true,
 			weekdayFontSize: 9,
@@ -131,6 +134,7 @@ export const MONTH_PER_PAGE_SPEC: LayoutSpec<MonthPerPageOptions> = {
 		weekdayFormat: oneOf(WEEKDAY_FORMATS),
 		title: isString,
 		monthHeadingAlignment: oneOf(HEADING_ALIGNS),
+		headingFontSize: isHeadingFontSize,
 		showAdjacentMonthDays: isBoolean,
 		showGridLines: isBoolean,
 		weekdayFontSize: isWeekdayFontSize,

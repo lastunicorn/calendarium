@@ -40,6 +40,11 @@ describe('planMonthPages', () => {
 		expect(plan(2026, { monthHeadingAlignment: 'right' })[3].headingAlign).toBe('right')
 	})
 
+	it('sets the heading in 24 pt unless told another size', () => {
+		expect(plan(2026)[0].headingFontSize).toBe(24)
+		expect(plan(2026, { headingFontSize: 36 })[5].headingFontSize).toBe(36)
+	})
+
 	it('draws only the rows holding a day of the month', () => {
 		// February 2021 runs from Monday the 1st to Sunday the 28th; May 2021 spans six Monday weeks.
 		const pages = plan(2021)

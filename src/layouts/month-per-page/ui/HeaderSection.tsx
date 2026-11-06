@@ -3,6 +3,7 @@ import type { MonthPerPageOptions } from '../options'
 import { HeaderIcon } from '../../../ui/components/icons'
 import { RadioField } from '../../../ui/fields/RadioField'
 import { TextField } from '../../../ui/fields/TextField'
+import { HeadingFontSizeField } from '../../../ui/sidebar/HeadingFontSizeField'
 import { HEADING_ALIGN_OPTIONS } from '../../../ui/sidebar/fieldOptions'
 import { defaultFields } from '../../../ui/sidebar/defaultFields'
 import { type OptionsSectionProps, Section } from '../../../ui/sidebar/Section'
@@ -12,7 +13,7 @@ const TITLE_DESCRIPTION = [
 	'When empty, the month and year are the title.',
 ]
 
-/** The title above every month, and where the heading sits above its grid. */
+/** The title above every month, and where and how large the heading sits above its grid. */
 export function HeaderSection({
 	options,
 	defaults,
@@ -26,8 +27,12 @@ export function HeaderSection({
 		onUpdate({ monthHeadingAlignment })
 	}
 
+	function handleHeadingFontSizeChange(headingFontSize: number) {
+		onUpdate({ headingFontSize })
+	}
+
 	function handleReset() {
-		onUpdate(defaultFields(defaults, ['title', 'monthHeadingAlignment']))
+		onUpdate(defaultFields(defaults, ['title', 'monthHeadingAlignment', 'headingFontSize']))
 	}
 
 	return (
@@ -43,6 +48,10 @@ export function HeaderSection({
 				value={options.monthHeadingAlignment}
 				options={HEADING_ALIGN_OPTIONS}
 				onChange={handleMonthHeadingAlignmentChange}
+			/>
+			<HeadingFontSizeField
+				value={options.headingFontSize}
+				onChange={handleHeadingFontSizeChange}
 			/>
 		</Section>
 	)
