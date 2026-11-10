@@ -90,7 +90,7 @@ describe('planDayPages', () => {
 	})
 
 	describe('fills', () => {
-		const hours = { dayPageLines: 'hours', hourFormat: '24h' } as const
+		const hours = { dayPageFill: 'hours', hourFormat: '24h' } as const
 		// The default genkō yōshi on A4 portrait with 12 mm margins.
 		const genkoYoshi = {
 			kind: 'genkoYoshi',
@@ -125,12 +125,12 @@ describe('planDayPages', () => {
 
 		it('rule as many 8 mm lines as fill the page inside its margins, on every sheet', () => {
 			// A4 portrait with 12 mm margins: 273 mm high, so 35 lines; A5 landscape: 124 mm, 16.
-			expect(plan(2026, { dayPageLines: 'ruled' })[0].fills).toEqual([
+			expect(plan(2026, { dayPageFill: 'ruled' })[0].fills).toEqual([
 				{ kind: 'ruled', lines: 35, spacing: 8 },
 			])
 			const a5 = { ...defaultLayoutOptions('day-per-page').page }
 			Object.assign(a5, { paperSize: 'a5', orientation: 'landscape' })
-			const fills = plan(2026, { dayPageLines: 'ruled', twoPagesPerDay: true, page: a5 })[0]
+			const fills = plan(2026, { dayPageFill: 'ruled', twoPagesPerDay: true, page: a5 })[0]
 				.fills
 			expect(fills).toEqual([
 				{ kind: 'ruled', lines: 16, spacing: 8 },
@@ -140,14 +140,14 @@ describe('planDayPages', () => {
 
 		it('rule the lines as far apart as asked', () => {
 			// 273 mm high: 46 lines 6 mm apart, the last one clipped.
-			expect(plan(2026, { dayPageLines: 'ruled', ruledLineSpacing: 6 })[0].fills).toEqual([
+			expect(plan(2026, { dayPageFill: 'ruled', ruledLineSpacing: 6 })[0].fills).toEqual([
 				{ kind: 'ruled', lines: 46, spacing: 6 },
 			])
 		})
 
 		it('fill the page inside its margins with 5 mm squares, on every sheet', () => {
 			// A4 portrait with 12 mm margins: 186 by 273 mm, so 37 whole columns and 54 rows.
-			expect(plan(2026, { dayPageLines: 'squares', twoPagesPerDay: true })[0].fills).toEqual([
+			expect(plan(2026, { dayPageFill: 'squares', twoPagesPerDay: true })[0].fills).toEqual([
 				{ kind: 'squares', rows: 54, columns: 37, size: 5, align: 'center' },
 				{ kind: 'squares', rows: 54, columns: 37, size: 5, align: 'center' },
 			])
@@ -155,9 +155,9 @@ describe('planDayPages', () => {
 
 		it('dot the corners of squares as large and as aligned as asked, on every sheet', () => {
 			const fills = plan(2026, {
-				dayPageLines: 'dots',
+				dayPageFill: 'dots',
 				squareSize: 4,
-				squareGridAlignment: 'right',
+				fillAlignment: 'right',
 				twoPagesPerDay: true,
 			})[0].fills
 			expect(fills).toEqual([
@@ -168,40 +168,39 @@ describe('planDayPages', () => {
 
 		it('fill the page inside its margins with columns of 12 mm genkō yōshi squares, on every sheet', () => {
 			// 186 by 273 mm: 11 columns of 12 mm squares 4.8 mm apart take 180 mm, 22 rows 264 mm.
-			const fills = plan(2026, { dayPageLines: 'genkoYoshi', twoPagesPerDay: true })[0].fills
+			const fills = plan(2026, { dayPageFill: 'genkoYoshi', twoPagesPerDay: true })[0].fills
 			expect(fills).toEqual([genkoYoshi, genkoYoshi])
 		})
 
 		it('set the genkō yōshi columns across the page as aligned', () => {
 			const fills = plan(2026, {
-				dayPageLines: 'genkoYoshi',
-				squareGridAlignment: 'right',
+				dayPageFill: 'genkoYoshi',
+				fillAlignment: 'right',
 			})[0].fills
 			expect(fills).toEqual([{ ...genkoYoshi, align: 'right' }])
 		})
 
 		it('halve the genkō yōshi squares with guides, when asked', () => {
-			const [fill] = plan(2026, { dayPageLines: 'genkoYoshi', genkoYoshiGuides: true })[0]
+			const [fill] = plan(2026, { dayPageFill: 'genkoYoshi', genkoYoshiGuides: true })[0]
 				.fills
 			expect(fill).toMatchObject({ kind: 'genkoYoshi', guides: true })
 		})
 
 		it('leave every sheet blank under the header', () => {
-			const [day] = plan(2026, { dayPageLines: 'blank', twoPagesPerDay: true })
+			const [day] = plan(2026, { dayPageFill: 'blank', twoPagesPerDay: true })
 			expect(day.fills).toEqual([{ kind: 'blank' }, { kind: 'blank' }])
 			expect(day.heading).toBe('1 January 2026')
 		})
 
 		it('draw the squares as large as asked', () => {
 			// 186 by 273 mm: 23 whole columns and 34 rows of 8 mm squares.
-			expect(plan(2026, { dayPageLines: 'squares', squareSize: 8 })[0].fills).toEqual([
+			expect(plan(2026, { dayPageFill: 'squares', squareSize: 8 })[0].fills).toEqual([
 				{ kind: 'squares', rows: 34, columns: 23, size: 8, align: 'center' },
 			])
 		})
 
 		it('set the squares across the page as aligned', () => {
-			const fills = plan(2026, { dayPageLines: 'squares', squareGridAlignment: 'left' })[0]
-				.fills
+			const fills = plan(2026, { dayPageFill: 'squares', fillAlignment: 'left' })[0].fills
 			expect(fills).toEqual([
 				{ kind: 'squares', rows: 54, columns: 37, size: 5, align: 'left' },
 			])

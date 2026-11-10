@@ -1,6 +1,6 @@
 import { type CSSProperties, memo, useId } from 'react'
 import type { PageSetup } from '../../../core/paper'
-import type { SquareGridAlignment } from '../options'
+import type { FillAlignment } from '../options'
 import type { DayFill, DayPages } from '../pages'
 import { CalendarHeader } from '../../../ui/layouts/CalendarHeader'
 import styles from './DayPage.module.css'
@@ -13,7 +13,7 @@ import { Page } from '../../../ui/layouts/Page'
 type SquaresStyle = CSSProperties & Record<'--square-size', string>
 
 /** The class setting the grid of squares across the page, per alignment. */
-const SQUARE_GRID_ALIGN_CLASSES: Record<SquareGridAlignment, string> = {
+const FILL_ALIGN_CLASSES: Record<FillAlignment, string> = {
 	left: styles.alignLeft,
 	center: styles.alignCenter,
 	right: styles.alignRight,
@@ -87,10 +87,7 @@ function DayLines({ fill }: DayLinesProps) {
 		// whole squares that fit, so none is drawn in part.
 		const style: SquaresStyle = { '--square-size': `${fill.size}mm` }
 		return (
-			<div
-				className={`${styles.squares} ${SQUARE_GRID_ALIGN_CLASSES[fill.align]}`}
-				style={style}
-			>
+			<div className={`${styles.squares} ${FILL_ALIGN_CLASSES[fill.align]}`} style={style}>
 				<div className={styles.squareGrid}>
 					<div className={styles.squareRows}>
 						{Array.from({ length: fill.rows }, (_, index) => (
@@ -112,10 +109,7 @@ function DayLines({ fill }: DayLinesProps) {
 			'--dot-size': `${DOT_SIZE}mm`,
 		}
 		return (
-			<div
-				className={`${styles.squares} ${SQUARE_GRID_ALIGN_CLASSES[fill.align]}`}
-				style={style}
-			>
+			<div className={`${styles.squares} ${FILL_ALIGN_CLASSES[fill.align]}`} style={style}>
 				<DotGrid size={fill.size} />
 			</div>
 		)

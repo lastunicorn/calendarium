@@ -1,10 +1,10 @@
 import type { CSSProperties } from 'react'
-import type { SquareGridAlignment } from '../options'
+import type { FillAlignment } from '../options'
 import type { GenkoYoshiFill } from '../pages'
 import styles from './GenkoYoshi.module.css'
 
 /** The class setting the grid across the page, per alignment. */
-const ALIGN_CLASSES: Record<SquareGridAlignment, string> = {
+const ALIGN_CLASSES: Record<FillAlignment, string> = {
 	left: styles.alignLeft,
 	center: styles.alignCenter,
 	right: styles.alignRight,

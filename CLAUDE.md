@@ -74,7 +74,7 @@ Use these words in code, comments and docs, each for one thing. The terms only o
 | Month grid          | A month as rows of weeks under the weekday names                                                | `MonthGridOptions`, `MonthGrid`, `MiniMonth`                     | Content                |
 | Event               | A named day from the user's list, on one date or every year (`0000`)                            | `CalendarEvent`, `CommonOptions.events`, `eventNames`            | Events                 |
 | Mini month          | A small month drawn for context, marking a day or framing a week                                | `MiniMonth`, `miniMonth`                                         | Mini calendar          |
-| Schedule            | One row per hour, from the first hour to the last                                               | `HourSchedule`, `weekPageLines` / `dayPageLines` = `hours`       | Hours, Hourly schedule |
+| Schedule            | One row per hour, from the first hour to the last                                               | `HourSchedule`, `weekPageLines` / `dayPageFill` = `hours`        | Hours, Hourly schedule |
 | Weekend highlight   | The weekend color on days, or on whole columns                                                  | `WeekendHighlight`, `highlightWeekendDays`                       | Highlight weekends     |
 | Normalize           | Apply a layout's cross-field rules to stored values                                             | `LayoutSpec.normalize`                                           | —                      |
 

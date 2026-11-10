@@ -1,14 +1,14 @@
 import {
-	DAY_PAGE_LINES,
-	type DayPageLines,
+	DAY_PAGE_FILLS,
+	type DayPageFill,
 	type DayPerPageOptions,
 	GENKO_YOSHI_SQUARE_SIZE,
 	MAX_RULED_LINE_SPACING,
 	MAX_SQUARE_SIZE,
 	MIN_RULED_LINE_SPACING,
 	MIN_SQUARE_SIZE,
-	SQUARE_GRID_ALIGNMENTS,
-	type SquareGridAlignment,
+	FILL_ALIGNMENTS,
+	type FillAlignment,
 } from '../options'
 import { ContentIcon } from '../../../ui/components/icons'
 import { CheckboxField } from '../../../ui/fields/CheckboxField'
@@ -19,7 +19,7 @@ import { ScheduleFields } from '../../../ui/sidebar/ScheduleFields'
 import { defaultFields } from '../../../ui/sidebar/defaultFields'
 import { type OptionsSectionProps, Section } from '../../../ui/sidebar/Section'
 
-const DAY_PAGE_LINES_OPTIONS = optionsFrom(DAY_PAGE_LINES, {
+const DAY_PAGE_FILL_OPTIONS = optionsFrom(DAY_PAGE_FILLS, {
 	hours: 'Hourly schedule',
 	ruled: 'Ruled lines',
 	squares: 'Squares',
@@ -28,7 +28,7 @@ const DAY_PAGE_LINES_OPTIONS = optionsFrom(DAY_PAGE_LINES, {
 	blank: 'Blank',
 })
 
-const SQUARE_GRID_ALIGNMENT_OPTIONS = optionsFrom(SQUARE_GRID_ALIGNMENTS, {
+const FILL_ALIGNMENT_OPTIONS = optionsFrom(FILL_ALIGNMENTS, {
 	left: 'Left',
 	center: 'Center',
 	right: 'Right',
@@ -44,8 +44,8 @@ export function DayContentSection({
 	defaults,
 	onUpdate,
 }: OptionsSectionProps<DayPerPageOptions>) {
-	function handleDayPageLinesChange(dayPageLines: DayPageLines) {
-		onUpdate({ dayPageLines })
+	function handleDayPageFillChange(dayPageFill: DayPageFill) {
+		onUpdate({ dayPageFill })
 	}
 
 	function handleRuledLineSpacingChange(ruledLineSpacing: number) {
@@ -56,8 +56,8 @@ export function DayContentSection({
 		onUpdate({ squareSize })
 	}
 
-	function handleSquareGridAlignmentChange(squareGridAlignment: SquareGridAlignment) {
-		onUpdate({ squareGridAlignment })
+	function handleFillAlignmentChange(fillAlignment: FillAlignment) {
+		onUpdate({ fillAlignment })
 	}
 
 	function handleGenkoYoshiGuidesChange(genkoYoshiGuides: boolean) {
@@ -72,13 +72,13 @@ export function DayContentSection({
 		onUpdate(
 			defaultFields(defaults, [
 				'twoPagesPerDay',
-				'dayPageLines',
+				'dayPageFill',
 				'hourFormat',
 				'firstHour',
 				'lastHour',
 				'ruledLineSpacing',
 				'squareSize',
-				'squareGridAlignment',
+				'fillAlignment',
 				'genkoYoshiGuides',
 			]),
 		)
@@ -98,14 +98,14 @@ export function DayContentSection({
 			<RadioField
 				label="Fill"
 				description={`Genkō yōshi is Japanese manuscript paper: columns of ${GENKO_YOSHI_SQUARE_SIZE} mm squares, one for each character, with room between them for furigana.`}
-				value={options.dayPageLines}
-				options={DAY_PAGE_LINES_OPTIONS}
-				onChange={handleDayPageLinesChange}
+				value={options.dayPageFill}
+				options={DAY_PAGE_FILL_OPTIONS}
+				onChange={handleDayPageFillChange}
 			/>
-			{options.dayPageLines === 'hours' && (
+			{options.dayPageFill === 'hours' && (
 				<ScheduleFields options={options} onUpdate={onUpdate} />
 			)}
-			{options.dayPageLines === 'ruled' && (
+			{options.dayPageFill === 'ruled' && (
 				<NumberField
 					label="Line spacing (mm)"
 					description={`From ${MIN_RULED_LINE_SPACING} to ${MAX_RULED_LINE_SPACING} mm.`}
@@ -116,7 +116,7 @@ export function DayContentSection({
 					onChange={handleRuledLineSpacingChange}
 				/>
 			)}
-			{options.dayPageLines === 'squares' && (
+			{options.dayPageFill === 'squares' && (
 				<>
 					<NumberField
 						label="Square size (mm)"
@@ -130,13 +130,13 @@ export function DayContentSection({
 					<RadioField
 						label="Squares alignment"
 						description="Only whole squares are drawn; the space left goes on the other side, or on both."
-						value={options.squareGridAlignment}
-						options={SQUARE_GRID_ALIGNMENT_OPTIONS}
-						onChange={handleSquareGridAlignmentChange}
+						value={options.fillAlignment}
+						options={FILL_ALIGNMENT_OPTIONS}
+						onChange={handleFillAlignmentChange}
 					/>
 				</>
 			)}
-			{options.dayPageLines === 'dots' && (
+			{options.dayPageFill === 'dots' && (
 				<>
 					<NumberField
 						label="Dot spacing (mm)"
@@ -150,13 +150,13 @@ export function DayContentSection({
 					<RadioField
 						label="Dots alignment"
 						description="The dots mark the corners of whole squares only; the space left goes on the other side, or on both."
-						value={options.squareGridAlignment}
-						options={SQUARE_GRID_ALIGNMENT_OPTIONS}
-						onChange={handleSquareGridAlignmentChange}
+						value={options.fillAlignment}
+						options={FILL_ALIGNMENT_OPTIONS}
+						onChange={handleFillAlignmentChange}
 					/>
 				</>
 			)}
-			{options.dayPageLines === 'genkoYoshi' && (
+			{options.dayPageFill === 'genkoYoshi' && (
 				<>
 					<CheckboxField
 						label="Guide lines"
@@ -167,9 +167,9 @@ export function DayContentSection({
 					<RadioField
 						label="Columns alignment"
 						description="Only whole columns are drawn; the space left goes on the other side, or on both."
-						value={options.squareGridAlignment}
-						options={SQUARE_GRID_ALIGNMENT_OPTIONS}
-						onChange={handleSquareGridAlignmentChange}
+						value={options.fillAlignment}
+						options={FILL_ALIGNMENT_OPTIONS}
+						onChange={handleFillAlignmentChange}
 					/>
 				</>
 			)}

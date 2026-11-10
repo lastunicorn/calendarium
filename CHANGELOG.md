@@ -4,6 +4,8 @@ The features each release brought, newest first. Versions follow the app version
 
 ## Unreleased
 
+Settings and files from 5.x are migrated: the day layout's fill and its alignment keep their values under their new names.
+
 ### Added
 
 - Week and day layouts: the mini calendars circle the days with an event, as the year layout's months do, unless "Show events" is unchecked in the Mini calendar section.

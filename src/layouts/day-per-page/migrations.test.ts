@@ -5,6 +5,7 @@ import { DAY_PER_PAGE_SPEC } from './options'
 
 describe('day-per-page migrations', () => {
 	const from3 = DAY_PER_PAGE_MIGRATIONS[3]!
+	const from5 = DAY_PER_PAGE_MIGRATIONS[5]!
 
 	it('move the 3 month grid options under the mini month', () => {
 		const options = {
@@ -38,6 +39,15 @@ describe('day-per-page migrations', () => {
 				highlightWeekends: 'columns',
 				show: false,
 			},
+		})
+	})
+
+	it('rename the 5 fill and its alignment', () => {
+		const options = { year: 2030, dayPageLines: 'dots', squareGridAlignment: 'right' }
+		expect(from5(options)).toEqual({ year: 2030, dayPageFill: 'dots', fillAlignment: 'right' })
+		expect(parseOptions(DAY_PER_PAGE_SPEC, from5(options))).toMatchObject({
+			dayPageFill: 'dots',
+			fillAlignment: 'right',
 		})
 	})
 })

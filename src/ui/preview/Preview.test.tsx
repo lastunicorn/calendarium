@@ -85,7 +85,7 @@ describe('Preview', () => {
 	// pages down.
 	const facingPages = [
 		['week-per-page', { twoPagesPerWeek: true, weekPageLines: 'none' }],
-		['day-per-page', { twoPagesPerDay: true, dayPageLines: 'blank' }],
+		['day-per-page', { twoPagesPerDay: true, dayPageFill: 'blank' }],
 	] as const
 
 	it.each(facingPages)('shows the two pages of %s as facing spreads', (layout, changes) => {

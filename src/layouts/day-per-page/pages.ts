@@ -15,7 +15,7 @@ import {
 	type DayPerPageOptions,
 	GENKO_YOSHI_COLUMN_GAP_PERCENT,
 	GENKO_YOSHI_SQUARE_SIZE,
-	type SquareGridAlignment,
+	type FillAlignment,
 } from './options'
 
 /** The dot between the subheading's parts, with en spaces either side for more room than plain ones. */
@@ -34,7 +34,7 @@ export interface GenkoYoshiFill {
 	size: number
 	gap: number
 	guides: boolean
-	align: SquareGridAlignment
+	align: FillAlignment
 }
 
 /** What fills a day's sheet under its header, or all of its second sheet. */
@@ -52,13 +52,13 @@ export type DayFill =
 			rows: number
 			columns: number
 			size: number
-			align: SquareGridAlignment
+			align: FillAlignment
 	  }
 	/**
 	 * Dots at the corners of squares `size` mm a side, as many whole squares as fit in the area
 	 * left (the header's height being known only once drawn), set across it per `align`.
 	 */
-	| { kind: 'dots'; size: number; align: SquareGridAlignment }
+	| { kind: 'dots'; size: number; align: FillAlignment }
 	| GenkoYoshiFill
 	/** Nothing: the page is left blank under its header. */
 	| { kind: 'blank' }
@@ -95,25 +95,25 @@ export interface DayPages {
  * margins (the header takes some of that height, and the ruled area clips the lines that don't
  * fit); over two sheets they continue. Squares, `squareSize` a side, fill it with as many whole squares
  * as fit across and down, the header's height being known only once drawn, set across the page per
- * `squareGridAlignment`; dots mark those squares' corners. Genkō yōshi fills it likewise with
+ * `fillAlignment`; dots mark those squares' corners. Genkō yōshi fills it likewise with
  * columns of its own squares, `GENKO_YOSHI_SQUARE_SIZE` a side, apart by
- * `GENKO_YOSHI_COLUMN_GAP_PERCENT` of that side, set across the page per `squareGridAlignment`, with
+ * `GENKO_YOSHI_COLUMN_GAP_PERCENT` of that side, set across the page per `fillAlignment`, with
  * dotted guides halving its squares per `genkoYoshiGuides`. A blank fill leaves every sheet empty. The hours are split in half over two sheets, the second,
  * having no header, taking the extra hour of an odd count.
  */
 function planFills(options: DayPerPageOptions): DayFill[] {
 	const sheets = options.twoPagesPerDay ? 2 : 1
-	if (options.dayPageLines === 'ruled') {
+	if (options.dayPageFill === 'ruled') {
 		const spacing = options.ruledLineSpacing
 		const lines = Math.ceil(contentBox(options.page).height / spacing)
 		const fill: DayFill = { kind: 'ruled', lines, spacing }
 		return Array.from({ length: sheets }, () => fill)
 	}
-	if (options.dayPageLines === 'blank') {
+	if (options.dayPageFill === 'blank') {
 		const fill: DayFill = { kind: 'blank' }
 		return Array.from({ length: sheets }, () => fill)
 	}
-	if (options.dayPageLines === 'squares') {
+	if (options.dayPageFill === 'squares') {
 		const { width, height } = contentBox(options.page)
 		const size = options.squareSize
 		const fill: DayFill = {
@@ -121,19 +121,19 @@ function planFills(options: DayPerPageOptions): DayFill[] {
 			rows: Math.floor(height / size),
 			columns: Math.floor(width / size),
 			size,
-			align: options.squareGridAlignment,
+			align: options.fillAlignment,
 		}
 		return Array.from({ length: sheets }, () => fill)
 	}
-	if (options.dayPageLines === 'dots') {
+	if (options.dayPageFill === 'dots') {
 		const fill: DayFill = {
 			kind: 'dots',
 			size: options.squareSize,
-			align: options.squareGridAlignment,
+			align: options.fillAlignment,
 		}
 		return Array.from({ length: sheets }, () => fill)
 	}
-	if (options.dayPageLines === 'genkoYoshi') {
+	if (options.dayPageFill === 'genkoYoshi') {
 		const { width, height } = contentBox(options.page)
 		const size = GENKO_YOSHI_SQUARE_SIZE
 		const gap = (size * GENKO_YOSHI_COLUMN_GAP_PERCENT) / 100
@@ -145,7 +145,7 @@ function planFills(options: DayPerPageOptions): DayFill[] {
 			size,
 			gap,
 			guides: options.genkoYoshiGuides,
-			align: options.squareGridAlignment,
+			align: options.fillAlignment,
 		}
 		return Array.from({ length: sheets }, () => fill)
 	}

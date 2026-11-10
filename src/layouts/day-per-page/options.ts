@@ -12,8 +12,8 @@ import { type HourSchedule, orderHours, SCHEDULE_VALIDATORS, scheduleDefaults } 
  * grid of squares like a math notebook's, the dots at those squares' corners, genkō yōshi
  * (Japanese manuscript paper, a square for each character), or nothing, the page left blank.
  */
-export const DAY_PAGE_LINES = ['hours', 'ruled', 'squares', 'dots', 'genkoYoshi', 'blank'] as const
-export type DayPageLines = (typeof DAY_PAGE_LINES)[number]
+export const DAY_PAGE_FILLS = ['hours', 'ruled', 'squares', 'dots', 'genkoYoshi', 'blank'] as const
+export type DayPageFill = (typeof DAY_PAGE_FILLS)[number]
 
 /** What a `day-per-page` page's heading shows; the other one goes in the subheading. */
 export const DAY_PAGE_TITLES = ['weekday', 'date'] as const
@@ -60,8 +60,8 @@ export const GENKO_YOSHI_COLUMN_GAP_PERCENT = 40
  * Where the grid of squares sits across the page inside its margins, the space left by the whole
  * squares that fit going on the other side, or on both.
  */
-export const SQUARE_GRID_ALIGNMENTS = ['left', 'center', 'right'] as const
-export type SquareGridAlignment = (typeof SQUARE_GRID_ALIGNMENTS)[number]
+export const FILL_ALIGNMENTS = ['left', 'center', 'right'] as const
+export type FillAlignment = (typeof FILL_ALIGNMENTS)[number]
 
 export interface DayPerPageOptions extends CommonOptions, HourSchedule, PageFooter {
 	/** Whether the heading is the weekday ("Thursday") or the date ("1 January 2026"). */
@@ -69,22 +69,22 @@ export interface DayPerPageOptions extends CommonOptions, HourSchedule, PageFoot
 	/** The heading's font size, in pt; the subheading keeps its own. */
 	headingFontSize: number
 	/** What fills the page under its header; the schedule's hours come from `HourSchedule`. */
-	dayPageLines: DayPageLines
-	/** The distance between ruled lines, in mm; only used when `dayPageLines` is `ruled`. */
+	dayPageFill: DayPageFill
+	/** The distance between ruled lines, in mm; only used when `dayPageFill` is `ruled`. */
 	ruledLineSpacing: number
 	/**
 	 * The side of a square, in mm, the dots marking the corners of such squares; only used when
-	 * `dayPageLines` is `squares` or `dots`.
+	 * `dayPageFill` is `squares` or `dots`.
 	 */
 	squareSize: number
 	/**
 	 * Where the grid of squares, of dots or of genkō yōshi columns sits across the page; only used
-	 * when `dayPageLines` is `squares`, `dots` or `genkoYoshi`.
+	 * when `dayPageFill` is `squares`, `dots` or `genkoYoshi`.
 	 */
-	squareGridAlignment: SquareGridAlignment
+	fillAlignment: FillAlignment
 	/**
 	 * Whether dotted guide lines divide each genkō yōshi square in half, across and down; only used
-	 * when `dayPageLines` is `genkoYoshi`.
+	 * when `dayPageFill` is `genkoYoshi`.
 	 */
 	genkoYoshiGuides: boolean
 	/**
@@ -108,11 +108,11 @@ export const DAY_PER_PAGE_SPEC: LayoutSpec<DayPerPageOptions> = {
 		...commonDefaults(),
 		dayPageTitle: 'date',
 		headingFontSize: 24,
-		dayPageLines: 'hours',
+		dayPageFill: 'hours',
 		ruledLineSpacing: 8,
 		// A math notebook's squares.
 		squareSize: 5,
-		squareGridAlignment: 'center',
+		fillAlignment: 'center',
 		genkoYoshiGuides: false,
 		twoPagesPerDay: false,
 		...scheduleDefaults(),
@@ -126,10 +126,10 @@ export const DAY_PER_PAGE_SPEC: LayoutSpec<DayPerPageOptions> = {
 		...COMMON_VALIDATORS,
 		dayPageTitle: oneOf(DAY_PAGE_TITLES),
 		headingFontSize: isHeadingFontSize,
-		dayPageLines: oneOf(DAY_PAGE_LINES),
+		dayPageFill: oneOf(DAY_PAGE_FILLS),
 		ruledLineSpacing: isRuledLineSpacing,
 		squareSize: isSquareSize,
-		squareGridAlignment: oneOf(SQUARE_GRID_ALIGNMENTS),
+		fillAlignment: oneOf(FILL_ALIGNMENTS),
 		genkoYoshiGuides: isBoolean,
 		twoPagesPerDay: isBoolean,
 		...SCHEDULE_VALIDATORS,
