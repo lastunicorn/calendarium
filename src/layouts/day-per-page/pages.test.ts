@@ -163,9 +163,10 @@ describe('planDayPages', () => {
 				fillAlignment: 'right',
 				twoPagesPerDay: true,
 			})[0].fills
+			// 186 by 273 mm: the corners of 46 whole columns and 68 rows of 4 mm squares.
 			expect(fills).toEqual([
-				{ kind: 'dots', size: 4, align: 'right' },
-				{ kind: 'dots', size: 4, align: 'right' },
+				{ kind: 'dots', rows: 68, columns: 46, size: 4, align: 'right' },
+				{ kind: 'dots', rows: 68, columns: 46, size: 4, align: 'right' },
 			])
 		})
 

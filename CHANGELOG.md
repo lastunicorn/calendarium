@@ -18,6 +18,10 @@ Settings and files from 5.x are migrated: the day layout's fill and its alignmen
 - Week and day layouts: the footer and its height moved from the Content section to a Footer section of their own, with its own reset.
 - Clearer descriptions under several sidebar options (year, language, week start, events, footer, booklet, margins, spine).
 
+### Fixed
+
+- Day layout: the Dots fill prints sharp, round dots, where Chrome printed them as blurry gray squares.
+
 ## 5.0.0 — 2026-10-24
 
 Settings and files from 4.x are migrated: the week layout's automatic days direction becomes horizontal on portrait paper with one page per week, vertical otherwise, as it was drawn.

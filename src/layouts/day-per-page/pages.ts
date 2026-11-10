@@ -62,10 +62,16 @@ export type DayFill =
 			align: FillAlignment
 	  }
 	/**
-	 * Dots at the corners of squares `size` mm a side, as many whole squares as fit in the area
-	 * left (the header's height being known only once drawn), set across it per `align`.
+	 * Dots at the corners of squares `size` mm a side: of at most `rows` by `columns` squares, as
+	 * many as fit whole in the area left, the rest of it blank, set across it per `align`.
 	 */
-	| { kind: 'dots'; size: number; align: FillAlignment }
+	| {
+			kind: 'dots'
+			rows: number
+			columns: number
+			size: number
+			align: FillAlignment
+	  }
 	| GenkoYoshiFill
 	/** Nothing: the page is left blank under its header. */
 	| { kind: 'blank' }
@@ -121,22 +127,14 @@ function planFills(options: DayPerPageOptions): DayFill[] {
 		const fill: DayFill = { kind: 'blank' }
 		return Array.from({ length: sheets }, () => fill)
 	}
-	if (options.dayPageFill === 'squares') {
+	if (options.dayPageFill === 'squares' || options.dayPageFill === 'dots') {
 		const { width, height } = contentBox(options.page)
 		const size = options.squareSize
 		const fill: DayFill = {
-			kind: 'squares',
+			kind: options.dayPageFill,
 			rows: Math.floor(height / size),
 			columns: Math.floor(width / size),
 			size,
-			align: options.fillAlignment,
-		}
-		return Array.from({ length: sheets }, () => fill)
-	}
-	if (options.dayPageFill === 'dots') {
-		const fill: DayFill = {
-			kind: 'dots',
-			size: options.squareSize,
 			align: options.fillAlignment,
 		}
 		return Array.from({ length: sheets }, () => fill)
