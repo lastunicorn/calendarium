@@ -78,8 +78,8 @@ export interface DayPerPageOptions extends CommonOptions, HourSchedule, PageFoot
 	 */
 	squareSize: number
 	/**
-	 * Where the grid of squares, or of dots, sits across the page; only used when `dayPageLines` is
-	 * `squares` or `dots`.
+	 * Where the grid of squares, of dots or of genkō yōshi columns sits across the page; only used
+	 * when `dayPageLines` is `squares`, `dots` or `genkoYoshi`.
 	 */
 	squareGridAlignment: SquareGridAlignment
 	/**

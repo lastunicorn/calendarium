@@ -36,7 +36,8 @@ const SQUARE_GRID_ALIGNMENT_OPTIONS = optionsFrom(SQUARE_GRID_ALIGNMENTS, {
 
 /**
  * What fills a day's page: an hourly schedule and its hours, ruled lines and their spacing,
- * squares or dots, their size and where they sit, genkō yōshi and its guides, or nothing, on one page or two.
+ * squares or dots, their size and where they sit, genkō yōshi, its guides and where it sits, or
+ * nothing, on one page or two.
  */
 export function DayContentSection({
 	options,
@@ -156,12 +157,21 @@ export function DayContentSection({
 				</>
 			)}
 			{options.dayPageLines === 'genkoYoshi' && (
-				<CheckboxField
-					label="Guide lines"
-					description="Dotted lines dividing each square in half, across and down."
-					checked={options.genkoYoshiGuides}
-					onChange={handleGenkoYoshiGuidesChange}
-				/>
+				<>
+					<CheckboxField
+						label="Guide lines"
+						description="Dotted lines dividing each square in half, across and down."
+						checked={options.genkoYoshiGuides}
+						onChange={handleGenkoYoshiGuidesChange}
+					/>
+					<RadioField
+						label="Columns alignment"
+						description="Only whole columns are drawn; the space left goes on the other side, or on both."
+						value={options.squareGridAlignment}
+						options={SQUARE_GRID_ALIGNMENT_OPTIONS}
+						onChange={handleSquareGridAlignmentChange}
+					/>
+				</>
 			)}
 		</Section>
 	)

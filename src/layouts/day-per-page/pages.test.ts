@@ -91,6 +91,16 @@ describe('planDayPages', () => {
 
 	describe('fills', () => {
 		const hours = { dayPageLines: 'hours', hourFormat: '24h' } as const
+		// The default genkō yōshi on A4 portrait with 12 mm margins.
+		const genkoYoshi = {
+			kind: 'genkoYoshi',
+			rows: 22,
+			columns: 11,
+			size: 12,
+			gap: 4.8,
+			guides: false,
+			align: 'center',
+		} as const
 
 		it('fill one sheet with the schedule’s hours', () => {
 			expect(plan(2026, { ...hours, firstHour: 8, lastHour: 10 })[0].fills).toEqual([
@@ -159,10 +169,15 @@ describe('planDayPages', () => {
 		it('fill the page inside its margins with columns of 12 mm genkō yōshi squares, on every sheet', () => {
 			// 186 by 273 mm: 11 columns of 12 mm squares 4.8 mm apart take 180 mm, 22 rows 264 mm.
 			const fills = plan(2026, { dayPageLines: 'genkoYoshi', twoPagesPerDay: true })[0].fills
-			expect(fills).toEqual([
-				{ kind: 'genkoYoshi', rows: 22, columns: 11, size: 12, gap: 4.8, guides: false },
-				{ kind: 'genkoYoshi', rows: 22, columns: 11, size: 12, gap: 4.8, guides: false },
-			])
+			expect(fills).toEqual([genkoYoshi, genkoYoshi])
+		})
+
+		it('set the genkō yōshi columns across the page as aligned', () => {
+			const fills = plan(2026, {
+				dayPageLines: 'genkoYoshi',
+				squareGridAlignment: 'right',
+			})[0].fills
+			expect(fills).toEqual([{ ...genkoYoshi, align: 'right' }])
 		})
 
 		it('halve the genkō yōshi squares with guides, when asked', () => {

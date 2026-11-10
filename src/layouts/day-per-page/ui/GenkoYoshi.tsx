@@ -1,6 +1,14 @@
 import type { CSSProperties } from 'react'
+import type { SquareGridAlignment } from '../options'
 import type { GenkoYoshiFill } from '../pages'
 import styles from './GenkoYoshi.module.css'
+
+/** The class setting the grid across the page, per alignment. */
+const ALIGN_CLASSES: Record<SquareGridAlignment, string> = {
+	left: styles.alignLeft,
+	center: styles.alignCenter,
+	right: styles.alignRight,
+}
 
 /** The width of the grid's lines, in mm. */
 const LINE_WIDTH = 0.2
@@ -29,7 +37,7 @@ interface GenkoYoshiProps {
 }
 
 /**
- * A genkō yōshi grid filling the area left under a day's header, centered across it: columns of
+ * A genkō yōshi grid filling the area left under a day's header, set across it per alignment: columns of
  * squares with a blank between them. A layer of rows draws the horizontal lines, cut to the
  * columns, under one of columns drawing the vertical ones: a few dozen elements a sheet rather
  * than one per square, each row and column also drawing the guide through its middle. The grid is
@@ -42,7 +50,7 @@ export function GenkoYoshi({ fill }: GenkoYoshiProps) {
 		'--line-width': `${LINE_WIDTH}mm`,
 	}
 	return (
-		<div className={styles.genkoYoshi} style={style}>
+		<div className={`${styles.genkoYoshi} ${ALIGN_CLASSES[fill.align]}`} style={style}>
 			<div className={fill.guides ? `${styles.grid} ${styles.guides}` : styles.grid}>
 				<div className={styles.rows} style={{ clipPath: columnsClipPath(fill) }}>
 					{Array.from({ length: fill.rows }, (_, index) => (

@@ -24,7 +24,7 @@ const SUBHEADING_SEPARATOR = '\u2002·\u2002'
 /**
  * Genkō yōshi, Japanese manuscript paper: columns of squares `size` mm a side, one per character,
  * a blank `gap` mm wide between one column's lines and the next's, at most `rows` by `columns`, as
- * many as fit whole in the area left, centered across it. With `guides`, dotted lines divide each
+ * many as fit whole in the area left, set across it per `align`. With `guides`, dotted lines divide each
  * square in half, across and down.
  */
 export interface GenkoYoshiFill {
@@ -34,6 +34,7 @@ export interface GenkoYoshiFill {
 	size: number
 	gap: number
 	guides: boolean
+	align: SquareGridAlignment
 }
 
 /** What fills a day's sheet under its header, or all of its second sheet. */
@@ -96,7 +97,7 @@ export interface DayPages {
  * as fit across and down, the header's height being known only once drawn, set across the page per
  * `squareGridAlignment`; dots mark those squares' corners. Genkō yōshi fills it likewise with
  * columns of its own squares, `GENKO_YOSHI_SQUARE_SIZE` a side, apart by
- * `GENKO_YOSHI_COLUMN_GAP_PERCENT` of that side, centered, with
+ * `GENKO_YOSHI_COLUMN_GAP_PERCENT` of that side, set across the page per `squareGridAlignment`, with
  * dotted guides halving its squares per `genkoYoshiGuides`. A blank fill leaves every sheet empty. The hours are split in half over two sheets, the second,
  * having no header, taking the extra hour of an odd count.
  */
@@ -144,6 +145,7 @@ function planFills(options: DayPerPageOptions): DayFill[] {
 			size,
 			gap,
 			guides: options.genkoYoshiGuides,
+			align: options.squareGridAlignment,
 		}
 		return Array.from({ length: sheets }, () => fill)
 	}

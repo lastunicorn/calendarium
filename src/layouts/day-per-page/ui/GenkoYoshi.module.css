@@ -1,11 +1,22 @@
-/* The area left under the header, the grid centered across it. */
+/* The area left under the header, the grid set across it per alignment. */
 .genkoYoshi {
 	/* Dotted borders draw round dots as wide as the border, so the guides' are a little wider. */
 	--guide-width: 0.3mm;
 	flex: 1;
 	display: flex;
-	justify-content: center;
 	min-height: 0;
+}
+
+.alignLeft {
+	justify-content: flex-start;
+}
+
+.alignCenter {
+	justify-content: center;
+}
+
+.alignRight {
+	justify-content: flex-end;
 }
 
 /*
