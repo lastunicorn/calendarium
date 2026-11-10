@@ -10,7 +10,9 @@ import {
 	MIN_SQUARE_SIZE,
 	FILL_ALIGNMENTS,
 	type FillAlignment,
+	GENKO_YOSHI_DIRECTIONS,
 	GENKO_YOSHI_FURIGANA,
+	type GenkoYoshiDirection,
 	type GenkoYoshiFurigana,
 } from '../options'
 import { ContentIcon } from '../../../ui/components/icons'
@@ -31,6 +33,11 @@ const DAY_PAGE_FILL_OPTIONS = optionsFrom(DAY_PAGE_FILLS, {
 	blank: 'Blank',
 })
 
+const GENKO_YOSHI_DIRECTION_OPTIONS = optionsFrom(GENKO_YOSHI_DIRECTIONS, {
+	vertical: 'Vertical',
+	horizontal: 'Horizontal',
+})
+
 const GENKO_YOSHI_FURIGANA_OPTIONS = optionsFrom(GENKO_YOSHI_FURIGANA, {
 	none: 'None',
 	top: 'Top',
@@ -45,7 +52,7 @@ const FILL_ALIGNMENT_OPTIONS = optionsFrom(FILL_ALIGNMENTS, {
 
 /**
  * What fills a day's page: an hourly schedule and its hours, ruled lines and their spacing,
- * squares or dots, their size and where they sit, genkō yōshi, its size, furigana, guides and where it sits, or
+ * squares or dots, their size and where they sit, genkō yōshi, its size, direction, furigana, guides and where it sits, or
  * nothing, on one page or two.
  */
 export function DayContentSection({
@@ -73,6 +80,10 @@ export function DayContentSection({
 		onUpdate({ genkoYoshiSquareSize })
 	}
 
+	function handleGenkoYoshiDirectionChange(genkoYoshiDirection: GenkoYoshiDirection) {
+		onUpdate({ genkoYoshiDirection })
+	}
+
 	function handleGenkoYoshiFuriganaChange(genkoYoshiFurigana: GenkoYoshiFurigana) {
 		onUpdate({ genkoYoshiFurigana })
 	}
@@ -97,6 +108,7 @@ export function DayContentSection({
 				'squareSize',
 				'fillAlignment',
 				'genkoYoshiSquareSize',
+				'genkoYoshiDirection',
 				'genkoYoshiFurigana',
 				'genkoYoshiGuides',
 			]),
@@ -179,12 +191,19 @@ export function DayContentSection({
 				<>
 					<NumberField
 						label="Square size (mm)"
-						description={`From ${MIN_GENKO_YOSHI_SQUARE_SIZE} to ${MAX_GENKO_YOSHI_SQUARE_SIZE} mm. The space between the columns grows with it.`}
+						description={`From ${MIN_GENKO_YOSHI_SQUARE_SIZE} to ${MAX_GENKO_YOSHI_SQUARE_SIZE} mm. The space between the columns (or rows) grows with it.`}
 						value={options.genkoYoshiSquareSize}
 						min={MIN_GENKO_YOSHI_SQUARE_SIZE}
 						max={MAX_GENKO_YOSHI_SQUARE_SIZE}
 						step={0.5}
 						onChange={handleGenkoYoshiSquareSizeChange}
+					/>
+					<RadioField
+						label="Writing direction"
+						description="Vertical writing goes down columns of squares, a space between the columns; horizontal writing along rows, a space between the rows."
+						value={options.genkoYoshiDirection}
+						options={GENKO_YOSHI_DIRECTION_OPTIONS}
+						onChange={handleGenkoYoshiDirectionChange}
 					/>
 					<RadioField
 						label="Furigana"
@@ -200,8 +219,12 @@ export function DayContentSection({
 						onChange={handleGenkoYoshiGuidesChange}
 					/>
 					<RadioField
-						label="Columns alignment"
-						description="Only whole columns are drawn; the space left goes on the other side, or on both."
+						label={
+							options.genkoYoshiDirection === 'vertical'
+								? 'Columns alignment'
+								: 'Squares alignment'
+						}
+						description={`Only whole ${options.genkoYoshiDirection === 'vertical' ? 'columns' : 'squares'} are drawn; the space left goes on the other side, or on both.`}
 						value={options.fillAlignment}
 						options={FILL_ALIGNMENT_OPTIONS}
 						onChange={handleFillAlignmentChange}

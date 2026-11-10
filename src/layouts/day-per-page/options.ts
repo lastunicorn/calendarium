@@ -81,6 +81,13 @@ export type GenkoYoshiFurigana = (typeof GENKO_YOSHI_FURIGANA)[number]
 export const GENKO_YOSHI_FURIGANA_DIVISOR = 3
 
 /**
+ * Which way genkō yōshi is written: down columns of squares, a blank between the columns, or along
+ * rows of squares, a blank between the rows.
+ */
+export const GENKO_YOSHI_DIRECTIONS = ['vertical', 'horizontal'] as const
+export type GenkoYoshiDirection = (typeof GENKO_YOSHI_DIRECTIONS)[number]
+
+/**
  * Where the grid of squares sits across the page inside its margins, the space left by the whole
  * squares that fit going on the other side, or on both.
  */
@@ -108,6 +115,11 @@ export interface DayPerPageOptions extends CommonOptions, HourSchedule, PageFoot
 	fillAlignment: FillAlignment
 	/** The side of a genkō yōshi square, in mm; only used when `dayPageFill` is `genkoYoshi`. */
 	genkoYoshiSquareSize: number
+	/**
+	 * Whether genkō yōshi's squares make columns or rows, the blank between them; only used when
+	 * `dayPageFill` is `genkoYoshi`.
+	 */
+	genkoYoshiDirection: GenkoYoshiDirection
 	/** Where each genkō yōshi square has a furigana strip; only used when `dayPageFill` is `genkoYoshi`. */
 	genkoYoshiFurigana: GenkoYoshiFurigana
 	/**
@@ -143,6 +155,7 @@ export const DAY_PER_PAGE_SPEC: LayoutSpec<DayPerPageOptions> = {
 		fillAlignment: 'center',
 		// 1.2 cm, a common size of manuscript paper.
 		genkoYoshiSquareSize: 12,
+		genkoYoshiDirection: 'vertical',
 		genkoYoshiFurigana: 'none',
 		genkoYoshiGuides: false,
 		twoPagesPerDay: false,
@@ -162,6 +175,7 @@ export const DAY_PER_PAGE_SPEC: LayoutSpec<DayPerPageOptions> = {
 		squareSize: isSquareSize,
 		fillAlignment: oneOf(FILL_ALIGNMENTS),
 		genkoYoshiSquareSize: isGenkoYoshiSquareSize,
+		genkoYoshiDirection: oneOf(GENKO_YOSHI_DIRECTIONS),
 		genkoYoshiFurigana: oneOf(GENKO_YOSHI_FURIGANA),
 		genkoYoshiGuides: isBoolean,
 		twoPagesPerDay: isBoolean,

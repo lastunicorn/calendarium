@@ -22,10 +22,11 @@
 
 /*
  * The whole columns that fit across, of squares `--square-size` a side with their strips,
- * `--column-gap` apart (both set inline), and the whole rows that fit down, plus their far lines
- * (`--line-width`, set inline), sized from the area's percentages and clipped a little outside
- * itself, for the reasons the squares fill's grid is (`DayPage.module.css`). Its lines are darker
- * than a math notebook's, as manuscript paper's are.
+ * `--column-gap` apart, and the whole rows that fit down, `--row-gap` apart (one gap or the other
+ * being zero; all set inline), plus their far lines (`--line-width`, set inline), sized from the
+ * area's percentages and clipped a little outside itself, for the reasons the squares fill's grid
+ * is (`DayPage.module.css`). Its lines are darker than a math notebook's, as manuscript paper's
+ * are.
  */
 .grid {
 	position: relative;
@@ -38,7 +39,14 @@
 			) -
 			var(--column-gap) + var(--line-width)
 	);
-	height: calc(round(down, 100% - var(--line-width), var(--cell-height)) + var(--line-width));
+	height: calc(
+		round(
+				down,
+				100% + var(--row-gap) - var(--line-width),
+				var(--cell-height) + var(--row-gap)
+			) -
+			var(--row-gap) + var(--line-width)
+	);
 	overflow: clip;
 	overflow-clip-margin: 0.5mm;
 }
@@ -55,35 +63,68 @@
 	display: grid;
 }
 
-/* A top line, then each row drawing the line below it; cut to the columns (`clip-path`, set inline). */
 .rows {
-	grid-auto-rows: var(--cell-height);
 	align-content: start;
-	border-top: var(--line-width) solid var(--color-rule);
 }
 
-.row {
-	position: relative;
-	border-bottom: var(--line-width) solid var(--color-rule);
-}
-
-/* Each column draws the lines either side of its squares, the next one a gap apart. */
 .columns {
-	grid-auto-columns: calc(var(--cell-width) + var(--line-width));
 	grid-auto-flow: column;
-	column-gap: calc(var(--column-gap) - var(--line-width));
 	justify-content: start;
 }
 
+.row,
 .column {
 	position: relative;
+}
+
+/*
+ * Written vertically: a top line, then each row drawing the line below it, cut to the columns
+ * (`clip-path`, set inline); each column drawing the lines either side of its squares, the next
+ * one a gap apart.
+ */
+.vertical .rows {
+	grid-auto-rows: var(--cell-height);
+	border-top: var(--line-width) solid var(--color-rule);
+}
+
+.vertical .row {
+	border-bottom: var(--line-width) solid var(--color-rule);
+}
+
+.vertical .columns {
+	grid-auto-columns: calc(var(--cell-width) + var(--line-width));
+	column-gap: calc(var(--column-gap) - var(--line-width));
+}
+
+.vertical .column {
 	border-right: var(--line-width) solid var(--color-rule);
 	border-left: var(--line-width) solid var(--color-rule);
 }
 
+/* Written horizontally, the same turned: rows a gap apart, the columns' lines cut to them. */
+.horizontal .rows {
+	grid-auto-rows: calc(var(--cell-height) + var(--line-width));
+	row-gap: calc(var(--row-gap) - var(--line-width));
+}
+
+.horizontal .row {
+	border-top: var(--line-width) solid var(--color-rule);
+	border-bottom: var(--line-width) solid var(--color-rule);
+}
+
+.horizontal .columns {
+	grid-auto-columns: var(--cell-width);
+	border-left: var(--line-width) solid var(--color-rule);
+}
+
+.horizontal .column {
+	border-right: var(--line-width) solid var(--color-rule);
+}
+
 /*
  * The line between each square and its furigana strip: across each row, a strip's height below
- * the line above it, or down each column, a square's side right of its left line.
+ * the line above it, or down each column, a square's side right of its left line, whichever way
+ * the grid is written.
  */
 .furiganaTop .row::before,
 .furiganaRight .column::before {

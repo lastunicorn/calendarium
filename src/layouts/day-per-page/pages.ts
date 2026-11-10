@@ -15,6 +15,7 @@ import {
 	type DayPerPageOptions,
 	GENKO_YOSHI_COLUMN_GAP_PERCENT,
 	GENKO_YOSHI_FURIGANA_DIVISOR,
+	type GenkoYoshiDirection,
 	type GenkoYoshiFurigana,
 	type FillAlignment,
 } from './options'
@@ -24,9 +25,10 @@ const SUBHEADING_SEPARATOR = '\u2002·\u2002'
 
 /**
  * Genkō yōshi, Japanese manuscript paper: columns of squares `size` mm a side, one per character,
- * each with a furigana strip `furiganaSize` mm wide above it or right of it per `furigana`, a
- * blank `gap` mm wide between one column's lines and the next's, at most `rows` by `columns`, as
- * many as fit whole in the area left, set across it per `align`. With `guides`, dotted lines
+ * or rows of them per `direction`, each with a furigana strip `furiganaSize` mm wide above it or
+ * right of it per `furigana`, a blank `gap` mm wide between one column's (or row's) lines and the
+ * next's, at most `rows` by `columns`, as many as fit whole in the area left, set across it per
+ * `align`. With `guides`, dotted lines
  * divide each square, not its strip, in half, across and down.
  */
 export interface GenkoYoshiFill {
@@ -35,6 +37,7 @@ export interface GenkoYoshiFill {
 	columns: number
 	size: number
 	gap: number
+	direction: GenkoYoshiDirection
 	furigana: GenkoYoshiFurigana
 	furiganaSize: number
 	guides: boolean
@@ -100,8 +103,8 @@ export interface DayPages {
  * fit); over two sheets they continue. Squares, `squareSize` a side, fill it with as many whole squares
  * as fit across and down, the header's height being known only once drawn, set across the page per
  * `fillAlignment`; dots mark those squares' corners. Genkō yōshi fills it likewise with
- * columns of its own squares, `genkoYoshiSquareSize` a side, apart by
- * `GENKO_YOSHI_COLUMN_GAP_PERCENT` of that side, set across the page per `fillAlignment`, with
+ * columns of its own squares, or rows per `genkoYoshiDirection`, `genkoYoshiSquareSize` a side,
+ * apart by `GENKO_YOSHI_COLUMN_GAP_PERCENT` of that side, set across the page per `fillAlignment`, with
  * a furigana strip, a third of a square's side (`GENKO_YOSHI_FURIGANA_DIVISOR`), by each square per
  * `genkoYoshiFurigana`, and dotted guides halving its squares per `genkoYoshiGuides`. A blank fill leaves every sheet empty. The hours are split in half over two sheets, the second,
  * having no header, taking the extra hour of an odd count.
@@ -146,13 +149,17 @@ function planFills(options: DayPerPageOptions): DayFill[] {
 		const furiganaSize = size / GENKO_YOSHI_FURIGANA_DIVISOR
 		const cellWidth = size + (furigana === 'right' ? furiganaSize : 0)
 		const cellHeight = size + (furigana === 'top' ? furiganaSize : 0)
+		const direction = options.genkoYoshiDirection
+		// n columns (or rows) take n cells and n - 1 gaps.
+		const columnGap = direction === 'vertical' ? gap : 0
+		const rowGap = direction === 'horizontal' ? gap : 0
 		const fill: GenkoYoshiFill = {
 			kind: 'genkoYoshi',
-			rows: Math.floor(height / cellHeight),
-			// n columns take n cells and n - 1 gaps.
-			columns: Math.floor((width + gap) / (cellWidth + gap)),
+			rows: Math.floor((height + rowGap) / (cellHeight + rowGap)),
+			columns: Math.floor((width + columnGap) / (cellWidth + columnGap)),
 			size,
 			gap,
+			direction,
 			furigana,
 			furiganaSize,
 			guides: options.genkoYoshiGuides,
