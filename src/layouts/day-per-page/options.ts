@@ -83,6 +83,11 @@ export interface DayPerPageOptions extends CommonOptions, HourSchedule, PageFoot
 	 */
 	squareGridAlignment: SquareGridAlignment
 	/**
+	 * Whether dotted guide lines divide each genkō yōshi square in half, across and down; only used
+	 * when `dayPageLines` is `genkoYoshi`.
+	 */
+	genkoYoshiGuides: boolean
+	/**
 	 * Whether each day takes two pages: the second, without a header, continues the ruled lines or
 	 * holds the second half of the schedule's hours.
 	 */
@@ -108,6 +113,7 @@ export const DAY_PER_PAGE_SPEC: LayoutSpec<DayPerPageOptions> = {
 		// A math notebook's squares.
 		squareSize: 5,
 		squareGridAlignment: 'center',
+		genkoYoshiGuides: false,
 		twoPagesPerDay: false,
 		...scheduleDefaults(),
 		...footerDefaults(),
@@ -124,6 +130,7 @@ export const DAY_PER_PAGE_SPEC: LayoutSpec<DayPerPageOptions> = {
 		ruledLineSpacing: isRuledLineSpacing,
 		squareSize: isSquareSize,
 		squareGridAlignment: oneOf(SQUARE_GRID_ALIGNMENTS),
+		genkoYoshiGuides: isBoolean,
 		twoPagesPerDay: isBoolean,
 		...SCHEDULE_VALIDATORS,
 		...FOOTER_VALIDATORS,

@@ -36,7 +36,7 @@ const SQUARE_GRID_ALIGNMENT_OPTIONS = optionsFrom(SQUARE_GRID_ALIGNMENTS, {
 
 /**
  * What fills a day's page: an hourly schedule and its hours, ruled lines and their spacing,
- * squares or dots, their size and where they sit, genkō yōshi, or nothing, on one page or two.
+ * squares or dots, their size and where they sit, genkō yōshi and its guides, or nothing, on one page or two.
  */
 export function DayContentSection({
 	options,
@@ -59,6 +59,10 @@ export function DayContentSection({
 		onUpdate({ squareGridAlignment })
 	}
 
+	function handleGenkoYoshiGuidesChange(genkoYoshiGuides: boolean) {
+		onUpdate({ genkoYoshiGuides })
+	}
+
 	function handleTwoPagesPerDayChange(twoPagesPerDay: boolean) {
 		onUpdate({ twoPagesPerDay })
 	}
@@ -74,6 +78,7 @@ export function DayContentSection({
 				'ruledLineSpacing',
 				'squareSize',
 				'squareGridAlignment',
+				'genkoYoshiGuides',
 			]),
 		)
 	}
@@ -149,6 +154,14 @@ export function DayContentSection({
 						onChange={handleSquareGridAlignmentChange}
 					/>
 				</>
+			)}
+			{options.dayPageLines === 'genkoYoshi' && (
+				<CheckboxField
+					label="Guide lines"
+					description="Dotted lines dividing each square in half, across and down."
+					checked={options.genkoYoshiGuides}
+					onChange={handleGenkoYoshiGuidesChange}
+				/>
 			)}
 		</Section>
 	)

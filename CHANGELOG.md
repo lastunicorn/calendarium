@@ -8,7 +8,7 @@ The features each release brought, newest first. Versions follow the app version
 
 - Week and day layouts: the mini calendars circle the days with an event, as the year layout's months do, unless "Show events" is unchecked in the Mini calendar section.
 - Year and month layouts: a "Title size (pt)" option in the Header section, as the week and day layouts have.
-- Day layout: a Genkō yōshi fill, Japanese manuscript paper: columns of 12 mm squares, one for each character, with a blank space between the columns for furigana, centered on the page.
+- Day layout: a Genkō yōshi fill, Japanese manuscript paper: columns of 12 mm squares, one for each character, with a blank space between the columns for furigana, centered on the page, and dotted guide lines dividing each square in half (Guide lines, off by default).
 
 ### Changed
 

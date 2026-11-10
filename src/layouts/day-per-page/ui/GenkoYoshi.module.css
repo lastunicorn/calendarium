@@ -1,5 +1,7 @@
 /* The area left under the header, the grid centered across it. */
 .genkoYoshi {
+	/* Dotted borders draw round dots as wide as the border, so the guides' are a little wider. */
+	--guide-width: 0.3mm;
 	flex: 1;
 	display: flex;
 	justify-content: center;
@@ -58,4 +60,35 @@
 .column {
 	border-right: var(--line-width) solid var(--color-rule);
 	border-left: var(--line-width) solid var(--color-rule);
+}
+
+/*
+ * The guides: a dotted line through the middle of each row's squares (cut to the columns with the
+ * row) and of each column's, halfway between the lines either side, lighter than them.
+ */
+.guides .row,
+.guides .column {
+	position: relative;
+}
+
+.guides .row::after,
+.guides .column::after {
+	content: '';
+	position: absolute;
+}
+
+.guides .row::after {
+	top: 50%;
+	right: 0;
+	left: 0;
+	translate: 0 -50%;
+	border-top: var(--guide-width) dotted var(--color-rule);
+}
+
+.guides .column::after {
+	top: 0;
+	bottom: 0;
+	left: 50%;
+	translate: -50% 0;
+	border-left: var(--guide-width) dotted var(--color-rule);
 }

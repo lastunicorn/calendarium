@@ -160,9 +160,15 @@ describe('planDayPages', () => {
 			// 186 by 273 mm: 11 columns of 12 mm squares 4.8 mm apart take 180 mm, 22 rows 264 mm.
 			const fills = plan(2026, { dayPageLines: 'genkoYoshi', twoPagesPerDay: true })[0].fills
 			expect(fills).toEqual([
-				{ kind: 'genkoYoshi', rows: 22, columns: 11, size: 12, gap: 4.8 },
-				{ kind: 'genkoYoshi', rows: 22, columns: 11, size: 12, gap: 4.8 },
+				{ kind: 'genkoYoshi', rows: 22, columns: 11, size: 12, gap: 4.8, guides: false },
+				{ kind: 'genkoYoshi', rows: 22, columns: 11, size: 12, gap: 4.8, guides: false },
 			])
+		})
+
+		it('halve the genkō yōshi squares with guides, when asked', () => {
+			const [fill] = plan(2026, { dayPageLines: 'genkoYoshi', genkoYoshiGuides: true })[0]
+				.fills
+			expect(fill).toMatchObject({ kind: 'genkoYoshi', guides: true })
 		})
 
 		it('leave every sheet blank under the header', () => {
