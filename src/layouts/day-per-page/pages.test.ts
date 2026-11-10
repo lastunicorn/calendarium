@@ -180,6 +180,13 @@ describe('planDayPages', () => {
 			expect(fills).toEqual([{ ...genkoYoshi, align: 'right' }])
 		})
 
+		it('draw the genkō yōshi squares as large as asked, the columns apart by 40 % of them', () => {
+			// 186 mm wide: 9 columns of 15 mm squares 6 mm apart take 183 mm; 273 mm high, 18 rows.
+			const fills = plan(2026, { dayPageFill: 'genkoYoshi', genkoYoshiSquareSize: 15 })[0]
+				.fills
+			expect(fills).toEqual([{ ...genkoYoshi, rows: 18, columns: 9, size: 15, gap: 6 }])
+		})
+
 		it('halve the genkō yōshi squares with guides, when asked', () => {
 			const [fill] = plan(2026, { dayPageFill: 'genkoYoshi', genkoYoshiGuides: true })[0]
 				.fills

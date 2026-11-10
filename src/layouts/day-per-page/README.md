@@ -13,7 +13,7 @@ One sheet per day of the year, or two: a header naming the day, with a corner mi
   - `ruled`: ruled lines `ruledLineSpacing` mm apart;
   - `squares`: as many whole squares `squareSize` mm a side as fit (the grid is cut down in CSS, the header's height being known only once drawn), set across the page per `fillAlignment`, filling the `contentBox`;
   - `dots`: the dots at those squares' corners, one SVG pattern a sheet;
-  - `genkoYoshi`: columns of genkō yōshi squares `GENKO_YOSHI_SQUARE_SIZE` (12) mm a side, a blank `GENKO_YOSHI_COLUMN_GAP_PERCENT` (40 %) of that side between them, as many whole squares as fit, cut down in CSS as the squares are, set across the page per `fillAlignment`, drawn by `ui/GenkoYoshi` in darker lines (the horizontal ones cut to the columns by a `clip-path`), with dotted guides halving each square across and down per `genkoYoshiGuides`;
+  - `genkoYoshi`: columns of genkō yōshi squares `genkoYoshiSquareSize` mm a side (`isGenkoYoshiSquareSize`, 10 to 20), a blank `GENKO_YOSHI_COLUMN_GAP_PERCENT` (40 %) of that side between them, as many whole squares as fit, cut down in CSS as the squares are, set across the page per `fillAlignment`, drawn by `ui/GenkoYoshi` in darker lines (the horizontal ones cut to the columns by a `clip-path`), with dotted guides halving each square across and down per `genkoYoshiGuides`;
   - `blank`: nothing.
 - **Footer:** with `showFooter`, each sheet, the second one too, keeps an empty bordered footer, `footerHeight` whole mm tall (`isFooterHeight`), at its bottom under the fill (`footerHeight`, the same for every day).
 
@@ -25,12 +25,12 @@ With `twoPagesPerDay`, the view's `facingPages` has the preview show the pages a
 
 `DayPerPageOptions` (`options.ts`): `CommonOptions`, the schedule (`HourSchedule`, shared with the week layout through `layouts/schedule.ts`), the footer (`PageFooter`, shared with the week layout through `layouts/footer.ts` and `ui/sidebar/FooterSection`), and its own:
 
-| Sidebar section | Fields                                                                                                                                                                                |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Header          | `dayPageTitle`, `headingFontSize` (`isHeadingFontSize`, the shared `HeadingFontSizeField`), `showHeaderWeek`, `showHeaderDayOfYear`, `highlightWeekendDays` (`ui/HeaderSection`)      |
-| Mini calendar   | `miniMonth` (`MiniMonthOptions`, `showEvents` labeled "Show events", the shared `MiniMonthSection`)                                                                                   |
-| Content         | `twoPagesPerDay`, `dayPageFill`, the schedule (`hourFormat`, `firstHour`, `lastHour`), `ruledLineSpacing`, `squareSize`, `fillAlignment`, `genkoYoshiGuides` (`ui/DayContentSection`) |
-| Footer          | `showFooter`, `footerHeight` (the shared `FooterSection`)                                                                                                                             |
+| Sidebar section | Fields                                                                                                                                                                                                        |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Header          | `dayPageTitle`, `headingFontSize` (`isHeadingFontSize`, the shared `HeadingFontSizeField`), `showHeaderWeek`, `showHeaderDayOfYear`, `highlightWeekendDays` (`ui/HeaderSection`)                              |
+| Mini calendar   | `miniMonth` (`MiniMonthOptions`, `showEvents` labeled "Show events", the shared `MiniMonthSection`)                                                                                                           |
+| Content         | `twoPagesPerDay`, `dayPageFill`, the schedule (`hourFormat`, `firstHour`, `lastHour`), `ruledLineSpacing`, `squareSize`, `fillAlignment`, `genkoYoshiSquareSize`, `genkoYoshiGuides` (`ui/DayContentSection`) |
+| Footer          | `showFooter`, `footerHeight` (the shared `FooterSection`)                                                                                                                                                     |
 
 It has no title: the heading is always the weekday or the date. `normalize` puts a reversed schedule in order (`orderHours`).
 

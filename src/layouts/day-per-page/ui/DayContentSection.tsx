@@ -2,9 +2,10 @@ import {
 	DAY_PAGE_FILLS,
 	type DayPageFill,
 	type DayPerPageOptions,
-	GENKO_YOSHI_SQUARE_SIZE,
+	MAX_GENKO_YOSHI_SQUARE_SIZE,
 	MAX_RULED_LINE_SPACING,
 	MAX_SQUARE_SIZE,
+	MIN_GENKO_YOSHI_SQUARE_SIZE,
 	MIN_RULED_LINE_SPACING,
 	MIN_SQUARE_SIZE,
 	FILL_ALIGNMENTS,
@@ -36,7 +37,7 @@ const FILL_ALIGNMENT_OPTIONS = optionsFrom(FILL_ALIGNMENTS, {
 
 /**
  * What fills a day's page: an hourly schedule and its hours, ruled lines and their spacing,
- * squares or dots, their size and where they sit, genkō yōshi, its guides and where it sits, or
+ * squares or dots, their size and where they sit, genkō yōshi, its size, guides and where it sits, or
  * nothing, on one page or two.
  */
 export function DayContentSection({
@@ -60,6 +61,10 @@ export function DayContentSection({
 		onUpdate({ fillAlignment })
 	}
 
+	function handleGenkoYoshiSquareSizeChange(genkoYoshiSquareSize: number) {
+		onUpdate({ genkoYoshiSquareSize })
+	}
+
 	function handleGenkoYoshiGuidesChange(genkoYoshiGuides: boolean) {
 		onUpdate({ genkoYoshiGuides })
 	}
@@ -79,6 +84,7 @@ export function DayContentSection({
 				'ruledLineSpacing',
 				'squareSize',
 				'fillAlignment',
+				'genkoYoshiSquareSize',
 				'genkoYoshiGuides',
 			]),
 		)
@@ -97,7 +103,7 @@ export function DayContentSection({
 			/>
 			<RadioField
 				label="Fill"
-				description={`Genkō yōshi is Japanese manuscript paper: columns of ${GENKO_YOSHI_SQUARE_SIZE} mm squares, one for each character, with room between them for furigana.`}
+				description="Genkō yōshi is Japanese manuscript paper: columns of squares, one for each character, with room between them for furigana."
 				value={options.dayPageFill}
 				options={DAY_PAGE_FILL_OPTIONS}
 				onChange={handleDayPageFillChange}
@@ -158,6 +164,15 @@ export function DayContentSection({
 			)}
 			{options.dayPageFill === 'genkoYoshi' && (
 				<>
+					<NumberField
+						label="Square size (mm)"
+						description={`From ${MIN_GENKO_YOSHI_SQUARE_SIZE} to ${MAX_GENKO_YOSHI_SQUARE_SIZE} mm. The space between the columns grows with it.`}
+						value={options.genkoYoshiSquareSize}
+						min={MIN_GENKO_YOSHI_SQUARE_SIZE}
+						max={MAX_GENKO_YOSHI_SQUARE_SIZE}
+						step={0.5}
+						onChange={handleGenkoYoshiSquareSizeChange}
+					/>
 					<CheckboxField
 						label="Guide lines"
 						description="Dotted lines dividing each square in half, across and down."

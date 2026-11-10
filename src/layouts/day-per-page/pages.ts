@@ -14,7 +14,6 @@ import { type MiniMonthPlan, monthEventDays } from '../monthGrid'
 import {
 	type DayPerPageOptions,
 	GENKO_YOSHI_COLUMN_GAP_PERCENT,
-	GENKO_YOSHI_SQUARE_SIZE,
 	type FillAlignment,
 } from './options'
 
@@ -96,7 +95,7 @@ export interface DayPages {
  * fit); over two sheets they continue. Squares, `squareSize` a side, fill it with as many whole squares
  * as fit across and down, the header's height being known only once drawn, set across the page per
  * `fillAlignment`; dots mark those squares' corners. Genkō yōshi fills it likewise with
- * columns of its own squares, `GENKO_YOSHI_SQUARE_SIZE` a side, apart by
+ * columns of its own squares, `genkoYoshiSquareSize` a side, apart by
  * `GENKO_YOSHI_COLUMN_GAP_PERCENT` of that side, set across the page per `fillAlignment`, with
  * dotted guides halving its squares per `genkoYoshiGuides`. A blank fill leaves every sheet empty. The hours are split in half over two sheets, the second,
  * having no header, taking the extra hour of an odd count.
@@ -135,7 +134,7 @@ function planFills(options: DayPerPageOptions): DayFill[] {
 	}
 	if (options.dayPageFill === 'genkoYoshi') {
 		const { width, height } = contentBox(options.page)
-		const size = GENKO_YOSHI_SQUARE_SIZE
+		const size = options.genkoYoshiSquareSize
 		const gap = (size * GENKO_YOSHI_COLUMN_GAP_PERCENT) / 100
 		const fill: GenkoYoshiFill = {
 			kind: 'genkoYoshi',

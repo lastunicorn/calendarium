@@ -47,8 +47,22 @@ export function isSquareSize(value: unknown): value is number {
 	)
 }
 
-/** The side of a genkō yōshi square, in mm: 1.2 cm, room for a handwritten character. */
-export const GENKO_YOSHI_SQUARE_SIZE = 12
+/** Bounds of the side of a genkō yōshi square, in mm: room for one handwritten character. */
+export const MIN_GENKO_YOSHI_SQUARE_SIZE = 10
+export const MAX_GENKO_YOSHI_SQUARE_SIZE = 20
+
+/**
+ * The side of a genkō yōshi square, in mm, from `MIN_GENKO_YOSHI_SQUARE_SIZE` to
+ * `MAX_GENKO_YOSHI_SQUARE_SIZE`.
+ */
+export function isGenkoYoshiSquareSize(value: unknown): value is number {
+	return (
+		typeof value === 'number' &&
+		Number.isFinite(value) &&
+		value >= MIN_GENKO_YOSHI_SQUARE_SIZE &&
+		value <= MAX_GENKO_YOSHI_SQUARE_SIZE
+	)
+}
 
 /**
  * The blank between two columns of genkō yōshi squares, in percent of a square's side: room for
@@ -82,6 +96,8 @@ export interface DayPerPageOptions extends CommonOptions, HourSchedule, PageFoot
 	 * when `dayPageFill` is `squares`, `dots` or `genkoYoshi`.
 	 */
 	fillAlignment: FillAlignment
+	/** The side of a genkō yōshi square, in mm; only used when `dayPageFill` is `genkoYoshi`. */
+	genkoYoshiSquareSize: number
 	/**
 	 * Whether dotted guide lines divide each genkō yōshi square in half, across and down; only used
 	 * when `dayPageFill` is `genkoYoshi`.
@@ -113,6 +129,8 @@ export const DAY_PER_PAGE_SPEC: LayoutSpec<DayPerPageOptions> = {
 		// A math notebook's squares.
 		squareSize: 5,
 		fillAlignment: 'center',
+		// 1.2 cm, a common size of manuscript paper.
+		genkoYoshiSquareSize: 12,
 		genkoYoshiGuides: false,
 		twoPagesPerDay: false,
 		...scheduleDefaults(),
@@ -130,6 +148,7 @@ export const DAY_PER_PAGE_SPEC: LayoutSpec<DayPerPageOptions> = {
 		ruledLineSpacing: isRuledLineSpacing,
 		squareSize: isSquareSize,
 		fillAlignment: oneOf(FILL_ALIGNMENTS),
+		genkoYoshiSquareSize: isGenkoYoshiSquareSize,
 		genkoYoshiGuides: isBoolean,
 		twoPagesPerDay: isBoolean,
 		...SCHEDULE_VALIDATORS,
