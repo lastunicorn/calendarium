@@ -10,6 +10,8 @@ import {
 	MIN_SQUARE_SIZE,
 	FILL_ALIGNMENTS,
 	type FillAlignment,
+	GENKO_YOSHI_FURIGANA,
+	type GenkoYoshiFurigana,
 } from '../options'
 import { ContentIcon } from '../../../ui/components/icons'
 import { CheckboxField } from '../../../ui/fields/CheckboxField'
@@ -29,6 +31,12 @@ const DAY_PAGE_FILL_OPTIONS = optionsFrom(DAY_PAGE_FILLS, {
 	blank: 'Blank',
 })
 
+const GENKO_YOSHI_FURIGANA_OPTIONS = optionsFrom(GENKO_YOSHI_FURIGANA, {
+	none: 'None',
+	top: 'Top',
+	right: 'Right',
+})
+
 const FILL_ALIGNMENT_OPTIONS = optionsFrom(FILL_ALIGNMENTS, {
 	left: 'Left',
 	center: 'Center',
@@ -37,7 +45,7 @@ const FILL_ALIGNMENT_OPTIONS = optionsFrom(FILL_ALIGNMENTS, {
 
 /**
  * What fills a day's page: an hourly schedule and its hours, ruled lines and their spacing,
- * squares or dots, their size and where they sit, genkō yōshi, its size, guides and where it sits, or
+ * squares or dots, their size and where they sit, genkō yōshi, its size, furigana, guides and where it sits, or
  * nothing, on one page or two.
  */
 export function DayContentSection({
@@ -65,6 +73,10 @@ export function DayContentSection({
 		onUpdate({ genkoYoshiSquareSize })
 	}
 
+	function handleGenkoYoshiFuriganaChange(genkoYoshiFurigana: GenkoYoshiFurigana) {
+		onUpdate({ genkoYoshiFurigana })
+	}
+
 	function handleGenkoYoshiGuidesChange(genkoYoshiGuides: boolean) {
 		onUpdate({ genkoYoshiGuides })
 	}
@@ -85,6 +97,7 @@ export function DayContentSection({
 				'squareSize',
 				'fillAlignment',
 				'genkoYoshiSquareSize',
+				'genkoYoshiFurigana',
 				'genkoYoshiGuides',
 			]),
 		)
@@ -172,6 +185,13 @@ export function DayContentSection({
 						max={MAX_GENKO_YOSHI_SQUARE_SIZE}
 						step={0.5}
 						onChange={handleGenkoYoshiSquareSizeChange}
+					/>
+					<RadioField
+						label="Furigana"
+						description="A strip for furigana by each square, a third of its size: above it, for horizontal writing, or right of it, for vertical writing."
+						value={options.genkoYoshiFurigana}
+						options={GENKO_YOSHI_FURIGANA_OPTIONS}
+						onChange={handleGenkoYoshiFuriganaChange}
 					/>
 					<CheckboxField
 						label="Guide lines"

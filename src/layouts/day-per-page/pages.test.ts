@@ -98,6 +98,8 @@ describe('planDayPages', () => {
 			columns: 11,
 			size: 12,
 			gap: 4.8,
+			furigana: 'none',
+			furiganaSize: 4,
 			guides: false,
 			align: 'center',
 		} as const
@@ -184,7 +186,18 @@ describe('planDayPages', () => {
 			// 186 mm wide: 9 columns of 15 mm squares 6 mm apart take 183 mm; 273 mm high, 18 rows.
 			const fills = plan(2026, { dayPageFill: 'genkoYoshi', genkoYoshiSquareSize: 15 })[0]
 				.fills
-			expect(fills).toEqual([{ ...genkoYoshi, rows: 18, columns: 9, size: 15, gap: 6 }])
+			expect(fills).toEqual([
+				{ ...genkoYoshi, rows: 18, columns: 9, size: 15, gap: 6, furiganaSize: 5 },
+			])
+		})
+
+		it('give each genkō yōshi square a furigana strip a third of its side, above or right of it', () => {
+			const furigana = (genkoYoshiFurigana: 'top' | 'right') =>
+				plan(2026, { dayPageFill: 'genkoYoshi', genkoYoshiFurigana })[0].fills
+			// 273 mm high: 17 rows of 16 mm squares with their strips.
+			expect(furigana('top')).toEqual([{ ...genkoYoshi, furigana: 'top', rows: 17 }])
+			// 186 mm wide: 9 columns 16 mm wide with their strips, 4.8 mm apart, take 182.4 mm.
+			expect(furigana('right')).toEqual([{ ...genkoYoshi, furigana: 'right', columns: 9 }])
 		})
 
 		it('halve the genkō yōshi squares with guides, when asked', () => {

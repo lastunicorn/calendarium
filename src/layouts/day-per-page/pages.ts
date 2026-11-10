@@ -14,6 +14,8 @@ import { type MiniMonthPlan, monthEventDays } from '../monthGrid'
 import {
 	type DayPerPageOptions,
 	GENKO_YOSHI_COLUMN_GAP_PERCENT,
+	GENKO_YOSHI_FURIGANA_DIVISOR,
+	type GenkoYoshiFurigana,
 	type FillAlignment,
 } from './options'
 
@@ -22,9 +24,10 @@ const SUBHEADING_SEPARATOR = '\u2002·\u2002'
 
 /**
  * Genkō yōshi, Japanese manuscript paper: columns of squares `size` mm a side, one per character,
- * a blank `gap` mm wide between one column's lines and the next's, at most `rows` by `columns`, as
- * many as fit whole in the area left, set across it per `align`. With `guides`, dotted lines divide each
- * square in half, across and down.
+ * each with a furigana strip `furiganaSize` mm wide above it or right of it per `furigana`, a
+ * blank `gap` mm wide between one column's lines and the next's, at most `rows` by `columns`, as
+ * many as fit whole in the area left, set across it per `align`. With `guides`, dotted lines
+ * divide each square, not its strip, in half, across and down.
  */
 export interface GenkoYoshiFill {
 	kind: 'genkoYoshi'
@@ -32,6 +35,8 @@ export interface GenkoYoshiFill {
 	columns: number
 	size: number
 	gap: number
+	furigana: GenkoYoshiFurigana
+	furiganaSize: number
 	guides: boolean
 	align: FillAlignment
 }
@@ -97,7 +102,8 @@ export interface DayPages {
  * `fillAlignment`; dots mark those squares' corners. Genkō yōshi fills it likewise with
  * columns of its own squares, `genkoYoshiSquareSize` a side, apart by
  * `GENKO_YOSHI_COLUMN_GAP_PERCENT` of that side, set across the page per `fillAlignment`, with
- * dotted guides halving its squares per `genkoYoshiGuides`. A blank fill leaves every sheet empty. The hours are split in half over two sheets, the second,
+ * a furigana strip, a third of a square's side (`GENKO_YOSHI_FURIGANA_DIVISOR`), by each square per
+ * `genkoYoshiFurigana`, and dotted guides halving its squares per `genkoYoshiGuides`. A blank fill leaves every sheet empty. The hours are split in half over two sheets, the second,
  * having no header, taking the extra hour of an odd count.
  */
 function planFills(options: DayPerPageOptions): DayFill[] {
@@ -136,13 +142,19 @@ function planFills(options: DayPerPageOptions): DayFill[] {
 		const { width, height } = contentBox(options.page)
 		const size = options.genkoYoshiSquareSize
 		const gap = (size * GENKO_YOSHI_COLUMN_GAP_PERCENT) / 100
+		const furigana = options.genkoYoshiFurigana
+		const furiganaSize = size / GENKO_YOSHI_FURIGANA_DIVISOR
+		const cellWidth = size + (furigana === 'right' ? furiganaSize : 0)
+		const cellHeight = size + (furigana === 'top' ? furiganaSize : 0)
 		const fill: GenkoYoshiFill = {
 			kind: 'genkoYoshi',
-			rows: Math.floor(height / size),
-			// n columns take n squares and n - 1 gaps.
-			columns: Math.floor((width + gap) / (size + gap)),
+			rows: Math.floor(height / cellHeight),
+			// n columns take n cells and n - 1 gaps.
+			columns: Math.floor((width + gap) / (cellWidth + gap)),
 			size,
 			gap,
+			furigana,
+			furiganaSize,
 			guides: options.genkoYoshiGuides,
 			align: options.fillAlignment,
 		}
