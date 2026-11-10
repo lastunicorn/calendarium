@@ -9,10 +9,10 @@ import { type HourSchedule, orderHours, SCHEDULE_VALIDATORS, scheduleDefaults } 
 
 /**
  * What fills a `day-per-page` page under its header: an hourly schedule, plain ruled lines, a
- * grid of squares like a math notebook's, the dots at those squares' corners, or nothing, the page
- * left blank.
+ * grid of squares like a math notebook's, the dots at those squares' corners, genkō yōshi
+ * (Japanese manuscript paper, a square for each character), or nothing, the page left blank.
  */
-export const DAY_PAGE_LINES = ['hours', 'ruled', 'squares', 'dots', 'blank'] as const
+export const DAY_PAGE_LINES = ['hours', 'ruled', 'squares', 'dots', 'genkoYoshi', 'blank'] as const
 export type DayPageLines = (typeof DAY_PAGE_LINES)[number]
 
 /** What a `day-per-page` page's heading shows; the other one goes in the subheading. */
@@ -46,6 +46,15 @@ export function isSquareSize(value: unknown): value is number {
 		value <= MAX_SQUARE_SIZE
 	)
 }
+
+/** The side of a genkō yōshi square, in mm: 1.2 cm, room for a handwritten character. */
+export const GENKO_YOSHI_SQUARE_SIZE = 12
+
+/**
+ * The blank between two columns of genkō yōshi squares, in percent of a square's side: room for
+ * furigana or emphasis marks beside the characters.
+ */
+export const GENKO_YOSHI_COLUMN_GAP_PERCENT = 40
 
 /**
  * Where the grid of squares sits across the page inside its margins, the space left by the whole

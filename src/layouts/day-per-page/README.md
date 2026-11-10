@@ -1,6 +1,6 @@
 # Day per page (`day-per-page`)
 
-One sheet per day of the year, or two: a header naming the day, with a corner mini month, above a fill to write on, an hourly schedule, ruled lines, squares, dots or nothing. Portrait by default.
+One sheet per day of the year, or two: a header naming the day, with a corner mini month, above a fill to write on, an hourly schedule, ruled lines, squares, dots, genkō yōshi or nothing. Portrait by default.
 
 ## Pages
 
@@ -13,6 +13,7 @@ One sheet per day of the year, or two: a header naming the day, with a corner mi
   - `ruled`: ruled lines `ruledLineSpacing` mm apart;
   - `squares`: as many whole squares `squareSize` mm a side as fit (the grid is cut down in CSS, the header's height being known only once drawn), set across the page per `squareGridAlignment`, filling the `contentBox`;
   - `dots`: the dots at those squares' corners, one SVG pattern a sheet;
+  - `genkoYoshi`: columns of genkō yōshi squares `GENKO_YOSHI_SQUARE_SIZE` (12) mm a side, a blank `GENKO_YOSHI_COLUMN_GAP_PERCENT` (40 %) of that side between them, as many whole squares as fit, cut down in CSS as the squares are, centered across the page, drawn by `ui/GenkoYoshi` in darker lines (the horizontal ones cut to the columns by a `clip-path`);
   - `blank`: nothing.
 - **Footer:** with `showFooter`, each sheet, the second one too, keeps an empty bordered footer, `footerHeight` whole mm tall (`isFooterHeight`), at its bottom under the fill (`footerHeight`, the same for every day).
 
@@ -52,6 +53,7 @@ It has no title: the heading is always the weekday or the date. `normalize` puts
 | `ui/index.ts`                                      | The UI's entry point: `DAY_PER_PAGE_VIEW`, with its `facingPages`       |
 | `ui/DayPerPageLayout.tsx`, `ui/DayPage.tsx`        | Draw the plan: the pages, then each sheet                               |
 | `ui/DayPerPageForm.tsx`                            | The options form, combining the sections                                |
+| `ui/GenkoYoshi.tsx`                                | Draws the genkō yōshi fill                                              |
 | `ui/HeaderSection.tsx`, `ui/DayContentSection.tsx` | The layout's own sections                                               |
 
 ## Domain language
@@ -62,4 +64,5 @@ It has no title: the heading is always the weekday or the date. `normalize` puts
 | Ruled lines       | Plain writing lines, `ruledLineSpacing` mm apart                    | `dayPageLines` = `ruled`, `ruledLineSpacing` | Fill: Ruled lines |
 | Squares           | A grid of squares, like a math notebook's, `squareSize` mm a side   | `dayPageLines` = `squares`, `squareSize`     | Fill: Squares     |
 | Dots              | The corners of the squares alone, `squareSize` mm apart             | `dayPageLines` = `dots`, `squareSize`        | Fill: Dots        |
+| Genkō yōshi       | Japanese manuscript paper: columns of squares, one per character    | `dayPageLines` = `genkoYoshi`, `GenkoYoshi`  | Fill: Genkō yōshi |
 | Two pages per day | A day spread over two sheets                                        | `twoPagesPerDay`                             | Two pages per day |

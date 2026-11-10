@@ -2,6 +2,7 @@ import {
 	DAY_PAGE_LINES,
 	type DayPageLines,
 	type DayPerPageOptions,
+	GENKO_YOSHI_SQUARE_SIZE,
 	MAX_RULED_LINE_SPACING,
 	MAX_SQUARE_SIZE,
 	MIN_RULED_LINE_SPACING,
@@ -23,6 +24,7 @@ const DAY_PAGE_LINES_OPTIONS = optionsFrom(DAY_PAGE_LINES, {
 	ruled: 'Ruled lines',
 	squares: 'Squares',
 	dots: 'Dots',
+	genkoYoshi: 'Genkō yōshi',
 	blank: 'Blank',
 })
 
@@ -33,8 +35,8 @@ const SQUARE_GRID_ALIGNMENT_OPTIONS = optionsFrom(SQUARE_GRID_ALIGNMENTS, {
 })
 
 /**
- * What fills a day's page: an hourly schedule and its hours, ruled lines and their spacing, or
- * squares or dots, their size and where they sit, or nothing, on one page or two.
+ * What fills a day's page: an hourly schedule and its hours, ruled lines and their spacing,
+ * squares or dots, their size and where they sit, genkō yōshi, or nothing, on one page or two.
  */
 export function DayContentSection({
 	options,
@@ -89,6 +91,7 @@ export function DayContentSection({
 			/>
 			<RadioField
 				label="Fill"
+				description={`Genkō yōshi is Japanese manuscript paper: columns of ${GENKO_YOSHI_SQUARE_SIZE} mm squares, one for each character, with room between them for furigana.`}
 				value={options.dayPageLines}
 				options={DAY_PAGE_LINES_OPTIONS}
 				onChange={handleDayPageLinesChange}

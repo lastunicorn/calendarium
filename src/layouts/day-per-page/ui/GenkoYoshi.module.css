@@ -1,0 +1,61 @@
+/* The area left under the header, the grid centered across it. */
+.genkoYoshi {
+	flex: 1;
+	display: flex;
+	justify-content: center;
+	min-height: 0;
+}
+
+/*
+ * The whole columns that fit across, of squares `--square-size` a side, `--column-gap` apart (both
+ * set inline), and the whole rows that fit down, plus their far lines (`--line-width`, set inline),
+ * sized from the area's percentages and clipped a little outside itself, for the reasons the
+ * squares fill's grid is (`DayPage.module.css`). Its lines are darker than a math notebook's, as
+ * manuscript paper's are.
+ */
+.grid {
+	position: relative;
+	flex-shrink: 0;
+	width: calc(
+		round(
+				down,
+				100% + var(--column-gap) - var(--line-width),
+				var(--square-size) + var(--column-gap)
+			) -
+			var(--column-gap) + var(--line-width)
+	);
+	height: calc(round(down, 100% - var(--line-width), var(--square-size)) + var(--line-width));
+	overflow: clip;
+	overflow-clip-margin: 0.5mm;
+}
+
+.rows,
+.columns {
+	position: absolute;
+	inset: 0;
+	display: grid;
+}
+
+/* A top line, then each row drawing the line below it; cut to the columns (`clip-path`, set inline). */
+.rows {
+	grid-auto-rows: var(--square-size);
+	align-content: start;
+	border-top: var(--line-width) solid var(--color-rule);
+}
+
+.row {
+	border-bottom: var(--line-width) solid var(--color-rule);
+}
+
+/* Each column draws the lines either side of its squares, the next one a gap apart. */
+.columns {
+	grid-auto-columns: calc(var(--square-size) + var(--line-width));
+	grid-auto-flow: column;
+	column-gap: calc(var(--column-gap) - var(--line-width));
+	justify-content: start;
+}
+
+.column {
+	border-right: var(--line-width) solid var(--color-rule);
+	border-left: var(--line-width) solid var(--color-rule);
+}

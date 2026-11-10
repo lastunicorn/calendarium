@@ -4,6 +4,7 @@ import type { SquareGridAlignment } from '../options'
 import type { DayFill, DayPages } from '../pages'
 import { CalendarHeader } from '../../../ui/layouts/CalendarHeader'
 import styles from './DayPage.module.css'
+import { GenkoYoshi } from './GenkoYoshi'
 import { MiniMonth } from '../../../ui/layouts/MiniMonth'
 import { miniMonthSizeClass } from '../../../ui/layouts/miniMonthSize'
 import { Page } from '../../../ui/layouts/Page'
@@ -118,6 +119,9 @@ function DayLines({ fill }: DayLinesProps) {
 				<DotGrid size={fill.size} />
 			</div>
 		)
+	}
+	if (fill.kind === 'genkoYoshi') {
+		return <GenkoYoshi fill={fill} />
 	}
 	return (
 		<div
