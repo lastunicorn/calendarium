@@ -1,29 +1,26 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
-import { type Workspace, defaultWorkspace } from '../../workspace/Workspace'
+import type { Project } from '../../workspace/Project'
 import { defaultLayoutOptions, LAYOUT_IDS, type LayoutId } from '../../layouts'
 import { Preview } from './Preview'
 
 function noop() {}
 
-/** The default workspace showing `layout`. */
-function workspaceFor(layout: LayoutId): Workspace {
-	return { ...defaultWorkspace(), layout }
+/** A project of `layout`, with its defaults or `options`. */
+function projectFor(layout: LayoutId, options: object = defaultLayoutOptions(layout)): Project {
+	return { id: '00000000-0000-4000-8000-000000000001', name: '', layout, options } as Project
 }
 
 /** The class of the box around the pages of `layout`, with `changes` and `page` changed. */
 function pagesBoxClass(layout: LayoutId, changes: object, page: object) {
-	const workspace = workspaceFor(layout)
-	const options = workspace.layouts[layout]
+	const options = defaultLayoutOptions(layout)
 	const { container } = render(
 		<Preview
-			workspace={{
-				...workspace,
-				layouts: {
-					...workspace.layouts,
-					[layout]: { ...options, ...changes, page: { ...options.page, ...page } },
-				},
-			}}
+			project={projectFor(layout, {
+				...options,
+				...changes,
+				page: { ...options.page, ...page },
+			})}
 			onNewProject={noop}
 			zoom={100}
 			onZoom={noop}
@@ -37,12 +34,7 @@ function pagesBoxClass(layout: LayoutId, changes: object, page: object) {
 describe('Preview', () => {
 	it.each(LAYOUT_IDS)('draws the pages of %s', (layout) => {
 		const { container } = render(
-			<Preview
-				workspace={workspaceFor(layout)}
-				onNewProject={noop}
-				zoom={100}
-				onZoom={noop}
-			/>,
+			<Preview project={projectFor(layout)} onNewProject={noop} zoom={100} onZoom={noop} />,
 		)
 		expect(container.querySelectorAll('section').length).toBeGreaterThan(0)
 	})
@@ -50,7 +42,7 @@ describe('Preview', () => {
 	it('sets the printed paper size from the layout', () => {
 		const { container } = render(
 			<Preview
-				workspace={workspaceFor('monthly')}
+				project={projectFor('monthly')}
 				onNewProject={noop}
 				zoom={100}
 				onZoom={noop}
@@ -60,17 +52,13 @@ describe('Preview', () => {
 	})
 
 	it('prints a booklet on a sheet of two pages, completing the last sheet', () => {
-		const workspace = workspaceFor('monthly')
-		const options = workspace.layouts['monthly']
+		const options = defaultLayoutOptions('monthly')
 		const { container } = render(
 			<Preview
-				workspace={{
-					...workspace,
-					layouts: {
-						...workspace.layouts,
-						monthly: { ...options, page: { ...options.page, booklet: true } },
-					},
-				}}
+				project={projectFor('monthly', {
+					...options,
+					page: { ...options.page, booklet: true },
+				})}
 				onNewProject={noop}
 				zoom={100}
 				onZoom={noop}
@@ -122,17 +110,14 @@ describe('Preview', () => {
 	})
 
 	it('marks the pages with the calendar’s language', () => {
-		const workspace = workspaceFor('yearly')
+		const defaults = defaultLayoutOptions('yearly')
 		const options = {
-			...workspace.layouts.yearly,
-			calendar: { ...workspace.layouts.yearly.calendar, locale: 'el-GR' as const },
+			...defaults,
+			calendar: { ...defaults.calendar, locale: 'el-GR' as const },
 		}
 		const { container } = render(
 			<Preview
-				workspace={{
-					...workspace,
-					layouts: { ...workspace.layouts, yearly: options },
-				}}
+				project={projectFor('yearly', options)}
 				onNewProject={noop}
 				zoom={100}
 				onZoom={noop}
@@ -145,7 +130,7 @@ describe('Preview', () => {
 		const onZoom = vi.fn()
 		const { rerender } = render(
 			<Preview
-				workspace={workspaceFor('yearly')}
+				project={projectFor('yearly')}
 				onNewProject={noop}
 				zoom={100}
 				onZoom={onZoom}
@@ -160,7 +145,7 @@ describe('Preview', () => {
 
 		rerender(
 			<Preview
-				workspace={workspaceFor('yearly')}
+				project={projectFor('yearly')}
 				onNewProject={noop}
 				zoom={200}
 				onZoom={onZoom}
@@ -177,7 +162,7 @@ describe('Preview', () => {
 		const onZoom = vi.fn()
 		render(
 			<Preview
-				workspace={workspaceFor('yearly')}
+				project={projectFor('yearly')}
 				onNewProject={noop}
 				zoom={100}
 				onZoom={onZoom}
@@ -192,7 +177,7 @@ describe('Preview', () => {
 	it('counts the pages, and goes to the one before, after or typed in', () => {
 		render(
 			<Preview
-				workspace={workspaceFor('monthly')}
+				project={projectFor('monthly')}
 				onNewProject={noop}
 				zoom={100}
 				onZoom={noop}
@@ -221,17 +206,13 @@ describe('Preview', () => {
 	})
 
 	it('counts a booklet’s sheet sides too', () => {
-		const workspace = workspaceFor('monthly')
-		const options = workspace.layouts['monthly']
+		const options = defaultLayoutOptions('monthly')
 		render(
 			<Preview
-				workspace={{
-					...workspace,
-					layouts: {
-						...workspace.layouts,
-						monthly: { ...options, page: { ...options.page, booklet: true } },
-					},
-				}}
+				project={projectFor('monthly', {
+					...options,
+					page: { ...options.page, booklet: true },
+				})}
 				onNewProject={noop}
 				zoom={100}
 				onZoom={noop}
@@ -245,24 +226,14 @@ describe('Preview', () => {
 
 	it('hides the page indicator for a single page', () => {
 		render(
-			<Preview
-				workspace={workspaceFor('yearly')}
-				onNewProject={noop}
-				zoom={100}
-				onZoom={noop}
-			/>,
+			<Preview project={projectFor('yearly')} onNewProject={noop} zoom={100} onZoom={noop} />,
 		)
 		expect(screen.queryByRole('toolbar', { name: 'Pages' })).toBeNull()
 	})
 
 	it('lists an in-between zoom in the menu', () => {
 		render(
-			<Preview
-				workspace={workspaceFor('yearly')}
-				onNewProject={noop}
-				zoom={87}
-				onZoom={noop}
-			/>,
+			<Preview project={projectFor('yearly')} onNewProject={noop} zoom={87} onZoom={noop} />,
 		)
 		const menu = screen.getByRole('combobox', { name: 'Zoom level' }) as HTMLSelectElement
 		expect(menu.value).toBe('87')
@@ -277,7 +248,7 @@ describe('Preview', () => {
 		const onZoom = vi.fn()
 		render(
 			<Preview
-				workspace={workspaceFor('monthly')}
+				project={projectFor('monthly')}
 				onNewProject={noop}
 				zoom={100}
 				onZoom={onZoom}
@@ -301,7 +272,7 @@ describe('Preview', () => {
 		const onZoom = vi.fn()
 		render(
 			<Preview
-				workspace={workspaceFor('monthly')}
+				project={projectFor('monthly')}
 				onNewProject={noop}
 				zoom={50}
 				onZoom={onZoom}

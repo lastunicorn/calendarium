@@ -1,5 +1,5 @@
 import { type CSSProperties, useLayoutEffect, useRef } from 'react'
-import type { Workspace } from '../../workspace/Workspace'
+import type { Project } from '../../workspace/Project'
 import type { LayoutOptions, LayoutId } from '../../layouts'
 import { pageSizeCss, sheetDimensions } from '../../core/paper'
 import { type PreviewZoom, zoomScale } from '../../preferences/zoom'
@@ -19,7 +19,8 @@ import { type ScreenPoint, useZoomGestures } from './useZoomGestures'
 const PX_PER_MM = 96 / 25.4
 
 interface PreviewProps {
-	workspace: Workspace
+	/** The open project, whose pages are drawn. */
+	project: Project
 	/** Starts one layout's project over from its defaults, offered when its pages fail to render. */
 	onNewProject: (layout: LayoutId) => void
 	/** How large the pages are drawn on screen, from the viewer's preferences. */
@@ -65,9 +66,8 @@ function ActiveLayout<K extends LayoutId>({ layout, options }: ActiveLayoutProps
  * the view in place, or with the wheel the point under the pointer. The preview takes the focus, so
  * its zoom shortcuts work once it is clicked.
  */
-export function Preview({ workspace, onNewProject, zoom, onZoom }: PreviewProps) {
-	const { layout } = workspace
-	const options = workspace.layouts[layout]
+export function Preview({ project, onNewProject, zoom, onZoom }: PreviewProps) {
+	const { layout, options } = project
 	const previewRef = useRef<HTMLDivElement>(null)
 	const areaRef = useRef<HTMLElement>(null)
 	const pagesRef = useRef<HTMLDivElement>(null)

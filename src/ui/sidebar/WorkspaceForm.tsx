@@ -1,4 +1,3 @@
-import type { Workspace } from '../../workspace/Workspace'
 import type { Project, ProjectId } from '../../workspace/Project'
 import { useMemo } from 'react'
 import type { Patch } from '../../core/data'
@@ -10,7 +9,8 @@ import { LayoutSection } from './LayoutSection'
 import { type OpenSections, OpenSectionsContext } from './openSections'
 
 interface WorkspaceFormProps {
-	workspace: Workspace
+	/** The open project, whose options the form edits. */
+	project: Project
 	onSelectLayout: (layout: LayoutId) => void
 	onUpdate: UpdateLayoutOptions
 	onNewProject: (layout: LayoutId) => void
@@ -48,7 +48,7 @@ function LayoutForm<K extends LayoutId>({ layout, options, onUpdate }: LayoutFor
  * across layouts.
  */
 export function WorkspaceForm({
-	workspace,
+	project,
 	onSelectLayout,
 	onUpdate,
 	onNewProject,
@@ -56,7 +56,7 @@ export function WorkspaceForm({
 	openSection,
 	onToggleSection,
 }: WorkspaceFormProps) {
-	const { layout } = workspace
+	const { layout } = project
 
 	function isOpen(title: string) {
 		return title === openSection
@@ -67,16 +67,16 @@ export function WorkspaceForm({
 		<OpenSectionsContext value={openSections}>
 			<div className={styles.form}>
 				<LayoutSection
-					workspace={workspace}
+					project={project}
 					onSelect={onSelectLayout}
 					onNew={onNewProject}
 					onOpen={onOpenProject}
 				/>
-				{/* Keyed so half-typed field drafts don't carry over to another layout. */}
+				{/* Keyed so half-typed field drafts don't carry over to another project. */}
 				<LayoutForm
-					key={layout}
+					key={project.id}
 					layout={layout}
-					options={workspace.layouts[layout]}
+					options={project.options}
 					onUpdate={onUpdate}
 				/>
 			</div>

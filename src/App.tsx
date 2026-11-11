@@ -5,28 +5,32 @@ import { Sidebar } from './ui/sidebar/Sidebar'
 import { Toolbar } from './ui/sidebar/Toolbar'
 import { usePreferences } from './ui/usePreferences'
 import { useWorkspace } from './ui/useWorkspace'
+import { openProject } from './workspace/Workspace'
 
 export default function App() {
-	const { workspace, selectLayout, update, newProject, openProject } = useWorkspace()
+	const { workspace, selectLayout, update, resetOptions, importProject } = useWorkspace()
 	const { preferences, resizeSidebar, toggleSection, zoomPreview } = usePreferences()
+	// `useWorkspace` always opens a project.
+	const project = openProject(workspace)
+	if (project === null) return null
 
 	return (
 		<div className={styles.app}>
 			<Sidebar width={preferences.sidebarWidth} onResize={resizeSidebar}>
 				<Toolbar />
 				<WorkspaceForm
-					workspace={workspace}
+					project={project}
 					onSelectLayout={selectLayout}
 					onUpdate={update}
-					onNewProject={newProject}
-					onOpenProject={openProject}
+					onNewProject={resetOptions}
+					onOpenProject={importProject}
 					openSection={preferences.openSection}
 					onToggleSection={toggleSection}
 				/>
 			</Sidebar>
 			<Preview
-				workspace={workspace}
-				onNewProject={newProject}
+				project={project}
+				onNewProject={resetOptions}
 				zoom={preferences.previewZoom}
 				onZoom={zoomPreview}
 			/>

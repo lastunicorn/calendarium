@@ -1,9 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { defaultLayoutOptions, LAYOUT_IDS, normalizeLayout } from '../layouts'
-import { defaultWorkspace } from './Workspace'
-import type { Project } from './Project'
+import { defaultWorkspace, openProject } from './Workspace'
 import { workspaceReducer } from './workspaceReducer'
-import { parseWorkspace, toStoredWorkspace } from './parseWorkspace'
+import { parseWorkspace } from './parseWorkspace'
 
 // Each layout's own rules are tested in its `options.test.ts`; these check the page rules every
 // layout shares, and that every layout's options in state pass through its layout's rules.
@@ -28,35 +27,43 @@ describe('normalizeLayout', () => {
 	})
 
 	it('keeps the differing margins of settings saved before equal margins', () => {
-		const stored = toStoredWorkspace(defaultWorkspace())
-		const day = stored.layouts['daily']
-		const { equalMargins: _, ...page } = { ...day.page, margins: DIFFERING }
-		const layouts = { ...stored.layouts, daily: { ...day, page } }
-		expect(parseWorkspace({ ...stored, layouts }).layouts['daily'].page).toMatchObject({
+		const stored = {
+			version: 5,
+			layout: 'day-per-page',
+			layouts: { 'day-per-page': { page: { margins: DIFFERING } } },
+		}
+		expect(openProject(parseWorkspace(stored))?.options.page).toMatchObject({
 			margins: DIFFERING,
 			equalMargins: false,
 		})
 	})
 
-	it('applies to every reducer change of a layout’s options', () => {
+	it('applies to every reducer change of a project’s options', () => {
 		const layout = 'monthly'
 		const { page } = defaultLayoutOptions(layout)
-		const updated = workspaceReducer(defaultWorkspace(), {
-			type: 'update',
+		const id = '00000000-0000-4000-8000-000000000001'
+		const created = workspaceReducer(defaultWorkspace(), {
+			type: 'createProject',
+			id,
+			name: '',
 			layout,
-			patch: { page: { ...page, mirrorMargins: true } },
 		})
-		expect(updated.layouts[layout].page.equalMargins).toBe(false)
+		const updated = workspaceReducer(created, {
+			type: 'updateOptions',
+			layout,
+			patch: { page: { mirrorMargins: true } },
+		})
+		expect(openProject(updated)?.options.page.equalMargins).toBe(false)
 
-		const opened = workspaceReducer(defaultWorkspace(), {
-			type: 'openProject',
+		const imported = workspaceReducer(defaultWorkspace(), {
+			type: 'importProject',
 			project: {
-				id: null,
+				id,
 				name: '',
 				layout,
 				options: { ...defaultLayoutOptions(layout), page: { ...page, margins: DIFFERING } },
-			} as Project<null>,
+			},
 		})
-		expect(opened.layouts[layout].page.equalMargins).toBe(false)
+		expect(openProject(imported)?.options.page.equalMargins).toBe(false)
 	})
 })

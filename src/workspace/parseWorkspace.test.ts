@@ -1,182 +1,149 @@
 import { describe, expect, it } from 'vitest'
-import { defaultLayoutOptions, LAYOUT_IDS, mapLayouts } from '../layouts'
-import { defaultWorkspace } from './Workspace'
+import { defaultLayoutOptions } from '../layouts'
+import { isProjectId, type Project } from './Project'
+import { projectDocument } from './projectDocument'
+import { defaultWorkspace, openProject, projectList, type Workspace } from './Workspace'
 import { parseWorkspace, toStoredWorkspace } from './parseWorkspace'
 import { FORMAT_VERSION } from './version'
 
+// Each project is read by `parseProjectDocument`, whose rules are tested with it; these check how
+// the workspace holds them.
+
+/** The `n`th test id, a valid project id that sorts by `n`. */
+function id(n: number): string {
+	return `00000000-0000-4000-8000-${String(n).padStart(12, '0')}`
+}
+
+const HOME: Project = {
+	id: id(1),
+	name: 'Home',
+	layout: 'yearly',
+	options: defaultLayoutOptions('yearly'),
+}
+const WORK: Project = {
+	id: id(2),
+	name: 'Work',
+	layout: 'weekly',
+	options: {
+		...defaultLayoutOptions('weekly'),
+		header: { ...defaultLayoutOptions('weekly').header, showWeek: false },
+	},
+}
+
+/** Stored data of the current version holding `projects`, `open` open. */
+function stored(projects: unknown[], open: unknown) {
+	return { version: FORMAT_VERSION, projects, open }
+}
+
 describe('parseWorkspace', () => {
-	it('keeps a language-chosen week start', () => {
-		const stored = toStoredWorkspace(defaultWorkspace())
-		stored.layouts.monthly = {
-			...stored.layouts.monthly,
-			calendar: { ...stored.layouts.monthly.calendar, weekStart: 'auto' },
-		}
-		stored.layouts.daily = {
-			...stored.layouts.daily,
-			calendar: { ...stored.layouts.daily.calendar, weekStart: 0 },
-		}
-		const { layouts } = parseWorkspace(stored)
-		expect(layouts.monthly.calendar.weekStart).toBe('auto')
-		expect(layouts.daily.calendar.weekStart).toBe(0)
-	})
-
-	it('returns defaults for missing or malformed data', () => {
-		expect(parseWorkspace(null)).toEqual(defaultWorkspace())
-		expect(parseWorkspace('nope')).toEqual(defaultWorkspace())
-		expect(parseWorkspace([])).toEqual(defaultWorkspace())
-		expect(parseWorkspace({ version: FORMAT_VERSION })).toEqual(defaultWorkspace())
-	})
-
-	// Each layout's own fields are tested in its `options.test.ts`; these check the shared ones,
-	// and that each layout's options are parsed by its own spec.
-	it('keeps the valid shared fields of every layout, and the active layout', () => {
-		const common = {
-			calendar: { year: 2030, locale: 'ro-RO', weekStart: 6 },
-			events: ['0000-12-25 Christmas'],
-			page: {
-				paperSize: 'letter',
-				orientation: 'landscape',
-				margins: { top: 5, right: 12.5, bottom: 0, left: 50 },
-				equalMargins: false,
-				mirrorMargins: true,
-				spine: 'top',
-				booklet: true,
-			},
-		}
-		const workspace = {
-			layout: 'monthly',
-			layouts: mapLayouts((layout) => ({ ...defaultLayoutOptions(layout), ...common })),
-		}
-		expect(parseWorkspace({ version: FORMAT_VERSION, ...workspace })).toEqual(workspace)
-	})
-
-	it('drops invalid shared fields of every layout, and an unknown active layout', () => {
-		const invalidCommon = {
-			calendar: { year: 2030.5, locale: 'xx', weekStart: 7 },
-			events: 42,
-			page: { paperSize: 'b5', orientation: 'up', margins: 'wide' },
-		}
-		const workspace = parseWorkspace({
-			version: FORMAT_VERSION,
-			layout: 'quarterly',
-			layouts: Object.fromEntries(LAYOUT_IDS.map((layout) => [layout, invalidCommon])),
-		})
-		expect(workspace).toEqual(defaultWorkspace())
-	})
-
-	it('reads each layout’s options by its own rules', () => {
-		const workspace = parseWorkspace({
-			version: FORMAT_VERSION,
-			layouts: {
-				yearly: { content: { weekdayFormat: 'full' } },
-				monthly: { content: { weekdayFormat: 'full' } },
-			},
-		})
-		expect(workspace.layouts['monthly'].content.weekdayFormat).toBe('full')
-		expect(workspace.layouts['yearly'].content.weekdayFormat).toBe(
-			defaultLayoutOptions('yearly').content.weekdayFormat,
-		)
-	})
-
-	it('reads older data, naming the layouts by their old ids, through the layouts’ own steps', () => {
-		const workspace = parseWorkspace({
-			version: 3,
-			layout: 'week-per-page',
-			layouts: { 'week-per-page': { highlightWeekends: 'off', showWeekNumbers: false } },
-		})
-		expect(workspace.layout).toBe('weekly')
-		expect(workspace.layouts.weekly).toMatchObject({
-			header: { showWeek: false },
-			content: { highlightWeekendDays: false },
-		})
-	})
-
-	it('ignores fields a layout does not have', () => {
-		const workspace = parseWorkspace({
-			version: FORMAT_VERSION,
-			layouts: { monthly: { subtitle: 'Office', firstHour: 3 } },
-		})
-		expect(workspace.layouts['monthly']).not.toHaveProperty('subtitle')
-		expect(workspace.layouts['monthly']).not.toHaveProperty('firstHour')
-	})
-
-	it('falls back to defaults for one broken layout only', () => {
-		const workspace = parseWorkspace({
-			version: FORMAT_VERSION,
-			layouts: { yearly: 'broken', daily: { calendar: { year: 2040 } } },
-		})
-		expect(workspace.layouts['yearly']).toEqual(defaultLayoutOptions('yearly'))
-		expect(workspace.layouts.daily.calendar.year).toBe(2040)
-	})
-
-	it('falls back to the default page when `page` is not an object', () => {
-		const workspace = parseWorkspace({
-			version: FORMAT_VERSION,
-			layouts: { monthly: { page: 'a4' } },
-		})
-		expect(workspace.layouts['monthly'].page).toEqual(defaultLayoutOptions('monthly').page)
-	})
-
-	it('validates each margin separately', () => {
-		const workspace = parseWorkspace({
-			version: FORMAT_VERSION,
-			layouts: {
-				yearly: {
-					page: { margins: { top: 20, right: -1, bottom: 51, left: '5' } },
-				},
-			},
-		})
-		expect(workspace.layouts['yearly'].page.margins).toEqual({
-			...defaultLayoutOptions('yearly').page.margins,
-			top: 20,
-		})
-	})
-
 	it('round-trips through toStoredWorkspace', () => {
-		const workspace = defaultWorkspace()
-		workspace.layout = 'daily'
-		workspace.layouts.daily.calendar = { ...workspace.layouts.daily.calendar, year: 2030 }
-		workspace.layouts['monthly'].page = {
-			...workspace.layouts['monthly'].page,
-			paperSize: 'a3',
+		const workspace: Workspace = {
+			projects: { [HOME.id]: HOME, [WORK.id]: WORK },
+			open: WORK.id,
 		}
 		expect(parseWorkspace(toStoredWorkspace(workspace))).toEqual(workspace)
 	})
 
-	it('does not copy unknown fields, including the version tags', () => {
-		const workspace = parseWorkspace({
-			version: FORMAT_VERSION,
-			app: '3.0.0',
-			extra: 'x',
-			layouts: { yearly: { version: FORMAT_VERSION, app: '3.0.0', extra: 'x' } },
-		})
-		expect(workspace).not.toHaveProperty('version')
-		expect(workspace).not.toHaveProperty('app')
-		expect(workspace).not.toHaveProperty('extra')
-		expect(workspace.layouts['yearly']).not.toHaveProperty('extra')
-		expect(workspace.layouts['yearly']).not.toHaveProperty('version')
-		expect(workspace.layouts['yearly']).not.toHaveProperty('app')
-	})
-})
-
-describe('parseWorkspace versions', () => {
-	it('ignores data without a version this app knows', () => {
-		const layouts = { yearly: { year: 2040 } }
-		for (const version of [undefined, 1, 2, '3', 3.5]) {
-			expect(parseWorkspace({ version, layout: 'daily', layouts })).toEqual(
-				defaultWorkspace(),
-			)
+	it('gives an empty workspace for missing or malformed data', () => {
+		for (const data of [
+			null,
+			'nope',
+			[],
+			{ version: FORMAT_VERSION },
+			stored('x' as never, null),
+		]) {
+			expect(parseWorkspace(data)).toEqual(defaultWorkspace())
 		}
 	})
 
+	it('ignores data without a version this app knows', () => {
+		for (const version of [undefined, 1, 2, '6', 6.5]) {
+			const data = { ...stored([projectDocument(HOME)], HOME.id), version }
+			expect(parseWorkspace(data)).toEqual(defaultWorkspace())
+		}
+	})
+
+	it('opens the first listed project when the open id names none', () => {
+		const projects = [projectDocument(WORK), projectDocument(HOME)]
+		for (const open of [undefined, null, id(9), 'toString']) {
+			expect(parseWorkspace(stored(projects, open)).open).toBe(HOME.id)
+		}
+	})
+
+	it('drops the projects it can’t read, and gives one without an id a new id', () => {
+		const workspace = parseWorkspace(
+			stored(
+				[
+					projectDocument(HOME),
+					{ ...projectDocument(WORK), layout: 'quarterly' },
+					{ ...projectDocument(WORK), format: 'other' },
+					'broken',
+					{ ...projectDocument(WORK), id: undefined },
+				],
+				HOME.id,
+			),
+		)
+		const [home, work] = projectList(workspace)
+		expect(projectList(workspace)).toHaveLength(2)
+		expect(home).toEqual(HOME)
+		expect(isProjectId(work.id)).toBe(true)
+		expect(work).toEqual({ ...WORK, id: work.id })
+	})
+
 	it('reads data from a later version as the current shape', () => {
+		const future = { ...projectDocument(HOME), version: FORMAT_VERSION + 1, futureField: 1 }
 		const workspace = parseWorkspace({
+			...stored([future], HOME.id),
 			version: FORMAT_VERSION + 1,
-			layout: 'daily',
-			layouts: { daily: { calendar: { year: 2040 }, futureOption: true } },
 		})
-		expect(workspace.layout).toBe('daily')
-		expect(workspace.layouts.daily.calendar.year).toBe(2040)
-		expect(workspace.layouts['daily']).not.toHaveProperty('futureOption')
+		expect(workspace).toEqual({ projects: { [HOME.id]: HOME }, open: HOME.id })
+	})
+})
+
+describe('parseWorkspace of legacy data', () => {
+	it('makes an unnamed project of each stored layout, the shown one open', () => {
+		const workspace = parseWorkspace({
+			version: 3,
+			layout: 'week-per-page',
+			layouts: {
+				'year-per-page': { title: 'Ours' },
+				'week-per-page': { highlightWeekends: 'off', showWeekNumbers: false },
+				'quarter-per-page': {},
+			},
+		})
+		const projects = projectList(workspace)
+		expect(projects.map((project) => [project.layout, project.name])).toEqual([
+			['yearly', ''],
+			['weekly', ''],
+		])
+		for (const project of projects) expect(isProjectId(project.id)).toBe(true)
+		expect(openProject(workspace)?.layout).toBe('weekly')
+		expect(openProject(workspace)?.options).toMatchObject({
+			header: { showWeek: false },
+			content: { highlightWeekendDays: false },
+		})
+		expect(projects[0].options).toMatchObject({ header: { title: 'Ours' } })
+	})
+
+	it('opens the first listed project when the shown layout is not stored', () => {
+		const workspace = parseWorkspace({
+			version: 5,
+			layout: 'quarter-per-page',
+			layouts: { 'month-per-page': {}, 'day-per-page': {} },
+		})
+		expect(openProject(workspace)).toBe(projectList(workspace)[0])
+	})
+
+	it('falls back to the defaults for one broken layout only', () => {
+		const workspace = parseWorkspace({
+			version: 5,
+			layouts: { 'year-per-page': 'broken', 'day-per-page': { year: 2040 } },
+		})
+		const byLayout = (layout: string) =>
+			projectList(workspace).find((project) => project.layout === layout)
+		const yearly = byLayout('yearly')!
+		const daily = byLayout('daily')!
+		expect(yearly.options).toEqual(defaultLayoutOptions('yearly'))
+		expect(daily.layout === 'daily' && daily.options.calendar.year).toBe(2040)
 	})
 })

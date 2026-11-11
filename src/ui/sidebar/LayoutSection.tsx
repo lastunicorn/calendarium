@@ -1,8 +1,7 @@
 import { type ChangeEvent, type FocusEvent, type PointerEvent, useRef, useState } from 'react'
-import { activeProject, isNewProject, type Workspace } from '../../workspace/Workspace'
-import { LAYOUT_IDS, type LayoutId } from '../../layouts'
+import { hasDefaultOptions, LAYOUT_IDS, type LayoutId } from '../../layouts'
 import { type OpenedProjectFile, parseProjectFile, projectFile } from '../../workspace/projectFile'
-import { newProjectId, type Project, type ProjectId } from '../../workspace/Project'
+import type { Project, ProjectId } from '../../workspace/Project'
 import { IconButton } from '../components/IconButton'
 import { LayoutIcon, NewIcon, OpenIcon, SaveIcon } from '../components/icons'
 import { downloadFile } from '../download'
@@ -17,7 +16,8 @@ const LAYOUT_OPTIONS = LAYOUT_IDS.map((layout) => ({
 }))
 
 interface LayoutSectionProps {
-	workspace: Workspace
+	/** The open project, saved to a file or started over. */
+	project: Project
 	/** Shows another layout, with the options it had last. */
 	onSelect: (layout: LayoutId) => void
 	/** Starts one layout's project over from its default options. */
@@ -73,8 +73,8 @@ function actionLabel(target: EventTarget): string {
  * layout's project (disabled while it still has its defaults); each layout keeps its own last
  * project. Always open.
  */
-export function LayoutSection({ workspace, onSelect, onNew, onOpen }: LayoutSectionProps) {
-	const { layout } = workspace
+export function LayoutSection({ project, onSelect, onNew, onOpen }: LayoutSectionProps) {
+	const { layout } = project
 
 	const fileInput = useRef<HTMLInputElement>(null)
 	const [openError, setOpenError] = useState('')
@@ -94,8 +94,7 @@ export function LayoutSection({ workspace, onSelect, onNew, onOpen }: LayoutSect
 	}
 
 	function handleSaveClick() {
-		// The workspace keeps no ids yet, so each saved file is a project of its own.
-		const file = projectFile({ ...activeProject(workspace), id: newProjectId() })
+		const file = projectFile(project)
 		downloadFile(file.fileName, file.text, 'application/json')
 	}
 
@@ -150,7 +149,7 @@ export function LayoutSection({ workspace, onSelect, onNew, onOpen }: LayoutSect
 					<IconButton
 						label="New project"
 						icon={<NewIcon />}
-						disabled={isNewProject(workspace)}
+						disabled={hasDefaultOptions(layout, project.options)}
 						onClick={handleNewClick}
 					/>
 					<IconButton

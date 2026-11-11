@@ -1,39 +1,44 @@
-import {
-	defaultLayoutOptions,
-	hasDefaultOptions,
-	LAYOUT_IDS,
-	type LayoutOptions,
-	type LayoutId,
-	mapLayouts,
-} from '../layouts'
-import type { Project } from './Project'
+import type { Project, ProjectId } from './Project'
 
 /**
- * The workspace: which layout is shown, and the last project of each layout, as its options.
- * The aggregate root of the settings: changed only by `workspaceReducer`'s commands, which keep every
- * layout's options normalized, and loaded and saved by `storage.ts`, its repository.
+ * The workspace: every project kept in this browser, and the one open. The aggregate root of the
+ * settings: changed only by `workspaceReducer`'s commands, which keep every project's options
+ * normalized, and loaded and saved by `storage.ts`, its repository.
  */
 export interface Workspace {
-	/** The active layout, whose options the sidebar edits and the preview shows. */
-	layout: LayoutId
-	layouts: LayoutOptions
+	/** Every project kept in this browser, by id. */
+	projects: Readonly<Record<ProjectId, Project>>
+	/** The project the sidebar edits and the preview draws; `null` when there is none. */
+	open: ProjectId | null
 }
 
-/** Every layout's defaults, showing the first layout. */
+/** A workspace with no project. */
 export function defaultWorkspace(): Workspace {
-	return { layout: LAYOUT_IDS[0], layouts: mapLayouts(defaultLayoutOptions) }
+	return { projects: {}, open: null }
+}
+
+/** The project the sidebar edits and the preview draws; `null` when none is open. */
+export function openProject({ projects, open }: Workspace): Project | null {
+	return open !== null && Object.hasOwn(projects, open) ? projects[open] : null
+}
+
+/** The name a project is shown and sorted by: its name trimmed, `''` when it has none. */
+function shownName(project: Project): string {
+	return project.name.trim()
 }
 
 /**
- * The project the workspace shows: the active layout with its options, unnamed. The workspace
- * keeps no project ids, so it has none.
+ * Orders projects as the picker lists them: by name, the unnamed ones last, then by id so the
+ * order is stable.
  */
-export function activeProject({ layout, layouts }: Workspace): Project<null> {
-	// `layouts[layout]` is that layout's options, which TypeScript can't follow through the union.
-	return { id: null, name: '', layout, options: layouts[layout] } as Project<null>
+function compareProjects(a: Project, b: Project): number {
+	const nameA = shownName(a)
+	const nameB = shownName(b)
+	if ((nameA === '') !== (nameB === '')) return nameA === '' ? 1 : -1
+	return nameA.localeCompare(nameB) || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0)
 }
 
-/** Whether the shown project still has its layout's defaults, so starting a new one changes nothing. */
-export function isNewProject({ layout, layouts }: Workspace): boolean {
-	return hasDefaultOptions(layout, layouts[layout])
+/** Every project, in the order the picker lists them (see `compareProjects`). */
+export function projectList({ projects }: Workspace): Project[] {
+	return Object.values(projects).sort(compareProjects)
 }

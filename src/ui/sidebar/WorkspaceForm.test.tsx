@@ -1,13 +1,24 @@
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import { type ComponentProps, useState } from 'react'
 import { describe, expect, it, vi } from 'vitest'
-import { LAYOUT_IDS, type LayoutId } from '../../layouts'
-import { defaultWorkspace } from '../../workspace/Workspace'
+import { defaultLayoutOptions, LAYOUT_IDS, type LayoutId } from '../../layouts'
+import type { Project } from '../../workspace/Project'
 import { margins } from '../../core/paper'
 import { defaultPreferences, withSectionToggled } from '../../preferences/Preferences'
 import { WorkspaceForm } from './WorkspaceForm'
 
 function noop() {}
+
+const ID = '00000000-0000-4000-8000-000000000001'
+
+/** A project of `layout`, with its defaults or `options`. */
+function projectFor(
+	layout: LayoutId = 'yearly',
+	options: object = defaultLayoutOptions(layout),
+	id = ID,
+): Project {
+	return { id, name: '', layout, options } as Project
+}
 
 type FormProps = Omit<ComponentProps<typeof WorkspaceForm>, 'openSection' | 'onToggleSection'>
 
@@ -33,10 +44,9 @@ function Form(props: FormProps) {
  * (like the margins) are part of that section.
  */
 function sectionTitles(layout: LayoutId): string[] {
-	const workspace = { ...defaultWorkspace(), layout }
 	render(
 		<Form
-			workspace={workspace}
+			project={projectFor(layout)}
 			onSelectLayout={noop}
 			onUpdate={noop}
 			onNewProject={noop}
@@ -105,10 +115,10 @@ describe('WorkspaceForm', () => {
 	})
 
 	it('keeps a section open on another layout', () => {
-		const workspace = defaultWorkspace()
+		const project = projectFor()
 		const { rerender } = render(
 			<Form
-				workspace={workspace}
+				project={project}
 				onSelectLayout={noop}
 				onUpdate={noop}
 				onNewProject={noop}
@@ -119,7 +129,7 @@ describe('WorkspaceForm', () => {
 
 		rerender(
 			<Form
-				workspace={{ ...workspace, layout: 'daily' }}
+				project={projectFor('daily', undefined, '00000000-0000-4000-8000-000000000002')}
 				onSelectLayout={noop}
 				onUpdate={noop}
 				onNewProject={noop}
@@ -133,10 +143,10 @@ describe('WorkspaceForm', () => {
 	})
 
 	it('shows the spine only with mirrored margins, outside a booklet', () => {
-		const workspace = defaultWorkspace()
+		const project = projectFor()
 		const { rerender } = render(
 			<Form
-				workspace={workspace}
+				project={project}
 				onSelectLayout={noop}
 				onUpdate={noop}
 				onNewProject={noop}
@@ -146,17 +156,14 @@ describe('WorkspaceForm', () => {
 		fireEvent.click(screen.getByRole('button', { name: 'Page' }))
 		expect(screen.queryByRole('group', { name: 'Spine' })).toBeNull()
 
-		const layout = workspace.layouts[workspace.layout]
-		const mirrored = {
-			...workspace,
-			layouts: {
-				...workspace.layouts,
-				[workspace.layout]: { ...layout, page: { ...layout.page, mirrorMargins: true } },
-			},
-		}
+		const layout = defaultLayoutOptions('yearly')
+		const mirrored = projectFor('yearly', {
+			...layout,
+			page: { ...layout.page, mirrorMargins: true },
+		})
 		rerender(
 			<Form
-				workspace={mirrored}
+				project={mirrored}
 				onSelectLayout={noop}
 				onUpdate={noop}
 				onNewProject={noop}
@@ -166,19 +173,13 @@ describe('WorkspaceForm', () => {
 		expect(screen.getByRole('group', { name: 'Spine' })).not.toBeNull()
 
 		// A booklet's spine is its fold.
-		const booklet = {
-			...workspace,
-			layouts: {
-				...workspace.layouts,
-				[workspace.layout]: {
-					...layout,
-					page: { ...layout.page, mirrorMargins: true, booklet: true },
-				},
-			},
-		}
+		const booklet = projectFor('yearly', {
+			...layout,
+			page: { ...layout.page, mirrorMargins: true, booklet: true },
+		})
 		rerender(
 			<Form
-				workspace={booklet}
+				project={booklet}
 				onSelectLayout={noop}
 				onUpdate={noop}
 				onNewProject={noop}
@@ -189,21 +190,15 @@ describe('WorkspaceForm', () => {
 	})
 
 	it('sets every margin from the top one with equal margins, unavailable with mirror margins', () => {
-		const workspace = defaultWorkspace()
-		const layout = workspace.layouts[workspace.layout]
+		const project = projectFor()
+		const layout = defaultLayoutOptions('yearly')
 		const onUpdate = vi.fn()
 		function withPage(page: Partial<typeof layout.page>) {
-			return {
-				...workspace,
-				layouts: {
-					...workspace.layouts,
-					[workspace.layout]: { ...layout, page: { ...layout.page, ...page } },
-				},
-			}
+			return projectFor('yearly', { ...layout, page: { ...layout.page, ...page } })
 		}
 		const { rerender } = render(
 			<Form
-				workspace={workspace}
+				project={project}
 				onSelectLayout={noop}
 				onUpdate={onUpdate}
 				onNewProject={noop}
@@ -216,7 +211,7 @@ describe('WorkspaceForm', () => {
 		const top = screen.getByRole<HTMLInputElement>('spinbutton', { name: 'Top margin' })
 		expect(top.readOnly).toBe(false)
 		fireEvent.change(top, { target: { value: '20' } })
-		expect(onUpdate).toHaveBeenLastCalledWith(workspace.layout, {
+		expect(onUpdate).toHaveBeenLastCalledWith('yearly', {
 			page: expect.objectContaining({
 				margins: { top: 20, right: 20, bottom: 20, left: 20 },
 			}),
@@ -224,7 +219,7 @@ describe('WorkspaceForm', () => {
 
 		rerender(
 			<Form
-				workspace={withPage({ mirrorMargins: true, equalMargins: false })}
+				project={withPage({ mirrorMargins: true, equalMargins: false })}
 				onSelectLayout={noop}
 				onUpdate={onUpdate}
 				onNewProject={noop}
@@ -237,7 +232,7 @@ describe('WorkspaceForm', () => {
 
 		rerender(
 			<Form
-				workspace={withPage({
+				project={withPage({
 					equalMargins: false,
 					margins: { top: 5, right: 10, bottom: 15, left: 20 },
 				})}
@@ -248,16 +243,16 @@ describe('WorkspaceForm', () => {
 			/>,
 		)
 		fireEvent.click(equal)
-		expect(onUpdate).toHaveBeenLastCalledWith(workspace.layout, {
+		expect(onUpdate).toHaveBeenLastCalledWith('yearly', {
 			page: expect.objectContaining({ equalMargins: true, margins: margins(5) }),
 		})
 	})
 
 	it('disables New project while the shown project still has its defaults', () => {
-		const workspace = defaultWorkspace()
+		const project = projectFor()
 		const { rerender } = render(
 			<Form
-				workspace={workspace}
+				project={project}
 				onSelectLayout={noop}
 				onUpdate={noop}
 				onNewProject={noop}
@@ -267,17 +262,14 @@ describe('WorkspaceForm', () => {
 		const button = screen.getByRole<HTMLButtonElement>('button', { name: 'New project' })
 		expect(button.disabled).toBe(true)
 
-		const options = workspace.layouts[workspace.layout]
-		const changed = {
-			...workspace,
-			layouts: {
-				...workspace.layouts,
-				[workspace.layout]: { ...options, calendar: { ...options.calendar, year: 2030 } },
-			},
-		}
+		const options = defaultLayoutOptions('yearly')
+		const changed = projectFor('yearly', {
+			...options,
+			calendar: { ...options.calendar, year: 2030 },
+		})
 		rerender(
 			<Form
-				workspace={changed}
+				project={changed}
 				onSelectLayout={noop}
 				onUpdate={noop}
 				onNewProject={noop}
@@ -290,7 +282,7 @@ describe('WorkspaceForm', () => {
 	it('labels the hovered or focused project action under the buttons', () => {
 		render(
 			<Form
-				workspace={defaultWorkspace()}
+				project={projectFor()}
 				onSelectLayout={noop}
 				onUpdate={noop}
 				onNewProject={noop}
@@ -312,10 +304,10 @@ describe('WorkspaceForm', () => {
 
 	it('asks before resetting a section, and resets only that section’s fields', () => {
 		const onUpdate = vi.fn()
-		const workspace = defaultWorkspace()
+		const project = projectFor()
 		render(
 			<Form
-				workspace={workspace}
+				project={project}
 				onSelectLayout={noop}
 				onUpdate={onUpdate}
 				onNewProject={noop}
@@ -329,8 +321,8 @@ describe('WorkspaceForm', () => {
 		const question = screen.getByRole('alertdialog')
 		expect(document.activeElement).toBe(within(question).getByRole('button', { name: 'Reset' }))
 		fireEvent.click(within(question).getByRole('button', { name: 'Reset' }))
-		const { calendar } = workspace.layouts[workspace.layout]
-		expect(onUpdate).toHaveBeenCalledWith(workspace.layout, { calendar })
+		const { calendar } = defaultLayoutOptions('yearly')
+		expect(onUpdate).toHaveBeenCalledWith('yearly', { calendar })
 		expect(screen.queryByRole('alertdialog')).toBeNull()
 	})
 
@@ -338,7 +330,7 @@ describe('WorkspaceForm', () => {
 		const onUpdate = vi.fn()
 		render(
 			<Form
-				workspace={defaultWorkspace()}
+				project={projectFor()}
 				onSelectLayout={noop}
 				onUpdate={onUpdate}
 				onNewProject={noop}

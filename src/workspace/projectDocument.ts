@@ -12,13 +12,10 @@ import { APP_VERSION, FORMAT_VERSION } from './version'
 /** Marks a JSON object as one of this app's serialized projects, from 6 on. */
 export const PROJECT_FORMAT = 'calendarium/project'
 
-/** `project` as JSON, pretty-printed with tabs (for a file) or compact (for storage). */
-export function serializeProject(
-	{ id, name, layout, options }: Project,
-	{ pretty }: { pretty: boolean },
-): string {
+/** `project` as its serialized object: the tags, then the project. */
+export function projectDocument({ id, name, layout, options }: Project) {
 	// The options keep the key order of their layout's defaults: sidebar order.
-	const document = {
+	return {
 		format: PROJECT_FORMAT,
 		version: FORMAT_VERSION,
 		app: APP_VERSION,
@@ -27,6 +24,11 @@ export function serializeProject(
 		layout,
 		options,
 	}
+}
+
+/** `project` as JSON, pretty-printed with tabs (for a file) or compact (for storage). */
+export function serializeProject(project: Project, { pretty }: { pretty: boolean }): string {
+	const document = projectDocument(project)
 	return pretty ? JSON.stringify(document, null, '\t') + '\n' : JSON.stringify(document)
 }
 
