@@ -1,0 +1,79 @@
+/* Centered over the dimmed app by the browser, as a modal dialog is. */
+.dialog {
+	width: min(420px, calc(100vw - 32px));
+	padding: 0;
+	color: var(--color-text);
+	background: var(--color-surface);
+	border: 1px solid var(--color-border);
+	border-radius: 6px;
+	box-shadow: 0 8px 24px var(--color-page-shadow);
+}
+
+.dialog::backdrop {
+	background: var(--color-backdrop);
+}
+
+.form {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	padding: 16px;
+}
+
+.header {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.title {
+	flex: 1;
+	margin: 0;
+	font-size: 1rem;
+}
+
+/* A bare icon in the corner, faint until hovered or focused, like a section's reset cancel. */
+.close {
+	display: inline-flex;
+	padding: 4px;
+	color: var(--color-text-faint);
+	background: none;
+	border: none;
+	border-radius: 50%;
+	cursor: pointer;
+}
+
+.close:hover,
+.close:focus-visible {
+	color: var(--color-text);
+}
+
+.body {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	font-size: 0.875rem;
+}
+
+/* The body's question, when it is text. */
+.body > p {
+	margin: 0;
+}
+
+.actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 8px;
+}
+
+/* A little larger than a bare button, as a section's reset button is. */
+.action {
+	padding: 4px 16px;
+	font-size: 0.875rem;
+}
+
+@media print {
+	.dialog {
+		display: none;
+	}
+}

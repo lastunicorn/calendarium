@@ -21,7 +21,7 @@ function pagesBoxClass(layout: LayoutId, changes: object, page: object) {
 				...changes,
 				page: { ...options.page, ...page },
 			})}
-			onNewProject={noop}
+			onResetOptions={noop}
 			zoom={100}
 			onZoom={noop}
 		/>,
@@ -34,7 +34,7 @@ function pagesBoxClass(layout: LayoutId, changes: object, page: object) {
 describe('Preview', () => {
 	it.each(LAYOUT_IDS)('draws the pages of %s', (layout) => {
 		const { container } = render(
-			<Preview project={projectFor(layout)} onNewProject={noop} zoom={100} onZoom={noop} />,
+			<Preview project={projectFor(layout)} onResetOptions={noop} zoom={100} onZoom={noop} />,
 		)
 		expect(container.querySelectorAll('section').length).toBeGreaterThan(0)
 	})
@@ -43,7 +43,7 @@ describe('Preview', () => {
 		const { container } = render(
 			<Preview
 				project={projectFor('monthly')}
-				onNewProject={noop}
+				onResetOptions={noop}
 				zoom={100}
 				onZoom={noop}
 			/>,
@@ -59,7 +59,7 @@ describe('Preview', () => {
 					...options,
 					page: { ...options.page, booklet: true },
 				})}
-				onNewProject={noop}
+				onResetOptions={noop}
 				zoom={100}
 				onZoom={noop}
 			/>,
@@ -118,7 +118,7 @@ describe('Preview', () => {
 		const { container } = render(
 			<Preview
 				project={projectFor('yearly', options)}
-				onNewProject={noop}
+				onResetOptions={noop}
 				zoom={100}
 				onZoom={noop}
 			/>,
@@ -131,7 +131,7 @@ describe('Preview', () => {
 		const { rerender } = render(
 			<Preview
 				project={projectFor('yearly')}
-				onNewProject={noop}
+				onResetOptions={noop}
 				zoom={100}
 				onZoom={onZoom}
 			/>,
@@ -146,7 +146,7 @@ describe('Preview', () => {
 		rerender(
 			<Preview
 				project={projectFor('yearly')}
-				onNewProject={noop}
+				onResetOptions={noop}
 				zoom={200}
 				onZoom={onZoom}
 			/>,
@@ -163,7 +163,7 @@ describe('Preview', () => {
 		render(
 			<Preview
 				project={projectFor('yearly')}
-				onNewProject={noop}
+				onResetOptions={noop}
 				zoom={100}
 				onZoom={onZoom}
 			/>,
@@ -178,7 +178,7 @@ describe('Preview', () => {
 		render(
 			<Preview
 				project={projectFor('monthly')}
-				onNewProject={noop}
+				onResetOptions={noop}
 				zoom={100}
 				onZoom={noop}
 			/>,
@@ -213,7 +213,7 @@ describe('Preview', () => {
 					...options,
 					page: { ...options.page, booklet: true },
 				})}
-				onNewProject={noop}
+				onResetOptions={noop}
 				zoom={100}
 				onZoom={noop}
 			/>,
@@ -226,14 +226,24 @@ describe('Preview', () => {
 
 	it('hides the page indicator for a single page', () => {
 		render(
-			<Preview project={projectFor('yearly')} onNewProject={noop} zoom={100} onZoom={noop} />,
+			<Preview
+				project={projectFor('yearly')}
+				onResetOptions={noop}
+				zoom={100}
+				onZoom={noop}
+			/>,
 		)
 		expect(screen.queryByRole('toolbar', { name: 'Pages' })).toBeNull()
 	})
 
 	it('lists an in-between zoom in the menu', () => {
 		render(
-			<Preview project={projectFor('yearly')} onNewProject={noop} zoom={87} onZoom={noop} />,
+			<Preview
+				project={projectFor('yearly')}
+				onResetOptions={noop}
+				zoom={87}
+				onZoom={noop}
+			/>,
 		)
 		const menu = screen.getByRole('combobox', { name: 'Zoom level' }) as HTMLSelectElement
 		expect(menu.value).toBe('87')
@@ -249,7 +259,7 @@ describe('Preview', () => {
 		render(
 			<Preview
 				project={projectFor('monthly')}
-				onNewProject={noop}
+				onResetOptions={noop}
 				zoom={100}
 				onZoom={onZoom}
 			/>,
@@ -273,7 +283,7 @@ describe('Preview', () => {
 		render(
 			<Preview
 				project={projectFor('monthly')}
-				onNewProject={noop}
+				onResetOptions={noop}
 				zoom={50}
 				onZoom={onZoom}
 			/>,

@@ -1,8 +1,7 @@
 import { useEffect, useReducer, useRef } from 'react'
 import type { Patch } from '../core/data'
-import { LAYOUT_IDS, type LayoutOptions, type LayoutId } from '../layouts'
+import type { LayoutOptions, LayoutId } from '../layouts'
 import { newProjectId, type Project, type ProjectId } from '../workspace/Project'
-import { openProject, projectList, type Workspace } from '../workspace/Workspace'
 import { type WorkspaceAction, workspaceReducer } from '../workspace/workspaceReducer'
 import { loadWorkspace, saveWorkspace } from '../workspace/storage'
 
@@ -13,26 +12,13 @@ export type UpdateLayoutOptions = <K extends LayoutId>(
 ) => void
 
 /**
- * The stored workspace, with a project of the first layout opened when none is: the sidebar has
- * no way to create one yet.
+ * The app's single workspace state: loaded from and saved to `localStorage`. New projects' ids
+ * are made here, so the reducer stays pure.
  */
-function initialWorkspace(): Workspace {
-	const workspace = loadWorkspace()
-	if (openProject(workspace) !== null) return workspace
-	const layout = LAYOUT_IDS[0]
-	return workspaceReducer(workspace, {
-		type: 'createProject',
-		id: newProjectId(),
-		name: '',
-		layout,
-	})
-}
-
-/** The app's single workspace state: loaded from and saved to `localStorage`. */
 export function useWorkspace() {
-	const [workspace, dispatch] = useReducer(workspaceReducer, undefined, initialWorkspace)
+	const [workspace, dispatch] = useReducer(workspaceReducer, undefined, loadWorkspace)
 	// Saved after each change, as what changed since the last save: the projects loaded are
-	// already stored, and the one opened on a first launch is written once it is edited.
+	// already stored.
 	const saved = useRef(workspace)
 
 	useEffect(() => {
@@ -41,15 +27,21 @@ export function useWorkspace() {
 		saved.current = workspace
 	}, [workspace])
 
-	/** Opens the first project of `layout`, or a new one when there is none, as the layout picker did. */
-	function selectLayout(layout: LayoutId) {
-		const project = projectList(workspace).find((candidate) => candidate.layout === layout)
-		if (project !== undefined) dispatch({ type: 'openProject', id: project.id })
-		else dispatch({ type: 'createProject', id: newProjectId(), name: '', layout })
+	/** Adds a project with its layout's defaults, and opens it. */
+	function createProject(name: string, layout: LayoutId) {
+		dispatch({ type: 'createProject', id: newProjectId(), name, layout })
+	}
+
+	function openProject(id: ProjectId) {
+		dispatch({ type: 'openProject', id })
+	}
+
+	function renameProject(name: string) {
+		dispatch({ type: 'renameProject', name })
 	}
 
 	// The cast pairs `layout` with its patch, which TypeScript can't follow through a generic.
-	const update: UpdateLayoutOptions = (layout, patch) => {
+	const updateOptions: UpdateLayoutOptions = (layout, patch) => {
 		dispatch({ type: 'updateOptions', layout, patch } as WorkspaceAction)
 	}
 
@@ -58,11 +50,24 @@ export function useWorkspace() {
 		dispatch({ type: 'resetOptions' })
 	}
 
+	function deleteProject(id: ProjectId) {
+		dispatch({ type: 'deleteProject', id })
+	}
+
 	/** Adds an opened file's project, or replaces the one with its id, and opens it. */
 	function importProject(project: Project<ProjectId | null>) {
 		const id = project.id ?? newProjectId()
 		dispatch({ type: 'importProject', project: { ...project, id } as Project })
 	}
 
-	return { workspace, selectLayout, update, resetOptions, importProject }
+	return {
+		workspace,
+		createProject,
+		openProject,
+		renameProject,
+		updateOptions,
+		resetOptions,
+		deleteProject,
+		importProject,
+	}
 }

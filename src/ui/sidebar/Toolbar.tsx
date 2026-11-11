@@ -6,11 +6,21 @@ function handlePrintClick() {
 	window.print()
 }
 
+interface ToolbarProps {
+	/** Whether there is nothing to print: no project is open. */
+	disabled?: boolean
+}
+
 /** The actions on the whole calendar: print. */
-export function Toolbar() {
+export function Toolbar({ disabled = false }: ToolbarProps) {
 	return (
 		<div className={styles.toolbar} role="toolbar" aria-label="Calendar actions">
-			<IconButton label="Print" icon={<PrintIcon />} onClick={handlePrintClick} />
+			<IconButton
+				label="Print"
+				icon={<PrintIcon />}
+				disabled={disabled}
+				onClick={handlePrintClick}
+			/>
 		</div>
 	)
 }

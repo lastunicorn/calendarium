@@ -1,39 +1,86 @@
+import { useState } from 'react'
 import styles from './App.module.css'
+import type { LayoutId } from './layouts'
+import { EmptyPreview } from './ui/preview/EmptyPreview'
 import { Preview } from './ui/preview/Preview'
+import { NewProjectDialog } from './ui/sidebar/NewProjectDialog'
 import { WorkspaceForm } from './ui/sidebar/WorkspaceForm'
 import { Sidebar } from './ui/sidebar/Sidebar'
 import { Toolbar } from './ui/sidebar/Toolbar'
 import { usePreferences } from './ui/usePreferences'
 import { useWorkspace } from './ui/useWorkspace'
+import type { ProjectId } from './workspace/Project'
 import { openProject } from './workspace/Workspace'
 
 export default function App() {
-	const { workspace, selectLayout, update, resetOptions, importProject } = useWorkspace()
+	const {
+		workspace,
+		createProject,
+		openProject: openProjectById,
+		renameProject,
+		updateOptions,
+		resetOptions,
+		deleteProject,
+		importProject,
+	} = useWorkspace()
 	const { preferences, resizeSidebar, toggleSection, zoomPreview } = usePreferences()
-	// `useWorkspace` always opens a project.
 	const project = openProject(workspace)
-	if (project === null) return null
+	// Held here, since the project section and the empty preview both open it. It opens by itself
+	// on a first launch, with no project.
+	const [creatingProject, setCreatingProject] = useState(project === null)
+
+	function handleNewProject() {
+		setCreatingProject(true)
+	}
+
+	function handleNewProjectCreate(name: string, layout: LayoutId) {
+		setCreatingProject(false)
+		createProject(name, layout)
+	}
+
+	function handleNewProjectCancel() {
+		setCreatingProject(false)
+	}
+
+	// Deleting the last project asks for a new one, as a first launch does.
+	function handleProjectDelete(id: ProjectId) {
+		const projectIds = Object.keys(workspace.projects)
+		deleteProject(id)
+		if (projectIds.length === 1 && projectIds[0] === id) setCreatingProject(true)
+	}
 
 	return (
 		<div className={styles.app}>
 			<Sidebar width={preferences.sidebarWidth} onResize={resizeSidebar}>
-				<Toolbar />
+				<Toolbar disabled={project === null} />
 				<WorkspaceForm
-					project={project}
-					onSelectLayout={selectLayout}
-					onUpdate={update}
-					onNewProject={resetOptions}
-					onOpenProject={importProject}
+					workspace={workspace}
+					onOpenProject={openProjectById}
+					onRenameProject={renameProject}
+					onUpdate={updateOptions}
+					onNewProject={handleNewProject}
+					onImportProject={importProject}
+					onDeleteProject={handleProjectDelete}
 					openSection={preferences.openSection}
 					onToggleSection={toggleSection}
 				/>
 			</Sidebar>
-			<Preview
-				project={project}
-				onNewProject={resetOptions}
-				zoom={preferences.previewZoom}
-				onZoom={zoomPreview}
-			/>
+			{project === null ? (
+				<EmptyPreview onNewProject={handleNewProject} />
+			) : (
+				<Preview
+					project={project}
+					onResetOptions={resetOptions}
+					zoom={preferences.previewZoom}
+					onZoom={zoomPreview}
+				/>
+			)}
+			{creatingProject && (
+				<NewProjectDialog
+					onCreate={handleNewProjectCreate}
+					onCancel={handleNewProjectCancel}
+				/>
+			)}
 		</div>
 	)
 }

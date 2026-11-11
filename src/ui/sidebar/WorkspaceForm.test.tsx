@@ -3,6 +3,7 @@ import { type ComponentProps, useState } from 'react'
 import { describe, expect, it, vi } from 'vitest'
 import { defaultLayoutOptions, LAYOUT_IDS, type LayoutId } from '../../layouts'
 import type { Project } from '../../workspace/Project'
+import { defaultWorkspace, type Workspace } from '../../workspace/Workspace'
 import { margins } from '../../core/paper'
 import { defaultPreferences, withSectionToggled } from '../../preferences/Preferences'
 import { WorkspaceForm } from './WorkspaceForm'
@@ -11,13 +12,23 @@ function noop() {}
 
 const ID = '00000000-0000-4000-8000-000000000001'
 
-/** A project of `layout`, with its defaults or `options`. */
-function projectFor(
+/** A workspace holding one project of `layout`, with its defaults or `options`, open. */
+function workspaceFor(
 	layout: LayoutId = 'yearly',
 	options: object = defaultLayoutOptions(layout),
 	id = ID,
-): Project {
-	return { id, name: '', layout, options } as Project
+): Workspace {
+	const project = { id, name: '', layout, options } as Project
+	return { projects: { [id]: project }, open: id }
+}
+
+/** The project section's actions, doing nothing. */
+const PROJECT_ACTIONS = {
+	onOpenProject: noop,
+	onRenameProject: noop,
+	onNewProject: noop,
+	onImportProject: noop,
+	onDeleteProject: noop,
 }
 
 type FormProps = Omit<ComponentProps<typeof WorkspaceForm>, 'openSection' | 'onToggleSection'>
@@ -44,15 +55,7 @@ function Form(props: FormProps) {
  * (like the margins) are part of that section.
  */
 function sectionTitles(layout: LayoutId): string[] {
-	render(
-		<Form
-			project={projectFor(layout)}
-			onSelectLayout={noop}
-			onUpdate={noop}
-			onNewProject={noop}
-			onOpenProject={noop}
-		/>,
-	)
+	render(<Form workspace={workspaceFor(layout)} onUpdate={noop} {...PROJECT_ACTIONS} />)
 	return screen
 		.getAllByRole('group')
 		.filter((group) => group.parentElement?.closest('fieldset') === null)
@@ -61,13 +64,13 @@ function sectionTitles(layout: LayoutId): string[] {
 
 describe('WorkspaceForm', () => {
 	// Each layout's sections are tested next to its form, in `layouts/<layout-id>/ui/`.
-	it.each(LAYOUT_IDS)('shows the layout picker above the %s form', (layout) => {
+	it.each(LAYOUT_IDS)('shows the project section above the %s form', (layout) => {
 		const [first, ...rest] = sectionTitles(layout)
 		expect(first).toBe('Project')
 		expect(rest.length).toBeGreaterThan(0)
 	})
 
-	it('keeps the layout picker open, starts every other section collapsed, and opens one when its title is clicked', () => {
+	it('keeps the project section open, starts every other section collapsed, and opens one when its title is clicked', () => {
 		const [layoutTitle, ...titles] = sectionTitles('yearly')
 		expect(layoutTitle).toBe('Project')
 		expect(screen.queryByRole('button', { name: 'Project' })).toBeNull()
@@ -79,7 +82,12 @@ describe('WorkspaceForm', () => {
 			within(actions)
 				.getAllByRole('button')
 				.map((button) => button.title),
-		).toEqual(['New project', 'Open a project file', 'Save project to a file'])
+		).toEqual([
+			'New project…',
+			'Open a project file',
+			'Save project to a file',
+			'Delete project',
+		])
 		const toggles = screen.getAllByRole('button', { expanded: false })
 		expect(toggles.map((button) => button.textContent)).toEqual(titles)
 		expect(screen.queryByLabelText('Year')).toBeNull()
@@ -111,29 +119,26 @@ describe('WorkspaceForm', () => {
 			within(actions)
 				.getAllByRole('button')
 				.map((button) => button.title),
-		).toEqual(['New project', 'Open a project file', 'Save project to a file'])
+		).toEqual([
+			'New project…',
+			'Open a project file',
+			'Save project to a file',
+			'Delete project',
+		])
 	})
 
-	it('keeps a section open on another layout', () => {
-		const project = projectFor()
+	it('keeps a section open on another project', () => {
+		const workspace = workspaceFor()
 		const { rerender } = render(
-			<Form
-				project={project}
-				onSelectLayout={noop}
-				onUpdate={noop}
-				onNewProject={noop}
-				onOpenProject={noop}
-			/>,
+			<Form workspace={workspace} onUpdate={noop} {...PROJECT_ACTIONS} />,
 		)
 		fireEvent.click(screen.getByRole('button', { name: 'Calendar' }))
 
 		rerender(
 			<Form
-				project={projectFor('daily', undefined, '00000000-0000-4000-8000-000000000002')}
-				onSelectLayout={noop}
+				workspace={workspaceFor('daily', undefined, '00000000-0000-4000-8000-000000000002')}
 				onUpdate={noop}
-				onNewProject={noop}
-				onOpenProject={noop}
+				{...PROJECT_ACTIONS}
 			/>,
 		)
 		expect(screen.getByLabelText('Year')).not.toBeNull()
@@ -143,67 +148,39 @@ describe('WorkspaceForm', () => {
 	})
 
 	it('shows the spine only with mirrored margins, outside a booklet', () => {
-		const project = projectFor()
+		const workspace = workspaceFor()
 		const { rerender } = render(
-			<Form
-				project={project}
-				onSelectLayout={noop}
-				onUpdate={noop}
-				onNewProject={noop}
-				onOpenProject={noop}
-			/>,
+			<Form workspace={workspace} onUpdate={noop} {...PROJECT_ACTIONS} />,
 		)
 		fireEvent.click(screen.getByRole('button', { name: 'Page' }))
 		expect(screen.queryByRole('group', { name: 'Spine' })).toBeNull()
 
 		const layout = defaultLayoutOptions('yearly')
-		const mirrored = projectFor('yearly', {
+		const mirrored = workspaceFor('yearly', {
 			...layout,
 			page: { ...layout.page, mirrorMargins: true },
 		})
-		rerender(
-			<Form
-				project={mirrored}
-				onSelectLayout={noop}
-				onUpdate={noop}
-				onNewProject={noop}
-				onOpenProject={noop}
-			/>,
-		)
+		rerender(<Form workspace={mirrored} onUpdate={noop} {...PROJECT_ACTIONS} />)
 		expect(screen.getByRole('group', { name: 'Spine' })).not.toBeNull()
 
 		// A booklet's spine is its fold.
-		const booklet = projectFor('yearly', {
+		const booklet = workspaceFor('yearly', {
 			...layout,
 			page: { ...layout.page, mirrorMargins: true, booklet: true },
 		})
-		rerender(
-			<Form
-				project={booklet}
-				onSelectLayout={noop}
-				onUpdate={noop}
-				onNewProject={noop}
-				onOpenProject={noop}
-			/>,
-		)
+		rerender(<Form workspace={booklet} onUpdate={noop} {...PROJECT_ACTIONS} />)
 		expect(screen.queryByRole('group', { name: 'Spine' })).toBeNull()
 	})
 
 	it('sets every margin from the top one with equal margins, unavailable with mirror margins', () => {
-		const project = projectFor()
+		const workspace = workspaceFor()
 		const layout = defaultLayoutOptions('yearly')
 		const onUpdate = vi.fn()
 		function withPage(page: Partial<typeof layout.page>) {
-			return projectFor('yearly', { ...layout, page: { ...layout.page, ...page } })
+			return workspaceFor('yearly', { ...layout, page: { ...layout.page, ...page } })
 		}
 		const { rerender } = render(
-			<Form
-				project={project}
-				onSelectLayout={noop}
-				onUpdate={onUpdate}
-				onNewProject={noop}
-				onOpenProject={noop}
-			/>,
+			<Form workspace={workspace} onUpdate={onUpdate} {...PROJECT_ACTIONS} />,
 		)
 		fireEvent.click(screen.getByRole('button', { name: 'Page' }))
 		const left = screen.getByRole<HTMLInputElement>('spinbutton', { name: 'Left margin' })
@@ -219,11 +196,9 @@ describe('WorkspaceForm', () => {
 
 		rerender(
 			<Form
-				project={withPage({ mirrorMargins: true, equalMargins: false })}
-				onSelectLayout={noop}
+				workspace={withPage({ mirrorMargins: true, equalMargins: false })}
 				onUpdate={onUpdate}
-				onNewProject={noop}
-				onOpenProject={noop}
+				{...PROJECT_ACTIONS}
 			/>,
 		)
 		const equal = screen.getByRole<HTMLInputElement>('checkbox', { name: 'Use equal margins' })
@@ -232,14 +207,12 @@ describe('WorkspaceForm', () => {
 
 		rerender(
 			<Form
-				project={withPage({
+				workspace={withPage({
 					equalMargins: false,
 					margins: { top: 5, right: 10, bottom: 15, left: 20 },
 				})}
-				onSelectLayout={noop}
 				onUpdate={onUpdate}
-				onNewProject={noop}
-				onOpenProject={noop}
+				{...PROJECT_ACTIONS}
 			/>,
 		)
 		fireEvent.click(equal)
@@ -248,53 +221,61 @@ describe('WorkspaceForm', () => {
 		})
 	})
 
-	it('disables New project while the shown project still has its defaults', () => {
-		const project = projectFor()
-		const { rerender } = render(
-			<Form
-				project={project}
-				onSelectLayout={noop}
-				onUpdate={noop}
-				onNewProject={noop}
-				onOpenProject={noop}
-			/>,
-		)
-		const button = screen.getByRole<HTMLButtonElement>('button', { name: 'New project' })
-		expect(button.disabled).toBe(true)
+	it('shows only New and Open, and no options, without a project', () => {
+		render(<Form workspace={defaultWorkspace()} onUpdate={noop} {...PROJECT_ACTIONS} />)
+		const section = screen.getByRole('group', { name: 'Project' })
+		expect(
+			within(within(section).getByRole('toolbar'))
+				.getAllByRole('button')
+				.map((button) => button.title),
+		).toEqual(['New project…', 'Open a project file'])
+		expect(within(section).queryByRole('combobox')).toBeNull()
+		expect(within(section).queryByRole('textbox', { name: 'Name' })).toBeNull()
+		expect(
+			screen.getAllByRole('group').map((group) => group.querySelector('legend')!.textContent),
+		).toEqual(['Project'])
+	})
 
-		const options = defaultLayoutOptions('yearly')
-		const changed = projectFor('yearly', {
-			...options,
-			calendar: { ...options.calendar, year: 2030 },
-		})
-		rerender(
-			<Form
-				project={changed}
-				onSelectLayout={noop}
-				onUpdate={noop}
-				onNewProject={noop}
-				onOpenProject={noop}
-			/>,
-		)
-		expect(button.disabled).toBe(false)
+	it('lists the projects by name with their layout, the open one chosen, and shows its name and layout', () => {
+		const work = { ...workspaceFor('weekly').projects[ID], name: 'Work 2027' } as Project
+		const untitled = {
+			id: '00000000-0000-4000-8000-000000000002',
+			name: ' ',
+			layout: 'daily',
+			options: defaultLayoutOptions('daily'),
+		} as Project
+		const home = {
+			id: '00000000-0000-4000-8000-000000000003',
+			name: 'Home',
+			layout: 'yearly',
+			options: defaultLayoutOptions('yearly'),
+		} as Project
+		const workspace = {
+			projects: { [work.id]: work, [untitled.id]: untitled, [home.id]: home },
+			open: work.id,
+		}
+		render(<Form workspace={workspace} onUpdate={noop} {...PROJECT_ACTIONS} />)
+		const picker = screen.getByRole<HTMLSelectElement>('combobox', { name: 'Project' })
+		expect(Array.from(picker.options, (option) => option.text)).toEqual([
+			'Home — Yearly',
+			'Work 2027 — Weekly',
+			'Untitled — Daily',
+		])
+		expect(picker.value).toBe(work.id)
+		const name = screen.getByRole<HTMLInputElement>('textbox', { name: 'Name' })
+		expect(name.value).toBe('Work 2027')
+		expect(name.placeholder).toBe('Untitled')
+		expect(screen.getByText('Layout: Weekly (one week per page)')).not.toBeNull()
 	})
 
 	it('labels the hovered or focused project action under the buttons', () => {
-		render(
-			<Form
-				project={projectFor()}
-				onSelectLayout={noop}
-				onUpdate={noop}
-				onNewProject={noop}
-				onOpenProject={noop}
-			/>,
-		)
+		render(<Form workspace={workspaceFor()} onUpdate={noop} {...PROJECT_ACTIONS} />)
 		const actions = screen.getByRole('toolbar', { name: 'Project' })
 		const hint = actions.nextElementSibling!
 		expect(hint.textContent).toBe('')
 
-		fireEvent.pointerOver(screen.getByRole('button', { name: 'New project' }))
-		expect(hint.textContent).toBe('New project')
+		fireEvent.pointerOver(screen.getByRole('button', { name: 'New project…' }))
+		expect(hint.textContent).toBe('New project…')
 		fireEvent.pointerLeave(actions)
 		expect(hint.textContent).toBe('')
 
@@ -304,16 +285,8 @@ describe('WorkspaceForm', () => {
 
 	it('asks before resetting a section, and resets only that section’s fields', () => {
 		const onUpdate = vi.fn()
-		const project = projectFor()
-		render(
-			<Form
-				project={project}
-				onSelectLayout={noop}
-				onUpdate={onUpdate}
-				onNewProject={noop}
-				onOpenProject={noop}
-			/>,
-		)
+		const workspace = workspaceFor()
+		render(<Form workspace={workspace} onUpdate={onUpdate} {...PROJECT_ACTIONS} />)
 		fireEvent.click(screen.getByRole('button', { name: 'Calendar' }))
 		fireEvent.click(screen.getByRole('button', { name: 'Reset Calendar settings' }))
 		expect(onUpdate).not.toHaveBeenCalled()
@@ -328,15 +301,7 @@ describe('WorkspaceForm', () => {
 
 	it('cancels a section’s reset from its close button, on a click outside it, on Escape, or when it collapses', () => {
 		const onUpdate = vi.fn()
-		render(
-			<Form
-				project={projectFor()}
-				onSelectLayout={noop}
-				onUpdate={onUpdate}
-				onNewProject={noop}
-				onOpenProject={noop}
-			/>,
-		)
+		render(<Form workspace={workspaceFor()} onUpdate={onUpdate} {...PROJECT_ACTIONS} />)
 		fireEvent.click(screen.getByRole('button', { name: 'Calendar' }))
 		const reset = screen.getByRole('button', { name: 'Reset Calendar settings' })
 

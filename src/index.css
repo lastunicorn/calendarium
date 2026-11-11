@@ -12,6 +12,7 @@
 	--color-error: #b00020;
 	--color-page-shadow: rgb(0 0 0 / 0.2);
 	--color-veil: rgb(255 255 255);
+	--color-backdrop: rgb(0 0 0 / 0.3);
 
 	/* Printed calendar */
 	--color-rule: #999;

@@ -21,8 +21,8 @@ const PX_PER_MM = 96 / 25.4
 interface PreviewProps {
 	/** The open project, whose pages are drawn. */
 	project: Project
-	/** Starts one layout's project over from its defaults, offered when its pages fail to render. */
-	onNewProject: (layout: LayoutId) => void
+	/** Puts the project's options back to its layout's defaults, offered when its pages fail to render. */
+	onResetOptions: () => void
 	/** How large the pages are drawn on screen, from the viewer's preferences. */
 	zoom: PreviewZoom
 	onZoom: (zoom: PreviewZoom) => void
@@ -66,7 +66,7 @@ function ActiveLayout<K extends LayoutId>({ layout, options }: ActiveLayoutProps
  * the view in place, or with the wheel the point under the pointer. The preview takes the focus, so
  * its zoom shortcuts work once it is clicked.
  */
-export function Preview({ project, onNewProject, zoom, onZoom }: PreviewProps) {
+export function Preview({ project, onResetOptions, zoom, onZoom }: PreviewProps) {
 	const { layout, options } = project
 	const previewRef = useRef<HTMLDivElement>(null)
 	const areaRef = useRef<HTMLElement>(null)
@@ -146,7 +146,7 @@ export function Preview({ project, onNewProject, zoom, onZoom }: PreviewProps) {
 					<PreviewErrorBoundary
 						layout={layout}
 						options={options}
-						onNewProject={onNewProject}
+						onResetOptions={onResetOptions}
 					>
 						{options.page.booklet ? (
 							<Booklet setup={options.page}>{pages}</Booklet>

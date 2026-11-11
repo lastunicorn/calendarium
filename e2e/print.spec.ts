@@ -28,10 +28,17 @@ async function openSection(page: Page, title: string) {
 	await page.getByRole('button', { name: title, exact: true }).click()
 }
 
-/** Shows `layout` for `year` through the sidebar, as a user would. */
+/**
+ * Shows `layout` for `year` as a user would: creates a project of it in the New project dialog,
+ * which opens by itself on a fresh page, picking the layout by its label ("Weekly (one week per
+ * page)"), then sets the year in the sidebar.
+ */
 async function showLayout(page: Page, layout: string, year: number) {
 	await page.goto('/')
-	await page.getByRole('combobox', { name: 'Layout' }).selectOption(layout)
+	const dialog = page.getByRole('dialog', { name: 'New project' })
+	await dialog.getByRole('radio', { name: new RegExp(`^${layout} `, 'i') }).check()
+	await dialog.getByRole('button', { name: 'Create' }).click()
+	await expect(dialog).toBeHidden()
 	await openSection(page, 'Calendar')
 	const yearField = page.getByRole('spinbutton', { name: 'Year' })
 	await yearField.fill(String(year))
