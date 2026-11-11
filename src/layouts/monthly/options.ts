@@ -129,7 +129,8 @@ const CONTENT_VALIDATORS: Validators<MonthlyContent> = {
 export const MONTHLY_SPEC: LayoutSpec<MonthlyOptions> = {
 	// Large writing cells fit landscape, with room for full weekday names.
 	defaults: () => {
-		const common = commonDefaults()
+		const { page, ...common } = commonDefaults()
+		// The groups in sidebar order, which files keep: the page last.
 		return {
 			...common,
 			header: { title: '', alignment: 'center', fontSize: 24 },
@@ -149,7 +150,7 @@ export const MONTHLY_SPEC: LayoutSpec<MonthlyOptions> = {
 				weekdayFontSize: 9,
 				dayNumber: { fontSize: 14, horizontalAlignment: 'left', verticalAlignment: 'top' },
 			},
-			page: { ...common.page, orientation: 'landscape', margins: margins(10) },
+			page: { ...page, orientation: 'landscape', margins: margins(10) },
 		}
 	},
 	validators: {

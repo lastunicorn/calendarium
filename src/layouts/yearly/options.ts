@@ -42,11 +42,16 @@ const CONTENT_VALIDATORS: Validators<YearlyContent> = {
 
 export const YEARLY_SPEC: LayoutSpec<YearlyOptions> = {
 	// 12 small months fit portrait; one-letter weekdays keep them narrow.
-	defaults: () => ({
-		...commonDefaults(),
-		header: { title: '', subtitle: '', fontSize: 32 },
-		content: { monthSize: 'medium', ...monthGridDefaults() },
-	}),
+	defaults: () => {
+		const { page, ...common } = commonDefaults()
+		// The groups in sidebar order, which files keep: the page last.
+		return {
+			...common,
+			header: { title: '', subtitle: '', fontSize: 32 },
+			content: { monthSize: 'medium', ...monthGridDefaults() },
+			page,
+		}
+	},
 	validators: {
 		...COMMON_VALIDATORS,
 		header: HEADER_VALIDATORS,

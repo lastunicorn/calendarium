@@ -120,7 +120,7 @@ describe('workspaceReducer', () => {
 		const next = { ...defaults, calendar: { ...defaults.calendar, year: 1999 } }
 		const opened = workspaceReducer(defaultWorkspace(), {
 			type: 'openProject',
-			project: { layout: 'monthly', options: next },
+			project: { id: null, name: '', layout: 'monthly', options: next },
 		})
 		expect(opened.layout).toBe('monthly')
 		expect(opened.layouts['monthly']).toBe(next)

@@ -1,7 +1,7 @@
 import { useEffect, useReducer, useRef } from 'react'
 import type { Patch } from '../core/data'
 import type { LayoutOptions, LayoutId } from '../layouts'
-import type { Project } from '../workspace/Workspace'
+import type { Project, ProjectId } from '../workspace/Project'
 import { type WorkspaceAction, workspaceReducer } from '../workspace/workspaceReducer'
 import { loadWorkspace, saveWorkspace } from '../workspace/storage'
 
@@ -37,9 +37,8 @@ export function useWorkspace() {
 		dispatch({ type: 'newProject', layout })
 	}
 
-	// Takes only the project from an opened file, not its notices; the cast keeps the pair together.
-	function openProject({ layout, options }: Project) {
-		dispatch({ type: 'openProject', project: { layout, options } as Project })
+	function openProject(project: Project<ProjectId | null>) {
+		dispatch({ type: 'openProject', project })
 	}
 
 	return { workspace, selectLayout, update, newProject, openProject }

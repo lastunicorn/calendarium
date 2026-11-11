@@ -1,5 +1,5 @@
 import type { Workspace } from '../../workspace/Workspace'
-import type { OpenedProject } from '../../workspace/projectFile'
+import type { Project, ProjectId } from '../../workspace/Project'
 import { useMemo } from 'react'
 import type { Patch } from '../../core/data'
 import { defaultLayoutOptions, type LayoutOptions, type LayoutId } from '../../layouts'
@@ -14,7 +14,7 @@ interface WorkspaceFormProps {
 	onSelectLayout: (layout: LayoutId) => void
 	onUpdate: UpdateLayoutOptions
 	onNewProject: (layout: LayoutId) => void
-	onOpenProject: (opened: OpenedProject) => void
+	onOpenProject: (project: Project<ProjectId | null>) => void
 	/** The title of the open section, from the viewer's preferences; `null` when all are closed. */
 	openSection: string | null
 	onToggleSection: (title: string) => void

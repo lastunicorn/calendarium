@@ -1,21 +1,12 @@
-import type { Project } from './Workspace'
-import type { LayoutId } from '../layouts'
 import { asObject } from '../core/validation'
-import { FILE_FORMAT, isProjectFile, isFromLaterVersion, upgradeFile } from './migrations'
-import { parseLayoutOptions, parseLayoutId } from './parseWorkspace'
-import { APP_VERSION, FORMAT_VERSION } from './version'
-
-/** Pretty-printed JSON for a downloadable project file: the layout and its options, flat. */
-export function serializeProject({ layout, options }: Project): string {
-	const file = {
-		format: FILE_FORMAT,
-		version: FORMAT_VERSION,
-		app: APP_VERSION,
-		layout,
-		...options,
-	}
-	return JSON.stringify(file, null, '\t') + '\n'
-}
+import { LEGACY_FILE_FORMAT, legacyFile } from './legacy'
+import type { Project } from './Project'
+import {
+	type ParsedProject,
+	parseProjectDocument,
+	parseProjectFields,
+	serializeProject,
+} from './projectDocument'
 
 /** A project file to download. */
 export interface ProjectFile {
@@ -23,39 +14,67 @@ export interface ProjectFile {
 	text: string
 }
 
-/** `project` as a file named after its layout and year: `calendar-daily-2026.json`. */
+/** Characters a file name can't hold on some file system, and whitespace, each run becoming `-`. */
+const UNSAFE_IN_FILE_NAMES = /[\s\\/:*?"<>|]+/g
+
+/**
+ * The file name a project is saved under: its name, in lowercase, with whitespace and the
+ * characters file systems refuse as `-` (`work-2027.json`), letters of any script kept; or, when
+ * it has none, its layout and year (`calendar-daily-2026.json`).
+ */
+function projectFileName({ name, layout, options }: Project): string {
+	const base = name
+		.trim()
+		.toLowerCase()
+		.replace(UNSAFE_IN_FILE_NAMES, '-')
+		.replace(/^-+|-+$/g, '')
+	return base === '' ? `calendar-${layout}-${options.calendar.year}.json` : `${base}.json`
+}
+
+/** `project` as a file to download, pretty-printed and named after it. */
 export function projectFile(project: Project): ProjectFile {
 	return {
-		fileName: `calendar-${project.layout}-${project.options.calendar.year}.json`,
-		text: serializeProject(project),
+		fileName: projectFileName(project),
+		text: serializeProject(project, { pretty: true }),
 	}
 }
 
 /**
- * A project read from a file, with the fields that were invalid (see `ParsedLayoutOptions`), and
- * whether a later version of the app wrote the file, so settings it added are ignored.
+ * A project read from an opened file (see `ParsedProject`): its id is `null` when the file has
+ * none, as a legacy one never has.
  */
-export type OpenedProject = Project & { ignored: string[]; newer: boolean }
+export type OpenedProjectFile = ParsedProject
 
-function opened<K extends LayoutId>(layout: K, data: unknown, newer: boolean) {
-	return { layout, ...parseLayoutOptions(layout, data), newer } as OpenedProject
+/**
+ * The name the file names of 5 were generated as, `calendar-<layout>-<year>`, with the layout's
+ * old or current id, maybe followed by the copy number a browser adds (`calendar-weekly-2026 (1)`).
+ */
+const GENERATED_FILE_NAME = /^calendar-[a-z]+(?:-[a-z]+)*-\d+(?: \(\d+\))?$/
+
+/**
+ * The name a legacy file's project takes from the file's name: the name without `.json`, unless
+ * it is one the app generated, which names no project.
+ */
+function nameFromFileName(fileName: string): string {
+	const name = fileName.replace(/\.json$/i, '')
+	return GENERATED_FILE_NAME.test(name) ? '' : name
 }
 
 /**
- * Parses an opened project file; `null` when it is not one of this app's files (see
- * `isProjectFile`) or has no valid version. The options go to the layout the file names, or to
- * `fallbackLayout` when it names none.
+ * Reads an opened project file: a serialized project (`PROJECT_FORMAT`, from 6 on), or a legacy
+ * file (`LEGACY_FILE_FORMAT`, from 3 to 5), whose project is named after `fileName`. Anything
+ * else, including text that is not a JSON object, is not a project.
  */
-export function parseProjectFile(text: string, fallbackLayout: LayoutId): OpenedProject | null {
+export function parseProjectFile(text: string, fileName: string): OpenedProjectFile {
 	let data: unknown
 	try {
 		data = JSON.parse(text)
 	} catch {
-		return null
+		return { ok: false, reason: 'notProject' }
 	}
 	const raw = asObject(data)
-	if (raw === null || !isProjectFile(raw)) return null
-	const file = upgradeFile(raw)
-	if (file === null) return null
-	return opened(parseLayoutId(file) ?? fallbackLayout, file, isFromLaterVersion(raw))
+	if (raw?.format !== LEGACY_FILE_FORMAT) return parseProjectDocument(data)
+	const fields = legacyFile(raw)
+	if (fields === null) return { ok: false, reason: 'notProject' }
+	return parseProjectFields({ ...fields, name: nameFromFileName(fileName) }, false)
 }

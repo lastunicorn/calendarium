@@ -186,34 +186,39 @@ const CONTENT_VALIDATORS: Validators<DailyContent> = {
 
 export const DAILY_SPEC: LayoutSpec<DailyOptions> = {
 	// A tall schedule fits portrait.
-	defaults: () => ({
-		...commonDefaults(),
-		header: {
-			heading: 'date',
-			fontSize: 24,
-			showWeek: true,
-			showDayOfYear: true,
-			highlightWeekendDays: true,
-		},
-		miniMonth: miniMonthDefaults(),
-		content: {
-			twoPages: false,
-			fill: 'hours',
-			ruledLineSpacing: 8,
-			// A math notebook's squares.
-			squareSize: 5,
-			fillAlignment: 'center',
-			genkoYoshi: {
-				// 1.2 cm, a common size of manuscript paper.
-				squareSize: 12,
-				direction: 'vertical',
-				furigana: 'none',
-				guides: false,
+	defaults: () => {
+		const { page, ...common } = commonDefaults()
+		// The groups in sidebar order, which files keep: the page last.
+		return {
+			...common,
+			header: {
+				heading: 'date',
+				fontSize: 24,
+				showWeek: true,
+				showDayOfYear: true,
+				highlightWeekendDays: true,
 			},
-			schedule: scheduleDefaults(),
-		},
-		footer: footerDefaults(),
-	}),
+			miniMonth: miniMonthDefaults(),
+			content: {
+				twoPages: false,
+				fill: 'hours',
+				ruledLineSpacing: 8,
+				// A math notebook's squares.
+				squareSize: 5,
+				fillAlignment: 'center',
+				genkoYoshi: {
+					// 1.2 cm, a common size of manuscript paper.
+					squareSize: 12,
+					direction: 'vertical',
+					furigana: 'none',
+					guides: false,
+				},
+				schedule: scheduleDefaults(),
+			},
+			footer: footerDefaults(),
+			page,
+		}
+	},
 	validators: {
 		...COMMON_VALIDATORS,
 		header: HEADER_VALIDATORS,

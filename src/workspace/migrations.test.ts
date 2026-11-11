@@ -1,15 +1,13 @@
 import { describe, expect, it, vi } from 'vitest'
 import { LAYOUT_IDS, layoutSpec } from '../layouts'
 import type { OptionsMigration } from '../layouts/LayoutSpec'
+import { legacyFile, legacyWorkspace } from './legacy'
 import {
-	FILE_FORMAT,
-	FILE_MIGRATIONS,
 	FIRST_FORMAT_VERSION,
-	isProjectFile,
+	FIRST_PROJECT_VERSION,
 	isFromLaterVersion,
-	STORAGE_MIGRATIONS,
-	upgradeFile,
-	upgradeStorage,
+	PROJECT_MIGRATIONS,
+	upgradeProject,
 	versionOf,
 } from './migrations'
 import { APP_VERSION, FORMAT_VERSION } from './version'
@@ -20,9 +18,8 @@ describe('format version', () => {
 	})
 
 	// Fails when the major version in `package.json` is bumped without a migration step.
-	it('has a migration step for every version since the first', () => {
-		expect(FIRST_FORMAT_VERSION + STORAGE_MIGRATIONS.length).toBe(FORMAT_VERSION)
-		expect(FIRST_FORMAT_VERSION + FILE_MIGRATIONS.length).toBe(FORMAT_VERSION)
+	it('has a migration step for every version since the serialized project’s first', () => {
+		expect(FIRST_PROJECT_VERSION + PROJECT_MIGRATIONS.length).toBe(FORMAT_VERSION)
 	})
 })
 
@@ -63,58 +60,26 @@ describe('isFromLaterVersion', () => {
 	})
 })
 
-describe('upgradeStorage and upgradeFile', () => {
-	it('leave current and later data as is', () => {
-		for (const upgrade of [upgradeStorage, upgradeFile]) {
-			const current = { version: FORMAT_VERSION, year: 2030 }
-			expect(upgrade(current)).toBe(current)
-			const later = { version: FORMAT_VERSION + 1, year: 2030 }
-			expect(upgrade(later)).toBe(later)
-		}
+describe('upgradeProject', () => {
+	it('leaves current and later projects as they are', () => {
+		const current = { version: FORMAT_VERSION, layout: 'daily', options: {} }
+		expect(upgradeProject(current)).toBe(current)
+		const later = { version: FORMAT_VERSION + 1, layout: 'daily', options: {} }
+		expect(upgradeProject(later)).toBe(later)
 	})
 
-	it('reject data without a valid version', () => {
-		expect(upgradeStorage({ year: 2030 })).toBeNull()
-		expect(upgradeFile({ version: 2, year: 2030 })).toBeNull()
+	it('rejects data without a version from the serialized project’s first', () => {
+		for (const version of [undefined, 2, 3, 5, '6']) {
+			expect(upgradeProject({ version, layout: 'daily', options: {} })).toBeNull()
+		}
 	})
 })
 
 describe('each layout’s own steps', () => {
-	// The layouts' steps say what changed (tested in their folders); these check that storage and
-	// files apply them, each to its own layout's options.
-	// Data before 6 names the layouts by their old ids (`week-per-page`), as these fixtures do.
-	it('apply in storage to each layout’s options, leaving the other layouts as they were', () => {
-		const month = { highlightWeekends: 'columns', showWeekNumbers: true }
-		const week = { year: 2030, showWeekNumbers: false }
-		const stored = {
-			version: 3,
-			layouts: { 'month-per-page': month, 'week-per-page': week, 'quarter-per-page': week },
-		}
-		expect(upgradeStorage(stored)?.layouts).toEqual({
-			monthly: layoutSpec('monthly').migrations[5]!(month),
-			weekly: layoutSpec('weekly').migrations[5]!(layoutSpec('weekly').migrations[3]!(week)),
-			'quarter-per-page': week,
-		})
-	})
-
-	it('apply in a file to the options of the layout it names, keeping its tags', () => {
-		const file = {
-			format: FILE_FORMAT,
-			version: 3,
-			layout: 'day-per-page',
-			showMiniMonth: false,
-		}
-		const { migrations } = layoutSpec('daily')
-		expect(upgradeFile(file)).toEqual({
-			...migrations[5]!(migrations[3]!(file)),
-			layout: 'daily',
-		})
-		expect(upgradeFile(file)).toMatchObject({ format: FILE_FORMAT, version: 3 })
-		const unnamed = { version: 3, showMiniMonth: false }
-		expect(upgradeFile(unnamed)).toEqual(unnamed)
-	})
-
-	it('are all applied, from a version that has a step in both lists', () => {
+	// The layouts' steps say what changed (tested in their folders); this checks that each one is
+	// applied: those from 3 to 5 by both legacy paths, storage's and files', and those from 6 on by
+	// `PROJECT_MIGRATIONS`, which storage and files share.
+	it('are all applied, from a version that has a step', () => {
 		for (const layout of LAYOUT_IDS) {
 			const { migrations } = layoutSpec(layout)
 			for (const key of Object.keys(migrations)) {
@@ -122,83 +87,16 @@ describe('each layout’s own steps', () => {
 				expect(version).toBeGreaterThanOrEqual(FIRST_FORMAT_VERSION)
 				expect(version).toBeLessThan(FORMAT_VERSION)
 				const step = vi.spyOn(migrations as Record<number, OptionsMigration>, version)
-				upgradeStorage({ version, layouts: { [layout]: {} } })
-				upgradeFile({ version, layout })
-				expect(step, `${layout} from ${version}`).toHaveBeenCalledTimes(2)
+				if (version < FIRST_PROJECT_VERSION) {
+					legacyWorkspace({ version, layouts: { [layout]: {} } })
+					legacyFile({ version, layout })
+					expect(step, `${layout} from ${version}`).toHaveBeenCalledTimes(2)
+				} else {
+					upgradeProject({ version, layout, options: {} })
+					expect(step, `${layout} from ${version}`).toHaveBeenCalledTimes(1)
+				}
 				step.mockRestore()
 			}
 		}
-	})
-})
-
-describe('the layouts’ ids from 6', () => {
-	const RENAMED = {
-		'year-per-page': 'yearly',
-		'month-per-page': 'monthly',
-		'week-per-page': 'weekly',
-		'day-per-page': 'daily',
-	}
-
-	it('rename the active layout and the layouts’ keys in storage, keeping their options', () => {
-		// A field no layout's step from 5 moves, so it stays where it was.
-		const stored = {
-			version: 5,
-			layout: 'week-per-page',
-			layouts: Object.fromEntries(
-				Object.keys(RENAMED).map((layout) => [layout, { note: layout }]),
-			),
-		}
-		expect(upgradeStorage(stored)).toEqual({
-			version: 5,
-			layout: 'weekly',
-			layouts: Object.fromEntries(
-				Object.entries(RENAMED).map(([old, layout]) => [layout, { note: old }]),
-			),
-		})
-	})
-
-	it('rename the layout a file names, keeping its tags and options', () => {
-		const file = { format: FILE_FORMAT, version: 5, layout: 'month-per-page', note: 'Ours' }
-		expect(upgradeFile(file)).toEqual({ ...file, layout: 'monthly' })
-	})
-
-	it('rename before applying a layout’s own step from 5', () => {
-		const stored = { version: 5, layouts: { 'day-per-page': { dayPageLines: 'ruled' } } }
-		expect(upgradeStorage(stored)?.layouts).toEqual({ daily: { content: { fill: 'ruled' } } })
-		const file = { version: 5, layout: 'day-per-page', dayPageLines: 'ruled' }
-		expect(upgradeFile(file)).toEqual({
-			version: 5,
-			layout: 'daily',
-			content: { fill: 'ruled' },
-		})
-	})
-
-	it('rename from any earlier version too', () => {
-		const stored = { version: 3, layout: 'year-per-page', layouts: { 'year-per-page': {} } }
-		expect(upgradeStorage(stored)).toEqual({
-			version: 3,
-			layout: 'yearly',
-			layouts: { yearly: {} },
-		})
-		expect(upgradeFile({ version: 4, layout: 'year-per-page' })?.layout).toBe('yearly')
-	})
-
-	it('leave a current id, an unknown one or no layout as they are', () => {
-		for (const layout of ['weekly', 'quarter-per-page', 'toString', 42, undefined]) {
-			const stored = { version: 5, layout, layouts: { [String(layout)]: {} } }
-			expect(upgradeStorage(stored)).toEqual(stored)
-			expect(upgradeFile({ version: 5, layout })).toEqual({ version: 5, layout })
-		}
-		const unnamed = { version: 5, year: 2030 }
-		expect(upgradeFile(unnamed)).toEqual(unnamed)
-		expect(upgradeStorage(unnamed)).toEqual(unnamed)
-	})
-})
-
-describe('isProjectFile', () => {
-	it('accepts only files marked with the format', () => {
-		expect(isProjectFile({ format: FILE_FORMAT })).toBe(true)
-		expect(isProjectFile({ year: 2030 })).toBe(false)
-		expect(isProjectFile({ format: 'other' })).toBe(false)
 	})
 })

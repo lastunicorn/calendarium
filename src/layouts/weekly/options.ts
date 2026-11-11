@@ -121,7 +121,8 @@ export const WEEKLY_SPEC: LayoutSpec<WeeklyOptions> = {
 	// Columns side by side fit landscape, with room for three-letter weekdays. The weekend
 	// shares a cell, leaving the weekdays room for an hourly schedule.
 	defaults: () => {
-		const common = commonDefaults()
+		const { page, ...common } = commonDefaults()
+		// The groups in sidebar order, which files keep: the page last.
 		return {
 			...common,
 			header: { alignment: 'auto', fontSize: 20, showWeek: true },
@@ -143,7 +144,7 @@ export const WEEKLY_SPEC: LayoutSpec<WeeklyOptions> = {
 				schedule: scheduleDefaults(),
 			},
 			footer: footerDefaults(),
-			page: { ...common.page, orientation: 'landscape', margins: margins(10) },
+			page: { ...page, orientation: 'landscape', margins: margins(10) },
 		}
 	},
 	validators: {

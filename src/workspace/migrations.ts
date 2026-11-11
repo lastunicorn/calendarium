@@ -1,123 +1,27 @@
-import { type LayoutId, migrateLayoutOptions } from '../layouts'
+import { migrateLayoutOptions } from '../layouts'
 import { asObject, type UntrustedObject } from '../core/validation'
 import { FORMAT_VERSION, isLaterAppVersion } from './version'
 
-// Storage and files are two formats, tagged with the same `FORMAT_VERSION` (the app's major
-// version) and the app version that wrote them. Each format has an ordered list of migration
-// steps; data is brought to the current version by applying the steps from its own version up,
-// in order. A new major version is one new step at the end of each list. A layout's own options
-// change through that layout's steps (`LayoutSpec.migrations`), which `layoutsInStorage` and
-// `layoutInFile` apply; a step that also changes the format's shape does that around them.
+// Stored data and files are tagged with the same `FORMAT_VERSION` (the app's major version) and
+// the app version that wrote them. From 6 on, a file and a project in storage are one shape, the
+// serialized project (`projectDocument.ts`), with one ordered list of migration steps,
+// `PROJECT_MIGRATIONS`; data is brought to the current version by applying the steps from its own
+// version up, in order. A new major version is one new step at the end of it. A layout's own
+// options change through that layout's steps (`LayoutSpec.migrations`), which `layoutInProject`
+// applies; a step that also changes the shape does that around it. The formats of 3 to 5, and
+// their conversion to 6, are frozen in `legacy.ts`.
 
 /** Untrusted data read from storage or a file, as an object whose fields can be read. */
 export type StoredData = UntrustedObject
 
 /** One step that brings data from the version before it to the next version. */
-type Migration = (data: StoredData) => StoredData
+export type Migration = (data: StoredData) => StoredData
 
 /** The first format version; data tagged with any earlier one is not this app's. */
 export const FIRST_FORMAT_VERSION = 3
 
-/** The storage step from `version` that changes only the layouts' options, each by its own step. */
-function layoutsInStorage(version: number): Migration {
-	return (data) => {
-		const layouts = asObject(data.layouts)
-		if (layouts === null) return data
-		const upgraded: StoredData = {}
-		for (const [layout, options] of Object.entries(layouts)) {
-			const object = asObject(options)
-			upgraded[layout] =
-				object === null ? options : migrateLayoutOptions(layout, version, object)
-		}
-		return { ...data, layouts: upgraded }
-	}
-}
-
-/**
- * The file step from `version` that changes only the options, by the step of the layout the file
- * names; a file that names no layout is left as is.
- */
-function layoutInFile(version: number): Migration {
-	return (data) => migrateLayoutOptions(data.layout, version, data)
-}
-
-/** The format version from which data names the layouts by their current ids. */
-const LAYOUT_IDS_VERSION = 6
-
-/**
- * The ids the layouts had before `LAYOUT_IDS_VERSION`, each mapped to its id now. The steps find
- * a layout by its current id, so data from before it has its ids mapped before any step runs; an
- * id that is neither old nor current (a later version's layout) is left as is.
- */
-const LEGACY_LAYOUT_IDS: Readonly<Record<string, LayoutId>> = {
-	'year-per-page': 'yearly',
-	'month-per-page': 'monthly',
-	'week-per-page': 'weekly',
-	'day-per-page': 'daily',
-}
-
-/** `id` as the layout is named now. */
-function currentLayoutId(id: string): string {
-	return Object.hasOwn(LEGACY_LAYOUT_IDS, id) ? LEGACY_LAYOUT_IDS[id] : id
-}
-
-/** Stored data with the active layout and the layouts' keys given their current ids. */
-function renameLayoutsInStorage(data: StoredData): StoredData {
-	const renamed = { ...data }
-	if (typeof data.layout === 'string') renamed.layout = currentLayoutId(data.layout)
-	const layouts = asObject(data.layouts)
-	if (layouts !== null) {
-		renamed.layouts = Object.fromEntries(
-			Object.entries(layouts).map(([layout, options]) => [currentLayoutId(layout), options]),
-		)
-	}
-	return renamed
-}
-
-/** A file with the layout it names given its current id. */
-function renameLayoutInFile(data: StoredData): StoredData {
-	return typeof data.layout === 'string'
-		? { ...data, layout: currentLayoutId(data.layout) }
-		: data
-}
-
-/**
- * Storage steps; the step at index `i` migrates version `FIRST_FORMAT_VERSION + i` to the next.
- *
- * - 3: `{ version, app, layout, layouts: { <id>: {...} } }`, one set of options per layout.
- * - 4: the same; the week and day layouts' options changed (see their `migrations.ts`).
- * - 5: the same; the week layout's options changed (see its `migrations.ts`).
- * - 6: the same; the layouts are `yearly`, `monthly`, `weekly` and `daily` (were `year-per-page`,
- *   `month-per-page`, `week-per-page` and `day-per-page`, mapped by `LEGACY_LAYOUT_IDS` before the
- *   steps), and the day layout's options changed (see its `migrations.ts`).
- */
-export const STORAGE_MIGRATIONS: readonly Migration[] = [
-	layoutsInStorage(3),
-	layoutsInStorage(4),
-	layoutsInStorage(5),
-]
-
-/**
- * File steps; the step at index `i` migrates version `FIRST_FORMAT_VERSION + i` to the next.
- *
- * - 3: `{ format, version, app, layout, ...options }`, one layout's options, flat.
- * - 4: the same; the week and day layouts' options changed (see their `migrations.ts`).
- * - 5: the same; the week layout's options changed (see its `migrations.ts`).
- * - 6: the same; the layouts are `yearly`, `monthly`, `weekly` and `daily` (were `year-per-page`,
- *   `month-per-page`, `week-per-page` and `day-per-page`, mapped by `LEGACY_LAYOUT_IDS` before the
- *   steps), and the day layout's options changed (see its `migrations.ts`).
- */
-export const FILE_MIGRATIONS: readonly Migration[] = [
-	layoutInFile(3),
-	layoutInFile(4),
-	layoutInFile(5),
-]
-
-/**
- * Marks a JSON file as one of this app's project files. It names a layout, as projects were called
- * when files were first written, and stays as it is: every file carries it.
- */
-export const FILE_FORMAT = 'printable-calendar/layout'
+/** The first format version of the serialized project, which files and storage share. */
+export const FIRST_PROJECT_VERSION = 6
 
 /** The format version `data` is tagged with; `null` when it has none this app knows. */
 export function versionOf(data: StoredData): number | null {
@@ -140,35 +44,51 @@ export function isFromLaterVersion(data: StoredData): boolean {
 }
 
 /**
- * Applies the steps from `data`'s version up to the current one, after `renameLayouts` has given
- * data from before `LAYOUT_IDS_VERSION` the layouts' current ids, which the steps find them by;
- * data from a later version is left as is. `null` when `data` has no valid version.
+ * `data`, of format version `version`, after the steps of `migrations` from that version on, the
+ * step at index `i` migrating version `firstVersion + i` to the next; data from a version after
+ * the last step is left as is.
  */
-function migrate(
+export function applyMigrations(
 	data: StoredData,
+	version: number,
+	firstVersion: number,
 	migrations: readonly Migration[],
-	renameLayouts: Migration,
-): StoredData | null {
-	const version = versionOf(data)
-	if (version === null) return null
-	let current = version < LAYOUT_IDS_VERSION ? renameLayouts(data) : data
-	for (let step = version - FIRST_FORMAT_VERSION; step < migrations.length; step++) {
+): StoredData {
+	let current = data
+	for (let step = version - firstVersion; step < migrations.length; step++) {
 		current = migrations[step](current)
 	}
 	return current
 }
 
-/** Brings stored app data of any version to the current storage shape. */
-export function upgradeStorage(data: StoredData): StoredData | null {
-	return migrate(data, STORAGE_MIGRATIONS, renameLayoutsInStorage)
+/**
+ * The serialized project's step from `version` that changes only its options, by the step of the
+ * layout it names; a project whose options are not an object is left as is.
+ */
+export function layoutInProject(version: number): Migration {
+	return (data) => {
+		const options = asObject(data.options)
+		if (options === null) return data
+		return { ...data, options: migrateLayoutOptions(data.layout, version, options) }
+	}
 }
 
-/** Brings a file of any version to the current file shape. */
-export function upgradeFile(data: StoredData): StoredData | null {
-	return migrate(data, FILE_MIGRATIONS, renameLayoutInFile)
-}
+/**
+ * Serialized project steps; the step at index `i` migrates version `FIRST_PROJECT_VERSION + i` to
+ * the next, a layout's options by `layoutInProject(version)`.
+ *
+ * - 6: `{ format, version, app, id, name, layout, options }`, one project, its options grouped
+ *   (`calendar`, `events`, `header`, `miniMonth`, `content`, `footer`, `page`, as each layout has
+ *   them).
+ */
+export const PROJECT_MIGRATIONS: readonly Migration[] = []
 
-/** Whether `data` is one of this app's files: it carries `FILE_FORMAT`. */
-export function isProjectFile(data: StoredData): boolean {
-	return data.format === FILE_FORMAT
+/**
+ * Brings a serialized project of `FIRST_PROJECT_VERSION` or later to the current shape; one from
+ * a later version is left as is. `null` when `data` has no such version.
+ */
+export function upgradeProject(data: StoredData): StoredData | null {
+	const version = versionOf(data)
+	if (version === null || version < FIRST_PROJECT_VERSION) return null
+	return applyMigrations(data, version, FIRST_PROJECT_VERSION, PROJECT_MIGRATIONS)
 }

@@ -2,7 +2,9 @@ import { fireEvent, render, screen, waitFor, within } from '@testing-library/rea
 import { describe, expect, it, vi } from 'vitest'
 import App from './App'
 import { defaultLayoutOptions } from './layouts'
-import { serializeProject } from './workspace/projectFile'
+import { serializeProject } from './workspace/projectDocument'
+
+const ID = '3f0c9a52-7d1e-4b8a-9c61-2e5f4a8b7d10'
 
 /** Chooses `file` in the layout section's hidden file input, as the open button's dialog would. */
 function chooseProjectFile(container: HTMLElement, file: File) {
@@ -29,7 +31,10 @@ describe('App open project', () => {
 			...defaultLayoutOptions('monthly'),
 			calendar: { ...defaultLayoutOptions('monthly').calendar, year: 2030 },
 		}
-		const text = serializeProject({ layout: 'monthly', options })
+		const text = serializeProject(
+			{ id: ID, name: '', layout: 'monthly', options },
+			{ pretty: true },
+		)
 		chooseProjectFile(container, new File([text], 'month.json', { type: 'application/json' }))
 
 		await waitFor(() => expect(layoutSelect().value).toBe('monthly'))
@@ -53,6 +58,21 @@ describe('App open project', () => {
 			String(new Date().getFullYear()),
 		)
 	})
+
+	it('shows an error for a project of a layout this version doesn’t have', async () => {
+		const { container } = render(<App />)
+		const text = serializeProject(
+			{ id: ID, name: '', layout: 'monthly', options: defaultLayoutOptions('monthly') },
+			{ pretty: true },
+		).replace('"monthly"', '"quarterly"')
+
+		chooseProjectFile(container, new File([text], 'quarter.json'))
+
+		expect((await screen.findByRole('alert')).textContent).toBe(
+			'quarter.json was made by a newer version, with a layout this one doesn’t have.',
+		)
+		expect(layoutSelect().value).toBe('yearly')
+	})
 })
 
 describe('App new project', () => {
@@ -62,7 +82,10 @@ describe('App new project', () => {
 			...defaultLayoutOptions('monthly'),
 			calendar: { ...defaultLayoutOptions('monthly').calendar, year: 2030 },
 		}
-		const text = serializeProject({ layout: 'monthly', options })
+		const text = serializeProject(
+			{ id: ID, name: '', layout: 'monthly', options },
+			{ pretty: true },
+		)
 		chooseProjectFile(container, new File([text], 'month.json', { type: 'application/json' }))
 		await waitFor(() => expect(layoutSelect().value).toBe('monthly'))
 
@@ -90,7 +113,10 @@ describe('App new project', () => {
 			calendar: { ...defaultLayoutOptions('monthly').calendar, year: 2030 },
 			events: ['0000-12-25 Christmas'],
 		}
-		const text = serializeProject({ layout: 'monthly', options })
+		const text = serializeProject(
+			{ id: ID, name: '', layout: 'monthly', options },
+			{ pretty: true },
+		)
 		chooseProjectFile(container, new File([text], 'month.json', { type: 'application/json' }))
 		await waitFor(() => expect(layoutSelect().value).toBe('monthly'))
 

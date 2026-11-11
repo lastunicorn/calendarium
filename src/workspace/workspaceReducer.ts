@@ -1,4 +1,5 @@
-import type { Project, Workspace } from './Workspace'
+import type { Workspace } from './Workspace'
+import type { Project, ProjectId } from './Project'
 import { applyPatch, type Patch } from '../core/data'
 import {
 	defaultLayoutOptions,
@@ -18,8 +19,11 @@ export type WorkspaceAction =
 	| { [K in LayoutId]: { type: 'update'; layout: K; patch: Patch<LayoutOptions[K]> } }[LayoutId]
 	/** Starts `layout` over from its default options; the active layout stays as it was. */
 	| { type: 'newProject'; layout: LayoutId }
-	/** Swaps in a project for the last one of its layout and shows that layout (an opened file). */
-	| { type: 'openProject'; project: Project }
+	/**
+	 * Swaps in a project for the last one of its layout and shows that layout (an opened file);
+	 * its id and name are not kept.
+	 */
+	| { type: 'openProject'; project: Project<ProjectId | null> }
 
 /** `workspace` with `layout`'s options replaced, after applying that layout's rules. */
 function withLayout<K extends LayoutId>(

@@ -1,7 +1,8 @@
 import { type ChangeEvent, type FocusEvent, type PointerEvent, useRef, useState } from 'react'
 import { activeProject, isNewProject, type Workspace } from '../../workspace/Workspace'
 import { LAYOUT_IDS, type LayoutId } from '../../layouts'
-import { type OpenedProject, parseProjectFile, projectFile } from '../../workspace/projectFile'
+import { type OpenedProjectFile, parseProjectFile, projectFile } from '../../workspace/projectFile'
+import { newProjectId, type Project, type ProjectId } from '../../workspace/Project'
 import { IconButton } from '../components/IconButton'
 import { LayoutIcon, NewIcon, OpenIcon, SaveIcon } from '../components/icons'
 import { downloadFile } from '../download'
@@ -22,14 +23,17 @@ interface LayoutSectionProps {
 	/** Starts one layout's project over from its default options. */
 	onNew: (layout: LayoutId) => void
 	/** Replaces the last project of a file's layout with the file's and shows that layout. */
-	onOpen: (opened: OpenedProject) => void
+	onOpen: (project: Project<ProjectId | null>) => void
 }
 
 /**
  * What to tell the user about an opened project file made by a newer version, or with invalid fields;
  * empty when there is nothing to report.
  */
-function describeOpened(fileName: string, { ignored, newer }: OpenedProject): string {
+function describeOpened(
+	fileName: string,
+	{ ignored, newer }: Extract<OpenedProjectFile, { ok: true }>,
+): string {
 	const notices = []
 	if (newer) {
 		notices.push(`Opened ${fileName}, made by a newer version; some settings may be ignored.`)
@@ -44,6 +48,19 @@ function describeOpened(fileName: string, { ignored, newer }: OpenedProject): st
 		)
 	}
 	return notices.join(' ')
+}
+
+/** Why a file could not be opened, for the user. */
+function describeRejected(
+	fileName: string,
+	{ reason }: Extract<OpenedProjectFile, { ok: false }>,
+): string {
+	switch (reason) {
+		case 'notProject':
+			return `${fileName} is not a calendar project file.`
+		case 'unknownLayout':
+			return `${fileName} was made by a newer version, with a layout this one doesn’t have.`
+	}
 }
 
 /** The label of the action button `target` is in, or empty outside a button. */
@@ -77,7 +94,8 @@ export function LayoutSection({ workspace, onSelect, onNew, onOpen }: LayoutSect
 	}
 
 	function handleSaveClick() {
-		const file = projectFile(activeProject(workspace))
+		// The workspace keeps no ids yet, so each saved file is a project of its own.
+		const file = projectFile({ ...activeProject(workspace), id: newProjectId() })
 		downloadFile(file.fileName, file.text, 'application/json')
 	}
 
@@ -100,15 +118,15 @@ export function LayoutSection({ workspace, onSelect, onNew, onOpen }: LayoutSect
 		input.value = ''
 		if (!file) return
 
-		const opened = parseProjectFile(await file.text(), layout)
-		if (opened === null) {
-			setOpenError(`${file.name} is not a calendar project file.`)
+		const opened = parseProjectFile(await file.text(), file.name)
+		if (!opened.ok) {
+			setOpenError(describeRejected(file.name, opened))
 			setOpenNotice('')
 			return
 		}
 		setOpenError('')
 		setOpenNotice(describeOpened(file.name, opened))
-		onOpen(opened)
+		onOpen(opened.project)
 	}
 
 	return (

@@ -26,6 +26,22 @@ describe.each(LAYOUT_IDS)('the %s spec', (layout) => {
 		}
 	})
 
+	// Files are written in the defaults' key order, so they read in the sidebar's.
+	it('gives its groups in sidebar order', () => {
+		const SIDEBAR_ORDER = [
+			'calendar',
+			'events',
+			'header',
+			'miniMonth',
+			'content',
+			'footer',
+			'page',
+		]
+		const groups = Object.keys(spec.defaults())
+		expect(groups).toEqual(SIDEBAR_ORDER.filter((group) => groups.includes(group)))
+		expect(groups.every((group) => SIDEBAR_ORDER.includes(group))).toBe(true)
+	})
+
 	it('validates every field of its defaults', () => {
 		expect(Object.keys(spec.validators).sort()).toEqual(Object.keys(spec.defaults()).sort())
 	})
