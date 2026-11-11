@@ -1,6 +1,7 @@
 import type { Workspace } from '../../workspace/Workspace'
 import type { OpenedProject } from '../../workspace/projectFile'
 import { useMemo } from 'react'
+import type { Patch } from '../../core/data'
 import { defaultLayoutOptions, type LayoutOptions, type LayoutId } from '../../layouts'
 import { layoutView } from '../layouts/registry'
 import type { UpdateLayoutOptions } from '../useWorkspace'
@@ -34,7 +35,7 @@ function LayoutForm<K extends LayoutId>({ layout, options, onUpdate }: LayoutFor
 	// Fresh defaults hold today's year; computed once per layout, so they don't change while shown.
 	const defaults = useMemo(() => defaultLayoutOptions(layout), [layout])
 
-	function handleUpdate(patch: Partial<LayoutOptions[K]>) {
+	function handleUpdate(patch: Patch<LayoutOptions[K]>) {
 		onUpdate(layout, patch)
 	}
 

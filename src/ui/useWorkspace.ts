@@ -1,13 +1,14 @@
 import { useEffect, useReducer, useRef } from 'react'
+import type { Patch } from '../core/data'
 import type { LayoutOptions, LayoutId } from '../layouts'
 import type { Project } from '../workspace/Workspace'
 import { type WorkspaceAction, workspaceReducer } from '../workspace/workspaceReducer'
 import { loadWorkspace, saveWorkspace } from '../workspace/storage'
 
-/** Changes some of one layout's options. */
+/** Changes some of one layout's options, nested objects field by field. */
 export type UpdateLayoutOptions = <K extends LayoutId>(
 	layout: K,
-	patch: Partial<LayoutOptions[K]>,
+	patch: Patch<LayoutOptions[K]>,
 ) => void
 
 /** The app's single workspace state: loaded from and saved to `localStorage`. */

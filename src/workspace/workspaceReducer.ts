@@ -1,4 +1,5 @@
 import type { Project, Workspace } from './Workspace'
+import { applyPatch, type Patch } from '../core/data'
 import {
 	defaultLayoutOptions,
 	type LayoutOptions,
@@ -13,8 +14,8 @@ import {
 export type WorkspaceAction =
 	/** Shows another layout; every layout's options stay as they were. */
 	| { type: 'selectLayout'; layout: LayoutId }
-	/** Changes some of one layout's options, keeping the rest. */
-	| { [K in LayoutId]: { type: 'update'; layout: K; patch: Partial<LayoutOptions[K]> } }[LayoutId]
+	/** Changes some of one layout's options, nested objects field by field, keeping the rest. */
+	| { [K in LayoutId]: { type: 'update'; layout: K; patch: Patch<LayoutOptions[K]> } }[LayoutId]
 	/** Starts `layout` over from its default options; the active layout stays as it was. */
 	| { type: 'newProject'; layout: LayoutId }
 	/** Swaps in a project for the last one of its layout and shows that layout (an opened file). */
@@ -37,11 +38,11 @@ export function workspaceReducer(workspace: Workspace, action: WorkspaceAction):
 	switch (action.type) {
 		case 'selectLayout':
 			return { ...workspace, layout: action.layout }
-		case 'update':
-			return withLayout(workspace, action.layout, {
-				...workspace.layouts[action.layout],
-				...action.patch,
-			})
+		case 'update': {
+			const options = workspace.layouts[action.layout]
+			const patched = applyPatch(options, action.patch)
+			return patched === options ? workspace : withLayout(workspace, action.layout, patched)
+		}
 		case 'newProject':
 			return withLayout(workspace, action.layout, defaultLayoutOptions(action.layout))
 		case 'openProject': {

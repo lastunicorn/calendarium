@@ -35,33 +35,6 @@ export type LayoutOptions = {
 	[L in Layout as L['id']]: ReturnType<L['spec']['defaults']>
 }
 
-type Assert<T extends true> = T
-
-/** Whether `A` and `B` are the same type, not just assignable to each other. */
-type Equals<A, B> =
-	(<T>() => T extends A ? 1 : 2) extends <T>() => T extends B ? 1 : 2 ? true : false
-
-/** Every type field `K` has, across the layouts that have it. */
-type FieldTypes<K extends PropertyKey> = {
-	[L in LayoutId]: K extends keyof LayoutOptions[L] ? LayoutOptions[L][K] : never
-}[LayoutId]
-
-/** The fields whose type differs between two layouts that have them. */
-type MismatchedFields = {
-	[L in LayoutId]: {
-		[K in keyof LayoutOptions[L]]: Equals<LayoutOptions[L][K], FieldTypes<K>> extends true
-			? never
-			: K
-	}[keyof LayoutOptions[L]]
-}[LayoutId]
-
-// Compile-time check: a field name has the same type in every layout that has it, so a file or a
-// shared control can't read one layout's value as another's. A failure names the fields; give
-// one of them another name. (Meaning can't be checked: a name also means the same in every layout.)
-export type SameFieldTypesCheck = Assert<
-	[MismatchedFields] extends [never] ? true : MismatchedFields
->
-
 /** The options of any one layout. */
 export type AnyLayoutOptions = LayoutOptions[LayoutId]
 

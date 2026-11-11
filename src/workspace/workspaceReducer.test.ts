@@ -48,6 +48,32 @@ describe('workspaceReducer', () => {
 		expect(updated.layouts['daily']).toBe(workspace.layouts['daily'])
 	})
 
+	it('update patches a nested object field by field', () => {
+		const workspace = defaultWorkspace()
+		const updated = workspaceReducer(workspace, {
+			type: 'update',
+			layout: 'daily',
+			patch: { page: { margins: { top: 5 } }, miniMonth: { size: 'large' } },
+		})
+		const { page, miniMonth } = workspace.layouts.daily
+		expect(updated.layouts.daily.page).toEqual({
+			...page,
+			margins: { ...page.margins, top: 5 },
+			// The top margin alone changed, so the margins are no longer equal.
+			equalMargins: false,
+		})
+		expect(updated.layouts.daily.miniMonth).toEqual({ ...miniMonth, size: 'large' })
+	})
+
+	it('update keeps the workspace when the patch changes nothing', () => {
+		const workspace = defaultWorkspace()
+		const { year, page } = workspace.layouts.weekly
+		const patch = { year, page: { margins: { top: page.margins.top } } }
+		expect(workspaceReducer(workspace, { type: 'update', layout: 'weekly', patch })).toBe(
+			workspace,
+		)
+	})
+
 	it('update returns a new object and leaves the old one untouched', () => {
 		const workspace = defaultWorkspace()
 		const before = structuredClone(workspace)

@@ -1,15 +1,16 @@
 import { type ReactNode, useEffect, useId, useRef, useState } from 'react'
+import type { Patch } from '../../core/data'
 import { ChevronIcon, CloseIcon, ResetIcon } from '../components/icons'
 import styles from './Section.module.css'
 import { useOpenSectionsContext } from './openSections'
 
 /**
  * Props shared by groups of fields: a layout's options, or the part of them the fields edit, and a
- * way to change some of their fields.
+ * way to change some of their fields, a nested object's field by field.
  */
 export interface OptionsFieldsProps<O> {
 	options: O
-	onUpdate: (patch: Partial<O>) => void
+	onUpdate: (patch: Patch<O>) => void
 }
 
 /** Props shared by the form sections: their fields' props and the defaults their reset restores. */

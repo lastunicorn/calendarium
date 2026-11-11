@@ -6,10 +6,15 @@ export type Validator<T> = (value: unknown) => value is T
 
 /**
  * How one field of type `T` is checked: a validator, or for a nested object a table of its own,
- * checking it field by field so one bad field keeps the others.
+ * checking it field by field so one bad field keeps the others. An array is one value, checked
+ * whole by a validator (`isStringArray`).
  */
 // Wrapped in a tuple so a union like `boolean` isn't split into one check per member.
-export type FieldCheck<T> = [T] extends [object] ? Validators<T> : Validator<T>
+export type FieldCheck<T> = [T] extends [readonly unknown[]]
+	? Validator<T>
+	: [T] extends [object]
+		? Validators<T>
+		: Validator<T>
 
 /** One check per listed field of `T`. As a mapped type, a missing one is a compile error. */
 export type Validators<T, K extends keyof T = keyof T> = { [P in K]: FieldCheck<T[P]> }
@@ -24,6 +29,11 @@ export function isString(value: unknown): value is string {
 
 export function isBoolean(value: unknown): value is boolean {
 	return typeof value === 'boolean'
+}
+
+/** An array of strings only; empty counts. */
+export function isStringArray(value: unknown): value is string[] {
+	return Array.isArray(value) && value.every(isString)
 }
 
 /** Untrusted data, read from storage or a file, as an object whose fields can be read. */
