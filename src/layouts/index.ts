@@ -1,10 +1,10 @@
 import { sameData } from '../core/data'
 import { oneOf, type UntrustedObject } from '../core/validation'
-import { DAY_PER_PAGE } from './day-per-page'
+import { DAILY } from './daily'
 import type { LayoutSpec } from './LayoutSpec'
-import { MONTH_PER_PAGE } from './month-per-page'
-import { WEEK_PER_PAGE } from './week-per-page'
-import { YEAR_PER_PAGE } from './year-per-page'
+import { MONTHLY } from './monthly'
+import { WEEKLY } from './weekly'
+import { YEARLY } from './yearly'
 
 // Each set of allowed values is listed once; the type and the validation in `parseWorkspace`
 // derive from the array, and the UI labels are keyed by the type. Sets of generic concepts live
@@ -18,7 +18,7 @@ import { YEAR_PER_PAGE } from './year-per-page'
  * point, the folder's `index.ts`. The ids, the options types and the specs all derive from this
  * list; the views are listed in `ui/layouts/registry.ts`.
  */
-const LAYOUTS = [YEAR_PER_PAGE, MONTH_PER_PAGE, WEEK_PER_PAGE, DAY_PER_PAGE] as const
+const LAYOUTS = [YEARLY, MONTHLY, WEEKLY, DAILY] as const
 
 type Layout = (typeof LAYOUTS)[number]
 

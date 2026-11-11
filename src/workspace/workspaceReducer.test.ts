@@ -8,9 +8,9 @@ describe('workspaceReducer', () => {
 		const workspace = defaultWorkspace()
 		const selected = workspaceReducer(workspace, {
 			type: 'selectLayout',
-			layout: 'day-per-page',
+			layout: 'daily',
 		})
-		expect(selected).toEqual({ ...workspace, layout: 'day-per-page' })
+		expect(selected).toEqual({ ...workspace, layout: 'daily' })
 		expect(selected.layouts).toBe(workspace.layouts)
 	})
 
@@ -18,34 +18,34 @@ describe('workspaceReducer', () => {
 		let workspace = defaultWorkspace()
 		workspace = workspaceReducer(workspace, {
 			type: 'update',
-			layout: 'year-per-page',
+			layout: 'yearly',
 			patch: { year: 2030, title: 'Hi' },
 		})
-		workspace = workspaceReducer(workspace, { type: 'selectLayout', layout: 'month-per-page' })
+		workspace = workspaceReducer(workspace, { type: 'selectLayout', layout: 'monthly' })
 		workspace = workspaceReducer(workspace, {
 			type: 'update',
-			layout: 'month-per-page',
+			layout: 'monthly',
 			patch: { year: 2040 },
 		})
-		workspace = workspaceReducer(workspace, { type: 'selectLayout', layout: 'year-per-page' })
-		expect(workspace.layouts['year-per-page']).toMatchObject({ year: 2030, title: 'Hi' })
-		expect(workspace.layouts['month-per-page'].year).toBe(2040)
+		workspace = workspaceReducer(workspace, { type: 'selectLayout', layout: 'yearly' })
+		expect(workspace.layouts['yearly']).toMatchObject({ year: 2030, title: 'Hi' })
+		expect(workspace.layouts['monthly'].year).toBe(2040)
 	})
 
 	it('update changes only the patched fields of the given layout', () => {
 		const workspace = defaultWorkspace()
 		const updated = workspaceReducer(workspace, {
 			type: 'update',
-			layout: 'year-per-page',
+			layout: 'yearly',
 			patch: { year: 2030, title: 'Hi' },
 		})
-		expect(updated.layouts['year-per-page']).toEqual({
-			...workspace.layouts['year-per-page'],
+		expect(updated.layouts['yearly']).toEqual({
+			...workspace.layouts['yearly'],
 			year: 2030,
 			title: 'Hi',
 		})
-		expect(updated.layouts['month-per-page']).toBe(workspace.layouts['month-per-page'])
-		expect(updated.layouts['day-per-page']).toBe(workspace.layouts['day-per-page'])
+		expect(updated.layouts['monthly']).toBe(workspace.layouts['monthly'])
+		expect(updated.layouts['daily']).toBe(workspace.layouts['daily'])
 	})
 
 	it('update returns a new object and leaves the old one untouched', () => {
@@ -53,10 +53,10 @@ describe('workspaceReducer', () => {
 		const before = structuredClone(workspace)
 		const updated = workspaceReducer(workspace, {
 			type: 'update',
-			layout: 'day-per-page',
+			layout: 'daily',
 			patch: {
 				miniMonth: {
-					...workspace.layouts['day-per-page'].miniMonth,
+					...workspace.layouts['daily'].miniMonth,
 					showWeekNumbers: false,
 				},
 			},
@@ -69,27 +69,27 @@ describe('workspaceReducer', () => {
 		let workspace = defaultWorkspace()
 		workspace = workspaceReducer(workspace, {
 			type: 'update',
-			layout: 'day-per-page',
+			layout: 'daily',
 			patch: { year: 1999, firstHour: 3 },
 		})
 		workspace = workspaceReducer(workspace, {
 			type: 'update',
-			layout: 'year-per-page',
+			layout: 'yearly',
 			patch: { title: 'Hi' },
 		})
-		const started = workspaceReducer(workspace, { type: 'newProject', layout: 'day-per-page' })
-		expect(started.layouts['day-per-page']).toEqual(defaultLayoutOptions('day-per-page'))
-		expect(started.layouts['year-per-page']).toBe(workspace.layouts['year-per-page'])
-		expect(started.layout).toBe('year-per-page')
+		const started = workspaceReducer(workspace, { type: 'newProject', layout: 'daily' })
+		expect(started.layouts['daily']).toEqual(defaultLayoutOptions('daily'))
+		expect(started.layouts['yearly']).toBe(workspace.layouts['yearly'])
+		expect(started.layout).toBe('yearly')
 	})
 
 	it('openProject swaps in one layout’s project and shows that layout', () => {
-		const next = { ...defaultLayoutOptions('month-per-page'), year: 1999 }
+		const next = { ...defaultLayoutOptions('monthly'), year: 1999 }
 		const opened = workspaceReducer(defaultWorkspace(), {
 			type: 'openProject',
-			project: { layout: 'month-per-page', options: next },
+			project: { layout: 'monthly', options: next },
 		})
-		expect(opened.layout).toBe('month-per-page')
-		expect(opened.layouts['month-per-page']).toBe(next)
+		expect(opened.layout).toBe('monthly')
+		expect(opened.layouts['monthly']).toBe(next)
 	})
 })

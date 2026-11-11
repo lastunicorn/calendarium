@@ -7,14 +7,14 @@ import { FORMAT_VERSION } from './version'
 describe('parseWorkspace', () => {
 	it('keeps a language-chosen week start', () => {
 		const stored = toStoredWorkspace(defaultWorkspace())
-		stored.layouts['month-per-page'] = {
-			...stored.layouts['month-per-page'],
+		stored.layouts['monthly'] = {
+			...stored.layouts['monthly'],
 			weekStart: 'auto',
 		}
-		stored.layouts['day-per-page'] = { ...stored.layouts['day-per-page'], weekStart: 0 }
+		stored.layouts['daily'] = { ...stored.layouts['daily'], weekStart: 0 }
 		const { layouts } = parseWorkspace(stored)
-		expect(layouts['month-per-page'].weekStart).toBe('auto')
-		expect(layouts['day-per-page'].weekStart).toBe(0)
+		expect(layouts['monthly'].weekStart).toBe('auto')
+		expect(layouts['daily'].weekStart).toBe(0)
 	})
 
 	it('returns defaults for missing or malformed data', () => {
@@ -43,7 +43,7 @@ describe('parseWorkspace', () => {
 			},
 		}
 		const workspace = {
-			layout: 'month-per-page',
+			layout: 'monthly',
 			layouts: mapLayouts((layout) => ({ ...defaultLayoutOptions(layout), ...common })),
 		}
 		expect(parseWorkspace({ version: FORMAT_VERSION, ...workspace })).toEqual(workspace)
@@ -59,7 +59,7 @@ describe('parseWorkspace', () => {
 		}
 		const workspace = parseWorkspace({
 			version: FORMAT_VERSION,
-			layout: 'quarter-per-page',
+			layout: 'quarterly',
 			layouts: Object.fromEntries(LAYOUT_IDS.map((layout) => [layout, invalidCommon])),
 		})
 		expect(workspace).toEqual(defaultWorkspace())
@@ -69,22 +69,24 @@ describe('parseWorkspace', () => {
 		const workspace = parseWorkspace({
 			version: FORMAT_VERSION,
 			layouts: {
-				'year-per-page': { weekdayFormat: 'full' },
-				'month-per-page': { weekdayFormat: 'full' },
+				yearly: { weekdayFormat: 'full' },
+				monthly: { weekdayFormat: 'full' },
 			},
 		})
-		expect(workspace.layouts['month-per-page'].weekdayFormat).toBe('full')
-		expect(workspace.layouts['year-per-page'].weekdayFormat).toBe(
-			defaultLayoutOptions('year-per-page').weekdayFormat,
+		expect(workspace.layouts['monthly'].weekdayFormat).toBe('full')
+		expect(workspace.layouts['yearly'].weekdayFormat).toBe(
+			defaultLayoutOptions('yearly').weekdayFormat,
 		)
 	})
 
-	it('reads older data through the layouts’ own migration steps', () => {
+	it('reads older data, naming the layouts by their old ids, through the layouts’ own steps', () => {
 		const workspace = parseWorkspace({
 			version: 3,
+			layout: 'week-per-page',
 			layouts: { 'week-per-page': { highlightWeekends: 'off', showWeekNumbers: false } },
 		})
-		expect(workspace.layouts['week-per-page']).toMatchObject({
+		expect(workspace.layout).toBe('weekly')
+		expect(workspace.layouts.weekly).toMatchObject({
 			highlightWeekendDays: false,
 			showHeaderWeek: false,
 		})
@@ -93,52 +95,50 @@ describe('parseWorkspace', () => {
 	it('ignores fields a layout does not have', () => {
 		const workspace = parseWorkspace({
 			version: FORMAT_VERSION,
-			layouts: { 'month-per-page': { subtitle: 'Office', firstHour: 3 } },
+			layouts: { monthly: { subtitle: 'Office', firstHour: 3 } },
 		})
-		expect(workspace.layouts['month-per-page']).not.toHaveProperty('subtitle')
-		expect(workspace.layouts['month-per-page']).not.toHaveProperty('firstHour')
+		expect(workspace.layouts['monthly']).not.toHaveProperty('subtitle')
+		expect(workspace.layouts['monthly']).not.toHaveProperty('firstHour')
 	})
 
 	it('falls back to defaults for one broken layout only', () => {
 		const workspace = parseWorkspace({
 			version: FORMAT_VERSION,
-			layouts: { 'year-per-page': 'broken', 'day-per-page': { year: 2040 } },
+			layouts: { yearly: 'broken', daily: { year: 2040 } },
 		})
-		expect(workspace.layouts['year-per-page']).toEqual(defaultLayoutOptions('year-per-page'))
-		expect(workspace.layouts['day-per-page'].year).toBe(2040)
+		expect(workspace.layouts['yearly']).toEqual(defaultLayoutOptions('yearly'))
+		expect(workspace.layouts['daily'].year).toBe(2040)
 	})
 
 	it('falls back to the default page when `page` is not an object', () => {
 		const workspace = parseWorkspace({
 			version: FORMAT_VERSION,
-			layouts: { 'month-per-page': { page: 'a4' } },
+			layouts: { monthly: { page: 'a4' } },
 		})
-		expect(workspace.layouts['month-per-page'].page).toEqual(
-			defaultLayoutOptions('month-per-page').page,
-		)
+		expect(workspace.layouts['monthly'].page).toEqual(defaultLayoutOptions('monthly').page)
 	})
 
 	it('validates each margin separately', () => {
 		const workspace = parseWorkspace({
 			version: FORMAT_VERSION,
 			layouts: {
-				'year-per-page': {
+				yearly: {
 					page: { margins: { top: 20, right: -1, bottom: 51, left: '5' } },
 				},
 			},
 		})
-		expect(workspace.layouts['year-per-page'].page.margins).toEqual({
-			...defaultLayoutOptions('year-per-page').page.margins,
+		expect(workspace.layouts['yearly'].page.margins).toEqual({
+			...defaultLayoutOptions('yearly').page.margins,
 			top: 20,
 		})
 	})
 
 	it('round-trips through toStoredWorkspace', () => {
 		const workspace = defaultWorkspace()
-		workspace.layout = 'day-per-page'
-		workspace.layouts['day-per-page'] = { ...workspace.layouts['day-per-page'], year: 2030 }
-		workspace.layouts['month-per-page'].page = {
-			...workspace.layouts['month-per-page'].page,
+		workspace.layout = 'daily'
+		workspace.layouts['daily'] = { ...workspace.layouts['daily'], year: 2030 }
+		workspace.layouts['monthly'].page = {
+			...workspace.layouts['monthly'].page,
 			paperSize: 'a3',
 		}
 		expect(parseWorkspace(toStoredWorkspace(workspace))).toEqual(workspace)
@@ -149,22 +149,22 @@ describe('parseWorkspace', () => {
 			version: FORMAT_VERSION,
 			app: '3.0.0',
 			extra: 'x',
-			layouts: { 'year-per-page': { version: FORMAT_VERSION, app: '3.0.0', extra: 'x' } },
+			layouts: { yearly: { version: FORMAT_VERSION, app: '3.0.0', extra: 'x' } },
 		})
 		expect(workspace).not.toHaveProperty('version')
 		expect(workspace).not.toHaveProperty('app')
 		expect(workspace).not.toHaveProperty('extra')
-		expect(workspace.layouts['year-per-page']).not.toHaveProperty('extra')
-		expect(workspace.layouts['year-per-page']).not.toHaveProperty('version')
-		expect(workspace.layouts['year-per-page']).not.toHaveProperty('app')
+		expect(workspace.layouts['yearly']).not.toHaveProperty('extra')
+		expect(workspace.layouts['yearly']).not.toHaveProperty('version')
+		expect(workspace.layouts['yearly']).not.toHaveProperty('app')
 	})
 })
 
 describe('parseWorkspace versions', () => {
 	it('ignores data without a version this app knows', () => {
-		const layouts = { 'year-per-page': { year: 2040 } }
+		const layouts = { yearly: { year: 2040 } }
 		for (const version of [undefined, 1, 2, '3', 3.5]) {
-			expect(parseWorkspace({ version, layout: 'day-per-page', layouts })).toEqual(
+			expect(parseWorkspace({ version, layout: 'daily', layouts })).toEqual(
 				defaultWorkspace(),
 			)
 		}
@@ -173,11 +173,11 @@ describe('parseWorkspace versions', () => {
 	it('reads data from a later version as the current shape', () => {
 		const workspace = parseWorkspace({
 			version: FORMAT_VERSION + 1,
-			layout: 'day-per-page',
-			layouts: { 'day-per-page': { year: 2040, futureOption: true } },
+			layout: 'daily',
+			layouts: { daily: { year: 2040, futureOption: true } },
 		})
-		expect(workspace.layout).toBe('day-per-page')
-		expect(workspace.layouts['day-per-page'].year).toBe(2040)
-		expect(workspace.layouts['day-per-page']).not.toHaveProperty('futureOption')
+		expect(workspace.layout).toBe('daily')
+		expect(workspace.layouts['daily'].year).toBe(2040)
+		expect(workspace.layouts['daily']).not.toHaveProperty('futureOption')
 	})
 })

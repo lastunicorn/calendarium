@@ -58,7 +58,7 @@ describe('WorkspaceForm', () => {
 	})
 
 	it('keeps the layout picker open, starts every other section collapsed, and opens one when its title is clicked', () => {
-		const [layoutTitle, ...titles] = sectionTitles('year-per-page')
+		const [layoutTitle, ...titles] = sectionTitles('yearly')
 		expect(layoutTitle).toBe('Project')
 		expect(screen.queryByRole('button', { name: 'Project' })).toBeNull()
 		expect(
@@ -84,7 +84,7 @@ describe('WorkspaceForm', () => {
 	})
 
 	it('closes the open section when another one is opened', () => {
-		sectionTitles('year-per-page')
+		sectionTitles('yearly')
 		const calendar = screen.getByRole('button', { name: 'Calendar' })
 		const page = screen.getByRole('button', { name: 'Page' })
 		fireEvent.click(calendar)
@@ -119,7 +119,7 @@ describe('WorkspaceForm', () => {
 
 		rerender(
 			<Form
-				workspace={{ ...workspace, layout: 'day-per-page' }}
+				workspace={{ ...workspace, layout: 'daily' }}
 				onSelectLayout={noop}
 				onUpdate={noop}
 				onNewProject={noop}

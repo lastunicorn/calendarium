@@ -50,7 +50,7 @@ describe('Preview', () => {
 	it('sets the printed paper size from the layout', () => {
 		const { container } = render(
 			<Preview
-				workspace={workspaceFor('month-per-page')}
+				workspace={workspaceFor('monthly')}
 				onNewProject={noop}
 				zoom={100}
 				onZoom={noop}
@@ -60,15 +60,15 @@ describe('Preview', () => {
 	})
 
 	it('prints a booklet on a sheet of two pages, completing the last sheet', () => {
-		const workspace = workspaceFor('month-per-page')
-		const options = workspace.layouts['month-per-page']
+		const workspace = workspaceFor('monthly')
+		const options = workspace.layouts['monthly']
 		const { container } = render(
 			<Preview
 				workspace={{
 					...workspace,
 					layouts: {
 						...workspace.layouts,
-						'month-per-page': { ...options, page: { ...options.page, booklet: true } },
+						monthly: { ...options, page: { ...options.page, booklet: true } },
 					},
 				}}
 				onNewProject={noop}
@@ -84,8 +84,8 @@ describe('Preview', () => {
 	// Two pages per week or day, without the hours, which only slow these renders of over a hundred
 	// pages down.
 	const facingPages = [
-		['week-per-page', { twoPagesPerWeek: true, weekPageLines: 'none' }],
-		['day-per-page', { twoPagesPerDay: true, dayPageFill: 'blank' }],
+		['weekly', { twoPagesPerWeek: true, weekPageLines: 'none' }],
+		['daily', { twoPagesPerDay: true, dayPageFill: 'blank' }],
 	] as const
 
 	it.each(facingPages)('shows the two pages of %s as facing spreads', (layout, changes) => {
@@ -104,13 +104,13 @@ describe('Preview', () => {
 	})
 
 	it('marks the pages with the calendar’s language', () => {
-		const workspace = workspaceFor('year-per-page')
-		const options = { ...workspace.layouts['year-per-page'], locale: 'el-GR' as const }
+		const workspace = workspaceFor('yearly')
+		const options = { ...workspace.layouts['yearly'], locale: 'el-GR' as const }
 		const { container } = render(
 			<Preview
 				workspace={{
 					...workspace,
-					layouts: { ...workspace.layouts, 'year-per-page': options },
+					layouts: { ...workspace.layouts, yearly: options },
 				}}
 				onNewProject={noop}
 				zoom={100}
@@ -124,7 +124,7 @@ describe('Preview', () => {
 		const onZoom = vi.fn()
 		const { rerender } = render(
 			<Preview
-				workspace={workspaceFor('year-per-page')}
+				workspace={workspaceFor('yearly')}
 				onNewProject={noop}
 				zoom={100}
 				onZoom={onZoom}
@@ -139,7 +139,7 @@ describe('Preview', () => {
 
 		rerender(
 			<Preview
-				workspace={workspaceFor('year-per-page')}
+				workspace={workspaceFor('yearly')}
 				onNewProject={noop}
 				zoom={200}
 				onZoom={onZoom}
@@ -156,7 +156,7 @@ describe('Preview', () => {
 		const onZoom = vi.fn()
 		render(
 			<Preview
-				workspace={workspaceFor('year-per-page')}
+				workspace={workspaceFor('yearly')}
 				onNewProject={noop}
 				zoom={100}
 				onZoom={onZoom}
@@ -171,7 +171,7 @@ describe('Preview', () => {
 	it('counts the pages, and goes to the one before, after or typed in', () => {
 		render(
 			<Preview
-				workspace={workspaceFor('month-per-page')}
+				workspace={workspaceFor('monthly')}
 				onNewProject={noop}
 				zoom={100}
 				onZoom={noop}
@@ -200,15 +200,15 @@ describe('Preview', () => {
 	})
 
 	it('counts a booklet’s sheet sides too', () => {
-		const workspace = workspaceFor('month-per-page')
-		const options = workspace.layouts['month-per-page']
+		const workspace = workspaceFor('monthly')
+		const options = workspace.layouts['monthly']
 		render(
 			<Preview
 				workspace={{
 					...workspace,
 					layouts: {
 						...workspace.layouts,
-						'month-per-page': { ...options, page: { ...options.page, booklet: true } },
+						monthly: { ...options, page: { ...options.page, booklet: true } },
 					},
 				}}
 				onNewProject={noop}
@@ -225,7 +225,7 @@ describe('Preview', () => {
 	it('hides the page indicator for a single page', () => {
 		render(
 			<Preview
-				workspace={workspaceFor('year-per-page')}
+				workspace={workspaceFor('yearly')}
 				onNewProject={noop}
 				zoom={100}
 				onZoom={noop}
@@ -237,7 +237,7 @@ describe('Preview', () => {
 	it('lists an in-between zoom in the menu', () => {
 		render(
 			<Preview
-				workspace={workspaceFor('year-per-page')}
+				workspace={workspaceFor('yearly')}
 				onNewProject={noop}
 				zoom={87}
 				onZoom={noop}
@@ -256,7 +256,7 @@ describe('Preview', () => {
 		const onZoom = vi.fn()
 		render(
 			<Preview
-				workspace={workspaceFor('month-per-page')}
+				workspace={workspaceFor('monthly')}
 				onNewProject={noop}
 				zoom={100}
 				onZoom={onZoom}
@@ -280,7 +280,7 @@ describe('Preview', () => {
 		const onZoom = vi.fn()
 		render(
 			<Preview
-				workspace={workspaceFor('month-per-page')}
+				workspace={workspaceFor('monthly')}
 				onNewProject={noop}
 				zoom={50}
 				onZoom={onZoom}

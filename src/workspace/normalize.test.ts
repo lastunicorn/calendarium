@@ -28,17 +28,17 @@ describe('normalizeLayout', () => {
 
 	it('keeps the differing margins of settings saved before equal margins', () => {
 		const stored = toStoredWorkspace(defaultWorkspace())
-		const day = stored.layouts['day-per-page']
+		const day = stored.layouts['daily']
 		const { equalMargins: _, ...page } = { ...day.page, margins: DIFFERING }
-		const layouts = { ...stored.layouts, 'day-per-page': { ...day, page } }
-		expect(parseWorkspace({ ...stored, layouts }).layouts['day-per-page'].page).toMatchObject({
+		const layouts = { ...stored.layouts, daily: { ...day, page } }
+		expect(parseWorkspace({ ...stored, layouts }).layouts['daily'].page).toMatchObject({
 			margins: DIFFERING,
 			equalMargins: false,
 		})
 	})
 
 	it('applies to every reducer change of a layout’s options', () => {
-		const layout = 'month-per-page'
+		const layout = 'monthly'
 		const { page } = defaultLayoutOptions(layout)
 		const updated = workspaceReducer(defaultWorkspace(), {
 			type: 'update',

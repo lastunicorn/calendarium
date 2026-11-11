@@ -1,4 +1,4 @@
-import { migrateLayoutOptions } from '../layouts'
+import { type LayoutId, migrateLayoutOptions } from '../layouts'
 import { asObject, type UntrustedObject } from '../core/validation'
 import { FORMAT_VERSION, isLaterAppVersion } from './version'
 
@@ -41,13 +41,55 @@ function layoutInFile(version: number): Migration {
 	return (data) => migrateLayoutOptions(data.layout, version, data)
 }
 
+/** The format version from which data names the layouts by their current ids. */
+const LAYOUT_IDS_VERSION = 6
+
+/**
+ * The ids the layouts had before `LAYOUT_IDS_VERSION`, each mapped to its id now. The steps find
+ * a layout by its current id, so data from before it has its ids mapped before any step runs; an
+ * id that is neither old nor current (a later version's layout) is left as is.
+ */
+const LEGACY_LAYOUT_IDS: Readonly<Record<string, LayoutId>> = {
+	'year-per-page': 'yearly',
+	'month-per-page': 'monthly',
+	'week-per-page': 'weekly',
+	'day-per-page': 'daily',
+}
+
+/** `id` as the layout is named now. */
+function currentLayoutId(id: string): string {
+	return Object.hasOwn(LEGACY_LAYOUT_IDS, id) ? LEGACY_LAYOUT_IDS[id] : id
+}
+
+/** Stored data with the active layout and the layouts' keys given their current ids. */
+function renameLayoutsInStorage(data: StoredData): StoredData {
+	const renamed = { ...data }
+	if (typeof data.layout === 'string') renamed.layout = currentLayoutId(data.layout)
+	const layouts = asObject(data.layouts)
+	if (layouts !== null) {
+		renamed.layouts = Object.fromEntries(
+			Object.entries(layouts).map(([layout, options]) => [currentLayoutId(layout), options]),
+		)
+	}
+	return renamed
+}
+
+/** A file with the layout it names given its current id. */
+function renameLayoutInFile(data: StoredData): StoredData {
+	return typeof data.layout === 'string'
+		? { ...data, layout: currentLayoutId(data.layout) }
+		: data
+}
+
 /**
  * Storage steps; the step at index `i` migrates version `FIRST_FORMAT_VERSION + i` to the next.
  *
  * - 3: `{ version, app, layout, layouts: { <id>: {...} } }`, one set of options per layout.
  * - 4: the same; the week and day layouts' options changed (see their `migrations.ts`).
  * - 5: the same; the week layout's options changed (see its `migrations.ts`).
- * - 6: the same; the day layout's options changed (see its `migrations.ts`).
+ * - 6: the same; the layouts are `yearly`, `monthly`, `weekly` and `daily` (were `year-per-page`,
+ *   `month-per-page`, `week-per-page` and `day-per-page`, mapped by `LEGACY_LAYOUT_IDS` before the
+ *   steps), and the day layout's options changed (see its `migrations.ts`).
  */
 export const STORAGE_MIGRATIONS: readonly Migration[] = [
 	layoutsInStorage(3),
@@ -61,7 +103,9 @@ export const STORAGE_MIGRATIONS: readonly Migration[] = [
  * - 3: `{ format, version, app, layout, ...options }`, one layout's options, flat.
  * - 4: the same; the week and day layouts' options changed (see their `migrations.ts`).
  * - 5: the same; the week layout's options changed (see its `migrations.ts`).
- * - 6: the same; the day layout's options changed (see its `migrations.ts`).
+ * - 6: the same; the layouts are `yearly`, `monthly`, `weekly` and `daily` (were `year-per-page`,
+ *   `month-per-page`, `week-per-page` and `day-per-page`, mapped by `LEGACY_LAYOUT_IDS` before the
+ *   steps), and the day layout's options changed (see its `migrations.ts`).
  */
 export const FILE_MIGRATIONS: readonly Migration[] = [
 	layoutInFile(3),
@@ -96,13 +140,18 @@ export function isFromLaterVersion(data: StoredData): boolean {
 }
 
 /**
- * Applies the steps from `data`'s version up to the current one; data from a later version is
- * left as is. `null` when `data` has no valid version.
+ * Applies the steps from `data`'s version up to the current one, after `renameLayouts` has given
+ * data from before `LAYOUT_IDS_VERSION` the layouts' current ids, which the steps find them by;
+ * data from a later version is left as is. `null` when `data` has no valid version.
  */
-function migrate(data: StoredData, migrations: readonly Migration[]): StoredData | null {
+function migrate(
+	data: StoredData,
+	migrations: readonly Migration[],
+	renameLayouts: Migration,
+): StoredData | null {
 	const version = versionOf(data)
 	if (version === null) return null
-	let current = data
+	let current = version < LAYOUT_IDS_VERSION ? renameLayouts(data) : data
 	for (let step = version - FIRST_FORMAT_VERSION; step < migrations.length; step++) {
 		current = migrations[step](current)
 	}
@@ -111,12 +160,12 @@ function migrate(data: StoredData, migrations: readonly Migration[]): StoredData
 
 /** Brings stored app data of any version to the current storage shape. */
 export function upgradeStorage(data: StoredData): StoredData | null {
-	return migrate(data, STORAGE_MIGRATIONS)
+	return migrate(data, STORAGE_MIGRATIONS, renameLayoutsInStorage)
 }
 
 /** Brings a file of any version to the current file shape. */
 export function upgradeFile(data: StoredData): StoredData | null {
-	return migrate(data, FILE_MIGRATIONS)
+	return migrate(data, FILE_MIGRATIONS, renameLayoutInFile)
 }
 
 /** Whether `data` is one of this app's files: it carries `FILE_FORMAT`. */

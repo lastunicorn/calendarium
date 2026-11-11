@@ -82,6 +82,7 @@ describe('upgradeStorage and upgradeFile', () => {
 describe('each layout’s own steps', () => {
 	// The layouts' steps say what changed (tested in their folders); these check that storage and
 	// files apply them, each to its own layout's options.
+	// Data before 6 names the layouts by their old ids (`week-per-page`), as these fixtures do.
 	it('apply in storage to each layout’s options, leaving the other layouts as they were', () => {
 		const month = { highlightWeekends: 'columns', showWeekNumbers: true }
 		const week = { year: 2030, showWeekNumbers: false }
@@ -90,8 +91,8 @@ describe('each layout’s own steps', () => {
 			layouts: { 'month-per-page': month, 'week-per-page': week, 'quarter-per-page': week },
 		}
 		expect(upgradeStorage(stored)?.layouts).toEqual({
-			'month-per-page': month,
-			'week-per-page': layoutSpec('week-per-page').migrations[3]!(week),
+			monthly: month,
+			weekly: layoutSpec('weekly').migrations[3]!(week),
 			'quarter-per-page': week,
 		})
 	})
@@ -103,7 +104,10 @@ describe('each layout’s own steps', () => {
 			layout: 'day-per-page',
 			showMiniMonth: false,
 		}
-		expect(upgradeFile(file)).toEqual(layoutSpec('day-per-page').migrations[3]!(file))
+		expect(upgradeFile(file)).toEqual({
+			...layoutSpec('daily').migrations[3]!(file),
+			layout: 'daily',
+		})
 		expect(upgradeFile(file)).toMatchObject({ format: FILE_FORMAT, version: 3 })
 		const unnamed = { version: 3, showMiniMonth: false }
 		expect(upgradeFile(unnamed)).toEqual(unnamed)
@@ -123,6 +127,68 @@ describe('each layout’s own steps', () => {
 				step.mockRestore()
 			}
 		}
+	})
+})
+
+describe('the layouts’ ids from 6', () => {
+	const RENAMED = {
+		'year-per-page': 'yearly',
+		'month-per-page': 'monthly',
+		'week-per-page': 'weekly',
+		'day-per-page': 'daily',
+	}
+
+	it('rename the active layout and the layouts’ keys in storage, keeping their options', () => {
+		const stored = {
+			version: 5,
+			layout: 'week-per-page',
+			layouts: Object.fromEntries(
+				Object.keys(RENAMED).map((layout) => [layout, { year: 2030, title: layout }]),
+			),
+		}
+		expect(upgradeStorage(stored)).toEqual({
+			version: 5,
+			layout: 'weekly',
+			layouts: Object.fromEntries(
+				Object.entries(RENAMED).map(([old, layout]) => [
+					layout,
+					{ year: 2030, title: old },
+				]),
+			),
+		})
+	})
+
+	it('rename the layout a file names, keeping its tags and options', () => {
+		const file = { format: FILE_FORMAT, version: 5, layout: 'month-per-page', year: 2030 }
+		expect(upgradeFile(file)).toEqual({ ...file, layout: 'monthly' })
+	})
+
+	it('rename before applying a layout’s own step from 5', () => {
+		const stored = { version: 5, layouts: { 'day-per-page': { dayPageLines: 'ruled' } } }
+		expect(upgradeStorage(stored)?.layouts).toEqual({ daily: { dayPageFill: 'ruled' } })
+		const file = { version: 5, layout: 'day-per-page', dayPageLines: 'ruled' }
+		expect(upgradeFile(file)).toEqual({ version: 5, layout: 'daily', dayPageFill: 'ruled' })
+	})
+
+	it('rename from any earlier version too', () => {
+		const stored = { version: 3, layout: 'year-per-page', layouts: { 'year-per-page': {} } }
+		expect(upgradeStorage(stored)).toEqual({
+			version: 3,
+			layout: 'yearly',
+			layouts: { yearly: {} },
+		})
+		expect(upgradeFile({ version: 4, layout: 'year-per-page' })?.layout).toBe('yearly')
+	})
+
+	it('leave a current id, an unknown one or no layout as they are', () => {
+		for (const layout of ['weekly', 'quarter-per-page', 'toString', 42, undefined]) {
+			const stored = { version: 5, layout, layouts: { [String(layout)]: {} } }
+			expect(upgradeStorage(stored)).toEqual(stored)
+			expect(upgradeFile({ version: 5, layout })).toEqual({ version: 5, layout })
+		}
+		const unnamed = { version: 5, year: 2030 }
+		expect(upgradeFile(unnamed)).toEqual(unnamed)
+		expect(upgradeStorage(unnamed)).toEqual(unnamed)
 	})
 })
 

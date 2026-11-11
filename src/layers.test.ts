@@ -30,7 +30,7 @@ const SOURCES = import.meta.glob<string>('./**/*.{ts,tsx}', {
 /** Every source file's path from `src/` (`core/paper.ts`). */
 const FILES = Object.keys(SOURCES).map((key) => key.slice(2))
 
-/** The layout whose folders hold a path from `src/` (`week-per-page`), or `null` for the host's. */
+/** The layout whose folders hold a path from `src/` (`weekly`), or `null` for the host's. */
 function layoutOf(path: string): string | null {
 	return /^layouts\/([^/]+)\//.exec(path)?.[1] ?? null
 }
@@ -43,7 +43,7 @@ function layerOf(path: string): number {
 
 /**
  * `specifier` imported from `file`, as a path from `src/`, a folder as its `index`
- * (`layouts/week-per-page/index`); `null` for a package.
+ * (`layouts/weekly/index`); `null` for a package.
  */
 function resolve(file: string, specifier: string): string | null {
 	if (!specifier.startsWith('.')) return null

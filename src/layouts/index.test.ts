@@ -69,7 +69,7 @@ describe('LAYOUT_IDS', () => {
 describe('migrateLayoutOptions', () => {
 	it('returns the options of an unknown layout, or of a version without a step, as they are', () => {
 		const options = { year: 2030 }
-		expect(migrateLayoutOptions('quarter-per-page', 3, options)).toBe(options)
+		expect(migrateLayoutOptions('quarterly', 3, options)).toBe(options)
 		expect(migrateLayoutOptions(undefined, 3, options)).toBe(options)
 		for (const layout of LAYOUT_IDS) {
 			expect(migrateLayoutOptions(layout, 999, options)).toBe(options)

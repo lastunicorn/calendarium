@@ -23,7 +23,7 @@ export interface ProjectFile {
 	text: string
 }
 
-/** `project` as a file named after its layout and year: `calendar-day-per-page-2026.json`. */
+/** `project` as a file named after its layout and year: `calendar-daily-2026.json`. */
 export function projectFile(project: Project): ProjectFile {
 	return {
 		fileName: `calendar-${project.layout}-${project.options.year}.json`,

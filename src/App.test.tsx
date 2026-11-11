@@ -23,13 +23,13 @@ function layoutSelect(): HTMLSelectElement {
 describe('App open project', () => {
 	it('switches to the layout of an opened file and draws its pages', async () => {
 		const { container } = render(<App />)
-		expect(layoutSelect().value).toBe('year-per-page')
+		expect(layoutSelect().value).toBe('yearly')
 
-		const options = { ...defaultLayoutOptions('month-per-page'), year: 2030 }
-		const text = serializeProject({ layout: 'month-per-page', options })
+		const options = { ...defaultLayoutOptions('monthly'), year: 2030 }
+		const text = serializeProject({ layout: 'monthly', options })
 		chooseProjectFile(container, new File([text], 'month.json', { type: 'application/json' }))
 
-		await waitFor(() => expect(layoutSelect().value).toBe('month-per-page'))
+		await waitFor(() => expect(layoutSelect().value).toBe('monthly'))
 		openSection('Calendar')
 		expect(screen.getByLabelText<HTMLInputElement>('Year').value).toBe('2030')
 		expect(container.querySelectorAll('main section')).toHaveLength(12)
@@ -44,7 +44,7 @@ describe('App open project', () => {
 		expect((await screen.findByRole('alert')).textContent).toBe(
 			'other.json is not a calendar project file.',
 		)
-		expect(layoutSelect().value).toBe('year-per-page')
+		expect(layoutSelect().value).toBe('yearly')
 		openSection('Calendar')
 		expect(screen.getByLabelText<HTMLInputElement>('Year').value).toBe(
 			String(new Date().getFullYear()),
@@ -55,19 +55,19 @@ describe('App open project', () => {
 describe('App new project', () => {
 	it('restores the shown layout’s defaults after confirming, and keeps it shown', async () => {
 		const { container } = render(<App />)
-		const options = { ...defaultLayoutOptions('month-per-page'), year: 2030 }
-		const text = serializeProject({ layout: 'month-per-page', options })
+		const options = { ...defaultLayoutOptions('monthly'), year: 2030 }
+		const text = serializeProject({ layout: 'monthly', options })
 		chooseProjectFile(container, new File([text], 'month.json', { type: 'application/json' }))
-		await waitFor(() => expect(layoutSelect().value).toBe('month-per-page'))
+		await waitFor(() => expect(layoutSelect().value).toBe('monthly'))
 
 		const confirm = vi.spyOn(window, 'confirm').mockReturnValue(true)
 		fireEvent.click(screen.getByRole('button', { name: 'New project' }))
 		expect(confirm).toHaveBeenCalledWith(
-			'Start a new Month project? Its settings go back to their defaults; save the current project to a file first to keep it.',
+			'Start a new Monthly project? Its settings go back to their defaults; save the current project to a file first to keep it.',
 		)
 		confirm.mockRestore()
 
-		expect(layoutSelect().value).toBe('month-per-page')
+		expect(layoutSelect().value).toBe('monthly')
 		expect(
 			screen.getByRole<HTMLButtonElement>('button', { name: 'New project' }).disabled,
 		).toBe(true)
@@ -80,13 +80,13 @@ describe('App new project', () => {
 	it('restores only an open section’s defaults once its reset is confirmed', async () => {
 		const { container } = render(<App />)
 		const options = {
-			...defaultLayoutOptions('month-per-page'),
+			...defaultLayoutOptions('monthly'),
 			year: 2030,
 			events: '0000-12-25 Christmas',
 		}
-		const text = serializeProject({ layout: 'month-per-page', options })
+		const text = serializeProject({ layout: 'monthly', options })
 		chooseProjectFile(container, new File([text], 'month.json', { type: 'application/json' }))
-		await waitFor(() => expect(layoutSelect().value).toBe('month-per-page'))
+		await waitFor(() => expect(layoutSelect().value).toBe('monthly'))
 
 		openSection('Calendar')
 		fireEvent.click(screen.getByRole('button', { name: 'Reset Calendar settings' }))

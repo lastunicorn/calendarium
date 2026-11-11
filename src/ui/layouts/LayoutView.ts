@@ -10,7 +10,7 @@ export interface LayoutView<O> {
 	Component: ComponentType<{ options: O }>
 	/** The layout's options form: the sections for the options it has. */
 	Form: ComponentType<OptionsSectionProps<O>>
-	/** A short name, for messages like "Reset Month settings". */
+	/** A short name, for messages like "Start a new Monthly project?". */
 	name: string
 	/** The name with a short description, for the layout picker. */
 	label: string

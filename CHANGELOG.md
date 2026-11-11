@@ -4,7 +4,7 @@ The features each release brought, newest first. Versions follow the app version
 
 ## Unreleased
 
-Settings and files from 5.x are migrated: the day layout's fill and its alignment keep their values under their new names.
+Settings and files from 5.x are migrated: each layout keeps its settings under its new name, and the day layout's fill and its alignment keep their values under their new names.
 
 ### Added
 
@@ -14,6 +14,7 @@ Settings and files from 5.x are migrated: the day layout's fill and its alignmen
 
 ### Changed
 
+- The layouts are named Yearly, Monthly, Weekly and Daily, in the Layout picker and in project files (`yearly`, `monthly`, `weekly` and `daily`, for `year-per-page`, `month-per-page`, `week-per-page` and `day-per-page`); a project file is named after the new name, `calendar-weekly-2027.json`.
 - Year layout: the month size now sizes the months too, not only their text: smaller sizes draw smaller months, centered in their part of the page.
 - Week and day layouts: the footer and its height moved from the Content section to a Footer section of their own, with its own reset.
 - Clearer descriptions under several sidebar options (year, language, week start, events, footer, booklet, margins, spine).
