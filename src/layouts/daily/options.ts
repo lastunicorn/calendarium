@@ -1,11 +1,16 @@
-import { isBoolean, oneOf } from '../../core/validation'
+import { isBoolean, oneOf, type Validators } from '../../core/validation'
 import { FOOTER_VALIDATORS, footerDefaults, type PageFooter } from '../footer'
 import { isHeadingFontSize } from '../heading'
 import { COMMON_VALIDATORS, type CommonOptions, commonDefaults, normalizeCommon } from '../common'
 import type { LayoutSpec } from '../LayoutSpec'
 import { DAILY_MIGRATIONS } from './migrations'
 import { MINI_MONTH_VALIDATORS, type MiniMonthOptions, miniMonthDefaults } from '../monthGrid'
-import { type HourSchedule, orderHours, SCHEDULE_VALIDATORS, scheduleDefaults } from '../schedule'
+import {
+	type HourSchedule,
+	orderContentHours,
+	SCHEDULE_VALIDATORS,
+	scheduleDefaults,
+} from '../schedule'
 
 /**
  * What fills a `daily` page under its header: an hourly schedule, plain ruled lines, a
@@ -16,8 +21,8 @@ export const DAY_PAGE_FILLS = ['hours', 'ruled', 'squares', 'dots', 'genkoYoshi'
 export type DayPageFill = (typeof DAY_PAGE_FILLS)[number]
 
 /** What a `daily` page's heading shows; the other one goes in the subheading. */
-export const DAY_PAGE_TITLES = ['weekday', 'date'] as const
-export type DayPageTitle = (typeof DAY_PAGE_TITLES)[number]
+export const DAY_PAGE_HEADINGS = ['weekday', 'date'] as const
+export type DayPageHeading = (typeof DAY_PAGE_HEADINGS)[number]
 
 /** Bounds of the distance between ruled lines, in mm. */
 export const MIN_RULED_LINE_SPACING = 4
@@ -94,100 +99,128 @@ export type GenkoYoshiDirection = (typeof GENKO_YOSHI_DIRECTIONS)[number]
 export const FILL_ALIGNMENTS = ['left', 'center', 'right'] as const
 export type FillAlignment = (typeof FILL_ALIGNMENTS)[number]
 
-export interface DailyOptions extends CommonOptions, HourSchedule {
+/** A day's header: its heading, the details after its subheading, and its weekend color. */
+export interface DailyHeader {
 	/** Whether the heading is the weekday ("Thursday") or the date ("1 January 2026"). */
-	dayPageTitle: DayPageTitle
+	heading: DayPageHeading
 	/** The heading's font size, in pt; the subheading keeps its own. */
-	headingFontSize: number
-	/** What fills the page under its header; the schedule's hours come from `HourSchedule`. */
-	dayPageFill: DayPageFill
-	/** The distance between ruled lines, in mm; only used when `dayPageFill` is `ruled`. */
-	ruledLineSpacing: number
-	/**
-	 * The side of a square, in mm, the dots marking the corners of such squares; only used when
-	 * `dayPageFill` is `squares` or `dots`.
-	 */
+	fontSize: number
+	/** Whether the details line shows the ISO week ("Week 1"). */
+	showWeek: boolean
+	/** Whether the details line shows the day of the year ("Day 1 / 365"). */
+	showDayOfYear: boolean
+	/** Whether the heading is drawn in the weekend color on Saturdays and Sundays. */
+	highlightWeekendDays: boolean
+}
+
+/** Genkō yōshi, the `genkoYoshi` fill: its squares, the way it is written, its furigana and guides. */
+export interface GenkoYoshiOptions {
+	/** The side of a square, in mm. */
 	squareSize: number
-	/**
-	 * Where the grid of squares, of dots or of genkō yōshi columns sits across the page; only used
-	 * when `dayPageFill` is `squares`, `dots` or `genkoYoshi`.
-	 */
-	fillAlignment: FillAlignment
-	/** The side of a genkō yōshi square, in mm; only used when `dayPageFill` is `genkoYoshi`. */
-	genkoYoshiSquareSize: number
-	/**
-	 * Whether genkō yōshi's squares make columns or rows, the blank between them; only used when
-	 * `dayPageFill` is `genkoYoshi`.
-	 */
-	genkoYoshiDirection: GenkoYoshiDirection
-	/** Where each genkō yōshi square has a furigana strip; only used when `dayPageFill` is `genkoYoshi`. */
-	genkoYoshiFurigana: GenkoYoshiFurigana
-	/**
-	 * Whether dotted guide lines divide each genkō yōshi square in half, across and down; only used
-	 * when `dayPageFill` is `genkoYoshi`.
-	 */
-	genkoYoshiGuides: boolean
+	/** Whether the squares make columns or rows, the blank between them. */
+	direction: GenkoYoshiDirection
+	/** Where each square has a furigana strip. */
+	furigana: GenkoYoshiFurigana
+	/** Whether dotted guide lines divide each square in half, across and down. */
+	guides: boolean
+}
+
+/** What fills a day's page, or two. */
+export interface DailyContent {
 	/**
 	 * Whether each day takes two pages: the second, without a header, continues the ruled lines or
 	 * holds the second half of the schedule's hours.
 	 */
-	twoPagesPerDay: boolean
-	/** Whether the heading is drawn in the weekend color on Saturdays and Sundays. */
-	highlightWeekendDays: boolean
+	twoPages: boolean
+	/** What fills the page under its header; the schedule's hours come from `schedule`. */
+	fill: DayPageFill
+	/** The distance between ruled lines, in mm; only used when `fill` is `ruled`. */
+	ruledLineSpacing: number
+	/**
+	 * The side of a square, in mm, the dots marking the corners of such squares; only used when
+	 * `fill` is `squares` or `dots`.
+	 */
+	squareSize: number
+	/**
+	 * Where the grid of squares, of dots or of genkō yōshi columns sits across the page; only used
+	 * when `fill` is `squares`, `dots` or `genkoYoshi`.
+	 */
+	fillAlignment: FillAlignment
+	/** Only used when `fill` is `genkoYoshi`. */
+	genkoYoshi: GenkoYoshiOptions
+	/** Only used when `fill` is `hours`. */
+	schedule: HourSchedule
+}
+
+export interface DailyOptions extends CommonOptions {
+	header: DailyHeader
 	/** The day's month, drawn small in the top right corner with the day marked. */
 	miniMonth: MiniMonthOptions
-	/** Whether the header's details line shows the ISO week ("Week 1"). */
-	showHeaderWeek: boolean
-	/** Whether the header's details line shows the day of the year ("Day 1 / 365"). */
-	showHeaderDayOfYear: boolean
+	content: DailyContent
 	/** The empty footer at the bottom of each sheet, under the fill. */
 	footer: PageFooter
+}
+
+const HEADER_VALIDATORS: Validators<DailyHeader> = {
+	heading: oneOf(DAY_PAGE_HEADINGS),
+	fontSize: isHeadingFontSize,
+	showWeek: isBoolean,
+	showDayOfYear: isBoolean,
+	highlightWeekendDays: isBoolean,
+}
+
+const CONTENT_VALIDATORS: Validators<DailyContent> = {
+	twoPages: isBoolean,
+	fill: oneOf(DAY_PAGE_FILLS),
+	ruledLineSpacing: isRuledLineSpacing,
+	squareSize: isSquareSize,
+	fillAlignment: oneOf(FILL_ALIGNMENTS),
+	genkoYoshi: {
+		squareSize: isGenkoYoshiSquareSize,
+		direction: oneOf(GENKO_YOSHI_DIRECTIONS),
+		furigana: oneOf(GENKO_YOSHI_FURIGANA),
+		guides: isBoolean,
+	},
+	schedule: SCHEDULE_VALIDATORS,
 }
 
 export const DAILY_SPEC: LayoutSpec<DailyOptions> = {
 	// A tall schedule fits portrait.
 	defaults: () => ({
 		...commonDefaults(),
-		dayPageTitle: 'date',
-		headingFontSize: 24,
-		dayPageFill: 'hours',
-		ruledLineSpacing: 8,
-		// A math notebook's squares.
-		squareSize: 5,
-		fillAlignment: 'center',
-		// 1.2 cm, a common size of manuscript paper.
-		genkoYoshiSquareSize: 12,
-		genkoYoshiDirection: 'vertical',
-		genkoYoshiFurigana: 'none',
-		genkoYoshiGuides: false,
-		twoPagesPerDay: false,
-		...scheduleDefaults(),
-		highlightWeekendDays: true,
+		header: {
+			heading: 'date',
+			fontSize: 24,
+			showWeek: true,
+			showDayOfYear: true,
+			highlightWeekendDays: true,
+		},
 		miniMonth: miniMonthDefaults(),
-		showHeaderWeek: true,
-		showHeaderDayOfYear: true,
+		content: {
+			twoPages: false,
+			fill: 'hours',
+			ruledLineSpacing: 8,
+			// A math notebook's squares.
+			squareSize: 5,
+			fillAlignment: 'center',
+			genkoYoshi: {
+				// 1.2 cm, a common size of manuscript paper.
+				squareSize: 12,
+				direction: 'vertical',
+				furigana: 'none',
+				guides: false,
+			},
+			schedule: scheduleDefaults(),
+		},
 		footer: footerDefaults(),
 	}),
 	validators: {
 		...COMMON_VALIDATORS,
-		dayPageTitle: oneOf(DAY_PAGE_TITLES),
-		headingFontSize: isHeadingFontSize,
-		dayPageFill: oneOf(DAY_PAGE_FILLS),
-		ruledLineSpacing: isRuledLineSpacing,
-		squareSize: isSquareSize,
-		fillAlignment: oneOf(FILL_ALIGNMENTS),
-		genkoYoshiSquareSize: isGenkoYoshiSquareSize,
-		genkoYoshiDirection: oneOf(GENKO_YOSHI_DIRECTIONS),
-		genkoYoshiFurigana: oneOf(GENKO_YOSHI_FURIGANA),
-		genkoYoshiGuides: isBoolean,
-		twoPagesPerDay: isBoolean,
-		...SCHEDULE_VALIDATORS,
-		highlightWeekendDays: isBoolean,
+		header: HEADER_VALIDATORS,
 		miniMonth: MINI_MONTH_VALIDATORS,
-		showHeaderWeek: isBoolean,
-		showHeaderDayOfYear: isBoolean,
+		content: CONTENT_VALIDATORS,
 		footer: FOOTER_VALIDATORS,
 	},
-	normalize: (options) => orderHours(normalizeCommon(options)),
+	normalize: (options) => orderContentHours(normalizeCommon(options)),
 	migrations: DAILY_MIGRATIONS,
 }

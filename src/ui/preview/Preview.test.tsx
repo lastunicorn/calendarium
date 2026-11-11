@@ -94,7 +94,16 @@ describe('Preview', () => {
 				},
 			},
 		],
-		['daily', { twoPagesPerDay: true, dayPageFill: 'blank' }],
+		[
+			'daily',
+			{
+				content: {
+					...defaultLayoutOptions('daily').content,
+					twoPages: true,
+					fill: 'blank',
+				},
+			},
+		],
 	] as const
 
 	it.each(facingPages)('shows the two pages of %s as facing spreads', (layout, changes) => {

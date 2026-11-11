@@ -79,9 +79,9 @@ export type DayFill =
 /** Everything one day prints, on one sheet or two. */
 export interface DayPages {
 	day: CalendarDay
-	/** The weekday or the date, per `dayPageTitle`. */
+	/** The weekday or the date, per the header's `heading`. */
 	heading: string
-	/** The heading's font size, in pt (`headingFontSize`). */
+	/** The heading's font size, in pt (the header's `fontSize`). */
 	headingFontSize: number
 	/**
 	 * The other one of the two, then the details "Week 1 · Day 1 / 365", each part per its option,
@@ -90,64 +90,66 @@ export interface DayPages {
 	subheading: string
 	/** The names of the day's events, under the heading. */
 	events: string[]
-	/** Whether the heading takes the weekend color: a Saturday or Sunday, with `highlightWeekendDays`. */
+	/** Whether the heading takes the weekend color: a Saturday or Sunday, with the header's `highlightWeekendDays`. */
 	weekend: boolean
 	/**
 	 * The day's month with the day marked and, with `miniMonth.showEvents`, the days with an event
 	 * circled, in the corner; none when hidden.
 	 */
 	miniMonth?: MiniMonthPlan
-	/** What fills each sheet: one, or two with `twoPagesPerDay`, the second without a header. */
+	/** What fills each sheet: one, or two with the content's `twoPages`, the second without a header. */
 	fills: DayFill[]
 	/** The height of the empty footer at the bottom of each sheet, in mm; none unless `footer.show`. */
 	footerHeight?: number
 }
 
 /**
- * The fills of every day's sheets, the same for every day. Ruled lines, `ruledLineSpacing` apart, fill the page inside its
+ * The fills of every day's sheets, the same for every day, per the content's `fill`. Ruled lines, `ruledLineSpacing` apart, fill the page inside its
  * margins (the header takes some of that height, and the ruled area clips the lines that don't
  * fit); over two sheets they continue. Squares, `squareSize` a side, fill it with as many whole squares
  * as fit across and down, the header's height being known only once drawn, set across the page per
  * `fillAlignment`; dots mark those squares' corners. Genkō yōshi fills it likewise with
- * columns of its own squares, or rows per `genkoYoshiDirection`, `genkoYoshiSquareSize` a side,
+ * columns of its own squares, or rows per `genkoYoshi.direction`, `genkoYoshi.squareSize` a side,
  * apart by `GENKO_YOSHI_COLUMN_GAP_PERCENT` of that side, set across the page per `fillAlignment`, with
  * a furigana strip, a third of a square's side (`GENKO_YOSHI_FURIGANA_DIVISOR`), by each square per
- * `genkoYoshiFurigana`, and dotted guides halving its squares per `genkoYoshiGuides`. A blank fill leaves every sheet empty. The hours are split in half over two sheets, the second,
+ * `genkoYoshi.furigana`, and dotted guides halving its squares per `genkoYoshi.guides`. A blank fill leaves every sheet empty. The hours are split in half over two sheets, the second,
  * having no header, taking the extra hour of an odd count.
  */
 function planFills(options: DailyOptions): DayFill[] {
-	const sheets = options.twoPagesPerDay ? 2 : 1
-	if (options.dayPageFill === 'ruled') {
-		const spacing = options.ruledLineSpacing
+	const { content } = options
+	const sheets = content.twoPages ? 2 : 1
+	if (content.fill === 'ruled') {
+		const spacing = content.ruledLineSpacing
 		const lines = Math.ceil(contentBox(options.page).height / spacing)
 		const fill: DayFill = { kind: 'ruled', lines, spacing }
 		return Array.from({ length: sheets }, () => fill)
 	}
-	if (options.dayPageFill === 'blank') {
+	if (content.fill === 'blank') {
 		const fill: DayFill = { kind: 'blank' }
 		return Array.from({ length: sheets }, () => fill)
 	}
-	if (options.dayPageFill === 'squares' || options.dayPageFill === 'dots') {
+	if (content.fill === 'squares' || content.fill === 'dots') {
 		const { width, height } = contentBox(options.page)
-		const size = options.squareSize
+		const size = content.squareSize
 		const fill: DayFill = {
-			kind: options.dayPageFill,
+			kind: content.fill,
 			rows: Math.floor(height / size),
 			columns: Math.floor(width / size),
 			size,
-			align: options.fillAlignment,
+			align: content.fillAlignment,
 		}
 		return Array.from({ length: sheets }, () => fill)
 	}
-	if (options.dayPageFill === 'genkoYoshi') {
+	if (content.fill === 'genkoYoshi') {
 		const { width, height } = contentBox(options.page)
-		const size = options.genkoYoshiSquareSize
+		const { genkoYoshi } = content
+		const size = genkoYoshi.squareSize
 		const gap = (size * GENKO_YOSHI_COLUMN_GAP_PERCENT) / 100
-		const furigana = options.genkoYoshiFurigana
+		const furigana = genkoYoshi.furigana
 		const furiganaSize = size / GENKO_YOSHI_FURIGANA_DIVISOR
 		const cellWidth = size + (furigana === 'right' ? furiganaSize : 0)
 		const cellHeight = size + (furigana === 'top' ? furiganaSize : 0)
-		const direction = options.genkoYoshiDirection
+		const direction = genkoYoshi.direction
 		// n columns (or rows) take n cells and n - 1 gaps.
 		const columnGap = direction === 'vertical' ? gap : 0
 		const rowGap = direction === 'horizontal' ? gap : 0
@@ -160,13 +162,14 @@ function planFills(options: DailyOptions): DayFill[] {
 			direction,
 			furigana,
 			furiganaSize,
-			guides: options.genkoYoshiGuides,
-			align: options.fillAlignment,
+			guides: genkoYoshi.guides,
+			align: content.fillAlignment,
 		}
 		return Array.from({ length: sheets }, () => fill)
 	}
 	const { locale } = options.calendar
-	const hours = hourNames(locale, options.firstHour, options.lastHour, options.hourFormat)
+	const { firstHour, lastHour, hourFormat } = content.schedule
+	const hours = hourNames(locale, firstHour, lastHour, hourFormat)
 	const split = Math.floor(hours.length / sheets)
 	return sheets === 1
 		? [{ kind: 'hours', hours }]
@@ -179,7 +182,7 @@ function planFills(options: DailyOptions): DayFill[] {
 /** A page, or two, for every day of the year. */
 export function planDayPages(options: DailyOptions, model: CalendarModel): DayPages[] {
 	const { locale } = options.calendar
-	const { miniMonth } = options
+	const { header, miniMonth } = options
 	const messages = DAY_PAGE_MESSAGES[locale]
 	const miniWeekdays = weekdayNames(locale, model.weekStart, miniMonth.weekdayFormat)
 	const fills = planFills(options)
@@ -193,19 +196,19 @@ export function planDayPages(options: DailyOptions, model: CalendarModel): DayPa
 		const weekday = weekdayName(locale, day)
 		const date = fullDateName(locale, day)
 		const subheading = [
-			options.dayPageTitle === 'weekday' ? date : weekday,
-			options.showHeaderWeek ? messages.week(isoWeek(day)) : '',
-			options.showHeaderDayOfYear ? messages.dayOfYear(dayOfYear(day), days.length) : '',
+			header.heading === 'weekday' ? date : weekday,
+			header.showWeek ? messages.week(isoWeek(day)) : '',
+			header.showDayOfYear ? messages.dayOfYear(dayOfYear(day), days.length) : '',
 		]
 			.filter(Boolean)
 			.join(SUBHEADING_SEPARATOR)
 		return {
 			day,
-			heading: options.dayPageTitle === 'weekday' ? weekday : date,
-			headingFontSize: options.headingFontSize,
+			heading: header.heading === 'weekday' ? weekday : date,
+			headingFontSize: header.fontSize,
 			subheading,
 			events: eventNames(model.events, day),
-			weekend: options.highlightWeekendDays && day.isWeekend,
+			weekend: header.highlightWeekendDays && day.isWeekend,
 			miniMonth: miniMonth.show
 				? {
 						month: model.months[day.month],

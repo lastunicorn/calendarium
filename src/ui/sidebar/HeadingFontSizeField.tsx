@@ -6,7 +6,7 @@ interface HeadingFontSizeFieldProps {
 	onChange: (headingFontSize: number) => void
 }
 
-/** The heading's font size, for the layouts with a `headingFontSize`. */
+/** The heading's font size, every layout's header `fontSize`. */
 export function HeadingFontSizeField({ value, onChange }: HeadingFontSizeFieldProps) {
 	return (
 		<NumberField

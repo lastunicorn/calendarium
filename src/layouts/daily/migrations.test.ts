@@ -28,12 +28,13 @@ describe('daily migrations', () => {
 	})
 
 	it('give options that parse, keeping the mini month’s other defaults', () => {
+		// Parsed as 6 reads it, after the step from 5 grouped it.
 		const parsed = parseOptions(
 			DAILY_SPEC,
-			from3({ highlightWeekends: 'columns', showMiniMonth: false }),
+			from5(from3({ highlightWeekends: 'columns', showMiniMonth: false })),
 		)
 		expect(parsed).toMatchObject({
-			highlightWeekendDays: true,
+			header: { highlightWeekendDays: true },
 			miniMonth: {
 				...DAILY_SPEC.defaults().miniMonth,
 				highlightWeekends: 'columns',
@@ -42,16 +43,11 @@ describe('daily migrations', () => {
 		})
 	})
 
-	it('rename the 5 fill and its alignment', () => {
-		const options = { year: 2030, dayPageLines: 'dots', squareGridAlignment: 'right' }
+	it('read the 6 development builds’ names of the fill and its alignment too', () => {
+		const options = { year: 2030, dayPageFill: 'dots', fillAlignment: 'right' }
 		expect(from5(options)).toEqual({
 			calendar: { year: 2030 },
-			dayPageFill: 'dots',
-			fillAlignment: 'right',
-		})
-		expect(parseOptions(DAILY_SPEC, from5(options))).toMatchObject({
-			dayPageFill: 'dots',
-			fillAlignment: 'right',
+			content: { fill: 'dots', fillAlignment: 'right' },
 		})
 	})
 })
@@ -59,33 +55,76 @@ describe('daily migrations', () => {
 describe('daily migrations from 5, the groups', () => {
 	const from5 = DAILY_MIGRATIONS[5]!
 
-	it('group the calendar fields, the events and the footer along with the renames', () => {
-		const options = {
-			year: 2030,
-			locale: 'ja-JP',
-			weekStart: 0,
-			events: '0000-01-01 元日',
-			showFooter: true,
-			footerHeight: 35,
-			dayPageLines: 'ruled',
-			squareGridAlignment: 'left',
+	// Every field of 5, with a value other than its default.
+	const options = {
+		year: 2030,
+		locale: 'ja-JP',
+		weekStart: 0,
+		events: '0000-01-01 元日',
+		dayPageTitle: 'weekday',
+		headingFontSize: 30,
+		showHeaderWeek: false,
+		showHeaderDayOfYear: false,
+		highlightWeekendDays: false,
+		miniMonth: {
+			show: false,
+			showYear: true,
+			size: 'large',
+			weekdayFormat: 'short',
+			highlightWeekends: 'off',
+			showWeekNumbers: false,
+		},
+		twoPagesPerDay: true,
+		dayPageLines: 'squares',
+		ruledLineSpacing: 7,
+		squareSize: 4,
+		squareGridAlignment: 'left',
+		hourFormat: '24h',
+		firstHour: 6,
+		lastHour: 22,
+		showFooter: true,
+		footerHeight: 35,
+		page: { orientation: 'landscape' },
+	}
+	const grouped = {
+		calendar: { year: 2030, locale: 'ja-JP', weekStart: 0 },
+		events: ['0000-01-01 元日'],
+		header: {
+			heading: 'weekday',
+			fontSize: 30,
+			showWeek: false,
+			showDayOfYear: false,
+			highlightWeekendDays: false,
+		},
+		miniMonth: {
+			show: false,
+			showYear: true,
+			size: 'large',
+			weekdayFormat: 'short',
+			highlightWeekends: 'off',
+			showWeekNumbers: false,
+		},
+		content: {
+			twoPages: true,
+			fill: 'squares',
 			ruledLineSpacing: 7,
-		}
-		expect(from5(options)).toEqual({
-			calendar: { year: 2030, locale: 'ja-JP', weekStart: 0 },
-			events: ['0000-01-01 元日'],
-			footer: { show: true, height: 35 },
-			dayPageFill: 'ruled',
+			squareSize: 4,
 			fillAlignment: 'left',
-			ruledLineSpacing: 7,
-		})
-		expect(parseOptions(DAILY_SPEC, from5(options))).toMatchObject({
-			calendar: { year: 2030, locale: 'ja-JP', weekStart: 0 },
-			events: ['0000-01-01 元日'],
-			footer: { show: true, height: 35 },
-			dayPageFill: 'ruled',
-			fillAlignment: 'left',
-			ruledLineSpacing: 7,
-		})
+			schedule: { hourFormat: '24h', firstHour: 6, lastHour: 22 },
+		},
+		footer: { show: true, height: 35 },
+		page: { orientation: 'landscape' },
+	}
+
+	it('group the 5 fields: the calendar, the events, the header, the content and the footer', () => {
+		expect(from5(options)).toEqual(grouped)
+	})
+
+	it('give options that parse, keeping every value', () => {
+		expect(parseOptions(DAILY_SPEC, from5(options))).toMatchObject(grouped)
+	})
+
+	it('leave out a group none of the fields fill', () => {
+		expect(from5({ year: 2030 })).toEqual({ calendar: { year: 2030 } })
 	})
 })

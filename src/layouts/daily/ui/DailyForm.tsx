@@ -15,9 +15,9 @@ export function DailyForm(props: OptionsSectionProps<DailyOptions>) {
 		<>
 			<CalendarSection {...optionsGroup(props, 'calendar')} />
 			<EventsSection {...props} />
-			<HeaderSection {...props} />
+			<HeaderSection {...optionsGroup(props, 'header')} />
 			<MiniMonthSection {...optionsGroup(props, 'miniMonth')} />
-			<DayContentSection {...props} />
+			<DayContentSection {...optionsGroup(props, 'content')} />
 			<FooterSection {...optionsGroup(props, 'footer')} />
 			<PageSection {...optionsGroup(props, 'page')} />
 		</>

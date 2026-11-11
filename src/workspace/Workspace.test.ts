@@ -22,7 +22,7 @@ describe('isNewProject', () => {
 		let workspace = workspaceReducer(defaultWorkspace(), {
 			type: 'update',
 			layout: 'daily',
-			patch: { firstHour: 3 },
+			patch: { content: { schedule: { firstHour: 3 } } },
 		})
 		expect(isNewProject(workspace)).toBe(true)
 		workspace = workspaceReducer(workspace, { type: 'selectLayout', layout: 'daily' })

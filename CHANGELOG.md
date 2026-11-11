@@ -4,7 +4,7 @@ The features each release brought, newest first. Versions follow the app version
 
 ## Unreleased
 
-Settings and files from 5.x are migrated: each layout keeps its settings under its new name, the year, language and week start under `calendar`, the events as a list of lines, the footer's settings under `footer`, the year layout's title, subtitle and title size under `header` and its month size and grid settings under `content`, the month layout's title, alignment and title size under `header`, its adjacent months under `miniMonth`, and its grid settings and day numbers under `content`, the week layout's title alignment, title size and week number under `header`, its current and next month under `miniMonth`, and its pages, days, weekend and hours under `content`, and the day layout's fill and its alignment under their new names.
+Settings and files from 5.x are migrated: each layout keeps its settings under its new name, the year, language and week start under `calendar`, the events as a list of lines, the footer's settings under `footer`, the year layout's title, subtitle and title size under `header` and its month size and grid settings under `content`, the month layout's title, alignment and title size under `header`, its adjacent months under `miniMonth`, and its grid settings and day numbers under `content`, the week layout's title alignment, title size and week number under `header`, its current and next month under `miniMonth`, and its pages, days, weekend and hours under `content`, and the day layout's title, title size, details and weekend color under `header`, and its pages, fill (its alignment too) and hours under `content`.
 
 ### Added
 

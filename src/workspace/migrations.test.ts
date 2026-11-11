@@ -104,8 +104,9 @@ describe('each layout’s own steps', () => {
 			layout: 'day-per-page',
 			showMiniMonth: false,
 		}
+		const { migrations } = layoutSpec('daily')
 		expect(upgradeFile(file)).toEqual({
-			...layoutSpec('daily').migrations[3]!(file),
+			...migrations[5]!(migrations[3]!(file)),
 			layout: 'daily',
 		})
 		expect(upgradeFile(file)).toMatchObject({ format: FILE_FORMAT, version: 3 })
@@ -163,9 +164,13 @@ describe('the layouts’ ids from 6', () => {
 
 	it('rename before applying a layout’s own step from 5', () => {
 		const stored = { version: 5, layouts: { 'day-per-page': { dayPageLines: 'ruled' } } }
-		expect(upgradeStorage(stored)?.layouts).toEqual({ daily: { dayPageFill: 'ruled' } })
+		expect(upgradeStorage(stored)?.layouts).toEqual({ daily: { content: { fill: 'ruled' } } })
 		const file = { version: 5, layout: 'day-per-page', dayPageLines: 'ruled' }
-		expect(upgradeFile(file)).toEqual({ version: 5, layout: 'daily', dayPageFill: 'ruled' })
+		expect(upgradeFile(file)).toEqual({
+			version: 5,
+			layout: 'daily',
+			content: { fill: 'ruled' },
+		})
 	})
 
 	it('rename from any earlier version too', () => {

@@ -36,3 +36,17 @@ export function orderHours<O extends HourSchedule>(options: O): O {
 		? options
 		: { ...options, firstHour: lastHour, lastHour: firstHour }
 }
+
+/**
+ * `options` with its `content.schedule` put in order (`orderHours`), as the layouts whose content
+ * holds a schedule normalize it; the same object when the hours already are in order.
+ */
+export function orderContentHours<O extends { content: { schedule: HourSchedule } }>(
+	options: O,
+): O {
+	const { content } = options
+	const schedule = orderHours(content.schedule)
+	return schedule === content.schedule
+		? options
+		: { ...options, content: { ...content, schedule } }
+}

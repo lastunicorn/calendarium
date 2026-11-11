@@ -11,7 +11,12 @@ import {
 	type MiniMonthStyle,
 	miniMonthStyleDefaults,
 } from '../monthGrid'
-import { type HourSchedule, orderHours, SCHEDULE_VALIDATORS, scheduleDefaults } from '../schedule'
+import {
+	type HourSchedule,
+	orderContentHours,
+	SCHEDULE_VALIDATORS,
+	scheduleDefaults,
+} from '../schedule'
 import {
 	WEEK_DAY_DIRECTIONS,
 	type WeekDayDirection,
@@ -112,16 +117,6 @@ const CONTENT_VALIDATORS: Validators<WeeklyContent> = {
 	schedule: SCHEDULE_VALIDATORS,
 }
 
-/** The shared options' rules, then the schedule's hours put in order (`orderHours`). */
-function normalizeWeekly(options: WeeklyOptions): WeeklyOptions {
-	const normalized = normalizeCommon(options)
-	const { content } = normalized
-	const schedule = orderHours(content.schedule)
-	return schedule === content.schedule
-		? normalized
-		: { ...normalized, content: { ...content, schedule } }
-}
-
 export const WEEKLY_SPEC: LayoutSpec<WeeklyOptions> = {
 	// Columns side by side fit landscape, with room for three-letter weekdays. The weekend
 	// shares a cell, leaving the weekdays room for an hourly schedule.
@@ -158,6 +153,6 @@ export const WEEKLY_SPEC: LayoutSpec<WeeklyOptions> = {
 		content: CONTENT_VALIDATORS,
 		footer: FOOTER_VALIDATORS,
 	},
-	normalize: normalizeWeekly,
+	normalize: (options) => orderContentHours(normalizeCommon(options)),
 	migrations: WEEKLY_MIGRATIONS,
 }

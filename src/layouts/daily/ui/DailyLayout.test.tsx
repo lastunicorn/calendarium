@@ -1,15 +1,15 @@
 import { render } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
+import { applyPatch, type Patch } from '../../../core/data'
 import { DAILY_SPEC, type DailyOptions } from '../options'
 import { DailyLayout } from './DailyLayout'
 
 /** The default options for 2025, with `changes` on top. */
-function optionsWith(changes: Partial<DailyOptions> = {}): DailyOptions {
-	return {
-		...DAILY_SPEC.defaults(),
+function optionsWith(changes: Patch<DailyOptions> = {}): DailyOptions {
+	return applyPatch(DAILY_SPEC.defaults(), {
 		calendar: { year: 2025, locale: 'en-GB', weekStart: 'auto' },
 		...changes,
-	}
+	})
 }
 
 /** The sheets of paper the layout draws (each `Page` is a `<section>`). */
@@ -22,17 +22,17 @@ function pagesOf(options: DailyOptions) {
 // component draws the plan, and what only the markup shows.
 describe('DailyLayout', () => {
 	it('draws a page per day', () => {
-		expect(pagesOf(optionsWith({ dayPageFill: 'blank' }))).toHaveLength(365)
+		expect(pagesOf(optionsWith({ content: { fill: 'blank' } }))).toHaveLength(365)
 	})
 
 	it('draws a day’s second page with the rest of its hours and no header', () => {
 		const pages = pagesOf(
 			optionsWith({
-				twoPagesPerDay: true,
-				dayPageFill: 'hours',
-				hourFormat: '24h',
-				firstHour: 8,
-				lastHour: 13,
+				content: {
+					twoPages: true,
+					fill: 'hours',
+					schedule: { hourFormat: '24h', firstHour: 8, lastHour: 13 },
+				},
 			}),
 		)
 		expect(pages).toHaveLength(730)

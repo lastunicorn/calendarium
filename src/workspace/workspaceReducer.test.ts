@@ -102,7 +102,7 @@ describe('workspaceReducer', () => {
 		workspace = workspaceReducer(workspace, {
 			type: 'update',
 			layout: 'daily',
-			patch: { calendar: { year: 1999 }, firstHour: 3 },
+			patch: { calendar: { year: 1999 }, content: { schedule: { firstHour: 3 } } },
 		})
 		workspace = workspaceReducer(workspace, {
 			type: 'update',

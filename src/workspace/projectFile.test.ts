@@ -15,7 +15,10 @@ describe('project files', () => {
 		const defaults = defaultLayoutOptions('daily')
 		const options = {
 			...defaults,
-			firstHour: 5,
+			content: {
+				...defaults.content,
+				schedule: { ...defaults.content.schedule, firstHour: 5 },
+			},
 			page: { ...defaults.page, paperSize: 'a3' as const },
 		}
 		const text = serializeProject({ layout: 'daily', options })
@@ -64,7 +67,10 @@ describe('project files', () => {
 		})
 		const opened = parseProjectFile(file, 'yearly')
 		expect(opened?.layout).toBe('daily')
-		expect(opened?.options).toMatchObject({ calendar: { year: 2031 }, dayPageFill: 'ruled' })
+		expect(opened?.options).toMatchObject({
+			calendar: { year: 2031 },
+			content: { fill: 'ruled' },
+		})
 		expect(opened?.ignored).toEqual([])
 	})
 
@@ -158,16 +164,15 @@ describe('project files', () => {
 			version: FORMAT_VERSION,
 			layout: 'daily',
 			year: 2030,
-			firstHour: 25,
-			hourFormat: 'sundial',
+			content: { schedule: { firstHour: 25, hourFormat: 'sundial' } },
 			title: 'Not a daily field',
 			page: { paperSize: 'a4', margins: { top: 99, left: 5, right: 'wide' } },
 		})
 		expect(parseProjectFile(file, 'yearly')?.ignored).toEqual([
 			'page.margins.top',
 			'page.margins.right',
-			'hourFormat',
-			'firstHour',
+			'content.schedule.hourFormat',
+			'content.schedule.firstHour',
 		])
 		const badPage = JSON.stringify({
 			format: FILE_FORMAT,

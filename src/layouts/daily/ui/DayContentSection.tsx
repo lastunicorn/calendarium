@@ -1,7 +1,7 @@
 import {
 	DAY_PAGE_FILLS,
 	type DayPageFill,
-	type DailyOptions,
+	type DailyContent,
 	MAX_GENKO_YOSHI_SQUARE_SIZE,
 	MAX_RULED_LINE_SPACING,
 	MAX_SQUARE_SIZE,
@@ -15,13 +15,14 @@ import {
 	type GenkoYoshiDirection,
 	type GenkoYoshiFurigana,
 } from '../options'
+import type { Patch } from '../../../core/data'
+import type { HourSchedule } from '../../schedule'
 import { ContentIcon } from '../../../ui/components/icons'
 import { CheckboxField } from '../../../ui/fields/CheckboxField'
 import { NumberField } from '../../../ui/fields/NumberField'
 import { optionsFrom } from '../../../ui/fields/options'
 import { RadioField } from '../../../ui/fields/RadioField'
 import { ScheduleFields } from '../../../ui/sidebar/ScheduleFields'
-import { defaultFields } from '../../../ui/sidebar/defaultFields'
 import { type OptionsSectionProps, Section } from '../../../ui/sidebar/Section'
 
 const DAY_PAGE_FILL_OPTIONS = optionsFrom(DAY_PAGE_FILLS, {
@@ -59,9 +60,13 @@ export function DayContentSection({
 	options,
 	defaults,
 	onUpdate,
-}: OptionsSectionProps<DailyOptions>) {
-	function handleDayPageFillChange(dayPageFill: DayPageFill) {
-		onUpdate({ dayPageFill })
+}: OptionsSectionProps<DailyContent>) {
+	function handleFillChange(fill: DayPageFill) {
+		onUpdate({ fill })
+	}
+
+	function handleScheduleUpdate(schedule: Patch<HourSchedule>) {
+		onUpdate({ schedule })
 	}
 
 	function handleRuledLineSpacingChange(ruledLineSpacing: number) {
@@ -76,43 +81,28 @@ export function DayContentSection({
 		onUpdate({ fillAlignment })
 	}
 
-	function handleGenkoYoshiSquareSizeChange(genkoYoshiSquareSize: number) {
-		onUpdate({ genkoYoshiSquareSize })
+	function handleGenkoYoshiSquareSizeChange(squareSize: number) {
+		onUpdate({ genkoYoshi: { squareSize } })
 	}
 
-	function handleGenkoYoshiDirectionChange(genkoYoshiDirection: GenkoYoshiDirection) {
-		onUpdate({ genkoYoshiDirection })
+	function handleGenkoYoshiDirectionChange(direction: GenkoYoshiDirection) {
+		onUpdate({ genkoYoshi: { direction } })
 	}
 
-	function handleGenkoYoshiFuriganaChange(genkoYoshiFurigana: GenkoYoshiFurigana) {
-		onUpdate({ genkoYoshiFurigana })
+	function handleGenkoYoshiFuriganaChange(furigana: GenkoYoshiFurigana) {
+		onUpdate({ genkoYoshi: { furigana } })
 	}
 
-	function handleGenkoYoshiGuidesChange(genkoYoshiGuides: boolean) {
-		onUpdate({ genkoYoshiGuides })
+	function handleGenkoYoshiGuidesChange(guides: boolean) {
+		onUpdate({ genkoYoshi: { guides } })
 	}
 
-	function handleTwoPagesPerDayChange(twoPagesPerDay: boolean) {
-		onUpdate({ twoPagesPerDay })
+	function handleTwoPagesChange(twoPages: boolean) {
+		onUpdate({ twoPages })
 	}
 
 	function handleReset() {
-		onUpdate(
-			defaultFields(defaults, [
-				'twoPagesPerDay',
-				'dayPageFill',
-				'hourFormat',
-				'firstHour',
-				'lastHour',
-				'ruledLineSpacing',
-				'squareSize',
-				'fillAlignment',
-				'genkoYoshiSquareSize',
-				'genkoYoshiDirection',
-				'genkoYoshiFurigana',
-				'genkoYoshiGuides',
-			]),
-		)
+		onUpdate(defaults)
 	}
 
 	return (
@@ -123,20 +113,20 @@ export function DayContentSection({
 					'The header goes on the first page only.',
 					'An hourly schedule is split in half across the two.',
 				]}
-				checked={options.twoPagesPerDay}
-				onChange={handleTwoPagesPerDayChange}
+				checked={options.twoPages}
+				onChange={handleTwoPagesChange}
 			/>
 			<RadioField
 				label="Fill"
 				description="Genkō yōshi is Japanese manuscript paper: columns of squares, one for each character, with room between them for furigana."
-				value={options.dayPageFill}
+				value={options.fill}
 				options={DAY_PAGE_FILL_OPTIONS}
-				onChange={handleDayPageFillChange}
+				onChange={handleFillChange}
 			/>
-			{options.dayPageFill === 'hours' && (
-				<ScheduleFields options={options} onUpdate={onUpdate} />
+			{options.fill === 'hours' && (
+				<ScheduleFields options={options.schedule} onUpdate={handleScheduleUpdate} />
 			)}
-			{options.dayPageFill === 'ruled' && (
+			{options.fill === 'ruled' && (
 				<NumberField
 					label="Line spacing (mm)"
 					description={`From ${MIN_RULED_LINE_SPACING} to ${MAX_RULED_LINE_SPACING} mm.`}
@@ -147,7 +137,7 @@ export function DayContentSection({
 					onChange={handleRuledLineSpacingChange}
 				/>
 			)}
-			{options.dayPageFill === 'squares' && (
+			{options.fill === 'squares' && (
 				<>
 					<NumberField
 						label="Square size (mm)"
@@ -167,7 +157,7 @@ export function DayContentSection({
 					/>
 				</>
 			)}
-			{options.dayPageFill === 'dots' && (
+			{options.fill === 'dots' && (
 				<>
 					<NumberField
 						label="Dot spacing (mm)"
@@ -187,12 +177,12 @@ export function DayContentSection({
 					/>
 				</>
 			)}
-			{options.dayPageFill === 'genkoYoshi' && (
+			{options.fill === 'genkoYoshi' && (
 				<>
 					<NumberField
 						label="Square size (mm)"
 						description={`From ${MIN_GENKO_YOSHI_SQUARE_SIZE} to ${MAX_GENKO_YOSHI_SQUARE_SIZE} mm. The space between the columns (or rows) grows with it.`}
-						value={options.genkoYoshiSquareSize}
+						value={options.genkoYoshi.squareSize}
 						min={MIN_GENKO_YOSHI_SQUARE_SIZE}
 						max={MAX_GENKO_YOSHI_SQUARE_SIZE}
 						step={0.5}
@@ -201,30 +191,30 @@ export function DayContentSection({
 					<RadioField
 						label="Writing direction"
 						description="Vertical writing goes down columns of squares, a space between the columns; horizontal writing along rows, a space between the rows."
-						value={options.genkoYoshiDirection}
+						value={options.genkoYoshi.direction}
 						options={GENKO_YOSHI_DIRECTION_OPTIONS}
 						onChange={handleGenkoYoshiDirectionChange}
 					/>
 					<RadioField
 						label="Furigana"
 						description="A strip for furigana by each square, a third of its size: above it, for horizontal writing, or right of it, for vertical writing."
-						value={options.genkoYoshiFurigana}
+						value={options.genkoYoshi.furigana}
 						options={GENKO_YOSHI_FURIGANA_OPTIONS}
 						onChange={handleGenkoYoshiFuriganaChange}
 					/>
 					<CheckboxField
 						label="Guide lines"
 						description="Dotted lines dividing each square in half, across and down."
-						checked={options.genkoYoshiGuides}
+						checked={options.genkoYoshi.guides}
 						onChange={handleGenkoYoshiGuidesChange}
 					/>
 					<RadioField
 						label={
-							options.genkoYoshiDirection === 'vertical'
+							options.genkoYoshi.direction === 'vertical'
 								? 'Columns alignment'
 								: 'Squares alignment'
 						}
-						description={`Only whole ${options.genkoYoshiDirection === 'vertical' ? 'columns' : 'squares'} are drawn; the space left goes on the other side, or on both.`}
+						description={`Only whole ${options.genkoYoshi.direction === 'vertical' ? 'columns' : 'squares'} are drawn; the space left goes on the other side, or on both.`}
 						value={options.fillAlignment}
 						options={FILL_ALIGNMENT_OPTIONS}
 						onChange={handleFillAlignmentChange}
