@@ -37,20 +37,29 @@ describe('parseEventLine', () => {
 
 describe('parseEvents', () => {
 	it('reads one event per line, skipping blank and invalid ones', () => {
-		const events = parseEvents('0000-01-01 New Year\r\n\n  \nnope\n2026-04-05 Easter\n')
+		const events = parseEvents([
+			'0000-01-01 New Year',
+			'',
+			'  ',
+			'nope',
+			'2026-04-05 Easter',
+			'',
+		])
 		expect(events.map((event) => event.name)).toEqual(['New Year', 'Easter'])
 	})
 })
 
 describe('invalidEventLines', () => {
 	it('numbers the lines that are neither blank nor an event', () => {
-		expect(invalidEventLines('0000-01-01 New Year\n\nnope\n2026-02-30 Nope')).toEqual([3, 4])
-		expect(invalidEventLines('')).toEqual([])
+		expect(invalidEventLines(['0000-01-01 New Year', '', 'nope', '2026-02-30 Nope'])).toEqual([
+			3, 4,
+		])
+		expect(invalidEventLines([])).toEqual([])
 	})
 })
 
 describe('eventNames', () => {
-	const events = parseEvents('0000-01-01 New Year\n2026-01-01 Holiday\n2027-01-01 Later')
+	const events = parseEvents(['0000-01-01 New Year', '2026-01-01 Holiday', '2027-01-01 Later'])
 
 	it('names a date’s events in the list’s order, yearly ones every year', () => {
 		expect(eventNames(events, plainDate(2026, 0, 1))).toEqual(['New Year', 'Holiday'])
@@ -60,9 +69,13 @@ describe('eventNames', () => {
 })
 
 describe('eventsOfYear', () => {
-	const events = parseEvents(
-		'2026-03-01 Trip\n0000-01-20 Birthday\n2027-01-07 Next year\n0000-02-29 Leap day\n2026-01-20 Party',
-	)
+	const events = parseEvents([
+		'2026-03-01 Trip',
+		'0000-01-20 Birthday',
+		'2027-01-07 Next year',
+		'0000-02-29 Leap day',
+		'2026-01-20 Party',
+	])
 
 	it('lists the year’s events by date, those on one date in the list’s order', () => {
 		expect(eventsOfYear(events, 2026).map((event) => [event.date.key, event.name])).toEqual([

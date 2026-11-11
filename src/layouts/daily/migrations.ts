@@ -1,11 +1,12 @@
 import type { LayoutMigrations } from '../LayoutSpec'
-import { weekendDaysHighlighted } from '../migrations'
+import { commonGroups, footerGroup, weekendDaysHighlighted } from '../migrations'
 
 /**
  * - 3 to 4: the month grid options and `showMiniMonth` moved under `miniMonth` (`show`), and
  *   `highlightWeekends`, for the heading, became `highlightWeekendDays`, on or off.
  * - 5 to 6: `dayPageLines` became `dayPageFill`, and `squareGridAlignment`, now aligning the
- *   genkō yōshi too, `fillAlignment`.
+ *   genkō yōshi too, `fillAlignment`; the fields every layout has were grouped (`commonGroups`),
+ *   and the footer's (`footerGroup`).
  */
 export const DAILY_MIGRATIONS: LayoutMigrations = {
 	3: (options) => {
@@ -18,7 +19,9 @@ export const DAILY_MIGRATIONS: LayoutMigrations = {
 		}
 	},
 	5: (options) => {
-		const { dayPageLines, squareGridAlignment, ...rest } = options
-		return { ...rest, dayPageFill: dayPageLines, fillAlignment: squareGridAlignment }
+		const { dayPageLines, squareGridAlignment, ...renamed } = options
+		if ('dayPageLines' in options) renamed.dayPageFill = dayPageLines
+		if ('squareGridAlignment' in options) renamed.fillAlignment = squareGridAlignment
+		return footerGroup(commonGroups(renamed))
 	},
 }

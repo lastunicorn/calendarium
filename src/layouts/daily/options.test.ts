@@ -26,8 +26,7 @@ describe('daily options', () => {
 			hourFormat: '24h',
 			firstHour: 0,
 			lastHour: 23,
-			showFooter: true,
-			footerHeight: 42,
+			footer: { show: true, height: 42 },
 			highlightWeekendDays: false,
 			miniMonth: {
 				...grid,
@@ -61,8 +60,7 @@ describe('daily options', () => {
 			hourFormat: '25h',
 			firstHour: 24,
 			lastHour: 7.5,
-			showFooter: 'yes',
-			footerHeight: 2.5,
+			footer: { show: 'yes', height: 2.5 },
 			highlightWeekendDays: 'yes',
 			miniMonth: { weekdayFormat: 'long', show: 'no', size: 'tiny' },
 			showHeaderWeek: 1,
@@ -72,7 +70,9 @@ describe('daily options', () => {
 		expect(ignored).toContain('miniMonth.weekdayFormat')
 		expect(ignored).toContain('miniMonth.show')
 		expect(ignored).toContain('miniMonth.size')
-		expect(ignored).toHaveLength(Object.keys(options).length + 2)
+		expect(ignored).toContain('footer.show')
+		expect(ignored).toContain('footer.height')
+		expect(ignored).toHaveLength(Object.keys(options).length + 3)
 	})
 
 	it('keeps the mini month to abbreviated weekday names', () => {

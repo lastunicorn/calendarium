@@ -99,7 +99,7 @@ export interface DayPages {
 	miniMonth?: MiniMonthPlan
 	/** What fills each sheet: one, or two with `twoPagesPerDay`, the second without a header. */
 	fills: DayFill[]
-	/** The height of the empty footer at the bottom of each sheet, in mm; none without `showFooter`. */
+	/** The height of the empty footer at the bottom of each sheet, in mm; none unless `footer.show`. */
 	footerHeight?: number
 }
 
@@ -165,7 +165,8 @@ function planFills(options: DailyOptions): DayFill[] {
 		}
 		return Array.from({ length: sheets }, () => fill)
 	}
-	const hours = hourNames(options.locale, options.firstHour, options.lastHour, options.hourFormat)
+	const { locale } = options.calendar
+	const hours = hourNames(locale, options.firstHour, options.lastHour, options.hourFormat)
 	const split = Math.floor(hours.length / sheets)
 	return sheets === 1
 		? [{ kind: 'hours', hours }]
@@ -177,11 +178,12 @@ function planFills(options: DailyOptions): DayFill[] {
 
 /** A page, or two, for every day of the year. */
 export function planDayPages(options: DailyOptions, model: CalendarModel): DayPages[] {
-	const { locale, miniMonth } = options
+	const { locale } = options.calendar
+	const { miniMonth } = options
 	const messages = DAY_PAGE_MESSAGES[locale]
 	const miniWeekdays = weekdayNames(locale, model.weekStart, miniMonth.weekdayFormat)
 	const fills = planFills(options)
-	const footerHeight = options.showFooter ? options.footerHeight : undefined
+	const footerHeight = options.footer.show ? options.footer.height : undefined
 	const days = daysOfYear(model.months)
 	const eventDays = model.months.map((month) =>
 		miniMonth.showEvents ? monthEventDays(model.events, month) : [],

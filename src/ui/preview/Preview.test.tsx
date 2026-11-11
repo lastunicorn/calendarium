@@ -105,7 +105,10 @@ describe('Preview', () => {
 
 	it('marks the pages with the calendar’s language', () => {
 		const workspace = workspaceFor('yearly')
-		const options = { ...workspace.layouts['yearly'], locale: 'el-GR' as const }
+		const options = {
+			...workspace.layouts.yearly,
+			calendar: { ...workspace.layouts.yearly.calendar, locale: 'el-GR' as const },
+		}
 		const { container } = render(
 			<Preview
 				workspace={{

@@ -8,9 +8,7 @@ import { planMonthPages } from './pages'
 function plan(year: number, changes: Partial<MonthlyOptions> = {}) {
 	const options: MonthlyOptions = {
 		...defaultLayoutOptions('monthly'),
-		year,
-		locale: 'en-GB',
-		weekStart: 1,
+		calendar: { year, locale: 'en-GB', weekStart: 1 },
 		...changes,
 	}
 	return planMonthPages(options, calendarModel(options))
@@ -100,7 +98,12 @@ describe('planMonthPages', () => {
 	})
 
 	it('writes the events in their days of the month, yearly ones every year', () => {
-		const events = '0000-01-01 New Year\n2026-01-01 Holiday\n2027-01-01 Later\nnot an event'
+		const events = [
+			'0000-01-01 New Year',
+			'2026-01-01 Holiday',
+			'2027-01-01 Later',
+			'not an event',
+		]
 		const days = plan(2026, { events }).flatMap((page) => page.grid.weeks.flat())
 		const newYear = days.find((day) => day.key === '2026-01-01' && day.inMonth)!
 		expect(newYear.events).toEqual(['New Year', 'Holiday'])

@@ -25,7 +25,10 @@ describe('App open project', () => {
 		const { container } = render(<App />)
 		expect(layoutSelect().value).toBe('yearly')
 
-		const options = { ...defaultLayoutOptions('monthly'), year: 2030 }
+		const options = {
+			...defaultLayoutOptions('monthly'),
+			calendar: { ...defaultLayoutOptions('monthly').calendar, year: 2030 },
+		}
 		const text = serializeProject({ layout: 'monthly', options })
 		chooseProjectFile(container, new File([text], 'month.json', { type: 'application/json' }))
 
@@ -55,7 +58,10 @@ describe('App open project', () => {
 describe('App new project', () => {
 	it('restores the shown layout’s defaults after confirming, and keeps it shown', async () => {
 		const { container } = render(<App />)
-		const options = { ...defaultLayoutOptions('monthly'), year: 2030 }
+		const options = {
+			...defaultLayoutOptions('monthly'),
+			calendar: { ...defaultLayoutOptions('monthly').calendar, year: 2030 },
+		}
 		const text = serializeProject({ layout: 'monthly', options })
 		chooseProjectFile(container, new File([text], 'month.json', { type: 'application/json' }))
 		await waitFor(() => expect(layoutSelect().value).toBe('monthly'))
@@ -81,8 +87,8 @@ describe('App new project', () => {
 		const { container } = render(<App />)
 		const options = {
 			...defaultLayoutOptions('monthly'),
-			year: 2030,
-			events: '0000-12-25 Christmas',
+			calendar: { ...defaultLayoutOptions('monthly').calendar, year: 2030 },
+			events: ['0000-12-25 Christmas'],
 		}
 		const text = serializeProject({ layout: 'monthly', options })
 		chooseProjectFile(container, new File([text], 'month.json', { type: 'application/json' }))

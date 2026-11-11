@@ -26,7 +26,7 @@ export type WeekPageLines = (typeof WEEK_PAGE_LINES)[number]
 export const START_PAGES = ['odd', 'even'] as const
 export type StartPage = (typeof START_PAGES)[number]
 
-export interface WeeklyOptions extends CommonOptions, HourSchedule, PageFooter {
+export interface WeeklyOptions extends CommonOptions, HourSchedule {
 	/** How the weekday name in each day's cell is written: in full or abbreviated. */
 	weekdayFormat: WeekdayFormat
 	/** Whether the weekend days of the year get the weekend color; other years' days stay gray. */
@@ -64,6 +64,8 @@ export interface WeeklyOptions extends CommonOptions, HourSchedule, PageFooter {
 	miniMonth: MiniMonthOptions
 	/** Whether the month after the week's is drawn small too, right of it, looking like it. */
 	showNextMonth: boolean
+	/** The empty footer under each sheet's cells. */
+	footer: PageFooter
 }
 
 export const WEEKLY_SPEC: LayoutSpec<WeeklyOptions> = {
@@ -83,10 +85,10 @@ export const WEEKLY_SPEC: LayoutSpec<WeeklyOptions> = {
 			twoPagesPerWeek: false,
 			startPage: 'odd',
 			weekDayDirection: 'vertical',
-			...footerDefaults(),
 			...scheduleDefaults(),
 			miniMonth: miniMonthDefaults(),
 			showNextMonth: false,
+			footer: footerDefaults(),
 			page: { ...common.page, orientation: 'landscape', margins: margins(10) },
 		}
 	},
@@ -102,10 +104,10 @@ export const WEEKLY_SPEC: LayoutSpec<WeeklyOptions> = {
 		twoPagesPerWeek: isBoolean,
 		startPage: oneOf(START_PAGES),
 		weekDayDirection: oneOf(WEEK_DAY_DIRECTIONS),
-		...FOOTER_VALIDATORS,
 		...SCHEDULE_VALIDATORS,
 		miniMonth: MINI_MONTH_VALIDATORS,
 		showNextMonth: isBoolean,
+		footer: FOOTER_VALIDATORS,
 	},
 	normalize: (options) => orderHours(normalizeCommon(options)),
 	migrations: WEEKLY_MIGRATIONS,

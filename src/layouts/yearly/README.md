@@ -12,7 +12,7 @@ The whole year on one sheet: the title, or else the year, above the 12 months as
 
 ## Options
 
-`YearlyOptions` (`options.ts`): `CommonOptions`, the month grid options (`MonthGridOptions`) for its 12 months, and its own:
+`YearlyOptions` (`options.ts`): `CommonOptions` (`calendar`, `events`, `page`), the month grid options (`MonthGridOptions`) for its 12 months, and its own:
 
 | Sidebar section | Fields                                                                                                                                                                                     |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |

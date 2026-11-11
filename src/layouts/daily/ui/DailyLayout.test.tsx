@@ -5,7 +5,11 @@ import { DailyLayout } from './DailyLayout'
 
 /** The default options for 2025, with `changes` on top. */
 function optionsWith(changes: Partial<DailyOptions> = {}): DailyOptions {
-	return { ...DAILY_SPEC.defaults(), year: 2025, ...changes }
+	return {
+		...DAILY_SPEC.defaults(),
+		calendar: { year: 2025, locale: 'en-GB', weekStart: 'auto' },
+		...changes,
+	}
 }
 
 /** The sheets of paper the layout draws (each `Page` is a `<section>`). */

@@ -12,7 +12,7 @@ One sheet per month, 12 in all: a heading between the previous and the next mont
 
 ## Options
 
-`MonthlyOptions` (`options.ts`): `CommonOptions`, the month grid options (`MonthGridOptions`) for its grid, and its own:
+`MonthlyOptions` (`options.ts`): `CommonOptions` (`calendar`, `events`, `page`), the month grid options (`MonthGridOptions`) for its grid, and its own:
 
 | Sidebar section | Fields                                                                                                                                                                                                                                                                                           |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |

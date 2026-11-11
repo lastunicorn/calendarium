@@ -15,7 +15,7 @@ One sheet per day of the year, or two: a header naming the day, with a corner mi
   - `dots`: the dots at those squares' corners, `DOT_SIZE` (0.5 mm) across, cut down in CSS as the squares are, one SVG path a sheet of a round-capped segment of no length per dot (as Chrome prints a pattern as a blurry image);
   - `genkoYoshi`: columns of genkō yōshi squares, or rows of them per `genkoYoshiDirection`, `genkoYoshiSquareSize` mm a side (`isGenkoYoshiSquareSize`, 10 to 20), a blank `GENKO_YOSHI_COLUMN_GAP_PERCENT` (40 %) of that side between the columns (or rows), as many whole squares as fit, cut down in CSS as the squares are, set across the page per `fillAlignment`, each square with a bordered furigana strip a third of its side (`GENKO_YOSHI_FURIGANA_DIVISOR`) above it or right of it per `genkoYoshiFurigana`, drawn by `ui/GenkoYoshi` in darker lines (the lines across the columns, or rows, cut to them by a `clip-path`), with dotted guides halving each square, not its strip, across and down per `genkoYoshiGuides` (one SVG path a sheet, as Chrome prints a pattern as a blurry image);
   - `blank`: nothing.
-- **Footer:** with `showFooter`, each sheet, the second one too, keeps an empty bordered footer, `footerHeight` whole mm tall (`isFooterHeight`), at its bottom under the fill (`footerHeight`, the same for every day).
+- **Footer:** with `footer.show`, each sheet, the second one too, keeps an empty bordered footer, `footer.height` whole mm tall (`isFooterHeight`), at its bottom under the fill (`footerHeight`, the same for every day).
 
 With `twoPagesPerDay`, the view's `facingPages` has the preview show the pages as facing spreads, as the bound calendar opens.
 
@@ -23,14 +23,14 @@ With `twoPagesPerDay`, the view's `facingPages` has the preview show the pages a
 
 ## Options
 
-`DailyOptions` (`options.ts`): `CommonOptions`, the schedule (`HourSchedule`, shared with the week layout through `layouts/schedule.ts`), the footer (`PageFooter`, shared with the week layout through `layouts/footer.ts` and `ui/sidebar/FooterSection`), and its own:
+`DailyOptions` (`options.ts`): `CommonOptions` (`calendar`, `events`, `page`), the schedule (`HourSchedule`, shared with the week layout through `layouts/schedule.ts`), the footer (`footer`, a `PageFooter`, shared with the week layout through `layouts/footer.ts` and `ui/sidebar/FooterSection`), and its own:
 
 | Sidebar section | Fields                                                                                                                                                                                                                                                     |
 | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Header          | `dayPageTitle`, `headingFontSize` (`isHeadingFontSize`, the shared `HeadingFontSizeField`), `showHeaderWeek`, `showHeaderDayOfYear`, `highlightWeekendDays` (`ui/HeaderSection`)                                                                           |
 | Mini calendar   | `miniMonth` (`MiniMonthOptions`, `showEvents` labeled "Show events", the shared `MiniMonthSection`)                                                                                                                                                        |
 | Content         | `twoPagesPerDay`, `dayPageFill`, the schedule (`hourFormat`, `firstHour`, `lastHour`), `ruledLineSpacing`, `squareSize`, `fillAlignment`, `genkoYoshiSquareSize`, `genkoYoshiDirection`, `genkoYoshiFurigana`, `genkoYoshiGuides` (`ui/DayContentSection`) |
-| Footer          | `showFooter`, `footerHeight` (the shared `FooterSection`)                                                                                                                                                                                                  |
+| Footer          | `footer` (`show`, `height`; the shared `FooterSection`)                                                                                                                                                                                                    |
 
 It has no title: the heading is always the weekday or the date. `normalize` puts a reversed schedule in order (`orderHours`).
 

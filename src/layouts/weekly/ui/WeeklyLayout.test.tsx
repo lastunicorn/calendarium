@@ -5,7 +5,11 @@ import { WeeklyLayout } from './WeeklyLayout'
 
 /** The default options for 2025 in Monday weeks, with `changes` on top. */
 function optionsWith(changes: Partial<WeeklyOptions> = {}): WeeklyOptions {
-	return { ...WEEKLY_SPEC.defaults(), year: 2025, weekStart: 1, ...changes }
+	return {
+		...WEEKLY_SPEC.defaults(),
+		calendar: { year: 2025, locale: 'en-GB', weekStart: 1 },
+		...changes,
+	}
 }
 
 /** The sheets of paper the layout draws (each `Page` is a `<section>`). */

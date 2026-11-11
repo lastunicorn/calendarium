@@ -42,3 +42,31 @@ describe('weekly migrations', () => {
 		expect(from4(options)).toBe(options)
 	})
 })
+
+describe('weekly migrations from 5', () => {
+	const from5 = WEEKLY_MIGRATIONS[5]!
+
+	it('group the calendar fields, the events and the footer, keeping the rest', () => {
+		const options = {
+			year: 2030,
+			locale: 'de-DE',
+			weekStart: 1,
+			events: '0000-10-03 Tag der Einheit',
+			showFooter: true,
+			footerHeight: 35,
+			weekendDisplay: 'full',
+		}
+		expect(from5(options)).toEqual({
+			calendar: { year: 2030, locale: 'de-DE', weekStart: 1 },
+			events: ['0000-10-03 Tag der Einheit'],
+			footer: { show: true, height: 35 },
+			weekendDisplay: 'full',
+		})
+		expect(parseOptions(WEEKLY_SPEC, from5(options))).toMatchObject({
+			calendar: { year: 2030, locale: 'de-DE', weekStart: 1 },
+			events: ['0000-10-03 Tag der Einheit'],
+			footer: { show: true, height: 35 },
+			weekendDisplay: 'full',
+		})
+	})
+})

@@ -9,20 +9,25 @@ import {
 	type WeekStartSetting,
 } from '../core/locale'
 import { margins, normalizePage, PAGE_VALIDATORS, type PageSetup } from '../core/paper'
-import { isString, oneOf, type Validators } from '../core/validation'
+import { isStringArray, oneOf, type Validators } from '../core/validation'
 
-/** Options every layout has, each with the same meaning in all of them. */
-export interface CommonOptions {
+/** Which calendar is printed: the year, in which language, and the day its weeks start on. */
+export interface CalendarOptions {
 	year: number
 	/** Language of month and weekday names. */
 	locale: Locale
 	/** A fixed first day of the week, or `auto` for the language's own. */
 	weekStart: WeekStartSetting
+}
+
+/** Options every layout has, each with the same meaning in all of them. */
+export interface CommonOptions {
+	calendar: CalendarOptions
 	/**
 	 * Named days, one per line: `YYYY-MM-DD` and the name, the year `0000` for every year
 	 * (`parseEvents`). Kept as typed, invalid lines too, so editing never loses text.
 	 */
-	events: string
+	events: string[]
 	page: PageSetup
 }
 
@@ -46,10 +51,8 @@ function defaultLocale(): Locale {
 /** The options shared by every layout, with the values all layouts start from. */
 export function commonDefaults(): CommonOptions {
 	return {
-		year: new Date().getFullYear(),
-		locale: defaultLocale(),
-		weekStart: 'auto',
-		events: '',
+		calendar: { year: new Date().getFullYear(), locale: defaultLocale(), weekStart: 'auto' },
+		events: [],
 		page: {
 			paperSize: 'a4',
 			orientation: 'portrait',
@@ -64,10 +67,8 @@ export function commonDefaults(): CommonOptions {
 
 /** The validators of the options every layout has; each layout's spec extends them. */
 export const COMMON_VALIDATORS: Validators<CommonOptions> = {
-	year: isYear,
-	locale: oneOf(LOCALES),
-	weekStart: isWeekStartSetting,
-	events: isString,
+	calendar: { year: isYear, locale: oneOf(LOCALES), weekStart: isWeekStartSetting },
+	events: isStringArray,
 	page: PAGE_VALIDATORS,
 }
 
@@ -96,11 +97,12 @@ export interface CalendarModel {
 
 /** The calendar model of a layout's options. */
 export function calendarModel(options: CommonOptions): CalendarModel {
-	const weekStart = resolveWeekStart(options.weekStart, options.locale)
+	const { year, locale } = options.calendar
+	const weekStart = resolveWeekStart(options.calendar.weekStart, locale)
 	return {
 		weekStart,
-		months: buildYear(options.year, weekStart),
-		monthNames: monthNames(options.locale),
+		months: buildYear(year, weekStart),
+		monthNames: monthNames(locale),
 		events: parseEvents(options.events),
 	}
 }

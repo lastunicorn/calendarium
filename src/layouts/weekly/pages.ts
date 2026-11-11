@@ -75,7 +75,7 @@ export interface WeekPages {
 	stacked: boolean
 	/** One sheet, or two with `twoPagesPerWeek` (`splitWeekCells`). */
 	sheets: WeekSheet[]
-	/** The height of the empty footer under each sheet's cells, in mm; none without `showFooter`. */
+	/** The height of the empty footer under each sheet's cells, in mm; none unless `footer.show`. */
 	footerHeight?: number
 }
 
@@ -108,7 +108,8 @@ export function headingAlign({
  * one with December 31, except a week whose only days of the year are a hidden weekend.
  */
 export function planWeekPages(options: WeeklyOptions, model: CalendarModel): WeekPlan {
-	const { locale, year, miniMonth, twoPagesPerWeek } = options
+	const { year, locale } = options.calendar
+	const { miniMonth, twoPagesPerWeek } = options
 	const { weekStart, months, monthNames } = model
 	const weekdays = weekdayNames(locale, weekStart, options.weekdayFormat)
 	const miniWeekdays = weekdayNames(locale, weekStart, miniMonth.weekdayFormat)
@@ -198,7 +199,7 @@ export function planWeekPages(options: WeeklyOptions, model: CalendarModel): Wee
 						planSheet(secondCells, 'miniMonth', singleLines),
 					]
 				: [planSheet(cells, 'both', singleLines)],
-			footerHeight: options.showFooter ? options.footerHeight : undefined,
+			footerHeight: options.footer.show ? options.footer.height : undefined,
 		}
 	}
 

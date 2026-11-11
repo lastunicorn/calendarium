@@ -8,9 +8,7 @@ import { planWeekPages, type WeekPageDay, type WeekPages } from './pages'
 function plan(year: number, changes: Partial<WeeklyOptions> = {}) {
 	const options: WeeklyOptions = {
 		...defaultLayoutOptions('weekly'),
-		year,
-		locale: 'en-GB',
-		weekStart: 1,
+		calendar: { year, locale: 'en-GB', weekStart: 1 },
 		...changes,
 	}
 	return planWeekPages(options, calendarModel(options))
@@ -47,7 +45,9 @@ describe('planWeekPages', () => {
 
 	it('plans 54 weeks when a leap year starts on the last day of a week', () => {
 		// 2028 starts on a Saturday: Sunday weeks run from Dec 26, 2027 to Jan 6, 2029.
-		expect(plan(2028, { weekStart: 0 }).weeks).toHaveLength(54)
+		expect(
+			plan(2028, { calendar: { year: 2028, locale: 'en-GB', weekStart: 0 } }).weeks,
+		).toHaveLength(54)
 	})
 
 	it('skips a week whose only days of the year are a hidden weekend', () => {
@@ -108,14 +108,17 @@ describe('planWeekPages', () => {
 	it('keeps an empty footer under every week only when shown', () => {
 		expect(plan(2026).weeks.every((week) => week.footerHeight === undefined)).toBe(true)
 		expect(
-			plan(2026, { showFooter: true, footerHeight: 35 }).weeks.every(
+			plan(2026, { footer: { show: true, height: 35 } }).weeks.every(
 				(week) => week.footerHeight === 35,
 			),
 		).toBe(true)
 	})
 
 	it('labels each day with its weekday from the week start, in the chosen format', () => {
-		const saturdays = plan(2026, { weekStart: 6, weekendDisplay: 'full' }).weeks[1]
+		const saturdays = plan(2026, {
+			calendar: { year: 2026, locale: 'en-GB', weekStart: 6 },
+			weekendDisplay: 'full',
+		}).weeks[1]
 		expect(days(saturdays).map((day) => day.weekday)).toEqual([
 			'Sat',
 			'Sun',
@@ -141,7 +144,12 @@ describe('planWeekPages', () => {
 		// Its 104 weekend days share cells.
 		expect(scheduled({ weekendDisplay: 'reduced' })).toBe(261)
 		// A week starting on Sunday can't reduce its weekend, so its cells keep the schedule.
-		expect(scheduled({ weekendDisplay: 'reduced', weekStart: 0 })).toBe(365)
+		expect(
+			scheduled({
+				weekendDisplay: 'reduced',
+				calendar: { year: 2026, locale: 'en-GB', weekStart: 0 },
+			}),
+		).toBe(365)
 	})
 
 	it('labels the schedule’s hours once, only when the cells hold it', () => {
@@ -216,8 +224,12 @@ describe('planWeekPages', () => {
 	})
 
 	it('circles the days with an event in the mini months, the next year’s too', () => {
-		const events =
-			'2026-12-08 Trip\n0000-12-25 Christmas\n0000-01-06 Epiphany\n2026-01-06 Other'
+		const events = [
+			'2026-12-08 Trip',
+			'0000-12-25 Christmas',
+			'0000-01-06 Epiphany',
+			'2026-01-06 Other',
+		]
 		const last = plan(2026, { events, showNextMonth: true }).weeks.at(-1)!.miniMonths
 		expect(last.map((miniMonth) => miniMonth.eventDays)).toEqual([[8, 25], [6]])
 		expect(plan(2026).weeks[0].miniMonths[0].eventDays).toEqual([])
@@ -240,7 +252,7 @@ describe('planWeekPages', () => {
 	})
 
 	it('lists the events of the days of the year under their labels', () => {
-		const events = '0000-01-01 New Year\n0000-12-31 Eve\n2026-01-02 Back'
+		const events = ['0000-01-01 New Year', '0000-12-31 Eve', '2026-01-02 Back']
 		const first = days(week(plan(2026, { events }).weeks, '2025-12-29'))
 		const named = Object.fromEntries(first.map((day) => [day.day.key, day.events]))
 		expect(named['2026-01-01']).toEqual(['New Year'])
@@ -251,7 +263,7 @@ describe('planWeekPages', () => {
 
 	it('keeps as many event lines in every cell of a week as its busiest day has, on both sheets', () => {
 		// The first sheet holds Monday to Wednesday, the second Thursday on.
-		const events = '2026-01-01 One\n2026-01-01 Two\n2026-01-07 Three'
+		const events = ['2026-01-01 One', '2026-01-01 Two', '2026-01-07 Three']
 		const weeks = plan(2026, { events, twoPagesPerWeek: true, weekendDisplay: 'full' }).weeks
 		expect(sheetEventLines(week(weeks, '2025-12-29'))).toEqual([
 			[2, 2, 2],
@@ -269,7 +281,7 @@ describe('planWeekPages', () => {
 
 	it('leaves a shared weekend cell out of the event lines of the cells of one day', () => {
 		// August 15, 2027 is a Sunday, sharing its cell with Saturday.
-		const events = '2027-08-15 One\n2027-08-15 Two\n2027-08-16 Three'
+		const events = ['2027-08-15 One', '2027-08-15 Two', '2027-08-16 Three']
 		const weeks = plan(2027, { events, weekendDisplay: 'reduced' }).weeks
 		expect(sheetEventLines(week(weeks, '2027-08-09'))).toEqual([[0, 0, 0, 0, 0, 2, 2]])
 		expect(sheetEventLines(week(weeks, '2027-08-16'))).toEqual([[1, 1, 1, 1, 1, 0, 0]])
@@ -277,7 +289,7 @@ describe('planWeekPages', () => {
 
 	it('leaves a shared weekend cell out of the event lines of the other sheet', () => {
 		// The first sheet holds Monday to Wednesday, the second Thursday, Friday and the weekend.
-		const events = '2027-08-15 One\n2027-08-15 Two'
+		const events = ['2027-08-15 One', '2027-08-15 Two']
 		const weeks = plan(2027, { events, twoPagesPerWeek: true, weekendDisplay: 'reduced' }).weeks
 		expect(sheetEventLines(week(weeks, '2027-08-09'))).toEqual([
 			[0, 0, 0],

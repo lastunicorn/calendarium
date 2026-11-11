@@ -1,4 +1,4 @@
-import type { CommonOptions } from '../../layouts/common'
+import type { CalendarOptions } from '../../layouts/common'
 import { isYear, MAX_YEAR, MIN_YEAR } from '../../core/calendar'
 import { type Locale, LOCALES, type WeekStartSetting } from '../../core/locale'
 import { CalendarIcon } from '../components/icons'
@@ -6,7 +6,6 @@ import { ComboboxField } from '../fields/ComboboxField'
 import { NumberField } from '../fields/NumberField'
 import { type Option, optionsFrom } from '../fields/options'
 import { SelectField } from '../fields/SelectField'
-import { defaultFields } from './defaultFields'
 import { type OptionsSectionProps, Section } from './Section'
 
 /** Week start options in panel order: the language's own day, then Monday to Sunday. */
@@ -102,7 +101,7 @@ export function CalendarSection({
 	options,
 	defaults,
 	onUpdate,
-}: OptionsSectionProps<CommonOptions>) {
+}: OptionsSectionProps<CalendarOptions>) {
 	function handleYearChange(year: number) {
 		onUpdate({ year })
 	}
@@ -116,7 +115,7 @@ export function CalendarSection({
 	}
 
 	function handleReset() {
-		onUpdate(defaultFields(defaults, ['year', 'locale', 'weekStart']))
+		onUpdate(defaults)
 	}
 
 	return (

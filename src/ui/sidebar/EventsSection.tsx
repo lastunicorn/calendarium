@@ -1,21 +1,21 @@
 import type { CommonOptions } from '../../layouts/common'
-import { invalidEventLines } from '../../core/events'
+import { eventLines, invalidEventLines } from '../../core/events'
 import { EventsIcon } from '../components/icons'
 import { TextAreaField } from '../fields/TextAreaField'
 import { type OptionsSectionProps, Section } from './Section'
 
 /** A warning naming the lines of `events` that aren't an event, or none when all are. */
-function eventsError(events: string): string | undefined {
+function eventsError(events: readonly string[]): string | undefined {
 	const lines = invalidEventLines(events)
 	if (lines.length === 0) return undefined
 	const which = lines.length === 1 ? `Line ${lines[0]} is` : `Lines ${lines.join(', ')} are`
 	return `${which} not a date and a name (YYYY-MM-DD Name), so not printed.`
 }
 
-/** The calendar's events, one per line. */
+/** The calendar's events, one per line, edited as one text and kept as its lines. */
 export function EventsSection({ options, defaults, onUpdate }: OptionsSectionProps<CommonOptions>) {
-	function handleEventsChange(events: string) {
-		onUpdate({ events })
+	function handleEventsChange(text: string) {
+		onUpdate({ events: eventLines(text) })
 	}
 
 	function handleReset() {
@@ -31,7 +31,7 @@ export function EventsSection({ options, defaults, onUpdate }: OptionsSectionPro
 					'Use year 0000 to repeat an event every year, e.g. "0000-12-25 Christmas".',
 					'Each layout decides by itself how to display the events.',
 				]}
-				value={options.events}
+				value={options.events.join('\n')}
 				placeholder={'0000-01-01 New Year\n0000-12-25 Christmas\n2026-04-05 Easter'}
 				rows={10}
 				error={eventsError(options.events)}

@@ -16,7 +16,7 @@ describe('workspace storage', () => {
 	it('round-trips the workspace', () => {
 		const workspace = defaultWorkspace()
 		workspace.layout = 'monthly'
-		workspace.layouts['monthly'].year = 2031
+		workspace.layouts.monthly.calendar.year = 2031
 		saveWorkspace(workspace)
 		expect(loadWorkspace()).toEqual(workspace)
 	})

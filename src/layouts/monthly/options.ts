@@ -4,6 +4,7 @@ import { isBoolean, isString, oneOf, type Validators } from '../../core/validati
 import { COMMON_VALIDATORS, type CommonOptions, commonDefaults, normalizeCommon } from '../common'
 import { HEADING_ALIGNS, type HeadingAlign, isHeadingFontSize } from '../heading'
 import type { LayoutSpec } from '../LayoutSpec'
+import { commonGroups } from '../migrations'
 import {
 	MINI_MONTH_SIZES,
 	MONTH_GRID_VALIDATORS,
@@ -144,5 +145,6 @@ export const MONTHLY_SPEC: LayoutSpec<MonthlyOptions> = {
 		adjacentMonths: ADJACENT_MONTHS_VALIDATORS,
 	},
 	normalize: normalizeCommon,
-	migrations: {},
+	// 5 to 6: the fields every layout has were grouped (`commonGroups`).
+	migrations: { 5: commonGroups },
 }

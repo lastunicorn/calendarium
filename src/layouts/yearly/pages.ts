@@ -43,9 +43,10 @@ export interface YearPage {
  * events listed on a second page.
  */
 export function planYearPage(options: YearlyOptions, model: CalendarModel): YearPage {
-	const weekdays = weekdayNames(options.locale, model.weekStart, options.weekdayFormat)
-	const heading = options.title.trim() || yearName(options.locale, options.year)
-	const events = eventsOfYear(model.events, options.year)
+	const { year, locale } = options.calendar
+	const weekdays = weekdayNames(locale, model.weekStart, options.weekdayFormat)
+	const heading = options.title.trim() || yearName(locale, year)
+	const events = eventsOfYear(model.events, year)
 	return {
 		heading,
 		subheading: options.subtitle,
@@ -61,11 +62,11 @@ export function planYearPage(options: YearlyOptions, model: CalendarModel): Year
 		eventList:
 			events.length > 0
 				? {
-						heading: YEAR_PAGE_MESSAGES[options.locale].events,
+						heading: YEAR_PAGE_MESSAGES[locale].events,
 						subheading: heading,
 						events: events.map((event, index) => ({
 							key: `${event.date.key}-${index}`,
-							date: dayMonthName(options.locale, event.date),
+							date: dayMonthName(locale, event.date),
 							name: event.name,
 						})),
 					}

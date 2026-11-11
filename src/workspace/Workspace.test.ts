@@ -10,7 +10,7 @@ describe('isNewProject', () => {
 		const changed = workspaceReducer(workspace, {
 			type: 'update',
 			layout: workspace.layout,
-			patch: { year: 2030 },
+			patch: { calendar: { year: 2030 } },
 		})
 		expect(isNewProject(changed)).toBe(false)
 

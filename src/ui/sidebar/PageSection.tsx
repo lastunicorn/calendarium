@@ -1,4 +1,3 @@
-import type { CommonOptions } from '../../layouts/common'
 import {
 	type Margins,
 	margins,
@@ -8,6 +7,7 @@ import {
 	type PaperSize,
 	type Spine,
 	SPINES,
+	type PageSetup,
 } from '../../core/paper'
 import { PageIcon } from '../components/icons'
 import { CheckboxField } from '../fields/CheckboxField'
@@ -38,40 +38,38 @@ const SPINE_OPTIONS = optionsFrom(SPINES, {
  * The sheet of paper: size, orientation and margins, optionally mirrored around a spine on even
  * pages, and whether the pages make a booklet.
  */
-export function PageSection({ options, defaults, onUpdate }: OptionsSectionProps<CommonOptions>) {
-	const { page } = options
-
+export function PageSection({ options: page, defaults, onUpdate }: OptionsSectionProps<PageSetup>) {
 	function handlePaperSizeChange(paperSize: PaperSize) {
-		onUpdate({ page: { ...page, paperSize } })
+		onUpdate({ paperSize })
 	}
 
 	function handleOrientationChange(orientation: Orientation) {
-		onUpdate({ page: { ...page, orientation } })
+		onUpdate({ orientation })
 	}
 
 	function handleMarginsChange(margins: Margins) {
-		onUpdate({ page: { ...page, margins } })
+		onUpdate({ margins })
 	}
 
 	function handleBookletChange(booklet: boolean) {
-		onUpdate({ page: { ...page, booklet } })
+		onUpdate({ booklet })
 	}
 
 	function handleEqualMarginsChange(equalMargins: boolean) {
 		const sides = equalMargins ? margins(page.margins.top) : page.margins
-		onUpdate({ page: { ...page, equalMargins, margins: sides } })
+		onUpdate({ equalMargins, margins: sides })
 	}
 
 	function handleMirrorMarginsChange(mirrorMargins: boolean) {
-		onUpdate({ page: { ...page, mirrorMargins } })
+		onUpdate({ mirrorMargins })
 	}
 
 	function handleSpineChange(spine: Spine) {
-		onUpdate({ page: { ...page, spine } })
+		onUpdate({ spine })
 	}
 
 	function handleReset() {
-		onUpdate({ page: defaults.page })
+		onUpdate(defaults)
 	}
 
 	return (

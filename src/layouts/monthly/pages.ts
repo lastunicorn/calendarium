@@ -63,7 +63,8 @@ export interface MonthPage {
  * previous and the next month drawn small, each when `adjacentMonths` shows it.
  */
 export function planMonthPages(options: MonthlyOptions, model: CalendarModel): MonthPage[] {
-	const { locale, year, adjacentMonths } = options
+	const { year, locale } = options.calendar
+	const { adjacentMonths } = options
 	const weekdays = weekdayNames(locale, model.weekStart, options.weekdayFormat)
 	const miniWeekdays = weekdayNames(locale, model.weekStart, adjacentMonths.weekdayFormat)
 	const title = options.title.trim()

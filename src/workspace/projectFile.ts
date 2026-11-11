@@ -26,7 +26,7 @@ export interface ProjectFile {
 /** `project` as a file named after its layout and year: `calendar-daily-2026.json`. */
 export function projectFile(project: Project): ProjectFile {
 	return {
-		fileName: `calendar-${project.layout}-${project.options.year}.json`,
+		fileName: `calendar-${project.layout}-${project.options.calendar.year}.json`,
 		text: serializeProject(project),
 	}
 }

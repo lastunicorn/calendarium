@@ -35,18 +35,24 @@ export function parseEventLine(line: string): CalendarEvent | undefined {
 	return { year: year === EVERY_YEAR ? undefined : year, month, day, name: name.trim() }
 }
 
-/** The numbers (from 1) of the lines of `text` that are neither blank nor an event. */
-export function invalidEventLines(text: string): number[] {
-	return text
-		.split('\n')
-		.flatMap((line, index) =>
-			line.trim() !== '' && parseEventLine(line) === undefined ? [index + 1] : [],
-		)
+/**
+ * The lines of an event list typed as one text, as the list keeps them; no line at all for an
+ * empty text, so an emptied list is the empty list. `lines.join('\n')` gives the text back.
+ */
+export function eventLines(text: string): string[] {
+	return text === '' ? [] : text.split('\n')
 }
 
-/** The events of a list written one per line, in order; blank and invalid lines are skipped. */
-export function parseEvents(text: string): CalendarEvent[] {
-	return text.split('\n').flatMap((line) => parseEventLine(line) ?? [])
+/** The numbers (from 1) of the `lines` that are neither blank nor an event. */
+export function invalidEventLines(lines: readonly string[]): number[] {
+	return lines.flatMap((line, index) =>
+		line.trim() !== '' && parseEventLine(line) === undefined ? [index + 1] : [],
+	)
+}
+
+/** The events of a list, one per line, in order; blank and invalid lines are skipped. */
+export function parseEvents(lines: readonly string[]): CalendarEvent[] {
+	return lines.flatMap((line) => parseEventLine(line) ?? [])
 }
 
 /** The names of the events on `date`, in the list's order. */

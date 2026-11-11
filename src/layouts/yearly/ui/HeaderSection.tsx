@@ -29,7 +29,7 @@ export function HeaderSection({ options, defaults, onUpdate }: OptionsSectionPro
 			<TextField
 				label="Title"
 				value={options.title}
-				placeholder={yearName(options.locale, options.year)}
+				placeholder={yearName(options.calendar.locale, options.calendar.year)}
 				onChange={handleTitleChange}
 			/>
 			<TextField label="Subtitle" value={options.subtitle} onChange={handleSubtitleChange} />

@@ -4,7 +4,7 @@ The features each release brought, newest first. Versions follow the app version
 
 ## Unreleased
 
-Settings and files from 5.x are migrated: each layout keeps its settings under its new name, and the day layout's fill and its alignment keep their values under their new names.
+Settings and files from 5.x are migrated: each layout keeps its settings under its new name, the year, language and week start under `calendar`, the events as a list of lines, the footer's settings under `footer`, and the day layout's fill and its alignment under their new names.
 
 ### Added
 

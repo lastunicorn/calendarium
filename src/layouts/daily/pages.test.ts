@@ -8,9 +8,7 @@ import { type DayPages, planDayPages } from './pages'
 function plan(year: number, changes: Partial<DailyOptions> = {}): DayPages[] {
 	const options: DailyOptions = {
 		...defaultLayoutOptions('daily'),
-		year,
-		locale: 'en-GB',
-		weekStart: 1,
+		calendar: { year, locale: 'en-GB', weekStart: 1 },
 		...changes,
 	}
 	return planDayPages(options, calendarModel(options))
@@ -80,8 +78,12 @@ describe('planDayPages', () => {
 	})
 
 	it('circles the days with an event in the mini month', () => {
-		const events =
-			'2026-03-05 Trip\n0000-03-17 Birthday\n2027-03-20 Next year\n2026-04-01 April'
+		const events = [
+			'2026-03-05 Trip',
+			'0000-03-17 Birthday',
+			'2027-03-20 Next year',
+			'2026-04-01 April',
+		]
 		expect(day(plan(2026, { events }), '2026-03-17').miniMonth!.eventDays).toEqual([5, 17])
 		expect(day(plan(2026), '2026-03-17').miniMonth!.eventDays).toEqual([])
 		const hidden = { ...defaultLayoutOptions('daily').miniMonth, showEvents: false }
@@ -248,14 +250,14 @@ describe('planDayPages', () => {
 	it('keeps an empty footer at the bottom of every day only when shown', () => {
 		expect(plan(2026).every((day) => day.footerHeight === undefined)).toBe(true)
 		expect(
-			plan(2026, { showFooter: true, footerHeight: 35 }).every(
+			plan(2026, { footer: { show: true, height: 35 } }).every(
 				(day) => day.footerHeight === 35,
 			),
 		).toBe(true)
 	})
 
 	it('lists the day’s events, yearly ones every year', () => {
-		const events = '0000-02-29 Leap day\n0000-12-25 Christmas\n2026-12-25 Snow'
+		const events = ['0000-02-29 Leap day', '0000-12-25 Christmas', '2026-12-25 Snow']
 		expect(day(plan(2026, { events }), '2026-12-25').events).toEqual(['Christmas', 'Snow'])
 		expect(day(plan(2027, { events }), '2027-12-25').events).toEqual(['Christmas'])
 		expect(day(plan(2024, { events }), '2024-02-29').events).toEqual(['Leap day'])

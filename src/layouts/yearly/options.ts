@@ -2,6 +2,7 @@ import { isString, oneOf } from '../../core/validation'
 import { COMMON_VALIDATORS, type CommonOptions, commonDefaults, normalizeCommon } from '../common'
 import { isHeadingFontSize } from '../heading'
 import type { LayoutSpec } from '../LayoutSpec'
+import { commonGroups } from '../migrations'
 import { MONTH_GRID_VALIDATORS, type MonthGridOptions, monthGridDefaults } from '../monthGrid'
 
 /** How large the 12 months' text is drawn, each month filling its share of the page either way. */
@@ -37,5 +38,6 @@ export const YEARLY_SPEC: LayoutSpec<YearlyOptions> = {
 		monthSize: oneOf(MONTH_SIZES),
 	},
 	normalize: normalizeCommon,
-	migrations: {},
+	// 5 to 6: the fields every layout has were grouped (`commonGroups`).
+	migrations: { 5: commonGroups },
 }

@@ -8,7 +8,7 @@ describe('default locale', () => {
 
 	function defaultLocalesFor(language: string) {
 		vi.stubGlobal('navigator', { language })
-		return LAYOUT_IDS.map((layout) => defaultLayoutOptions(layout).locale)
+		return LAYOUT_IDS.map((layout) => defaultLayoutOptions(layout).calendar.locale)
 	}
 
 	it('is British English for every layout in an English browser', () => {
@@ -36,6 +36,7 @@ describe('default locale', () => {
 
 describe('default week start', () => {
 	it('lets the language choose the first day of the week in every layout', () => {
-		for (const layout of LAYOUT_IDS) expect(defaultLayoutOptions(layout).weekStart).toBe('auto')
+		for (const layout of LAYOUT_IDS)
+			expect(defaultLayoutOptions(layout).calendar.weekStart).toBe('auto')
 	})
 })

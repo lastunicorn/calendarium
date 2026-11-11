@@ -13,20 +13,23 @@ export function isFooterHeight(value: unknown): value is number {
 	)
 }
 
-/** The options of an empty bordered footer at the bottom of every sheet, shared by the layouts that draw one. */
+/**
+ * The options of an empty bordered footer at the bottom of every sheet, the `footer` of the
+ * layouts that draw one.
+ */
 export interface PageFooter {
-	/** Whether each sheet keeps an empty footer, `footerHeight` mm tall, at its bottom. */
-	showFooter: boolean
+	/** Whether each sheet keeps an empty footer, `height` mm tall, at its bottom. */
+	show: boolean
 	/** The footer's height, in whole mm (`isFooterHeight`). */
-	footerHeight: number
+	height: number
 }
 
 /** No footer, 20 mm tall once shown. */
 export function footerDefaults(): PageFooter {
-	return { showFooter: false, footerHeight: 20 }
+	return { show: false, height: 20 }
 }
 
-export const FOOTER_VALIDATORS: Validators<PageFooter, keyof PageFooter> = {
-	showFooter: isBoolean,
-	footerHeight: isFooterHeight,
+export const FOOTER_VALIDATORS: Validators<PageFooter> = {
+	show: isBoolean,
+	height: isFooterHeight,
 }

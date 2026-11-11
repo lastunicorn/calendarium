@@ -7,14 +7,17 @@ import { FORMAT_VERSION } from './version'
 describe('parseWorkspace', () => {
 	it('keeps a language-chosen week start', () => {
 		const stored = toStoredWorkspace(defaultWorkspace())
-		stored.layouts['monthly'] = {
-			...stored.layouts['monthly'],
-			weekStart: 'auto',
+		stored.layouts.monthly = {
+			...stored.layouts.monthly,
+			calendar: { ...stored.layouts.monthly.calendar, weekStart: 'auto' },
 		}
-		stored.layouts['daily'] = { ...stored.layouts['daily'], weekStart: 0 }
+		stored.layouts.daily = {
+			...stored.layouts.daily,
+			calendar: { ...stored.layouts.daily.calendar, weekStart: 0 },
+		}
 		const { layouts } = parseWorkspace(stored)
-		expect(layouts['monthly'].weekStart).toBe('auto')
-		expect(layouts['daily'].weekStart).toBe(0)
+		expect(layouts.monthly.calendar.weekStart).toBe('auto')
+		expect(layouts.daily.calendar.weekStart).toBe(0)
 	})
 
 	it('returns defaults for missing or malformed data', () => {
@@ -28,10 +31,8 @@ describe('parseWorkspace', () => {
 	// and that each layout's options are parsed by its own spec.
 	it('keeps the valid shared fields of every layout, and the active layout', () => {
 		const common = {
-			year: 2030,
-			locale: 'ro-RO',
-			weekStart: 6,
-			events: '0000-12-25 Christmas',
+			calendar: { year: 2030, locale: 'ro-RO', weekStart: 6 },
+			events: ['0000-12-25 Christmas'],
 			page: {
 				paperSize: 'letter',
 				orientation: 'landscape',
@@ -104,10 +105,10 @@ describe('parseWorkspace', () => {
 	it('falls back to defaults for one broken layout only', () => {
 		const workspace = parseWorkspace({
 			version: FORMAT_VERSION,
-			layouts: { yearly: 'broken', daily: { year: 2040 } },
+			layouts: { yearly: 'broken', daily: { calendar: { year: 2040 } } },
 		})
 		expect(workspace.layouts['yearly']).toEqual(defaultLayoutOptions('yearly'))
-		expect(workspace.layouts['daily'].year).toBe(2040)
+		expect(workspace.layouts.daily.calendar.year).toBe(2040)
 	})
 
 	it('falls back to the default page when `page` is not an object', () => {
@@ -136,7 +137,7 @@ describe('parseWorkspace', () => {
 	it('round-trips through toStoredWorkspace', () => {
 		const workspace = defaultWorkspace()
 		workspace.layout = 'daily'
-		workspace.layouts['daily'] = { ...workspace.layouts['daily'], year: 2030 }
+		workspace.layouts.daily.calendar = { ...workspace.layouts.daily.calendar, year: 2030 }
 		workspace.layouts['monthly'].page = {
 			...workspace.layouts['monthly'].page,
 			paperSize: 'a3',
@@ -174,10 +175,10 @@ describe('parseWorkspace versions', () => {
 		const workspace = parseWorkspace({
 			version: FORMAT_VERSION + 1,
 			layout: 'daily',
-			layouts: { daily: { year: 2040, futureOption: true } },
+			layouts: { daily: { calendar: { year: 2040 }, futureOption: true } },
 		})
 		expect(workspace.layout).toBe('daily')
-		expect(workspace.layouts['daily'].year).toBe(2040)
+		expect(workspace.layouts.daily.calendar.year).toBe(2040)
 		expect(workspace.layouts['daily']).not.toHaveProperty('futureOption')
 	})
 })

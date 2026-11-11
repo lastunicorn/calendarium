@@ -132,7 +132,7 @@ export function Preview({ workspace, onNewProject, zoom, onZoom }: PreviewProps)
 			<main
 				ref={areaRef}
 				className={styles.preview}
-				lang={options.locale}
+				lang={options.calendar.locale}
 				tabIndex={0}
 				aria-label="Preview"
 			>

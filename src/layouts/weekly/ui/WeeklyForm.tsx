@@ -2,6 +2,7 @@ import type { WeeklyOptions } from '../options'
 import { CalendarSection } from '../../../ui/sidebar/CalendarSection'
 import { EventsSection } from '../../../ui/sidebar/EventsSection'
 import { FooterSection } from '../../../ui/sidebar/FooterSection'
+import { optionsGroup } from '../../../ui/sidebar/optionsGroup'
 import { PageSection } from '../../../ui/sidebar/PageSection'
 import type { OptionsSectionProps } from '../../../ui/sidebar/Section'
 import { HeaderSection } from './HeaderSection'
@@ -12,16 +13,16 @@ import { WeekContentSection } from './WeekContentSection'
  * The `weekly` options, including its header, how each day is labeled and the weekend drawn,
  * and its mini calendars.
  */
-export function WeeklyForm({ options, defaults, onUpdate }: OptionsSectionProps<WeeklyOptions>) {
+export function WeeklyForm(props: OptionsSectionProps<WeeklyOptions>) {
 	return (
 		<>
-			<CalendarSection options={options} defaults={defaults} onUpdate={onUpdate} />
-			<EventsSection options={options} defaults={defaults} onUpdate={onUpdate} />
-			<HeaderSection options={options} defaults={defaults} onUpdate={onUpdate} />
-			<MiniMonthsSection options={options} defaults={defaults} onUpdate={onUpdate} />
-			<WeekContentSection options={options} defaults={defaults} onUpdate={onUpdate} />
-			<FooterSection options={options} defaults={defaults} onUpdate={onUpdate} />
-			<PageSection options={options} defaults={defaults} onUpdate={onUpdate} />
+			<CalendarSection {...optionsGroup(props, 'calendar')} />
+			<EventsSection {...props} />
+			<HeaderSection {...props} />
+			<MiniMonthsSection {...props} />
+			<WeekContentSection {...props} />
+			<FooterSection {...optionsGroup(props, 'footer')} />
+			<PageSection {...optionsGroup(props, 'page')} />
 		</>
 	)
 }

@@ -15,7 +15,6 @@ describe('project files', () => {
 		const defaults = defaultLayoutOptions('daily')
 		const options = {
 			...defaults,
-			year: 2031,
 			firstHour: 5,
 			page: { ...defaults.page, paperSize: 'a3' as const },
 		}
@@ -30,7 +29,7 @@ describe('project files', () => {
 
 	it('saves the active project, named after its layout and year', () => {
 		const workspace = { ...defaultWorkspace(), layout: 'weekly' as const }
-		workspace.layouts['weekly'] = { ...workspace.layouts['weekly'], year: 2031 }
+		workspace.layouts.weekly.calendar = { ...workspace.layouts.weekly.calendar, year: 2031 }
 		const file = projectFile(activeProject(workspace))
 		expect(file.fileName).toBe('calendar-weekly-2031.json')
 		expect(file.text).toBe(
@@ -65,7 +64,7 @@ describe('project files', () => {
 		})
 		const opened = parseProjectFile(file, 'yearly')
 		expect(opened?.layout).toBe('daily')
-		expect(opened?.options).toMatchObject({ year: 2031, dayPageFill: 'ruled' })
+		expect(opened?.options).toMatchObject({ calendar: { year: 2031 }, dayPageFill: 'ruled' })
 		expect(opened?.ignored).toEqual([])
 	})
 
@@ -116,12 +115,12 @@ describe('project files', () => {
 			format: FILE_FORMAT,
 			version: FORMAT_VERSION + 1,
 			layout: 'daily',
-			year: 2031,
+			calendar: { year: 2031 },
 			futureOption: 'x',
 		})
 		const opened = parseProjectFile(file, 'yearly')
 		expect(opened?.newer).toBe(true)
-		expect(opened?.options.year).toBe(2031)
+		expect(opened?.options.calendar.year).toBe(2031)
 		expect(opened?.options).not.toHaveProperty('futureOption')
 	})
 
@@ -138,12 +137,15 @@ describe('project files', () => {
 			const file = JSON.stringify({
 				format: FILE_FORMAT,
 				version: FORMAT_VERSION,
-				year: 2030,
+				calendar: { year: 2030 },
 				page: { orientation: 'up' },
 			})
 			expect(parseProjectFile(file, layout)).toEqual({
 				layout,
-				options: { ...defaultLayoutOptions(layout), year: 2030 },
+				options: {
+					...defaultLayoutOptions(layout),
+					calendar: { ...defaultLayoutOptions(layout).calendar, year: 2030 },
+				},
 				ignored: ['page.orientation'],
 				newer: false,
 			})

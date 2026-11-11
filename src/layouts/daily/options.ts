@@ -94,7 +94,7 @@ export type GenkoYoshiDirection = (typeof GENKO_YOSHI_DIRECTIONS)[number]
 export const FILL_ALIGNMENTS = ['left', 'center', 'right'] as const
 export type FillAlignment = (typeof FILL_ALIGNMENTS)[number]
 
-export interface DailyOptions extends CommonOptions, HourSchedule, PageFooter {
+export interface DailyOptions extends CommonOptions, HourSchedule {
 	/** Whether the heading is the weekday ("Thursday") or the date ("1 January 2026"). */
 	dayPageTitle: DayPageTitle
 	/** The heading's font size, in pt; the subheading keeps its own. */
@@ -140,6 +140,8 @@ export interface DailyOptions extends CommonOptions, HourSchedule, PageFooter {
 	showHeaderWeek: boolean
 	/** Whether the header's details line shows the day of the year ("Day 1 / 365"). */
 	showHeaderDayOfYear: boolean
+	/** The empty footer at the bottom of each sheet, under the fill. */
+	footer: PageFooter
 }
 
 export const DAILY_SPEC: LayoutSpec<DailyOptions> = {
@@ -160,11 +162,11 @@ export const DAILY_SPEC: LayoutSpec<DailyOptions> = {
 		genkoYoshiGuides: false,
 		twoPagesPerDay: false,
 		...scheduleDefaults(),
-		...footerDefaults(),
 		highlightWeekendDays: true,
 		miniMonth: miniMonthDefaults(),
 		showHeaderWeek: true,
 		showHeaderDayOfYear: true,
+		footer: footerDefaults(),
 	}),
 	validators: {
 		...COMMON_VALIDATORS,
@@ -180,11 +182,11 @@ export const DAILY_SPEC: LayoutSpec<DailyOptions> = {
 		genkoYoshiGuides: isBoolean,
 		twoPagesPerDay: isBoolean,
 		...SCHEDULE_VALIDATORS,
-		...FOOTER_VALIDATORS,
 		highlightWeekendDays: isBoolean,
 		miniMonth: MINI_MONTH_VALIDATORS,
 		showHeaderWeek: isBoolean,
 		showHeaderDayOfYear: isBoolean,
+		footer: FOOTER_VALIDATORS,
 	},
 	normalize: (options) => orderHours(normalizeCommon(options)),
 	migrations: DAILY_MIGRATIONS,

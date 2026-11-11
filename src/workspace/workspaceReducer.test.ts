@@ -19,17 +19,17 @@ describe('workspaceReducer', () => {
 		workspace = workspaceReducer(workspace, {
 			type: 'update',
 			layout: 'yearly',
-			patch: { year: 2030, title: 'Hi' },
+			patch: { calendar: { year: 2030 }, title: 'Hi' },
 		})
 		workspace = workspaceReducer(workspace, { type: 'selectLayout', layout: 'monthly' })
 		workspace = workspaceReducer(workspace, {
 			type: 'update',
 			layout: 'monthly',
-			patch: { year: 2040 },
+			patch: { calendar: { year: 2040 } },
 		})
 		workspace = workspaceReducer(workspace, { type: 'selectLayout', layout: 'yearly' })
-		expect(workspace.layouts['yearly']).toMatchObject({ year: 2030, title: 'Hi' })
-		expect(workspace.layouts['monthly'].year).toBe(2040)
+		expect(workspace.layouts['yearly']).toMatchObject({ calendar: { year: 2030 }, title: 'Hi' })
+		expect(workspace.layouts.monthly.calendar.year).toBe(2040)
 	})
 
 	it('update changes only the patched fields of the given layout', () => {
@@ -37,11 +37,11 @@ describe('workspaceReducer', () => {
 		const updated = workspaceReducer(workspace, {
 			type: 'update',
 			layout: 'yearly',
-			patch: { year: 2030, title: 'Hi' },
+			patch: { calendar: { year: 2030 }, title: 'Hi' },
 		})
 		expect(updated.layouts['yearly']).toEqual({
-			...workspace.layouts['yearly'],
-			year: 2030,
+			...workspace.layouts.yearly,
+			calendar: { ...workspace.layouts.yearly.calendar, year: 2030 },
 			title: 'Hi',
 		})
 		expect(updated.layouts['monthly']).toBe(workspace.layouts['monthly'])
@@ -67,8 +67,11 @@ describe('workspaceReducer', () => {
 
 	it('update keeps the workspace when the patch changes nothing', () => {
 		const workspace = defaultWorkspace()
-		const { year, page } = workspace.layouts.weekly
-		const patch = { year, page: { margins: { top: page.margins.top } } }
+		const { calendar, page } = workspace.layouts.weekly
+		const patch = {
+			calendar: { year: calendar.year },
+			page: { margins: { top: page.margins.top } },
+		}
 		expect(workspaceReducer(workspace, { type: 'update', layout: 'weekly', patch })).toBe(
 			workspace,
 		)
@@ -96,7 +99,7 @@ describe('workspaceReducer', () => {
 		workspace = workspaceReducer(workspace, {
 			type: 'update',
 			layout: 'daily',
-			patch: { year: 1999, firstHour: 3 },
+			patch: { calendar: { year: 1999 }, firstHour: 3 },
 		})
 		workspace = workspaceReducer(workspace, {
 			type: 'update',

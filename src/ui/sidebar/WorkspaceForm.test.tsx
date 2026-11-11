@@ -328,8 +328,8 @@ describe('WorkspaceForm', () => {
 		const question = screen.getByRole('alertdialog')
 		expect(document.activeElement).toBe(within(question).getByRole('button', { name: 'Reset' }))
 		fireEvent.click(within(question).getByRole('button', { name: 'Reset' }))
-		const { year, locale, weekStart } = workspace.layouts[workspace.layout]
-		expect(onUpdate).toHaveBeenCalledWith(workspace.layout, { year, locale, weekStart })
+		const { calendar } = workspace.layouts[workspace.layout]
+		expect(onUpdate).toHaveBeenCalledWith(workspace.layout, { calendar })
 		expect(screen.queryByRole('alertdialog')).toBeNull()
 	})
 
