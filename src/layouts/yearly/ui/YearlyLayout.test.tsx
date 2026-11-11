@@ -7,8 +7,7 @@ import { YearlyLayout } from './YearlyLayout'
 // component draws the plan.
 describe('YearlyLayout', () => {
 	it('draws the whole year on one page', () => {
-		const options = { ...YEARLY_SPEC.defaults(), year: 2025 }
-		const { container } = render(<YearlyLayout options={options} />)
+		const { container } = render(<YearlyLayout options={YEARLY_SPEC.defaults()} />)
 		expect(container.querySelectorAll('section')).toHaveLength(1)
 	})
 })

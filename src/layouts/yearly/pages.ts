@@ -30,7 +30,7 @@ export interface YearPage {
 	heading: string
 	/** The subtitle; hidden when empty. */
 	subheading: string
-	/** The heading's font size, in pt (`headingFontSize`); the event list's keeps its own. */
+	/** The heading's font size, in pt (`header.fontSize`); the event list's keeps its own. */
 	headingFontSize: number
 	/** The 12 months, each 6 rows so they line up, their days with an event circled. */
 	months: MiniMonthPlan[]
@@ -44,19 +44,20 @@ export interface YearPage {
  */
 export function planYearPage(options: YearlyOptions, model: CalendarModel): YearPage {
 	const { year, locale } = options.calendar
-	const weekdays = weekdayNames(locale, model.weekStart, options.weekdayFormat)
-	const heading = options.title.trim() || yearName(locale, year)
+	const { header, content } = options
+	const weekdays = weekdayNames(locale, model.weekStart, content.weekdayFormat)
+	const heading = header.title.trim() || yearName(locale, year)
 	const events = eventsOfYear(model.events, year)
 	return {
 		heading,
-		subheading: options.subtitle,
-		headingFontSize: options.headingFontSize,
+		subheading: header.subtitle,
+		headingFontSize: header.fontSize,
 		months: model.months.map((month) => ({
 			month,
 			name: model.monthNames[month.month],
 			weekdays,
-			highlightWeekends: options.highlightWeekends,
-			showWeekNumbers: options.showWeekNumbers,
+			highlightWeekends: content.highlightWeekends,
+			showWeekNumbers: content.showWeekNumbers,
 			eventDays: monthEventDays(model.events, month),
 		})),
 		eventList:

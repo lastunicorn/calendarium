@@ -6,22 +6,28 @@ The whole year on one sheet: the title, or else the year, above the 12 months as
 
 `planYearPage` (`pages.ts`) plans one `YearPage`:
 
-- the heading: the `title`, or the year (`yearName`) when the title is empty, in `headingFontSize` pt; the `subtitle` below it, hidden when empty;
+- the heading: the header's `title`, or the year (`yearName`) when the title is empty, in its `fontSize` pt; its `subtitle` below it, hidden when empty;
 - the 12 months, each a `MiniMonthPlan` spread into `MiniMonth`. Every month has 6 rows, so they line up, and the days with an event are circled (`eventDays`, by `monthEventDays`);
 - when the year has events (`eventsOfYear`), an `eventList` page: headed by `YEAR_PAGE_MESSAGES[locale].events` above the year page's heading, listing each event with its `dayMonthName`, drawn by `ui/EventList`.
 
 ## Options
 
-`YearlyOptions` (`options.ts`): `CommonOptions` (`calendar`, `events`, `page`), the month grid options (`MonthGridOptions`) for its 12 months, and its own:
+`YearlyOptions` (`options.ts`): `CommonOptions` (`calendar`, `events`, `page`) and two groups of its own, one per sidebar section, each reset whole:
 
-| Sidebar section | Fields                                                                                                                                                                                     |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Header          | `title`, `subtitle`, `headingFontSize` (`isHeadingFontSize`, the shared `HeadingFontSizeField`) (`ui/HeaderSection`)                                                                       |
-| Content         | `monthSize`, then `weekdayFormat` (abbreviated only, `MONTH_GRID_WEEKDAY_FORMATS`), `highlightWeekends`, `showWeekNumbers` (`ui/YearContentSection`, through the shared `MonthGridFields`) |
+| Sidebar section | Group                    | Fields                                                                                                                                                                                                                                  |
+| --------------- | ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Header          | `header: YearlyHeader`   | `title`, `subtitle`, `fontSize` (`isHeadingFontSize`, the shared `HeadingFontSizeField`) (`ui/HeaderSection`, which also takes the `calendar` for the title's placeholder, the year)                                                    |
+| Content         | `content: YearlyContent` | `monthSize`, then the month grid options (`MonthGridOptions`): `weekdayFormat` (abbreviated only, `MONTH_GRID_WEEKDAY_FORMATS`), `highlightWeekends`, `showWeekNumbers` (`ui/YearContentSection`, through the shared `MonthGridFields`) |
 
 `monthSize`, one of `MONTH_SIZES` (`small`, `medium` by default, `large`), sizes the months' text, and the months with it: each month's columns and rows are multiples of its day size, so smaller text draws a smaller month, centered in its share of the page and never larger than it (so `large` fills it on most papers). The component sets the size's class (`ui/YearlyLayout.module.css`) on the grid, defining the `MiniMonth`'s text variables (`--mini-month-name-size`, …), `medium` being its own size.
 
-It has no cross-field rules of its own (`normalize: normalizeCommon`) and no migration steps.
+It has no cross-field rules of its own (`normalize: normalizeCommon`).
+
+## Migrations
+
+`YEARLY_MIGRATIONS` (`migrations.ts`), one step:
+
+- 5 to 6: the fields every layout has were grouped (`commonGroups`); `title`, `subtitle` and `headingFontSize` (now `fontSize`) went under `header`, and `monthSize` with the month grid options under `content`.
 
 ## Printed text
 
@@ -29,15 +35,16 @@ It has no cross-field rules of its own (`normalize: normalizeCommon`) and no mig
 
 ## Files
 
-| File                                                | What it holds                                    |
-| --------------------------------------------------- | ------------------------------------------------ |
-| `index.ts`                                          | The entry point: `YEARLY = defineLayout(…)`      |
-| `options.ts`                                        | `YearlyOptions`, `MONTH_SIZES` and `YEARLY_SPEC` |
-| `pages.ts`                                          | `planYearPage`, `YearPage`, `EventListPage`      |
-| `messages.ts`                                       | `YEAR_PAGE_MESSAGES`                             |
-| `ui/index.ts`                                       | The UI's entry point: `YEARLY_VIEW`              |
-| `ui/YearlyLayout.tsx`                               | Draws the plan: the year page and the event list |
-| `ui/EventList.tsx`                                  | The event list's page                            |
-| `ui/YearlyForm.tsx`                                 | The options form, combining the sections         |
-| `ui/HeaderSection.tsx`, `ui/YearContentSection.tsx` | The layout's own sections                        |
-| `ui/fieldOptions.ts`                                | `MONTH_SIZE_OPTIONS`, the month size's labels    |
+| File                                                | What it holds                                                                                   |
+| --------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `index.ts`                                          | The entry point: `YEARLY = defineLayout(…)`                                                     |
+| `options.ts`                                        | `YearlyOptions`, its groups `YearlyHeader` and `YearlyContent`, `MONTH_SIZES` and `YEARLY_SPEC` |
+| `migrations.ts`                                     | `YEARLY_MIGRATIONS`, the step from 5                                                            |
+| `pages.ts`                                          | `planYearPage`, `YearPage`, `EventListPage`                                                     |
+| `messages.ts`                                       | `YEAR_PAGE_MESSAGES`                                                                            |
+| `ui/index.ts`                                       | The UI's entry point: `YEARLY_VIEW`                                                             |
+| `ui/YearlyLayout.tsx`                               | Draws the plan: the year page and the event list                                                |
+| `ui/EventList.tsx`                                  | The event list's page                                                                           |
+| `ui/YearlyForm.tsx`                                 | The options form, combining the sections                                                        |
+| `ui/HeaderSection.tsx`, `ui/YearContentSection.tsx` | The layout's own sections                                                                       |
+| `ui/fieldOptions.ts`                                | `MONTH_SIZE_OPTIONS`, the month size's labels                                                   |

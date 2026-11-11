@@ -20,7 +20,7 @@ export function YearlyLayout({ options }: YearlyLayoutProps) {
 		planYearPage,
 		options,
 	)
-	const { page } = options
+	const { page, content } = options
 
 	return (
 		<>
@@ -33,7 +33,7 @@ export function YearlyLayout({ options }: YearlyLayoutProps) {
 					/>
 
 					<div
-						className={`${styles.grid} ${styles[page.orientation]} ${styles[options.monthSize]} ${options.showWeekNumbers ? styles.withWeekNumbers : ''}`}
+						className={`${styles.grid} ${styles[page.orientation]} ${styles[content.monthSize]} ${content.showWeekNumbers ? styles.withWeekNumbers : ''}`}
 					>
 						{months.map((month) => (
 							<MiniMonth key={month.month.month} {...month} />

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { calendarModel } from '../common'
 import { defaultLayoutOptions } from '../index'
-import type { YearlyOptions } from './options'
+import type { YearlyHeader, YearlyOptions } from './options'
 import { planYearPage } from './pages'
 
 /** The plan of the default year layout for 2026, in British English with Monday weeks. */
@@ -14,21 +14,28 @@ function plan(changes: Partial<YearlyOptions> = {}) {
 	return planYearPage(options, calendarModel(options))
 }
 
+/** The default header with `changes`. */
+function header(changes: Partial<YearlyHeader>): YearlyHeader {
+	return { ...defaultLayoutOptions('yearly').header, ...changes }
+}
+
 describe('planYearPage', () => {
 	it('heads the page with the title, or the year when it is empty', () => {
-		expect(plan({ title: '  Family calendar ', subtitle: 'Ours' })).toMatchObject({
+		expect(
+			plan({ header: header({ title: '  Family calendar ', subtitle: 'Ours' }) }),
+		).toMatchObject({
 			heading: 'Family calendar',
 			subheading: 'Ours',
 		})
-		expect(plan({ title: '   ' }).heading).toBe('2026')
-		expect(
-			plan({ title: '', calendar: { year: 2026, locale: 'ja-JP', weekStart: 1 } }).heading,
-		).toBe('2026年')
+		expect(plan({ header: header({ title: '   ' }) }).heading).toBe('2026')
+		expect(plan({ calendar: { year: 2026, locale: 'ja-JP', weekStart: 1 } }).heading).toBe(
+			'2026年',
+		)
 	})
 
 	it('sets the heading in 32 pt unless told another size', () => {
 		expect(plan().headingFontSize).toBe(32)
-		expect(plan({ headingFontSize: 20 }).headingFontSize).toBe(20)
+		expect(plan({ header: header({ fontSize: 20 }) }).headingFontSize).toBe(20)
 	})
 
 	it('draws the 12 months, each 6 rows so they line up', () => {
@@ -69,7 +76,10 @@ describe('planYearPage', () => {
 		expect(plan().eventList).toBeUndefined()
 		expect(plan({ events: ['2027-01-07 Next year'] }).eventList).toBeUndefined()
 		expect(
-			plan({ title: 'Ours', events: ['2026-03-01 Trip', '0000-01-20 Birthday'] }).eventList,
+			plan({
+				header: header({ title: 'Ours' }),
+				events: ['2026-03-01 Trip', '0000-01-20 Birthday'],
+			}).eventList,
 		).toEqual({
 			heading: 'Events',
 			subheading: 'Ours',

@@ -13,8 +13,8 @@ export function YearlyForm(props: OptionsSectionProps<YearlyOptions>) {
 		<>
 			<CalendarSection {...optionsGroup(props, 'calendar')} />
 			<EventsSection {...props} />
-			<HeaderSection {...props} />
-			<YearContentSection {...props} />
+			<HeaderSection {...optionsGroup(props, 'header')} calendar={props.options.calendar} />
+			<YearContentSection {...optionsGroup(props, 'content')} />
 			<PageSection {...optionsGroup(props, 'page')} />
 		</>
 	)

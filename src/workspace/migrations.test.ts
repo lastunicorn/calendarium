@@ -139,18 +139,19 @@ describe('the layouts’ ids from 6', () => {
 	}
 
 	it('rename the active layout and the layouts’ keys in storage, keeping their options', () => {
+		// A field no layout's step from 5 moves, so it stays where it was.
 		const stored = {
 			version: 5,
 			layout: 'week-per-page',
 			layouts: Object.fromEntries(
-				Object.keys(RENAMED).map((layout) => [layout, { title: layout }]),
+				Object.keys(RENAMED).map((layout) => [layout, { note: layout }]),
 			),
 		}
 		expect(upgradeStorage(stored)).toEqual({
 			version: 5,
 			layout: 'weekly',
 			layouts: Object.fromEntries(
-				Object.entries(RENAMED).map(([old, layout]) => [layout, { title: old }]),
+				Object.entries(RENAMED).map(([old, layout]) => [layout, { note: old }]),
 			),
 		})
 	})

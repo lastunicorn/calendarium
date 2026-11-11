@@ -19,7 +19,7 @@ describe('workspaceReducer', () => {
 		workspace = workspaceReducer(workspace, {
 			type: 'update',
 			layout: 'yearly',
-			patch: { calendar: { year: 2030 }, title: 'Hi' },
+			patch: { calendar: { year: 2030 }, header: { title: 'Hi' } },
 		})
 		workspace = workspaceReducer(workspace, { type: 'selectLayout', layout: 'monthly' })
 		workspace = workspaceReducer(workspace, {
@@ -28,7 +28,10 @@ describe('workspaceReducer', () => {
 			patch: { calendar: { year: 2040 } },
 		})
 		workspace = workspaceReducer(workspace, { type: 'selectLayout', layout: 'yearly' })
-		expect(workspace.layouts['yearly']).toMatchObject({ calendar: { year: 2030 }, title: 'Hi' })
+		expect(workspace.layouts['yearly']).toMatchObject({
+			calendar: { year: 2030 },
+			header: { title: 'Hi' },
+		})
 		expect(workspace.layouts.monthly.calendar.year).toBe(2040)
 	})
 
@@ -37,12 +40,12 @@ describe('workspaceReducer', () => {
 		const updated = workspaceReducer(workspace, {
 			type: 'update',
 			layout: 'yearly',
-			patch: { calendar: { year: 2030 }, title: 'Hi' },
+			patch: { calendar: { year: 2030 }, header: { title: 'Hi' } },
 		})
 		expect(updated.layouts['yearly']).toEqual({
 			...workspace.layouts.yearly,
 			calendar: { ...workspace.layouts.yearly.calendar, year: 2030 },
-			title: 'Hi',
+			header: { ...workspace.layouts.yearly.header, title: 'Hi' },
 		})
 		expect(updated.layouts['monthly']).toBe(workspace.layouts['monthly'])
 		expect(updated.layouts['daily']).toBe(workspace.layouts['daily'])
@@ -104,7 +107,7 @@ describe('workspaceReducer', () => {
 		workspace = workspaceReducer(workspace, {
 			type: 'update',
 			layout: 'yearly',
-			patch: { title: 'Hi' },
+			patch: { header: { title: 'Hi' } },
 		})
 		const started = workspaceReducer(workspace, { type: 'newProject', layout: 'daily' })
 		expect(started.layouts['daily']).toEqual(defaultLayoutOptions('daily'))
