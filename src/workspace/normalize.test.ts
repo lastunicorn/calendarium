@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest'
 import { defaultLayoutOptions, LAYOUT_IDS, normalizeLayout } from '../layouts'
 import { defaultWorkspace, openProject } from './Workspace'
 import { workspaceReducer } from './workspaceReducer'
-import { parseWorkspace } from './parseWorkspace'
+import { LEGACY_FILE_FORMAT } from './legacy'
+import { parseProjectFile } from './projectFile'
 
 // Each layout's own rules are tested in its `options.test.ts`; these check the page rules every
 // layout shares, and that every layout's options in state pass through its layout's rules.
@@ -27,12 +28,14 @@ describe('normalizeLayout', () => {
 	})
 
 	it('keeps the differing margins of settings saved before equal margins', () => {
-		const stored = {
+		const file = {
+			format: LEGACY_FILE_FORMAT,
 			version: 5,
 			layout: 'day-per-page',
-			layouts: { 'day-per-page': { page: { margins: DIFFERING } } },
+			page: { margins: DIFFERING },
 		}
-		expect(openProject(parseWorkspace(stored))?.options.page).toMatchObject({
+		const opened = parseProjectFile(JSON.stringify(file), 'day.json')
+		expect(opened.ok && opened.project.options.page).toMatchObject({
 			margins: DIFFERING,
 			equalMargins: false,
 		})

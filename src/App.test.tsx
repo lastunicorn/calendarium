@@ -161,6 +161,32 @@ describe('App preferences', () => {
 		expect(JSON.parse(localStorage.getItem('calendarium-preferences')!)).toMatchObject({
 			openSection: 'Page',
 		})
-		expect(localStorage.getItem('calendarium-config')).toBeNull()
+		expect(Object.keys(localStorage)).toEqual(['calendarium-preferences'])
+	})
+})
+
+describe('App workspace', () => {
+	it('keeps the open project and its settings after a reload', async () => {
+		const { container, unmount } = render(<App />)
+		const options = {
+			...defaultLayoutOptions('monthly'),
+			calendar: { ...defaultLayoutOptions('monthly').calendar, year: 2030 },
+		}
+		const text = serializeProject(
+			{ id: ID, name: '', layout: 'monthly', options },
+			{ pretty: true },
+		)
+		chooseProjectFile(container, new File([text], 'month.json', { type: 'application/json' }))
+		await waitFor(() => expect(layoutSelect().value).toBe('monthly'))
+		// Saved by an effect once the opened file is in the workspace.
+		await waitFor(() =>
+			expect(localStorage.getItem(`calendarium-project:${ID}`)).not.toBeNull(),
+		)
+
+		unmount()
+		render(<App />)
+		expect(layoutSelect().value).toBe('monthly')
+		openSection('Calendar')
+		expect(screen.getByLabelText<HTMLInputElement>('Year').value).toBe('2030')
 	})
 })

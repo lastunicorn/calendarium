@@ -31,14 +31,14 @@ function initialWorkspace(): Workspace {
 /** The app's single workspace state: loaded from and saved to `localStorage`. */
 export function useWorkspace() {
 	const [workspace, dispatch] = useReducer(workspaceReducer, undefined, initialWorkspace)
-	// Saved only after a change, not on mount: the loaded workspace is already stored, and writing
-	// it back would drop the fields a newer version stored that this one doesn't know.
+	// Saved after each change, as what changed since the last save: the projects loaded are
+	// already stored, and the one opened on a first launch is written once it is edited.
 	const saved = useRef(workspace)
 
 	useEffect(() => {
 		if (workspace === saved.current) return
+		saveWorkspace(saved.current, workspace)
 		saved.current = workspace
-		saveWorkspace(workspace)
 	}, [workspace])
 
 	/** Opens the first project of `layout`, or a new one when there is none, as the layout picker did. */
