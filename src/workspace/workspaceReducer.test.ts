@@ -116,7 +116,8 @@ describe('workspaceReducer', () => {
 	})
 
 	it('openProject swaps in one layout’s project and shows that layout', () => {
-		const next = { ...defaultLayoutOptions('monthly'), year: 1999 }
+		const defaults = defaultLayoutOptions('monthly')
+		const next = { ...defaults, calendar: { ...defaults.calendar, year: 1999 } }
 		const opened = workspaceReducer(defaultWorkspace(), {
 			type: 'openProject',
 			project: { layout: 'monthly', options: next },

@@ -75,7 +75,9 @@ describe('project files', () => {
 	})
 
 	it('opens into the current layout when the file names none or an unknown one', () => {
-		expect(parseProjectFile(fileText({ year: 2031 }), 'monthly')?.layout).toBe('monthly')
+		expect(parseProjectFile(fileText({ calendar: { year: 2031 } }), 'monthly')?.layout).toBe(
+			'monthly',
+		)
 		expect(parseProjectFile(fileText({ layout: 'week' }), 'daily')?.layout).toBe('daily')
 	})
 
@@ -163,7 +165,7 @@ describe('project files', () => {
 			format: FILE_FORMAT,
 			version: FORMAT_VERSION,
 			layout: 'daily',
-			year: 2030,
+			calendar: { year: 2030 },
 			content: { schedule: { firstHour: 25, hourFormat: 'sundial' } },
 			title: 'Not a daily field',
 			page: { paperSize: 'a4', margins: { top: 99, left: 5, right: 'wide' } },

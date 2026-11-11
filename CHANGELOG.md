@@ -4,7 +4,13 @@ The features each release brought, newest first. Versions follow the app version
 
 ## Unreleased
 
-Settings and files from 5.x are migrated: each layout keeps its settings under its new name, the year, language and week start under `calendar`, the events as a list of lines, the footer's settings under `footer`, the year layout's title, subtitle and title size under `header` and its month size and grid settings under `content`, the month layout's title, alignment and title size under `header`, its adjacent months under `miniMonth`, and its grid settings and day numbers under `content`, the week layout's title alignment, title size and week number under `header`, its current and next month under `miniMonth`, and its pages, days, weekend and hours under `content`, and the day layout's title, title size, details and weekend color under `header`, and its pages, fill (its alignment too) and hours under `content`.
+Settings and files from 5.x are migrated, each layout keeping its settings under its new name, grouped as the sidebar groups them:
+
+- every layout: the year, language and week start under `calendar`, and the events as a list of lines;
+- the year layout: its title, subtitle and title size under `header`, its month size and grid settings under `content`;
+- the month layout: its title, alignment and title size under `header`, its adjacent months under `miniMonth`, its grid settings and day numbers under `content`;
+- the week layout: its title alignment, title size and week number under `header`, its current and next month under `miniMonth`, its pages, days, weekend and hours under `content`, its footer under `footer`;
+- the day layout: its title, title size, details and weekend color under `header`, its pages, fill (and its alignment) and hours under `content`, its footer under `footer`.
 
 ### Added
 
@@ -16,6 +22,7 @@ Settings and files from 5.x are migrated: each layout keeps its settings under i
 
 - The layouts are named Yearly, Monthly, Weekly and Daily, in the Layout picker and in project files (`yearly`, `monthly`, `weekly` and `daily`, for `year-per-page`, `month-per-page`, `week-per-page` and `day-per-page`); a project file is named after the new name, `calendar-weekly-2027.json`.
 - Year layout: the month size now sizes the months too, not only their text: smaller sizes draw smaller months, centered in their part of the page.
+- Project files and saved settings group each layout's settings as the sidebar's sections do (`calendar`, `events`, `header`, `miniMonth`, `content`, `footer`, `page`), so a file reads like the sidebar and each section's reset restores its own group.
 - Week and day layouts: the footer and its height moved from the Content section to a Footer section of their own, with its own reset.
 - Clearer descriptions under several sidebar options (year, language, week start, events, footer, booklet, margins, spine).
 

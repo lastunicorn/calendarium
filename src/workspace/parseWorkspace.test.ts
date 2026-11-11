@@ -52,9 +52,7 @@ describe('parseWorkspace', () => {
 
 	it('drops invalid shared fields of every layout, and an unknown active layout', () => {
 		const invalidCommon = {
-			year: 2030.5,
-			locale: 'xx',
-			weekStart: 7,
+			calendar: { year: 2030.5, locale: 'xx', weekStart: 7 },
 			events: 42,
 			page: { paperSize: 'b5', orientation: 'up', margins: 'wide' },
 		}

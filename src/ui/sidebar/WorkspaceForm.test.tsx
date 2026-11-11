@@ -267,11 +267,12 @@ describe('WorkspaceForm', () => {
 		const button = screen.getByRole<HTMLButtonElement>('button', { name: 'New project' })
 		expect(button.disabled).toBe(true)
 
+		const options = workspace.layouts[workspace.layout]
 		const changed = {
 			...workspace,
 			layouts: {
 				...workspace.layouts,
-				[workspace.layout]: { ...workspace.layouts[workspace.layout], year: 2030 },
+				[workspace.layout]: { ...options, calendar: { ...options.calendar, year: 2030 } },
 			},
 		}
 		rerender(
