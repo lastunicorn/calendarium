@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import styles from './App.module.css'
 import type { LayoutId } from './layouts'
 import { EmptyPreview } from './ui/preview/EmptyPreview'
@@ -28,6 +28,12 @@ export default function App() {
 	// Held here, since the project section and the empty preview both open it. It opens by itself
 	// on a first launch, with no project.
 	const [creatingProject, setCreatingProject] = useState(project === null)
+	// Where the focus goes once a project is created with nothing to go back to: on a first
+	// launch, or from the empty preview, whose button the new project replaces.
+	const picker = useRef<HTMLSelectElement>(null)
+
+	// Stable, since the dialog's opening effect depends on it.
+	const pickerElement = useCallback(() => picker.current, [])
 
 	function handleNewProject() {
 		setCreatingProject(true)
@@ -63,6 +69,7 @@ export default function App() {
 					onDeleteProject={handleProjectDelete}
 					openSection={preferences.openSection}
 					onToggleSection={toggleSection}
+					pickerRef={picker}
 				/>
 			</Sidebar>
 			{project === null ? (
@@ -79,6 +86,7 @@ export default function App() {
 				<NewProjectDialog
 					onCreate={handleNewProjectCreate}
 					onCancel={handleNewProjectCancel}
+					returnFocus={pickerElement}
 				/>
 			)}
 		</div>

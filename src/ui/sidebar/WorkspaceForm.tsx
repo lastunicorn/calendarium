@@ -1,6 +1,6 @@
 import type { Project, ProjectId } from '../../workspace/Project'
 import { openProject, type Workspace } from '../../workspace/Workspace'
-import { useMemo } from 'react'
+import { type Ref, useMemo } from 'react'
 import type { Patch } from '../../core/data'
 import { defaultLayoutOptions, type LayoutOptions, type LayoutId } from '../../layouts'
 import { layoutView } from '../layouts/registry'
@@ -24,6 +24,8 @@ interface WorkspaceFormProps {
 	/** The title of the open section, from the viewer's preferences; `null` when all are closed. */
 	openSection: string | null
 	onToggleSection: (title: string) => void
+	/** The project picker, for the focus to go to once a project is created. */
+	pickerRef?: Ref<HTMLSelectElement>
 }
 
 interface LayoutFormProps<K extends LayoutId> {
@@ -63,6 +65,7 @@ export function WorkspaceForm({
 	onDeleteProject,
 	openSection,
 	onToggleSection,
+	pickerRef,
 }: WorkspaceFormProps) {
 	const project = openProject(workspace)
 
@@ -81,6 +84,7 @@ export function WorkspaceForm({
 					onNew={onNewProject}
 					onImport={onImportProject}
 					onDelete={onDeleteProject}
+					pickerRef={pickerRef}
 				/>
 				{/* Keyed so half-typed field drafts don't carry over to another project. */}
 				{project !== null && (

@@ -132,6 +132,34 @@ describe('App new project', () => {
 		expect(nameField.value).toBe('')
 	})
 
+	it('focuses the new project’s picker once created from the empty preview', () => {
+		renderEmpty()
+		const preview = screen.getByRole('main', { name: 'Preview' })
+		const button = within(preview).getByRole('button', { name: 'New project…' })
+		// A click focuses the button it lands on.
+		button.focus()
+		fireEvent.click(button)
+		fireEvent.click(within(dialog('New project')).getByRole('button', { name: 'Create' }))
+		expect(button.isConnected).toBe(false)
+		expect(document.activeElement).toBe(picker())
+	})
+
+	it('focuses the new project’s picker once created on a first launch', () => {
+		render(<App />)
+		fireEvent.click(within(dialog('New project')).getByRole('button', { name: 'Create' }))
+		expect(document.activeElement).toBe(picker())
+	})
+
+	it('gives the focus back to New project once created from it', () => {
+		renderEmpty()
+		createProject('Home', 'yearly')
+		const button = within(projectSection()).getByRole('button', { name: 'New project…' })
+		button.focus()
+		fireEvent.click(button)
+		fireEvent.click(within(dialog('New project')).getByRole('button', { name: 'Create' }))
+		expect(document.activeElement).toBe(button)
+	})
+
 	it('creates nothing when cancelled', () => {
 		renderEmpty()
 		createProject('Home', 'yearly')

@@ -82,4 +82,71 @@ describe('Dialog', () => {
 		unmount()
 		expect(document.activeElement).toBe(opener)
 	})
+
+	it('gives the focus to `returnFocus` when what had it is gone, or nothing had it', () => {
+		const picker = (
+			<button key="picker" type="button">
+				Picker
+			</button>
+		)
+		const { rerender } = render([
+			<button key="opener" type="button">
+				Opener
+			</button>,
+			picker,
+		])
+		const pickerButton = screen.getByRole('button', { name: 'Picker' })
+		function returnFocus() {
+			return pickerButton
+		}
+		const dialog = (
+			<Dialog
+				key="dialog"
+				title="New"
+				submitLabel="Create"
+				onSubmit={noop}
+				onCancel={noop}
+				returnFocus={returnFocus}
+			>
+				<p>Sure?</p>
+			</Dialog>
+		)
+
+		// Opened from a button that goes as it closes.
+		screen.getByRole('button', { name: 'Opener' }).focus()
+		rerender([
+			<button key="opener" type="button">
+				Opener
+			</button>,
+			picker,
+			dialog,
+		])
+		rerender([picker])
+		expect(document.activeElement).toBe(pickerButton)
+
+		// Opened with nothing focused.
+		pickerButton.blur()
+		rerender([picker, dialog])
+		rerender([picker])
+		expect(document.activeElement).toBe(pickerButton)
+	})
+
+	it('still gives the focus back to what had it when it is there', () => {
+		render(<button type="button">New project</button>)
+		const opener = screen.getByRole('button', { name: 'New project' })
+		opener.focus()
+		const { unmount } = render(
+			<Dialog
+				title="New"
+				submitLabel="Create"
+				onSubmit={noop}
+				onCancel={noop}
+				returnFocus={() => null}
+			>
+				<p>Sure?</p>
+			</Dialog>,
+		)
+		unmount()
+		expect(document.activeElement).toBe(opener)
+	})
 })

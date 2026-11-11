@@ -1,4 +1,11 @@
-import { type ChangeEvent, type FocusEvent, type PointerEvent, useRef, useState } from 'react'
+import {
+	type ChangeEvent,
+	type FocusEvent,
+	type PointerEvent,
+	type Ref,
+	useRef,
+	useState,
+} from 'react'
 import { openProject, projectList, type Workspace } from '../../workspace/Workspace'
 import type { Project, ProjectId } from '../../workspace/Project'
 import { type OpenedProjectFile, parseProjectFile, projectFile } from '../../workspace/projectFile'
@@ -35,6 +42,8 @@ interface ProjectSectionProps {
 	onImport: (project: Project<ProjectId | null>) => void
 	/** Deletes a project, once confirmed. */
 	onDelete: (id: ProjectId) => void
+	/** The project picker, for the focus to go to once a project is created. */
+	pickerRef?: Ref<HTMLSelectElement>
 }
 
 /** A project's name as shown: trimmed, or "Untitled". */
@@ -100,6 +109,7 @@ export function ProjectSection({
 	onNew,
 	onImport,
 	onDelete,
+	pickerRef,
 }: ProjectSectionProps) {
 	const project = openProject(workspace)
 
@@ -203,6 +213,7 @@ export function ProjectSection({
 						value={project.id}
 						options={projectOptions}
 						onChange={onOpen}
+						ref={pickerRef}
 					/>
 					<TextField
 						label="Name"

@@ -1,4 +1,4 @@
-import type { ChangeEvent } from 'react'
+import type { ChangeEvent, Ref } from 'react'
 import dropdown from './Dropdown.module.css'
 import { DropdownArrow } from './DropdownArrow'
 import { Field } from './Field'
@@ -12,6 +12,7 @@ interface SelectFieldProps<T extends string | number> {
 	value: T
 	options: readonly Option<T>[]
 	onChange: (value: T) => void
+	ref?: Ref<HTMLSelectElement>
 }
 
 /**
@@ -24,6 +25,7 @@ export function SelectField<T extends string | number>({
 	value,
 	options,
 	onChange,
+	ref,
 }: SelectFieldProps<T>) {
 	function handleSelectChange(event: ChangeEvent<HTMLSelectElement>) {
 		// The <option>s are rendered from `options` in order, so the index maps back to a typed value.
@@ -36,6 +38,7 @@ export function SelectField<T extends string | number>({
 				<div className={dropdown.box}>
 					<select
 						{...control}
+						ref={ref}
 						className={dropdown.control}
 						value={value}
 						onChange={handleSelectChange}

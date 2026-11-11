@@ -16,6 +16,11 @@ interface DialogProps {
 	onSubmit: () => void
 	/** Closes the dialog without acting: Cancel, the close button, or Escape. */
 	onCancel: () => void
+	/**
+	 * Where the focus goes once the dialog closes when there is nothing to go back to: nothing had
+	 * it, or what had it is gone, like the empty preview's button the created project replaces.
+	 */
+	returnFocus?: () => HTMLElement | null
 	/** The question or the fields, above the actions. */
 	children: ReactNode
 }
@@ -25,9 +30,17 @@ interface DialogProps {
  * `showModal`, so the rest of the page is out of reach. A title with a close button, its body,
  * then Cancel and the primary action, which submits its form, so Enter in a field acts too.
  * Escape and the close button cancel. Focus moves to the body's first field, or to Cancel when it
- * has none (a question), and goes back where it was once the dialog closes. Never printed.
+ * has none (a question), and goes back where it was once the dialog closes, or to `returnFocus`
+ * when that is gone. Never printed.
  */
-export function Dialog({ title, submitLabel, onSubmit, onCancel, children }: DialogProps) {
+export function Dialog({
+	title,
+	submitLabel,
+	onSubmit,
+	onCancel,
+	returnFocus,
+	children,
+}: DialogProps) {
 	const titleId = useId()
 	const dialog = useRef<HTMLDialogElement>(null)
 	const body = useRef<HTMLDivElement>(null)
@@ -36,15 +49,18 @@ export function Dialog({ title, submitLabel, onSubmit, onCancel, children }: Dia
 	useEffect(() => {
 		const element = dialog.current
 		if (element === null) return
-		const opener = document.activeElement
+		// The page itself has the focus when nothing does.
+		const opener = document.activeElement === document.body ? null : document.activeElement
 		element.showModal()
 		const field = body.current?.querySelector<HTMLElement>('input, select, textarea')
 		;(field ?? cancel.current)?.focus()
 		return () => {
 			element.close()
-			if (opener instanceof HTMLElement && opener.isConnected) opener.focus()
+			const back = opener instanceof HTMLElement && opener.isConnected ? opener : null
+			// Asked once closed: the element may have appeared with the dialog's closing.
+			;(back ?? returnFocus?.())?.focus()
 		}
-	}, [])
+	}, [returnFocus])
 
 	// The browser closes the dialog on Escape; the owner decides instead, by unmounting it.
 	function handleDialogCancel(event: SyntheticEvent<HTMLDialogElement>) {
