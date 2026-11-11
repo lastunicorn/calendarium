@@ -54,31 +54,34 @@ function cellLayout({ size, gap, direction, furigana, furiganaSize }: GenkoYoshi
 	}
 }
 
-/**
- * The outline of the columns written vertically, or of the rows written horizontally, a
- * `clip-path` keeping the lines across them off the gaps between them: a comb whose teeth run
- * along each, from the middle of one of its lines to the middle of the other, joined along the
- * grid's top (or left) edge, where the comb has no height (or width).
- */
-function bandsClipPath(fill: GenkoYoshiFill): string {
-	const { width, height, columnStep, rowStep } = cellLayout(fill)
-	const vertical = fill.direction === 'vertical'
-	const teeth = Array.from({ length: vertical ? fill.columns : fill.rows }, (_, index) => {
-		const start = index * (vertical ? columnStep : rowStep) + LINE_WIDTH / 2
-		const end = start + (vertical ? width : height)
-		return vertical
-			? `${start}mm 0, ${start}mm 100%, ${end}mm 100%, ${end}mm 0`
-			: `0 ${start}mm, 100% ${start}mm, 100% ${end}mm, 0 ${end}mm`
-	})
-	return `polygon(${teeth.join(', ')})`
-}
-
-/** CSS pixels, an SVG's user units, per mm. */
+/** CSS pixels, an SVG's or a `path()`'s user units, per mm. */
 const PX_PER_MM = 96 / 25.4
 
 /** A length in mm as an SVG path's user units, rounded to a hundredth. */
 function px(mm: number): number {
 	return Math.round(mm * PX_PER_MM * 100) / 100
+}
+
+/**
+ * The outline of the columns written vertically, or of the rows written horizontally, a
+ * `clip-path` keeping the lines across them off the gaps between them: one rectangle along each,
+ * from the middle of one of its lines to the middle of the other, the whole grid long. Each is a
+ * subpath of its own: a single polygon joining them along the grid's edge, with no height there,
+ * prints a line across the gaps, as a printer fills every device pixel a clip path touches.
+ */
+function bandsClipPath(fill: GenkoYoshiFill): string {
+	const { width, height, columnStep, rowStep } = cellLayout(fill)
+	const vertical = fill.direction === 'vertical'
+	// The grid's length along the bands: their cells, with the far line.
+	const length = px((vertical ? fill.rows * rowStep : fill.columns * columnStep) + LINE_WIDTH)
+	const breadth = px(vertical ? width : height)
+	const bands = Array.from({ length: vertical ? fill.columns : fill.rows }, (_, index) => {
+		const start = px(index * (vertical ? columnStep : rowStep) + LINE_WIDTH / 2)
+		return vertical
+			? `M${start} 0h${breadth}v${length}h${-breadth}Z`
+			: `M0 ${start}v${breadth}h${length}v${-breadth}Z`
+	})
+	return `path('${bands.join('')}')`
 }
 
 /** The guides' path of each grid, shared by every day's sheets, which share their fill. */
