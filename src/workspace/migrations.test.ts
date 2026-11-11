@@ -91,7 +91,7 @@ describe('each layout’s own steps', () => {
 			layouts: { 'month-per-page': month, 'week-per-page': week, 'quarter-per-page': week },
 		}
 		expect(upgradeStorage(stored)?.layouts).toEqual({
-			monthly: month,
+			monthly: layoutSpec('monthly').migrations[5]!(month),
 			weekly: layoutSpec('weekly').migrations[5]!(layoutSpec('weekly').migrations[3]!(week)),
 			'quarter-per-page': week,
 		})
@@ -157,7 +157,7 @@ describe('the layouts’ ids from 6', () => {
 	})
 
 	it('rename the layout a file names, keeping its tags and options', () => {
-		const file = { format: FILE_FORMAT, version: 5, layout: 'month-per-page', title: 'Ours' }
+		const file = { format: FILE_FORMAT, version: 5, layout: 'month-per-page', note: 'Ours' }
 		expect(upgradeFile(file)).toEqual({ ...file, layout: 'monthly' })
 	})
 

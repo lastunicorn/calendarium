@@ -1,4 +1,4 @@
-import type { MiniMonthOptions, MiniMonthSize } from '../../layouts/monthGrid'
+import type { MiniMonthSize, MiniMonthStyle } from '../../layouts/monthGrid'
 import { CheckboxField } from '../fields/CheckboxField'
 import { RadioField } from '../fields/RadioField'
 import { MINI_MONTH_SIZE_OPTIONS } from './fieldOptions'
@@ -6,10 +6,7 @@ import { MonthGridFields } from './MonthGridFields'
 import type { OptionsFieldsProps } from './Section'
 
 /** How the mini months a page shows look: their size, title and month grid. */
-export function MiniMonthFields({
-	options,
-	onUpdate,
-}: OptionsFieldsProps<Omit<MiniMonthOptions, 'show' | 'showEvents'>>) {
+export function MiniMonthFields({ options, onUpdate }: OptionsFieldsProps<MiniMonthStyle>) {
 	function handleShowYearChange(showYear: boolean) {
 		onUpdate({ showYear })
 	}

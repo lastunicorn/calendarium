@@ -7,7 +7,8 @@ import { MonthlyLayout } from './MonthlyLayout'
 // component draws the plan.
 describe('MonthlyLayout', () => {
 	it('draws a page per month', () => {
-		const options = { ...MONTHLY_SPEC.defaults(), year: 2025 }
+		const defaults = MONTHLY_SPEC.defaults()
+		const options = { ...defaults, calendar: { ...defaults.calendar, year: 2025 } }
 		const { container } = render(<MonthlyLayout options={options} />)
 		expect(container.querySelectorAll('section')).toHaveLength(12)
 	})

@@ -5,11 +5,7 @@ import type { WeekendHighlight } from '../../core/weekend'
 import type { CalendarModel } from '../common'
 import type { HeadingAlign } from '../heading'
 import type { MiniMonthPlan } from '../monthGrid'
-import type {
-	DayNumberHorizontalAlignment,
-	DayNumberVerticalAlignment,
-	MonthlyOptions,
-} from './options'
+import type { DayNumber, MonthlyOptions } from './options'
 
 /** A day's cell in a month grid. */
 export interface MonthGridDay extends CalendarDay {
@@ -31,12 +27,8 @@ export interface MonthGridPlan {
 	showGridLines: boolean
 	/** The size of the weekday names, in pt. */
 	weekdayFontSize: number
-	/** The size of each day's number, in pt. */
-	dayNumberFontSize: number
-	/** Where each day's number sits across its cell. */
-	dayNumberHorizontalAlignment: DayNumberHorizontalAlignment
-	/** Where each day's number sits down its cell. */
-	dayNumberVerticalAlignment: DayNumberVerticalAlignment
+	/** Each day's number: its size, in pt, and where it sits across and down its cell. */
+	dayNumber: DayNumber
 }
 
 /** One month's page. */
@@ -49,7 +41,7 @@ export interface MonthPage {
 	subheading: string
 	/** Where the heading sits above the grid. */
 	headingAlign: HeadingAlign
-	/** The heading's font size, in pt (`headingFontSize`). */
+	/** The heading's font size, in pt (the header's `fontSize`). */
 	headingFontSize: number
 	grid: MonthGridPlan
 	/** The month before, drawn small at the top left; left out when hidden. */
@@ -60,14 +52,14 @@ export interface MonthPage {
 
 /**
  * Twelve pages, one per month, headed by the title, if any, above the month and year, between the
- * previous and the next month drawn small, each when `adjacentMonths` shows it.
+ * previous and the next month drawn small, each when the `miniMonth` options show it.
  */
 export function planMonthPages(options: MonthlyOptions, model: CalendarModel): MonthPage[] {
 	const { year, locale } = options.calendar
-	const { adjacentMonths } = options
-	const weekdays = weekdayNames(locale, model.weekStart, options.weekdayFormat)
-	const miniWeekdays = weekdayNames(locale, model.weekStart, adjacentMonths.weekdayFormat)
-	const title = options.title.trim()
+	const { header, miniMonth, content } = options
+	const weekdays = weekdayNames(locale, model.weekStart, content.weekdayFormat)
+	const miniWeekdays = weekdayNames(locale, model.weekStart, miniMonth.weekdayFormat)
+	const title = header.title.trim()
 
 	/** The month `offset` (±1) months from `month` of the year, named with its year per `showYear`. */
 	function planMiniMonth(month: number, offset: number): MiniMonthPlan {
@@ -75,13 +67,13 @@ export function planMonthPages(options: MonthlyOptions, model: CalendarModel): M
 		const otherMonth = (month + offset + 12) % 12
 		return {
 			month: buildMonth(otherYear, otherMonth, model.weekStart),
-			name: adjacentMonths.showYear
+			name: miniMonth.showYear
 				? monthYearName(locale, otherYear, otherMonth)
 				: model.monthNames[otherMonth],
 			weekdays: miniWeekdays,
-			highlightWeekends: adjacentMonths.highlightWeekends,
-			showWeekNumbers: adjacentMonths.showWeekNumbers,
-			size: adjacentMonths.size,
+			highlightWeekends: miniMonth.highlightWeekends,
+			showWeekNumbers: miniMonth.showWeekNumbers,
+			size: miniMonth.size,
 		}
 	}
 
@@ -91,8 +83,8 @@ export function planMonthPages(options: MonthlyOptions, model: CalendarModel): M
 			key: month.month,
 			heading: title || monthYear,
 			subheading: title ? monthYear : '',
-			headingAlign: options.monthHeadingAlignment,
-			headingFontSize: options.headingFontSize,
+			headingAlign: header.alignment,
+			headingFontSize: header.fontSize,
 			grid: {
 				weeks: visibleWeeks(month).map((week) =>
 					week.map((day) => ({
@@ -101,19 +93,15 @@ export function planMonthPages(options: MonthlyOptions, model: CalendarModel): M
 					})),
 				),
 				weekdays,
-				highlightWeekends: options.highlightWeekends,
-				showWeekNumbers: options.showWeekNumbers,
-				showAdjacentMonthDays: options.showAdjacentMonthDays,
-				showGridLines: options.showGridLines,
-				weekdayFontSize: options.weekdayFontSize,
-				dayNumberFontSize: options.dayNumberFontSize,
-				dayNumberHorizontalAlignment: options.dayNumberHorizontalAlignment,
-				dayNumberVerticalAlignment: options.dayNumberVerticalAlignment,
+				highlightWeekends: content.highlightWeekends,
+				showWeekNumbers: content.showWeekNumbers,
+				showAdjacentMonthDays: content.showAdjacentMonthDays,
+				showGridLines: content.showGridLines,
+				weekdayFontSize: content.weekdayFontSize,
+				dayNumber: content.dayNumber,
 			},
-			previousMonth: adjacentMonths.showPreviousMonth
-				? planMiniMonth(month.month, -1)
-				: undefined,
-			nextMonth: adjacentMonths.showNextMonth ? planMiniMonth(month.month, 1) : undefined,
+			previousMonth: miniMonth.showPreviousMonth ? planMiniMonth(month.month, -1) : undefined,
+			nextMonth: miniMonth.showNextMonth ? planMiniMonth(month.month, 1) : undefined,
 		}
 	})
 }

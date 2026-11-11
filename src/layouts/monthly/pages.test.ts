@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { calendarModel } from '../common'
 import { defaultLayoutOptions } from '../index'
-import type { MonthlyOptions } from './options'
+import type { MonthlyContent, MonthlyHeader, MonthlyMiniMonth, MonthlyOptions } from './options'
 import { planMonthPages } from './pages'
 
 /** The plan of the default month layout for `year`, in British English with Monday weeks. */
@@ -14,6 +14,21 @@ function plan(year: number, changes: Partial<MonthlyOptions> = {}) {
 	return planMonthPages(options, calendarModel(options))
 }
 
+/** The default header with `changes`. */
+function header(changes: Partial<MonthlyHeader>): MonthlyHeader {
+	return { ...defaultLayoutOptions('monthly').header, ...changes }
+}
+
+/** The default mini months with `changes`. */
+function miniMonth(changes: Partial<MonthlyMiniMonth>): MonthlyMiniMonth {
+	return { ...defaultLayoutOptions('monthly').miniMonth, ...changes }
+}
+
+/** The default content with `changes`. */
+function content(changes: Partial<MonthlyContent>): MonthlyContent {
+	return { ...defaultLayoutOptions('monthly').content, ...changes }
+}
+
 describe('planMonthPages', () => {
 	it('plans a page per month, headed by the month and year', () => {
 		const pages = plan(2026)
@@ -22,12 +37,12 @@ describe('planMonthPages', () => {
 	})
 
 	it('heads every page with the title, the month and year below it, when there is one', () => {
-		const pages = plan(2026, { title: ' Family ' })
+		const pages = plan(2026, { header: header({ title: ' Family ' }) })
 		expect(pages[0].heading).toBe('Family')
 		expect(pages[0].subheading).toBe('January 2026')
 		expect(pages[11].heading).toBe('Family')
 		expect(pages[11].subheading).toBe('December 2026')
-		expect(plan(2026, { title: '  ' })[0]).toMatchObject({
+		expect(plan(2026, { header: header({ title: '  ' }) })[0]).toMatchObject({
 			heading: 'January 2026',
 			subheading: '',
 		})
@@ -35,12 +50,12 @@ describe('planMonthPages', () => {
 
 	it('centers the heading unless told where to set it', () => {
 		expect(plan(2026)[0].headingAlign).toBe('center')
-		expect(plan(2026, { monthHeadingAlignment: 'right' })[3].headingAlign).toBe('right')
+		expect(plan(2026, { header: header({ alignment: 'right' }) })[3].headingAlign).toBe('right')
 	})
 
 	it('sets the heading in 24 pt unless told another size', () => {
 		expect(plan(2026)[0].headingFontSize).toBe(24)
-		expect(plan(2026, { headingFontSize: 36 })[5].headingFontSize).toBe(36)
+		expect(plan(2026, { header: header({ fontSize: 36 }) })[5].headingFontSize).toBe(36)
 	})
 
 	it('draws only the rows holding a day of the month', () => {
@@ -52,46 +67,58 @@ describe('planMonthPages', () => {
 
 	it('leaves out the days of the previous and next month unless told to show them', () => {
 		expect(plan(2026)[0].grid.showAdjacentMonthDays).toBe(false)
-		expect(plan(2026, { showAdjacentMonthDays: true })[0].grid.showAdjacentMonthDays).toBe(true)
+		expect(
+			plan(2026, { content: content({ showAdjacentMonthDays: true }) })[0].grid
+				.showAdjacentMonthDays,
+		).toBe(true)
 	})
 
 	it('rules the grid unless told not to', () => {
 		expect(plan(2026)[0].grid.showGridLines).toBe(true)
-		expect(plan(2026, { showGridLines: false })[0].grid.showGridLines).toBe(false)
+		expect(
+			plan(2026, { content: content({ showGridLines: false }) })[0].grid.showGridLines,
+		).toBe(false)
 	})
 
 	it('writes the weekday names in 9 pt unless told another size', () => {
 		expect(plan(2026)[0].grid.weekdayFontSize).toBe(9)
-		expect(plan(2026, { weekdayFontSize: 12 })[0].grid.weekdayFontSize).toBe(12)
+		expect(
+			plan(2026, { content: content({ weekdayFontSize: 12 }) })[0].grid.weekdayFontSize,
+		).toBe(12)
 	})
 
 	it('writes the day numbers in 14 pt unless told another size', () => {
-		expect(plan(2026)[0].grid.dayNumberFontSize).toBe(14)
-		expect(plan(2026, { dayNumberFontSize: 24 })[0].grid.dayNumberFontSize).toBe(24)
+		expect(plan(2026)[0].grid.dayNumber.fontSize).toBe(14)
+		const dayNumber = { ...content({}).dayNumber, fontSize: 24 }
+		expect(plan(2026, { content: content({ dayNumber }) })[0].grid.dayNumber.fontSize).toBe(24)
 	})
 
 	it('sets the day numbers top left unless told where', () => {
-		expect(plan(2026)[0].grid).toMatchObject({
-			dayNumberHorizontalAlignment: 'left',
-			dayNumberVerticalAlignment: 'top',
+		expect(plan(2026)[0].grid.dayNumber).toMatchObject({
+			horizontalAlignment: 'left',
+			verticalAlignment: 'top',
 		})
-		expect(
-			plan(2026, {
-				dayNumberHorizontalAlignment: 'right',
-				dayNumberVerticalAlignment: 'bottom',
-			})[0].grid,
-		).toMatchObject({
-			dayNumberHorizontalAlignment: 'right',
-			dayNumberVerticalAlignment: 'bottom',
+		const dayNumber = {
+			...content({}).dayNumber,
+			horizontalAlignment: 'right' as const,
+			verticalAlignment: 'bottom' as const,
+		}
+		expect(plan(2026, { content: content({ dayNumber }) })[0].grid.dayNumber).toMatchObject({
+			horizontalAlignment: 'right',
+			verticalAlignment: 'bottom',
 		})
 	})
 
 	it('writes the weekday names in full when asked', () => {
-		expect(plan(2026, { weekdayFormat: 'full' })[0].grid.weekdays[2]).toBe('Wednesday')
+		expect(
+			plan(2026, { content: content({ weekdayFormat: 'full' }) })[0].grid.weekdays[2],
+		).toBe('Wednesday')
 	})
 
 	it('shares the weekday labels and the grid options between the pages', () => {
-		const pages = plan(2026, { weekdayFormat: 'narrow', showWeekNumbers: false })
+		const pages = plan(2026, {
+			content: content({ weekdayFormat: 'narrow', showWeekNumbers: false }),
+		})
 		expect(pages[0].grid.weekdays).toEqual(['M', 'T', 'W', 'T', 'F', 'S', 'S'])
 		expect(pages[5].grid.weekdays).toBe(pages[0].grid.weekdays)
 		expect(pages[0].grid.showWeekNumbers).toBe(false)
@@ -136,26 +163,23 @@ describe('planMonthPages', () => {
 	})
 
 	it('leaves out the previous or the next month when hidden', () => {
-		const shown = defaultLayoutOptions('monthly').adjacentMonths
-		const noPrevious = plan(2026, { adjacentMonths: { ...shown, showPreviousMonth: false } })[3]
+		const noPrevious = plan(2026, { miniMonth: miniMonth({ showPreviousMonth: false }) })[3]
 		expect(noPrevious.previousMonth).toBeUndefined()
 		expect(noPrevious.nextMonth).toMatchObject({ name: 'May 2026' })
-		const noNext = plan(2026, { adjacentMonths: { ...shown, showNextMonth: false } })[3]
+		const noNext = plan(2026, { miniMonth: miniMonth({ showNextMonth: false }) })[3]
 		expect(noNext.previousMonth).toMatchObject({ name: 'March 2026' })
 		expect(noNext.nextMonth).toBeUndefined()
 	})
 
 	it('names the adjacent months without their year when asked', () => {
-		const shown = defaultLayoutOptions('monthly').adjacentMonths
-		const page = plan(2026, { adjacentMonths: { ...shown, showYear: false } })[0]
+		const page = plan(2026, { miniMonth: miniMonth({ showYear: false }) })[0]
 		expect(page.previousMonth).toMatchObject({ name: 'December' })
 		expect(page.nextMonth).toMatchObject({ name: 'February' })
 	})
 
 	it('draws the adjacent months at their size', () => {
-		const shown = defaultLayoutOptions('monthly').adjacentMonths
 		expect(plan(2026)[0].previousMonth).toMatchObject({ size: 'medium' })
-		const page = plan(2026, { adjacentMonths: { ...shown, size: 'extraLarge' } })[0]
+		const page = plan(2026, { miniMonth: miniMonth({ size: 'extraLarge' }) })[0]
 		expect(page.previousMonth).toMatchObject({ size: 'extraLarge' })
 		expect(page.nextMonth).toMatchObject({ size: 'extraLarge' })
 	})

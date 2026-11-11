@@ -7,14 +7,13 @@ import {
 	MIN_WEEKDAY_FONT_SIZE,
 	type DayNumberHorizontalAlignment,
 	type DayNumberVerticalAlignment,
-	type MonthlyOptions,
+	type MonthlyContent,
 } from '../options'
 import { ContentIcon } from '../../../ui/components/icons'
 import { CheckboxField } from '../../../ui/fields/CheckboxField'
 import { NumberField } from '../../../ui/fields/NumberField'
 import { optionsFrom } from '../../../ui/fields/options'
 import { RadioField } from '../../../ui/fields/RadioField'
-import { defaultFields } from '../../../ui/sidebar/defaultFields'
 import { WEEKDAY_FORMAT_OPTIONS } from '../../../ui/sidebar/fieldOptions'
 import { MonthGridFields } from '../../../ui/sidebar/MonthGridFields'
 import { type OptionsSectionProps, Section } from '../../../ui/sidebar/Section'
@@ -39,7 +38,7 @@ export function MonthContentSection({
 	options,
 	defaults,
 	onUpdate,
-}: OptionsSectionProps<MonthlyOptions>) {
+}: OptionsSectionProps<MonthlyContent>) {
 	function handleShowAdjacentMonthDaysChange(showAdjacentMonthDays: boolean) {
 		onUpdate({ showAdjacentMonthDays })
 	}
@@ -52,36 +51,22 @@ export function MonthContentSection({
 		onUpdate({ weekdayFontSize })
 	}
 
-	function handleDayNumberFontSizeChange(dayNumberFontSize: number) {
-		onUpdate({ dayNumberFontSize })
+	function handleDayNumberFontSizeChange(fontSize: number) {
+		onUpdate({ dayNumber: { fontSize } })
 	}
 
 	function handleDayNumberHorizontalAlignmentChange(
-		dayNumberHorizontalAlignment: DayNumberHorizontalAlignment,
+		horizontalAlignment: DayNumberHorizontalAlignment,
 	) {
-		onUpdate({ dayNumberHorizontalAlignment })
+		onUpdate({ dayNumber: { horizontalAlignment } })
 	}
 
-	function handleDayNumberVerticalAlignmentChange(
-		dayNumberVerticalAlignment: DayNumberVerticalAlignment,
-	) {
-		onUpdate({ dayNumberVerticalAlignment })
+	function handleDayNumberVerticalAlignmentChange(verticalAlignment: DayNumberVerticalAlignment) {
+		onUpdate({ dayNumber: { verticalAlignment } })
 	}
 
 	function handleReset() {
-		onUpdate(
-			defaultFields(defaults, [
-				'weekdayFormat',
-				'highlightWeekends',
-				'showWeekNumbers',
-				'showAdjacentMonthDays',
-				'showGridLines',
-				'weekdayFontSize',
-				'dayNumberFontSize',
-				'dayNumberHorizontalAlignment',
-				'dayNumberVerticalAlignment',
-			]),
-		)
+		onUpdate(defaults)
 	}
 
 	return (
@@ -114,20 +99,20 @@ export function MonthContentSection({
 			<NumberField
 				label="Day number size (pt)"
 				description={`From ${MIN_DAY_NUMBER_FONT_SIZE} to ${MAX_DAY_NUMBER_FONT_SIZE} pt.`}
-				value={options.dayNumberFontSize}
+				value={options.dayNumber.fontSize}
 				min={MIN_DAY_NUMBER_FONT_SIZE}
 				max={MAX_DAY_NUMBER_FONT_SIZE}
 				onChange={handleDayNumberFontSizeChange}
 			/>
 			<RadioField
 				label="Day number horizontal alignment"
-				value={options.dayNumberHorizontalAlignment}
+				value={options.dayNumber.horizontalAlignment}
 				options={DAY_NUMBER_HORIZONTAL_ALIGNMENT_OPTIONS}
 				onChange={handleDayNumberHorizontalAlignmentChange}
 			/>
 			<RadioField
 				label="Day number vertical alignment"
-				value={options.dayNumberVerticalAlignment}
+				value={options.dayNumber.verticalAlignment}
 				options={DAY_NUMBER_VERTICAL_ALIGNMENT_OPTIONS}
 				onChange={handleDayNumberVerticalAlignmentChange}
 			/>

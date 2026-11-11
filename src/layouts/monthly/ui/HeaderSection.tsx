@@ -1,11 +1,10 @@
 import type { HeadingAlign } from '../../heading'
-import type { MonthlyOptions } from '../options'
+import type { MonthlyHeader } from '../options'
 import { HeaderIcon } from '../../../ui/components/icons'
 import { RadioField } from '../../../ui/fields/RadioField'
 import { TextField } from '../../../ui/fields/TextField'
 import { HeadingFontSizeField } from '../../../ui/sidebar/HeadingFontSizeField'
 import { HEADING_ALIGN_OPTIONS } from '../../../ui/sidebar/fieldOptions'
-import { defaultFields } from '../../../ui/sidebar/defaultFields'
 import { type OptionsSectionProps, Section } from '../../../ui/sidebar/Section'
 
 const TITLE_DESCRIPTION = [
@@ -14,25 +13,21 @@ const TITLE_DESCRIPTION = [
 ]
 
 /** The title above every month, and where and how large the heading sits above its grid. */
-export function HeaderSection({
-	options,
-	defaults,
-	onUpdate,
-}: OptionsSectionProps<MonthlyOptions>) {
+export function HeaderSection({ options, defaults, onUpdate }: OptionsSectionProps<MonthlyHeader>) {
 	function handleTitleChange(title: string) {
 		onUpdate({ title })
 	}
 
-	function handleMonthHeadingAlignmentChange(monthHeadingAlignment: HeadingAlign) {
-		onUpdate({ monthHeadingAlignment })
+	function handleAlignmentChange(alignment: HeadingAlign) {
+		onUpdate({ alignment })
 	}
 
-	function handleHeadingFontSizeChange(headingFontSize: number) {
-		onUpdate({ headingFontSize })
+	function handleFontSizeChange(fontSize: number) {
+		onUpdate({ fontSize })
 	}
 
 	function handleReset() {
-		onUpdate(defaultFields(defaults, ['title', 'monthHeadingAlignment', 'headingFontSize']))
+		onUpdate(defaults)
 	}
 
 	return (
@@ -45,14 +40,11 @@ export function HeaderSection({
 			/>
 			<RadioField
 				label="Title alignment"
-				value={options.monthHeadingAlignment}
+				value={options.alignment}
 				options={HEADING_ALIGN_OPTIONS}
-				onChange={handleMonthHeadingAlignmentChange}
+				onChange={handleAlignmentChange}
 			/>
-			<HeadingFontSizeField
-				value={options.headingFontSize}
-				onChange={handleHeadingFontSizeChange}
-			/>
+			<HeadingFontSizeField value={options.fontSize} onChange={handleFontSizeChange} />
 		</Section>
 	)
 }

@@ -39,14 +39,29 @@ export const MONTH_GRID_VALIDATORS: Validators<MonthGridOptions> = {
 export const MINI_MONTH_SIZES = ['small', 'medium', 'large', 'extraLarge'] as const
 export type MiniMonthSize = (typeof MINI_MONTH_SIZES)[number]
 
-/** A month drawn small beside a page's main content, for context; it can be left out. */
-export interface MiniMonthOptions extends MonthGridOptions {
-	show: boolean
+/** How a mini month looks: its month grid, its title and its size. */
+export interface MiniMonthStyle extends MonthGridOptions {
 	/** Whether the title above the grid names the year after the month, or the month alone. */
 	showYear: boolean
+	size: MiniMonthSize
+}
+
+/** The default look: medium, titled with its month alone, with the default grid. */
+export function miniMonthStyleDefaults(): MiniMonthStyle {
+	return { showYear: false, size: 'medium', ...monthGridDefaults() }
+}
+
+export const MINI_MONTH_STYLE_VALIDATORS: Validators<MiniMonthStyle> = {
+	showYear: isBoolean,
+	size: oneOf(MINI_MONTH_SIZES),
+	...MONTH_GRID_VALIDATORS,
+}
+
+/** A month drawn small beside a page's main content, for context; it can be left out. */
+export interface MiniMonthOptions extends MiniMonthStyle {
+	show: boolean
 	/** Whether the days with an event are circled. */
 	showEvents: boolean
-	size: MiniMonthSize
 }
 
 /**
@@ -66,10 +81,8 @@ export function miniMonthDefaults(): MiniMonthOptions {
 
 export const MINI_MONTH_VALIDATORS: Validators<MiniMonthOptions> = {
 	show: isBoolean,
-	showYear: isBoolean,
 	showEvents: isBoolean,
-	size: oneOf(MINI_MONTH_SIZES),
-	...MONTH_GRID_VALIDATORS,
+	...MINI_MONTH_STYLE_VALIDATORS,
 }
 
 /** A month grid drawn small, as a page plans it: the props of the `MiniMonth` that draws it. */

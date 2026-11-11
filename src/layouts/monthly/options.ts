@@ -4,42 +4,15 @@ import { isBoolean, isString, oneOf, type Validators } from '../../core/validati
 import { COMMON_VALIDATORS, type CommonOptions, commonDefaults, normalizeCommon } from '../common'
 import { HEADING_ALIGNS, type HeadingAlign, isHeadingFontSize } from '../heading'
 import type { LayoutSpec } from '../LayoutSpec'
-import { commonGroups } from '../migrations'
 import {
-	MINI_MONTH_SIZES,
+	MINI_MONTH_STYLE_VALIDATORS,
 	MONTH_GRID_VALIDATORS,
-	type MiniMonthSize,
+	type MiniMonthStyle,
 	type MonthGridOptions,
+	miniMonthStyleDefaults,
 	monthGridDefaults,
 } from '../monthGrid'
-
-/** The previous and the next month, drawn small at the top left and top right of each page. */
-export interface AdjacentMonthsOptions extends MonthGridOptions {
-	showPreviousMonth: boolean
-	showNextMonth: boolean
-	/** Whether each one's title names its year after the month, or the month alone. */
-	showYear: boolean
-	size: MiniMonthSize
-}
-
-/** Both adjacent months shown, medium, titled with their month and year, without week numbers. */
-function adjacentMonthsDefaults(): AdjacentMonthsOptions {
-	return {
-		showPreviousMonth: true,
-		showNextMonth: true,
-		showYear: true,
-		size: 'medium',
-		...monthGridDefaults(),
-	}
-}
-
-const ADJACENT_MONTHS_VALIDATORS: Validators<AdjacentMonthsOptions> = {
-	showPreviousMonth: isBoolean,
-	showNextMonth: isBoolean,
-	showYear: isBoolean,
-	size: oneOf(MINI_MONTH_SIZES),
-	...MONTH_GRID_VALIDATORS,
-}
+import { MONTHLY_MIGRATIONS } from './migrations'
 
 /** Where a day's number sits across its grid cell, its events' names following it. */
 export const DAY_NUMBER_HORIZONTAL_ALIGNMENTS = ['left', 'center', 'right'] as const
@@ -80,7 +53,8 @@ export function isWeekdayFontSize(value: unknown): value is number {
 	)
 }
 
-export interface MonthlyOptions extends CommonOptions, MonthGridOptions {
+/** The heading above the grid on every page. */
+export interface MonthlyHeader {
 	/**
 	 * Shown above the grid on every page, the month and year then below it; when empty, the month
 	 * and year are the heading.
@@ -90,20 +64,66 @@ export interface MonthlyOptions extends CommonOptions, MonthGridOptions {
 	 * Where the heading sits above the grid. Nothing is ever beside it, so unlike the week's
 	 * `headingAlignment` it has no `auto`.
 	 */
-	monthHeadingAlignment: HeadingAlign
+	alignment: HeadingAlign
 	/** The heading's font size, in pt; the subheading keeps its own. */
-	headingFontSize: number
+	fontSize: number
+}
+
+/** The previous and the next month, drawn small at the top left and top right of each page. */
+export interface MonthlyMiniMonth extends MiniMonthStyle {
+	showPreviousMonth: boolean
+	showNextMonth: boolean
+}
+
+/** Each day's number in the grid: its size and where it sits in its cell. */
+export interface DayNumber {
+	/** The size of the number, in pt; its events' names keep their own. */
+	fontSize: number
+	horizontalAlignment: DayNumberHorizontalAlignment
+	verticalAlignment: DayNumberVerticalAlignment
+}
+
+/** The month's grid of large writing cells. */
+export interface MonthlyContent extends MonthGridOptions {
 	/** Whether the grid's grayed days of the previous and next month show their numbers. */
 	showAdjacentMonthDays: boolean
 	/** Whether the grid's cells are ruled, or only their contents are drawn. */
 	showGridLines: boolean
 	/** The size of the weekday names above the grid's columns, in pt. */
 	weekdayFontSize: number
-	/** The size of each day's number in the grid, in pt; its events' names keep their own. */
-	dayNumberFontSize: number
-	dayNumberHorizontalAlignment: DayNumberHorizontalAlignment
-	dayNumberVerticalAlignment: DayNumberVerticalAlignment
-	adjacentMonths: AdjacentMonthsOptions
+	dayNumber: DayNumber
+}
+
+export interface MonthlyOptions extends CommonOptions {
+	header: MonthlyHeader
+	miniMonth: MonthlyMiniMonth
+	content: MonthlyContent
+}
+
+const HEADER_VALIDATORS: Validators<MonthlyHeader> = {
+	title: isString,
+	alignment: oneOf(HEADING_ALIGNS),
+	fontSize: isHeadingFontSize,
+}
+
+const MINI_MONTH_VALIDATORS: Validators<MonthlyMiniMonth> = {
+	showPreviousMonth: isBoolean,
+	showNextMonth: isBoolean,
+	...MINI_MONTH_STYLE_VALIDATORS,
+}
+
+const CONTENT_VALIDATORS: Validators<MonthlyContent> = {
+	...MONTH_GRID_VALIDATORS,
+	// A page-wide grid has room for full weekday names, unlike a small one.
+	weekdayFormat: oneOf(WEEKDAY_FORMATS),
+	showAdjacentMonthDays: isBoolean,
+	showGridLines: isBoolean,
+	weekdayFontSize: isWeekdayFontSize,
+	dayNumber: {
+		fontSize: isDayNumberFontSize,
+		horizontalAlignment: oneOf(DAY_NUMBER_HORIZONTAL_ALIGNMENTS),
+		verticalAlignment: oneOf(DAY_NUMBER_VERTICAL_ALIGNMENTS),
+	},
 }
 
 export const MONTHLY_SPEC: LayoutSpec<MonthlyOptions> = {
@@ -112,39 +132,32 @@ export const MONTHLY_SPEC: LayoutSpec<MonthlyOptions> = {
 		const common = commonDefaults()
 		return {
 			...common,
-			...monthGridDefaults(),
-			weekdayFormat: 'full',
-			title: '',
-			highlightWeekends: 'columns',
-			monthHeadingAlignment: 'center',
-			headingFontSize: 24,
-			showAdjacentMonthDays: false,
-			showGridLines: true,
-			weekdayFontSize: 9,
-			dayNumberFontSize: 14,
-			dayNumberHorizontalAlignment: 'left',
-			dayNumberVerticalAlignment: 'top',
-			adjacentMonths: adjacentMonthsDefaults(),
+			header: { title: '', alignment: 'center', fontSize: 24 },
+			// Both adjacent months shown, titled with their month and year, without week numbers.
+			miniMonth: {
+				showPreviousMonth: true,
+				showNextMonth: true,
+				...miniMonthStyleDefaults(),
+				showYear: true,
+			},
+			content: {
+				...monthGridDefaults(),
+				weekdayFormat: 'full',
+				highlightWeekends: 'columns',
+				showAdjacentMonthDays: false,
+				showGridLines: true,
+				weekdayFontSize: 9,
+				dayNumber: { fontSize: 14, horizontalAlignment: 'left', verticalAlignment: 'top' },
+			},
 			page: { ...common.page, orientation: 'landscape', margins: margins(10) },
 		}
 	},
 	validators: {
 		...COMMON_VALIDATORS,
-		...MONTH_GRID_VALIDATORS,
-		// A page-wide grid has room for full weekday names, unlike a small one.
-		weekdayFormat: oneOf(WEEKDAY_FORMATS),
-		title: isString,
-		monthHeadingAlignment: oneOf(HEADING_ALIGNS),
-		headingFontSize: isHeadingFontSize,
-		showAdjacentMonthDays: isBoolean,
-		showGridLines: isBoolean,
-		weekdayFontSize: isWeekdayFontSize,
-		dayNumberFontSize: isDayNumberFontSize,
-		dayNumberHorizontalAlignment: oneOf(DAY_NUMBER_HORIZONTAL_ALIGNMENTS),
-		dayNumberVerticalAlignment: oneOf(DAY_NUMBER_VERTICAL_ALIGNMENTS),
-		adjacentMonths: ADJACENT_MONTHS_VALIDATORS,
+		header: HEADER_VALIDATORS,
+		miniMonth: MINI_MONTH_VALIDATORS,
+		content: CONTENT_VALIDATORS,
 	},
 	normalize: normalizeCommon,
-	// 5 to 6: the fields every layout has were grouped (`commonGroups`).
-	migrations: { 5: commonGroups },
+	migrations: MONTHLY_MIGRATIONS,
 }

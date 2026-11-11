@@ -71,10 +71,10 @@ describe('parseWorkspace', () => {
 			version: FORMAT_VERSION,
 			layouts: {
 				yearly: { content: { weekdayFormat: 'full' } },
-				monthly: { weekdayFormat: 'full' },
+				monthly: { content: { weekdayFormat: 'full' } },
 			},
 		})
-		expect(workspace.layouts['monthly'].weekdayFormat).toBe('full')
+		expect(workspace.layouts['monthly'].content.weekdayFormat).toBe('full')
 		expect(workspace.layouts['yearly'].content.weekdayFormat).toBe(
 			defaultLayoutOptions('yearly').content.weekdayFormat,
 		)
