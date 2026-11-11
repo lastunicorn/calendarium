@@ -1,30 +1,29 @@
 import type { HeadingAlignment } from '../../heading'
-import type { WeeklyOptions } from '../options'
+import type { WeeklyHeader } from '../options'
 import { HeaderIcon } from '../../../ui/components/icons'
 import { CheckboxField } from '../../../ui/fields/CheckboxField'
 import { RadioField } from '../../../ui/fields/RadioField'
 import { WEEK_NUMBER_DESCRIPTION } from '../../../ui/sidebar/descriptions'
 import { HEADING_ALIGNMENT_OPTIONS } from '../../../ui/sidebar/fieldOptions'
-import { defaultFields } from '../../../ui/sidebar/defaultFields'
 import { HeadingFontSizeField } from '../../../ui/sidebar/HeadingFontSizeField'
 import { type OptionsSectionProps, Section } from '../../../ui/sidebar/Section'
 
 /** What a week's heading shows besides the dates of its days, and where it sits. */
-export function HeaderSection({ options, defaults, onUpdate }: OptionsSectionProps<WeeklyOptions>) {
-	function handleShowHeaderWeekChange(showHeaderWeek: boolean) {
-		onUpdate({ showHeaderWeek })
+export function HeaderSection({ options, defaults, onUpdate }: OptionsSectionProps<WeeklyHeader>) {
+	function handleShowWeekChange(showWeek: boolean) {
+		onUpdate({ showWeek })
 	}
 
-	function handleHeadingAlignmentChange(headingAlignment: HeadingAlignment) {
-		onUpdate({ headingAlignment })
+	function handleAlignmentChange(alignment: HeadingAlignment) {
+		onUpdate({ alignment })
 	}
 
-	function handleHeadingFontSizeChange(headingFontSize: number) {
-		onUpdate({ headingFontSize })
+	function handleFontSizeChange(fontSize: number) {
+		onUpdate({ fontSize })
 	}
 
 	function handleReset() {
-		onUpdate(defaultFields(defaults, ['headingAlignment', 'headingFontSize', 'showHeaderWeek']))
+		onUpdate(defaults)
 	}
 
 	return (
@@ -32,23 +31,20 @@ export function HeaderSection({ options, defaults, onUpdate }: OptionsSectionPro
 			<RadioField
 				label="Title alignment"
 				description={
-					options.headingAlignment === 'auto'
+					options.alignment === 'auto'
 						? 'Left beside the mini calendars or over two pages, centered otherwise.'
 						: undefined
 				}
-				value={options.headingAlignment}
+				value={options.alignment}
 				options={HEADING_ALIGNMENT_OPTIONS}
-				onChange={handleHeadingAlignmentChange}
+				onChange={handleAlignmentChange}
 			/>
-			<HeadingFontSizeField
-				value={options.headingFontSize}
-				onChange={handleHeadingFontSizeChange}
-			/>
+			<HeadingFontSizeField value={options.fontSize} onChange={handleFontSizeChange} />
 			<CheckboxField
 				label="Show week number"
 				description={WEEK_NUMBER_DESCRIPTION}
-				checked={options.showHeaderWeek}
-				onChange={handleShowHeaderWeekChange}
+				checked={options.showWeek}
+				onChange={handleShowWeekChange}
 			/>
 		</Section>
 	)

@@ -5,7 +5,7 @@ import { WeeklyLayout } from './WeeklyLayout'
 
 /** Two pages per week face each other. */
 function hasTwoPages(options: WeeklyOptions): boolean {
-	return options.twoPagesPerWeek
+	return options.content.twoPages
 }
 
 export const WEEKLY_VIEW: LayoutView<WeeklyOptions> = {

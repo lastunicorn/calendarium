@@ -19,7 +19,7 @@ import type { WeeklyOptions } from './options'
 /** One day as a week page draws it: the results of the layout's rules, not their inputs. */
 export interface WeekPageDay {
 	day: WeekDay
-	/** Its weekday, in the layout's `weekdayFormat`. */
+	/** Its weekday, in the content's `weekdayFormat`. */
 	weekday: string
 	/** In the weekend color: a weekend day of the year, with `highlightWeekendDays`. */
 	highlighted: boolean
@@ -33,7 +33,7 @@ export interface WeekPageDay {
 	 */
 	eventLines: number
 	/**
-	 * Whether its cell holds the hourly schedule: with `weekPageLines` set to `hours`, a day of the
+	 * Whether its cell holds the hourly schedule: with the content's `fill` set to `hours`, a day of the
 	 * year in a cell of its own. Saturday and Sunday sharing a cell have no room for one.
 	 */
 	schedule: boolean
@@ -59,28 +59,28 @@ export interface WeekPages {
 	key: string
 	/** The week's dates, e.g. "19 – 25 October 2026". */
 	heading: string
-	/** "Week 43", or empty without `showHeaderWeek`. */
+	/** "Week 43", or empty without the header's `showWeek`. */
 	subheading: string
 	/** Where the heading and subheading sit across the header row (`headingAlign`). */
 	headingAlign: HeadingAlign
-	/** The heading's font size, in pt (`headingFontSize`). */
+	/** The heading's font size, in pt (the header's `fontSize`). */
 	headingFontSize: number
 	/**
 	 * The mini months, left to right: the month holding most of the week's days (with
-	 * `miniMonth.show`), then the next (with `showNextMonth`), the week marked and, with
+	 * `miniMonth.showCurrentMonth`), then the next (with `showNextMonth`), the week marked and, with
 	 * `miniMonth.showEvents`, the days with an event circled; none when both are hidden.
 	 */
 	miniMonths: MiniMonthPlan[]
-	/** Whether the days are stacked rows rather than columns side by side (`weekDayDirection`). */
+	/** Whether the days are stacked rows rather than columns side by side (the content's `dayDirection`). */
 	stacked: boolean
-	/** One sheet, or two with `twoPagesPerWeek` (`splitWeekCells`). */
+	/** One sheet, or two with the content's `twoPages` (`splitWeekCells`). */
 	sheets: WeekSheet[]
 	/** The height of the empty footer under each sheet's cells, in mm; none unless `footer.show`. */
 	footerHeight?: number
 }
 
 export interface WeekPlan {
-	/** Whether a blank sheet comes first, so the first week starts on an even page (`startPage`). */
+	/** Whether a blank sheet comes first, so the first week starts on an even page (the content's `startPage`). */
 	blankFirstPage: boolean
 	/** Labels of the hourly schedule, one array for every page; none when no cell holds one. */
 	hours?: string[]
@@ -89,18 +89,15 @@ export interface WeekPlan {
 }
 
 /**
- * Where a week's heading sits: as `headingAlignment` says, or for `auto` to the left beside the
- * mini months and on the first of two pages, where the second's header is the mini months', and
- * centered over a single page without them.
+ * Where a week's heading sits: as the header's `alignment` says, or for `auto` to the left beside
+ * the mini months and on the first of two pages, where the second's header is the mini months',
+ * and centered over a single page without them.
  */
-export function headingAlign({
-	headingAlignment,
-	miniMonth,
-	showNextMonth,
-	twoPagesPerWeek,
-}: WeeklyOptions): HeadingAlign {
-	if (headingAlignment !== 'auto') return headingAlignment
-	return miniMonth.show || showNextMonth || twoPagesPerWeek ? 'left' : 'center'
+export function headingAlign({ header, miniMonth, content }: WeeklyOptions): HeadingAlign {
+	if (header.alignment !== 'auto') return header.alignment
+	return miniMonth.showCurrentMonth || miniMonth.showNextMonth || content.twoPages
+		? 'left'
+		: 'center'
 }
 
 /**
@@ -109,12 +106,12 @@ export function headingAlign({
  */
 export function planWeekPages(options: WeeklyOptions, model: CalendarModel): WeekPlan {
 	const { year, locale } = options.calendar
-	const { miniMonth, twoPagesPerWeek } = options
+	const { header, miniMonth, content } = options
 	const { weekStart, months, monthNames } = model
-	const weekdays = weekdayNames(locale, weekStart, options.weekdayFormat)
+	const weekdays = weekdayNames(locale, weekStart, content.weekdayFormat)
 	const miniWeekdays = weekdayNames(locale, weekStart, miniMonth.weekdayFormat)
-	const withSchedule = options.weekPageLines === 'hours'
-	const stacked = options.weekDayDirection === 'horizontal'
+	const withSchedule = content.fill === 'hours'
+	const stacked = content.dayDirection === 'horizontal'
 
 	/** The names of `day`'s events; none for a day of another year. */
 	function dayEvents(day: WeekDay): string[] {
@@ -130,7 +127,7 @@ export function planWeekPages(options: WeeklyOptions, model: CalendarModel): Wee
 		return {
 			day,
 			weekday: weekdays[weekdayColumn(day.weekday, weekStart)],
-			highlighted: isHighlightedWeekDay(day, options.highlightWeekendDays),
+			highlighted: isHighlightedWeekDay(day, content.highlightWeekendDays),
 			events: dayEvents(day),
 			schedule: withSchedule && !shared && day.inYear,
 		}
@@ -183,17 +180,15 @@ export function planWeekPages(options: WeeklyOptions, model: CalendarModel): Wee
 		return {
 			key: days[0].key,
 			heading: dateRangeName(locale, days[0], days.at(-1)!),
-			subheading: options.showHeaderWeek
-				? WEEK_PAGE_MESSAGES[locale].week(weekNumber(days))
-				: '',
+			subheading: header.showWeek ? WEEK_PAGE_MESSAGES[locale].week(weekNumber(days)) : '',
 			headingAlign: headingAlign(options),
-			headingFontSize: options.headingFontSize,
+			headingFontSize: header.fontSize,
 			miniMonths: [
-				...(miniMonth.show ? [planMiniMonth(month, 0, days[0])] : []),
-				...(options.showNextMonth ? [planMiniMonth(month, 1, days[0])] : []),
+				...(miniMonth.showCurrentMonth ? [planMiniMonth(month, 0, days[0])] : []),
+				...(miniMonth.showNextMonth ? [planMiniMonth(month, 1, days[0])] : []),
 			],
 			stacked,
-			sheets: twoPagesPerWeek
+			sheets: content.twoPages
 				? [
 						planSheet(firstCells, 'heading', singleLines),
 						planSheet(secondCells, 'miniMonth', singleLines),
@@ -204,11 +199,12 @@ export function planWeekPages(options: WeeklyOptions, model: CalendarModel): Wee
 	}
 
 	const weeks = weeksOfYear(year, weekStart)
-		.map((week) => weekCells(week, options.weekendDisplay))
+		.map((week) => weekCells(week, content.weekendDisplay))
 		.filter((cells) => cells.some((cell) => cell.some((day) => day.inYear)))
 		.map(planWeek)
+	const { schedule } = content
 	const hours = withSchedule
-		? hourNames(locale, options.firstHour, options.lastHour, options.hourFormat)
+		? hourNames(locale, schedule.firstHour, schedule.lastHour, schedule.hourFormat)
 		: undefined
-	return { blankFirstPage: options.startPage === 'even', hours, weeks }
+	return { blankFirstPage: content.startPage === 'even', hours, weeks }
 }

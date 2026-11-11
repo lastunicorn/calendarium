@@ -1,15 +1,15 @@
 import { render } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
+import { applyPatch, type Patch } from '../../../core/data'
 import { WEEKLY_SPEC, type WeeklyOptions } from '../options'
 import { WeeklyLayout } from './WeeklyLayout'
 
 /** The default options for 2025 in Monday weeks, with `changes` on top. */
-function optionsWith(changes: Partial<WeeklyOptions> = {}): WeeklyOptions {
-	return {
-		...WEEKLY_SPEC.defaults(),
+function optionsWith(changes: Patch<WeeklyOptions> = {}): WeeklyOptions {
+	return applyPatch(WEEKLY_SPEC.defaults(), {
 		calendar: { year: 2025, locale: 'en-GB', weekStart: 1 },
 		...changes,
-	}
+	})
 }
 
 /** The sheets of paper the layout draws (each `Page` is a `<section>`). */
@@ -27,14 +27,14 @@ describe('WeeklyLayout', () => {
 	})
 
 	it('draws a blank page before the first week when it starts on an even page', () => {
-		const pages = pagesOf(optionsWith({ startPage: 'even' }))
+		const pages = pagesOf(optionsWith({ content: { startPage: 'even' } }))
 		expect(pages).toHaveLength(1 + 53)
 		expect(pages[0].textContent).toBe('')
 		expect(pages[1].textContent).toContain('Mon')
 	})
 
 	it('spreads each week over two pages, with the heading on the first only', () => {
-		const pages = pagesOf(optionsWith({ weekendDisplay: 'full', twoPagesPerWeek: true }))
+		const pages = pagesOf(optionsWith({ content: { weekendDisplay: 'full', twoPages: true } }))
 		expect(pages).toHaveLength(2 * 53)
 		// Monday to Wednesday, then Thursday to Sunday.
 		expect(pages[0].textContent).toContain('Wed')
@@ -48,9 +48,8 @@ describe('WeeklyLayout', () => {
 	})
 
 	it('draws the mini month on the second of a week’s two pages, its space kept on the first', () => {
-		const { miniMonth } = WEEKLY_SPEC.defaults()
 		const [first, second] = pagesOf(
-			optionsWith({ twoPagesPerWeek: true, miniMonth: { ...miniMonth, show: true } }),
+			optionsWith({ content: { twoPages: true }, miniMonth: { showCurrentMonth: true } }),
 		)
 		// The week of 30 December 2024 is mostly in January.
 		const miniMonthOf = (page: Element) =>
@@ -62,7 +61,7 @@ describe('WeeklyLayout', () => {
 	})
 
 	it('draws the next month right of the week’s', () => {
-		const [first] = pagesOf(optionsWith({ showNextMonth: true }))
+		const [first] = pagesOf(optionsWith({ miniMonth: { showNextMonth: true } }))
 		const names = [...first.querySelectorAll('h2')].map((name) => name.textContent)
 		// The week of 30 December 2024 is mostly in January.
 		expect(names).toEqual(['January', 'February'])

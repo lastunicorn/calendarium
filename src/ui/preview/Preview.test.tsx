@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import { type Workspace, defaultWorkspace } from '../../workspace/Workspace'
-import { LAYOUT_IDS, type LayoutId } from '../../layouts'
+import { defaultLayoutOptions, LAYOUT_IDS, type LayoutId } from '../../layouts'
 import { Preview } from './Preview'
 
 function noop() {}
@@ -84,7 +84,16 @@ describe('Preview', () => {
 	// Two pages per week or day, without the hours, which only slow these renders of over a hundred
 	// pages down.
 	const facingPages = [
-		['weekly', { twoPagesPerWeek: true, weekPageLines: 'none' }],
+		[
+			'weekly',
+			{
+				content: {
+					...defaultLayoutOptions('weekly').content,
+					twoPages: true,
+					fill: 'none',
+				},
+			},
+		],
 		['daily', { twoPagesPerDay: true, dayPageFill: 'blank' }],
 	] as const
 

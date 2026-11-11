@@ -46,6 +46,15 @@ export function footerGroup(options: UntrustedObject): UntrustedObject {
 	return groupFields(options, 'footer', { showFooter: 'show', footerHeight: 'height' })
 }
 
+/** 5 options with `hourFormat`, `firstHour` and `lastHour` as 6's `schedule`, same names. */
+export function scheduleGroup(options: UntrustedObject): UntrustedObject {
+	return groupFields(options, 'schedule', {
+		hourFormat: 'hourFormat',
+		firstHour: 'firstHour',
+		lastHour: 'lastHour',
+	})
+}
+
 /** A 3 `highlightWeekends` (`off`, `days`, `columns`) as a 4 on/off; any other value kept as is. */
 export function weekendDaysHighlighted(value: unknown): unknown {
 	return WEEKEND_HIGHLIGHTS.includes(value as never) ? value !== 'off' : value

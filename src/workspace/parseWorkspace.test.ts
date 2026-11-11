@@ -88,8 +88,8 @@ describe('parseWorkspace', () => {
 		})
 		expect(workspace.layout).toBe('weekly')
 		expect(workspace.layouts.weekly).toMatchObject({
-			highlightWeekendDays: false,
-			showHeaderWeek: false,
+			header: { showWeek: false },
+			content: { highlightWeekendDays: false },
 		})
 	})
 

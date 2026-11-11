@@ -18,9 +18,9 @@ export function WeeklyForm(props: OptionsSectionProps<WeeklyOptions>) {
 		<>
 			<CalendarSection {...optionsGroup(props, 'calendar')} />
 			<EventsSection {...props} />
-			<HeaderSection {...props} />
-			<MiniMonthsSection {...props} />
-			<WeekContentSection {...props} />
+			<HeaderSection {...optionsGroup(props, 'header')} />
+			<MiniMonthsSection {...optionsGroup(props, 'miniMonth')} />
+			<WeekContentSection {...optionsGroup(props, 'content')} />
 			<FooterSection {...optionsGroup(props, 'footer')} />
 			<PageSection {...optionsGroup(props, 'page')} />
 		</>

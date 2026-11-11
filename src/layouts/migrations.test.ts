@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { commonGroups, footerGroup, groupFields, weekendDaysHighlighted } from './migrations'
+import {
+	commonGroups,
+	footerGroup,
+	groupFields,
+	scheduleGroup,
+	weekendDaysHighlighted,
+} from './migrations'
 
 describe('groupFields', () => {
 	it('moves the named flat fields into the group, under their new names', () => {
@@ -72,5 +78,15 @@ describe('weekendDaysHighlighted', () => {
 		expect(weekendDaysHighlighted('days')).toBe(true)
 		expect(weekendDaysHighlighted('columns')).toBe(true)
 		expect(weekendDaysHighlighted('always')).toBe('always')
+	})
+})
+
+describe('scheduleGroup', () => {
+	it('moves the schedule’s hours and clock into `schedule`, keeping the rest', () => {
+		expect(scheduleGroup({ hourFormat: '24h', firstHour: 8, lastHour: 18, other: 1 })).toEqual({
+			other: 1,
+			schedule: { hourFormat: '24h', firstHour: 8, lastHour: 18 },
+		})
+		expect(scheduleGroup({ other: 1 })).toEqual({ other: 1 })
 	})
 })

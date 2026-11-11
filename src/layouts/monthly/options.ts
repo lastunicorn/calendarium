@@ -62,7 +62,7 @@ export interface MonthlyHeader {
 	title: string
 	/**
 	 * Where the heading sits above the grid. Nothing is ever beside it, so unlike the week's
-	 * `headingAlignment` it has no `auto`.
+	 * header `alignment` it has no `auto`.
 	 */
 	alignment: HeadingAlign
 	/** The heading's font size, in pt; the subheading keeps its own. */

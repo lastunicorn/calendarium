@@ -1,8 +1,6 @@
-import type { MiniMonthOptions } from '../../monthGrid'
-import type { WeeklyOptions } from '../options'
+import type { WeeklyMiniMonth } from '../options'
 import { CalendarIcon } from '../../../ui/components/icons'
 import { CheckboxField } from '../../../ui/fields/CheckboxField'
-import { defaultFields } from '../../../ui/sidebar/defaultFields'
 import { MiniMonthFields } from '../../../ui/sidebar/MiniMonthFields'
 import { type OptionsSectionProps, Section } from '../../../ui/sidebar/Section'
 
@@ -14,15 +12,9 @@ export function MiniMonthsSection({
 	options,
 	defaults,
 	onUpdate,
-}: OptionsSectionProps<WeeklyOptions>) {
-	const { miniMonth, showNextMonth } = options
-
-	function handleMiniMonthUpdate(patch: Partial<MiniMonthOptions>) {
-		onUpdate({ miniMonth: { ...miniMonth, ...patch } })
-	}
-
-	function handleShowCurrentMonthChange(show: boolean) {
-		handleMiniMonthUpdate({ show })
+}: OptionsSectionProps<WeeklyMiniMonth>) {
+	function handleShowCurrentMonthChange(showCurrentMonth: boolean) {
+		onUpdate({ showCurrentMonth })
 	}
 
 	function handleShowNextMonthChange(showNextMonth: boolean) {
@@ -30,31 +22,31 @@ export function MiniMonthsSection({
 	}
 
 	function handleShowEventsChange(showEvents: boolean) {
-		handleMiniMonthUpdate({ showEvents })
+		onUpdate({ showEvents })
 	}
 
 	function handleReset() {
-		onUpdate(defaultFields(defaults, ['miniMonth', 'showNextMonth']))
+		onUpdate(defaults)
 	}
 
 	return (
 		<Section title="Mini calendar" icon={<CalendarIcon />} onReset={handleReset}>
 			<CheckboxField
 				label="Show current month"
-				checked={miniMonth.show}
+				checked={options.showCurrentMonth}
 				onChange={handleShowCurrentMonthChange}
 			/>
 			<CheckboxField
 				label="Show next month"
-				checked={showNextMonth}
+				checked={options.showNextMonth}
 				onChange={handleShowNextMonthChange}
 			/>
-			{(miniMonth.show || showNextMonth) && (
+			{(options.showCurrentMonth || options.showNextMonth) && (
 				<>
-					<MiniMonthFields options={miniMonth} onUpdate={handleMiniMonthUpdate} />
+					<MiniMonthFields options={options} onUpdate={onUpdate} />
 					<CheckboxField
 						label="Show events"
-						checked={miniMonth.showEvents}
+						checked={options.showEvents}
 						onChange={handleShowEventsChange}
 						description="Circle the days with an event"
 					/>
