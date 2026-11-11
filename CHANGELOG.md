@@ -4,25 +4,36 @@ The features each release brought, newest first. Versions follow the app version
 
 ## Unreleased
 
-Settings and files from 5.x are migrated, each layout keeping its settings under its new name, grouped as the sidebar groups them:
+The app now keeps a list of projects, each with an id, an optional name, a layout chosen when it is created, and that layout's settings. Settings and files from earlier versions are migrated:
 
-- every layout: the year, language and week start under `calendar`, and the events as a list of lines;
-- the year layout: its title, subtitle and title size under `header`, its month size and grid settings under `content`;
-- the month layout: its title, alignment and title size under `header`, its adjacent months under `miniMonth`, its grid settings and day numbers under `content`;
-- the week layout: its title alignment, title size and week number under `header`, its current and next month under `miniMonth`, its pages, days, weekend and hours under `content`, its footer under `footer`;
-- the day layout: its title, title size, details and weekend color under `header`, its pages, fill (and its alignment) and hours under `content`, its footer under `footer`.
+- the settings saved in the browser become projects the first time 6.0 opens: an unnamed project of each layout whose settings were changed (the year aside, which 5.x saved for every layout), and always of the layout that was shown, which opens. The 5.x settings are left as they are, so going back to 5.x still finds them;
+- project files from 3.x to 5.x open as new projects, named after the file, unless it has the name the app gave it (`calendar-week-per-page-2026.json`);
+- each layout keeps its settings under its new name, grouped as the sidebar groups them:
+  - every layout: the year, language and week start under `calendar`, and the events as a list of lines;
+  - the year layout: its title, subtitle and title size under `header`, its month size and grid settings under `content`;
+  - the month layout: its title, alignment and title size under `header`, its adjacent months under `miniMonth`, its grid settings and day numbers under `content`;
+  - the week layout: its title alignment, title size and week number under `header`, its current and next month under `miniMonth`, its pages, days, weekend and hours under `content`, its footer under `footer`;
+  - the day layout: its title, title size, details and weekend color under `header`, its pages, fill (and its alignment) and hours under `content`, its footer under `footer`.
 
 ### Added
 
+- A New project dialog asks for the project's name, which it may go without, and its layout. It opens by itself on the first launch, and once the last project is deleted.
+- Projects have names, edited in the Project section and shown in its picker ("Work 2027 — Weekly", or "Untitled"); a project file is named after its project, `work-2027.json`.
+- Delete project, in the Project section, once confirmed.
+- Opening a file saved from a project already in the list asks whether to overwrite it.
+- Without a project, the preview offers a New project button, and Print is disabled.
 - Week and day layouts: the mini calendars circle the days with an event, as the year layout's months do, unless "Show events" is unchecked in the Mini calendar section.
 - Year and month layouts: a "Title size (pt)" option in the Header section, as the week and day layouts have.
 - Day layout: a Genkō yōshi fill, Japanese manuscript paper: squares 10 to 20 mm a side (12 mm by default), one for each character, in columns with a blank space between them for furigana, or in rows with the space between the rows (Writing direction: Vertical, the default, or Horizontal). Each square can have a strip of its own for furigana, above it or right of it (Furigana: None, Top or Right), and dotted guide lines dividing it in half (Guide lines, off by default). The grid is aligned left, centered (the default) or right on the page, the same alignment as the squares and dots.
 
 ### Changed
 
-- The layouts are named Yearly, Monthly, Weekly and Daily, in the Layout picker and in project files (`yearly`, `monthly`, `weekly` and `daily`, for `year-per-page`, `month-per-page`, `week-per-page` and `day-per-page`); a project file is named after the new name, `calendar-weekly-2027.json`.
+- The app keeps a list of projects instead of one set of settings per layout: the Project section's picker switches between them, and shows the open project's layout, chosen when it is created and kept. The Layout picker and the starting over of a layout's settings are gone.
+- The layouts are named Yearly, Monthly, Weekly and Daily, in the New project dialog and in project files (`yearly`, `monthly`, `weekly` and `daily`, for `year-per-page`, `month-per-page`, `week-per-page` and `day-per-page`); an unnamed project's file is named after the new name, `calendar-weekly-2027.json`.
 - Year layout: the month size now sizes the months too, not only their text: smaller sizes draw smaller months, centered in their part of the page.
-- Project files and saved settings group each layout's settings as the sidebar's sections do (`calendar`, `events`, `header`, `miniMonth`, `content`, `footer`, `page`), so a file reads like the sidebar and each section's reset restores its own group.
+- Project files have a new format (`calendarium/project`), the same JSON the browser keeps each project in: the project's id, name and layout, then its settings under `options`, grouped as the sidebar's sections do (`calendar`, `events`, `header`, `miniMonth`, `content`, `footer`, `page`), so a file reads like the sidebar and each section's reset restores its own group.
+- Each project is saved in the browser under a key of its own, so two tabs editing different projects no longer overwrite each other.
+- When the calendar can't be drawn, the offered fix is to reset the project's settings, keeping its name.
 - Week and day layouts: the footer and its height moved from the Content section to a Footer section of their own, with its own reset.
 - Clearer descriptions under several sidebar options (year, language, week start, events, footer, booklet, margins, spine).
 

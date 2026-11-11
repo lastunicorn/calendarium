@@ -13,13 +13,17 @@ A browser app that generates a calendar to print on paper: a configuration panel
 
 ## Configuration
 
-Each layout remembers its own project, the settings you last gave it, so switching layouts never loses what you set. Settings are saved automatically in your browser, so they are still there the next time you open the app.
+Each calendar you make is a project, with a name (optional) and a layout, chosen when you create it: yearly, monthly, weekly or daily. Projects are kept in your browser and saved automatically as you edit them, so they are still there the next time you open the app.
 
-The toolbar lets you:
+The Project section at the top of the sidebar lets you:
 
-- **Save project**: the current layout and its settings, to a JSON file, to keep or share them.
-- **Open** such a project file, which switches to its layout.
-- **New project**: start the current layout over from its default settings.
+- **Pick** the project to work on, and **rename** it.
+- **New project…**: create one, naming it and choosing its layout. The app asks for one on its first launch.
+- **Open a project file**: add the project the file holds. If it was saved from a project you already have, the app asks whether to overwrite it.
+- **Save project to a file**: the open project, to a JSON file named after it, to keep or share it.
+- **Delete project**: remove it from your browser, once you confirm; save it to a file first to keep it.
+
+Project files from earlier versions open as new projects, named after the file. The first time 6.0 opens, the settings an earlier version saved in your browser become projects: one for each layout whose settings you changed, and one for the layout that was shown.
 
 ## Printing
 

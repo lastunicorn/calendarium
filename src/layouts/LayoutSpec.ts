@@ -10,8 +10,8 @@ export type OptionsMigration = (options: UntrustedObject) => UntrustedObject
 
 /**
  * A layout's migration steps, keyed by the format version each starts from; a version in which
- * the layout's options did not change has none. `workspace/migrations.ts` applies them, in storage
- * and in files.
+ * the layout's options did not change has none. `workspace/legacy.ts` applies those from 3 to 5,
+ * `workspace/migrations.ts` those from 6, to files and stored projects alike.
  */
 export type LayoutMigrations = Readonly<Partial<Record<number, OptionsMigration>>>
 

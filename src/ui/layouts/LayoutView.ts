@@ -10,9 +10,9 @@ export interface LayoutView<O> {
 	Component: ComponentType<{ options: O }>
 	/** The layout's options form: the sections for the options it has. */
 	Form: ComponentType<OptionsSectionProps<O>>
-	/** A short name, for messages like "Start a new Monthly project?". */
+	/** A short name, for the project picker: "Work 2027 — Monthly". */
 	name: string
-	/** The name with a short description, for the layout picker. */
+	/** The name with a short description, for the New project dialog and the project section. */
 	label: string
 	/**
 	 * Whether the pages are read as facing pairs, an even page beside the odd one after it, so the
