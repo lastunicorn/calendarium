@@ -1,4 +1,4 @@
-import type { MouseEventHandler, ReactNode } from 'react'
+import type { MouseEventHandler, ReactNode, Ref } from 'react'
 import styles from './IconButton.module.css'
 
 interface IconButtonProps {
@@ -7,11 +7,13 @@ interface IconButtonProps {
 	icon: ReactNode
 	onClick: MouseEventHandler<HTMLButtonElement>
 	disabled?: boolean
+	ref?: Ref<HTMLButtonElement>
 }
 
-export function IconButton({ label, icon, onClick, disabled = false }: IconButtonProps) {
+export function IconButton({ label, icon, onClick, disabled = false, ref }: IconButtonProps) {
 	return (
 		<button
+			ref={ref}
 			type="button"
 			className={styles.iconButton}
 			title={label}

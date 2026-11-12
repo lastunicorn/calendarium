@@ -18,7 +18,7 @@ The app now keeps a list of projects, each with an id, an optional name, a layou
 ### Added
 
 - A New project dialog asks for the project's name, which it may go without, and its layout. It opens by itself on the first launch, and once the last project is deleted.
-- Projects have names, edited in the Project section and shown in its picker ("Work 2027 — Weekly", or "Untitled"); a project file is named after its project, `work-2027.json`.
+- Projects have names, edited in the Project section and listed by the Open project dialog ("Work 2027 — Weekly", or "Untitled"); a project file is named after its project, `work-2027.json`.
 - Delete project, in the Project section, once confirmed.
 - Opening a file saved from a project already in the list asks whether to overwrite it.
 - Without a project, the preview offers a New project button, and Print is disabled.
@@ -28,7 +28,7 @@ The app now keeps a list of projects, each with an id, an optional name, a layou
 
 ### Changed
 
-- The app keeps a list of projects instead of one set of settings per layout: the Project section's picker switches between them, and shows the open project's layout, chosen when it is created and kept. The Layout picker and the starting over of a layout's settings are gone.
+- The app keeps a list of projects instead of one set of settings per layout: the Project section's Change project button opens a dialog listing them all to open another, and the section shows the open project's layout, chosen when it is created and kept. The Layout picker and the starting over of a layout's settings are gone.
 - The layouts are named Yearly, Monthly, Weekly and Daily, in the New project dialog and in project files (`yearly`, `monthly`, `weekly` and `daily`, for `year-per-page`, `month-per-page`, `week-per-page` and `day-per-page`); an unnamed project's file is named after the new name, `calendar-weekly-2027.json`.
 - Year layout: the month size now sizes the months too, not only their text: smaller sizes draw smaller months, centered in their part of the page.
 - Project files have a new format (`calendarium/project`), the same JSON the browser keeps each project in: the project's id, name and layout, then its settings under `options`, grouped as the sidebar's sections do (`calendar`, `events`, `header`, `miniMonth`, `content`, `footer`, `page`), so a file reads like the sidebar and each section's reset restores its own group.

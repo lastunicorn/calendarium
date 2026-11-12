@@ -28,7 +28,7 @@ function shownName(project: Project): string {
 }
 
 /**
- * Orders projects as the picker lists them: by name, the unnamed ones last, then by id so the
+ * Orders projects as the Open project dialog lists them: by name, the unnamed ones last, then by id so the
  * order is stable.
  */
 function compareProjects(a: Project, b: Project): number {
@@ -38,7 +38,7 @@ function compareProjects(a: Project, b: Project): number {
 	return nameA.localeCompare(nameB) || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0)
 }
 
-/** Every project, in the order the picker lists them (see `compareProjects`). */
+/** Every project, in the order the Open project dialog lists them (see `compareProjects`). */
 export function projectList({ projects }: Workspace): Project[] {
 	return Object.values(projects).sort(compareProjects)
 }

@@ -24,8 +24,8 @@ interface WorkspaceFormProps {
 	/** The title of the open section, from the viewer's preferences; `null` when all are closed. */
 	openSection: string | null
 	onToggleSection: (title: string) => void
-	/** The project picker, for the focus to go to once a project is created. */
-	pickerRef?: Ref<HTMLSelectElement>
+	/** The Change project button, for the focus to go to once a project is created. */
+	changeProjectRef?: Ref<HTMLButtonElement>
 }
 
 interface LayoutFormProps<K extends LayoutId> {
@@ -65,7 +65,7 @@ export function WorkspaceForm({
 	onDeleteProject,
 	openSection,
 	onToggleSection,
-	pickerRef,
+	changeProjectRef,
 }: WorkspaceFormProps) {
 	const project = openProject(workspace)
 
@@ -84,7 +84,7 @@ export function WorkspaceForm({
 					onNew={onNewProject}
 					onImport={onImportProject}
 					onDelete={onDeleteProject}
-					pickerRef={pickerRef}
+					changeProjectRef={changeProjectRef}
 				/>
 				{/* Keyed so half-typed field drafts don't carry over to another project. */}
 				{project !== null && (

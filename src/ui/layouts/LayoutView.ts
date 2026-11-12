@@ -10,7 +10,7 @@ export interface LayoutView<O> {
 	Component: ComponentType<{ options: O }>
 	/** The layout's options form: the sections for the options it has. */
 	Form: ComponentType<OptionsSectionProps<O>>
-	/** A short name, for the project picker: "Work 2027 — Monthly". */
+	/** A short name, for the Open project dialog: "Work 2027 — Monthly". */
 	name: string
 	/** The name with a short description, for the New project dialog and the project section. */
 	label: string

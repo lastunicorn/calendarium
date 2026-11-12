@@ -29,9 +29,9 @@ interface DialogProps {
  * A modal dialog over the whole app, shown while it is mounted: a native `<dialog>` opened with
  * `showModal`, so the rest of the page is out of reach. A title with a close button, its body,
  * then Cancel and the primary action, which submits its form, so Enter in a field acts too.
- * Escape and the close button cancel. Focus moves to the body's first field, or to Cancel when it
- * has none (a question), and goes back where it was once the dialog closes, or to `returnFocus`
- * when that is gone. Never printed.
+ * Escape and the close button cancel. Focus moves to the body's checked radio, or its first field,
+ * or to Cancel when it has none (a question), and goes back where it was once the dialog closes,
+ * or to `returnFocus` when that is gone. Never printed.
  */
 export function Dialog({
 	title,
@@ -52,7 +52,10 @@ export function Dialog({
 		// The page itself has the focus when nothing does.
 		const opener = document.activeElement === document.body ? null : document.activeElement
 		element.showModal()
-		const field = body.current?.querySelector<HTMLElement>('input, select, textarea')
+		// A checked radio before the first field, so a list of choices starts on the chosen one.
+		const field =
+			body.current?.querySelector<HTMLElement>('input:checked') ??
+			body.current?.querySelector<HTMLElement>('input, select, textarea')
 		;(field ?? cancel.current)?.focus()
 		return () => {
 			element.close()

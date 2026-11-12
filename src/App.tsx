@@ -30,10 +30,10 @@ export default function App() {
 	const [creatingProject, setCreatingProject] = useState(project === null)
 	// Where the focus goes once a project is created with nothing to go back to: on a first
 	// launch, or from the empty preview, whose button the new project replaces.
-	const picker = useRef<HTMLSelectElement>(null)
+	const changeProject = useRef<HTMLButtonElement>(null)
 
 	// Stable, since the dialog's opening effect depends on it.
-	const pickerElement = useCallback(() => picker.current, [])
+	const changeProjectElement = useCallback(() => changeProject.current, [])
 
 	function handleNewProject() {
 		setCreatingProject(true)
@@ -69,7 +69,7 @@ export default function App() {
 					onDeleteProject={handleProjectDelete}
 					openSection={preferences.openSection}
 					onToggleSection={toggleSection}
-					pickerRef={picker}
+					changeProjectRef={changeProject}
 				/>
 			</Sidebar>
 			{project === null ? (
@@ -86,7 +86,7 @@ export default function App() {
 				<NewProjectDialog
 					onCreate={handleNewProjectCreate}
 					onCancel={handleNewProjectCancel}
-					returnFocus={pickerElement}
+					returnFocus={changeProjectElement}
 				/>
 			)}
 		</div>

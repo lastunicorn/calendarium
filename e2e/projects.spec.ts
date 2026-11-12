@@ -26,11 +26,11 @@ test('a project saved to a file opens back with its name, layout and settings', 
 	await question.getByRole('button', { name: 'Delete' }).click()
 	// The last project gone, the app asks for a new one.
 	await newProject.getByRole('button', { name: 'Cancel' }).click()
-	await expect(project.getByRole('combobox', { name: 'Project' })).toHaveCount(0)
+	await expect(project.getByRole('button', { name: 'Change project…' })).toHaveCount(0)
 
 	await page.locator('input[type="file"]').setInputFiles(file)
-	const picker = project.getByRole('combobox', { name: 'Project' })
-	await expect(picker.locator('option:checked')).toHaveText('Desk 2031 — Monthly')
+	await expect(project.getByRole('textbox', { name: 'Name' })).toHaveValue('Desk 2031')
+	await expect(project.getByText('Layout: Monthly', { exact: false })).toBeVisible()
 	await expect(page.getByRole('spinbutton', { name: 'Year' })).toHaveValue('2031')
 	await expect(page.locator('main section')).toHaveCount(12)
 })

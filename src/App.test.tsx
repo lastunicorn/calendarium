@@ -14,20 +14,47 @@ function projectSection(): HTMLElement {
 	return screen.getByRole('group', { name: 'Project' })
 }
 
-/** The project picker. */
-function picker(): HTMLSelectElement {
-	return within(projectSection()).getByRole('combobox', { name: 'Project' })
+/** The Change project button. */
+function changeProjectButton(): HTMLButtonElement {
+	return within(projectSection()).getByRole('button', { name: 'Change project…' })
 }
 
-/** The picker's labels, in its order. */
-function pickerLabels(): string[] {
-	return Array.from(picker().options, (option) => option.text)
+/** The Open project dialog's radios, opened from Change project. */
+function openProjectRadios(): HTMLInputElement[] {
+	fireEvent.click(changeProjectButton())
+	return within(dialog('Open project')).getAllByRole<HTMLInputElement>('radio')
 }
 
-/** Picks the project labeled `label`. */
+/** Cancels the Open project dialog. */
+function cancelOpenProject() {
+	fireEvent.click(within(dialog('Open project')).getByRole('button', { name: 'Cancel' }))
+}
+
+/** A radio's label: "Work 2027 — Weekly". */
+function radioLabel(radio: HTMLInputElement): string {
+	return radio.closest('label')!.textContent
+}
+
+/** The projects the Open project dialog lists, in its order; it is opened and cancelled. */
+function projectLabels(): string[] {
+	const labels = openProjectRadios().map(radioLabel)
+	cancelOpenProject()
+	return labels
+}
+
+/** The open project's label, the one the Open project dialog checks; it is opened and cancelled. */
+function openLabel(): string {
+	const label = radioLabel(openProjectRadios().find((radio) => radio.checked)!)
+	cancelOpenProject()
+	return label
+}
+
+/** Opens the project labeled `label` from the Open project dialog. */
 function pick(label: string) {
-	const option = Array.from(picker().options).find((candidate) => candidate.text === label)!
-	fireEvent.change(picker(), { target: { value: option.value } })
+	fireEvent.click(changeProjectButton())
+	const openProject = dialog('Open project')
+	fireEvent.click(within(openProject).getByRole('radio', { name: label }))
+	fireEvent.click(within(openProject).getByRole('button', { name: 'Open' }))
 }
 
 /** Clicks the project action labeled `label`. */
@@ -102,7 +129,9 @@ describe('App without a project', () => {
 	it('creates nothing when the dialog is cancelled, and opens it again from the preview', () => {
 		renderEmpty()
 		expect(screen.queryByRole('dialog')).toBeNull()
-		expect(within(projectSection()).queryByRole('combobox')).toBeNull()
+		expect(
+			within(projectSection()).queryByRole('button', { name: 'Change project…' }),
+		).toBeNull()
 		expect(printDisabled()).toBe(true)
 		expect(Object.keys(localStorage)).toEqual([])
 
@@ -118,21 +147,21 @@ describe('App new project', () => {
 		const { name, label } = LAYOUT_VIEWS[layout]
 		createProject('Ours', layout)
 		expect(screen.queryByRole('dialog')).toBeNull()
-		expect(pickerLabels()).toEqual([`Ours — ${name}`])
+		expect(projectLabels()).toEqual([`Ours — ${name}`])
 		expect(screen.getByText(`Layout: ${label}`)).not.toBeNull()
 		expect(printDisabled()).toBe(false)
 		expect(container.querySelectorAll('main section').length).toBeGreaterThan(0)
 
 		createProject('', layout)
-		expect(pickerLabels()).toEqual([`Ours — ${name}`, `Untitled — ${name}`])
-		expect(picker().selectedOptions[0].text).toBe(`Untitled — ${name}`)
+		expect(projectLabels()).toEqual([`Ours — ${name}`, `Untitled — ${name}`])
+		expect(openLabel()).toBe(`Untitled — ${name}`)
 		const nameField = within(projectSection()).getByRole<HTMLInputElement>('textbox', {
 			name: 'Name',
 		})
 		expect(nameField.value).toBe('')
 	})
 
-	it('focuses the new project’s picker once created from the empty preview', () => {
+	it('focuses Change project once created from the empty preview', () => {
 		renderEmpty()
 		const preview = screen.getByRole('main', { name: 'Preview' })
 		const button = within(preview).getByRole('button', { name: 'New project…' })
@@ -141,13 +170,13 @@ describe('App new project', () => {
 		fireEvent.click(button)
 		fireEvent.click(within(dialog('New project')).getByRole('button', { name: 'Create' }))
 		expect(button.isConnected).toBe(false)
-		expect(document.activeElement).toBe(picker())
+		expect(document.activeElement).toBe(changeProjectButton())
 	})
 
-	it('focuses the new project’s picker once created on a first launch', () => {
+	it('focuses Change project once created on a first launch', () => {
 		render(<App />)
 		fireEvent.click(within(dialog('New project')).getByRole('button', { name: 'Create' }))
-		expect(document.activeElement).toBe(picker())
+		expect(document.activeElement).toBe(changeProjectButton())
 	})
 
 	it('gives the focus back to New project once created from it', () => {
@@ -166,12 +195,12 @@ describe('App new project', () => {
 		clickAction('New project…')
 		fireEvent.click(within(dialog('New project')).getByRole('button', { name: 'Close' }))
 		expect(screen.queryByRole('dialog')).toBeNull()
-		expect(pickerLabels()).toEqual(['Home — Yearly'])
+		expect(projectLabels()).toEqual(['Home — Yearly'])
 	})
 })
 
 describe('App projects', () => {
-	it('switches projects from the picker, the form following', () => {
+	it('changes the open project from Change project, the form following', () => {
 		renderEmpty()
 		createProject('Wall', 'yearly')
 		createProject('Desk', 'monthly')
@@ -180,6 +209,8 @@ describe('App projects', () => {
 		expect(year()).toBe('2030')
 
 		pick('Wall — Yearly')
+		expect(screen.queryByRole('dialog')).toBeNull()
+		expect(openLabel()).toBe('Wall — Yearly')
 		expect(screen.getByText('Layout: Yearly (the whole year on one page)')).not.toBeNull()
 		expect(year()).toBe(THIS_YEAR)
 
@@ -187,14 +218,34 @@ describe('App projects', () => {
 		expect(year()).toBe('2030')
 	})
 
-	it('renames the open project, the picker following', () => {
+	it('lists the projects with the open one checked and focused, and opens nothing when cancelled', () => {
+		renderEmpty()
+		createProject('Wall', 'yearly')
+		createProject('Desk', 'monthly')
+		changeProjectButton().focus()
+		fireEvent.click(changeProjectButton())
+		const openProject = dialog('Open project')
+		const desk = within(openProject).getByRole<HTMLInputElement>('radio', {
+			name: 'Desk — Monthly',
+		})
+		expect(desk.checked).toBe(true)
+		expect(document.activeElement).toBe(desk)
+
+		fireEvent.click(within(openProject).getByRole('radio', { name: 'Wall — Yearly' }))
+		fireEvent.click(within(openProject).getByRole('button', { name: 'Close' }))
+		expect(screen.queryByRole('dialog')).toBeNull()
+		expect(openLabel()).toBe('Desk — Monthly')
+		expect(document.activeElement).toBe(changeProjectButton())
+	})
+
+	it('renames the open project, the Open project dialog following', () => {
 		renderEmpty()
 		createProject('b', 'yearly')
 		createProject('c', 'weekly')
 		const name = within(projectSection()).getByRole('textbox', { name: 'Name' })
 		fireEvent.change(name, { target: { value: 'a' } })
-		expect(pickerLabels()).toEqual(['a — Weekly', 'b — Yearly'])
-		expect(picker().selectedOptions[0].text).toBe('a — Weekly')
+		expect(projectLabels()).toEqual(['a — Weekly', 'b — Yearly'])
+		expect(openLabel()).toBe('a — Weekly')
 	})
 
 	it('asks before deleting a project, keeps it on Cancel, and opens its neighbor on Delete', () => {
@@ -210,12 +261,12 @@ describe('App projects', () => {
 			'Delete “b”? It can’t be undone; save it to a file first to keep it.',
 		)
 		fireEvent.click(within(question).getByRole('button', { name: 'Cancel' }))
-		expect(pickerLabels()).toEqual(['a — Yearly', 'b — Monthly', 'c — Daily'])
+		expect(projectLabels()).toEqual(['a — Yearly', 'b — Monthly', 'c — Daily'])
 
 		clickAction('Delete project')
 		fireEvent.click(within(dialog('Delete project')).getByRole('button', { name: 'Delete' }))
-		expect(pickerLabels()).toEqual(['a — Yearly', 'c — Daily'])
-		expect(picker().selectedOptions[0].text).toBe('c — Daily')
+		expect(projectLabels()).toEqual(['a — Yearly', 'c — Daily'])
+		expect(openLabel()).toBe('c — Daily')
 	})
 
 	it('asks for a new project once the last one is deleted', () => {
@@ -241,7 +292,7 @@ describe('App projects', () => {
 		fireEvent.click(within(question).getByRole('button', { name: 'Reset' }))
 		expect(screen.queryByRole('alertdialog')).toBeNull()
 		expect(year()).toBe(THIS_YEAR)
-		expect(pickerLabels()).toEqual(['Desk — Monthly'])
+		expect(projectLabels()).toEqual(['Desk — Monthly'])
 	})
 })
 
@@ -258,8 +309,10 @@ describe('App open project file', () => {
 		})
 		chooseProjectFile(container, legacy, 'Work 2030.json')
 
-		await waitFor(() => expect(pickerLabels()).toEqual(['Home — Yearly', 'Work 2030 — Weekly']))
-		expect(picker().selectedOptions[0].text).toBe('Work 2030 — Weekly')
+		await waitFor(() =>
+			expect(projectLabels()).toEqual(['Home — Yearly', 'Work 2030 — Weekly']),
+		)
+		expect(openLabel()).toBe('Work 2030 — Weekly')
 		expect(screen.getByRole('status').textContent).toBe(
 			'Opened Work 2030.json; 1 setting was invalid and kept the default: content.schedule.firstHour.',
 		)
@@ -270,8 +323,11 @@ describe('App open project file', () => {
 	it('adds a file with an id not in the list under its id, and draws its pages', async () => {
 		const { container } = renderEmpty()
 		chooseProjectFile(container, monthlyFile(ID, 'Desk', 2030), 'desk.json')
-		await waitFor(() => expect(pickerLabels()).toEqual(['Desk — Monthly']))
-		expect(picker().value).toBe(ID)
+		await waitFor(() => expect(projectLabels()).toEqual(['Desk — Monthly']))
+		// Kept under the file's id.
+		await waitFor(() =>
+			expect(localStorage.getItem(`calendarium-project:${ID}`)).not.toBeNull(),
+		)
 		expect(container.querySelectorAll('main section')).toHaveLength(12)
 		expect(screen.queryByRole('alert')).toBeNull()
 		expect(screen.queryByRole('dialog')).toBeNull()
@@ -280,7 +336,7 @@ describe('App open project file', () => {
 	it('asks before overwriting the project with the file’s id: Cancel keeps it, Overwrite replaces it', async () => {
 		const { container } = renderEmpty()
 		chooseProjectFile(container, monthlyFile(ID, 'Desk', 2030))
-		await waitFor(() => expect(pickerLabels()).toEqual(['Desk — Monthly']))
+		await waitFor(() => expect(projectLabels()).toEqual(['Desk — Monthly']))
 
 		chooseProjectFile(container, monthlyFile(ID, 'Office', 2040))
 		const question = await screen.findByRole('dialog', { name: 'Overwrite project' })
@@ -288,14 +344,14 @@ describe('App open project file', () => {
 			'“Desk” is already one of your projects. Overwrite it with the file’s version? Its current settings are lost.',
 		)
 		fireEvent.click(within(question).getByRole('button', { name: 'Cancel' }))
-		expect(pickerLabels()).toEqual(['Desk — Monthly'])
+		expect(projectLabels()).toEqual(['Desk — Monthly'])
 		openSection('Calendar')
 		expect(year()).toBe('2030')
 
 		chooseProjectFile(container, monthlyFile(ID, 'Office', 2040))
 		const again = await screen.findByRole('dialog', { name: 'Overwrite project' })
 		fireEvent.click(within(again).getByRole('button', { name: 'Overwrite' }))
-		expect(pickerLabels()).toEqual(['Office — Monthly'])
+		expect(projectLabels()).toEqual(['Office — Monthly'])
 		expect(year()).toBe('2040')
 	})
 
@@ -306,7 +362,7 @@ describe('App open project file', () => {
 		expect((await screen.findByRole('alert')).textContent).toBe(
 			'other.json is not a calendar project file.',
 		)
-		expect(pickerLabels()).toEqual(['Home — Yearly'])
+		expect(projectLabels()).toEqual(['Home — Yearly'])
 	})
 
 	it('shows an error for a project of a layout this version doesn’t have', async () => {
@@ -362,7 +418,7 @@ describe('App workspace', () => {
 		unmount()
 		render(<App />)
 		expect(screen.queryByRole('dialog')).toBeNull()
-		expect(pickerLabels()).toEqual(['Desk — Monthly', 'Home — Yearly'])
-		expect(picker().selectedOptions[0].text).toBe('Desk — Monthly')
+		expect(projectLabels()).toEqual(['Desk — Monthly', 'Home — Yearly'])
+		expect(openLabel()).toBe('Desk — Monthly')
 	})
 })

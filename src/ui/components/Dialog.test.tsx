@@ -38,6 +38,16 @@ describe('Dialog', () => {
 		expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Cancel' }))
 	})
 
+	it('focuses the checked radio before the first field', () => {
+		render(
+			<Dialog title="Open" submitLabel="Open" onSubmit={noop} onCancel={noop}>
+				<input type="radio" name="project" aria-label="Home" readOnly />
+				<input type="radio" name="project" aria-label="Work" checked readOnly />
+			</Dialog>,
+		)
+		expect(document.activeElement).toBe(screen.getByRole('radio', { name: 'Work' }))
+	})
+
 	it('acts on its action or Enter in a field', () => {
 		const onSubmit = vi.fn()
 		render(

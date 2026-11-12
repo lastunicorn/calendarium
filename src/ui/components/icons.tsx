@@ -60,6 +60,18 @@ export function NewIcon() {
 	)
 }
 
+/** Two arrows passing each other: changes the open project for another one. */
+export function SwitchIcon() {
+	return (
+		<Icon>
+			<path d="M8 3L4 7l4 4" />
+			<path d="M4 7h16" />
+			<path d="M16 21l4-4-4-4" />
+			<path d="M20 17H4" />
+		</Icon>
+	)
+}
+
 /** A bin with a lid: deletes the project. */
 export function TrashIcon() {
 	return (

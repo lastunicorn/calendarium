@@ -74,9 +74,6 @@ describe('WorkspaceForm', () => {
 		const [layoutTitle, ...titles] = sectionTitles('yearly')
 		expect(layoutTitle).toBe('Project')
 		expect(screen.queryByRole('button', { name: 'Project' })).toBeNull()
-		expect(
-			screen.getByRole('group', { name: 'Project' }).querySelector('select'),
-		).not.toBeNull()
 		const actions = within(screen.getByRole('group', { name: 'Project' })).getByRole('toolbar')
 		expect(
 			within(actions)
@@ -86,6 +83,7 @@ describe('WorkspaceForm', () => {
 			'New project…',
 			'Open a project file',
 			'Save project to a file',
+			'Change project…',
 			'Delete project',
 		])
 		const toggles = screen.getAllByRole('button', { expanded: false })
@@ -111,9 +109,6 @@ describe('WorkspaceForm', () => {
 		expect(page.getAttribute('aria-expanded')).toBe('true')
 		expect(calendar.getAttribute('aria-expanded')).toBe('false')
 		expect(screen.queryByLabelText('Year')).toBeNull()
-		expect(
-			screen.getByRole('group', { name: 'Project' }).querySelector('select'),
-		).not.toBeNull()
 		const actions = within(screen.getByRole('group', { name: 'Project' })).getByRole('toolbar')
 		expect(
 			within(actions)
@@ -123,6 +118,7 @@ describe('WorkspaceForm', () => {
 			'New project…',
 			'Open a project file',
 			'Save project to a file',
+			'Change project…',
 			'Delete project',
 		])
 	})
@@ -255,13 +251,19 @@ describe('WorkspaceForm', () => {
 			open: work.id,
 		}
 		render(<Form workspace={workspace} onUpdate={noop} {...PROJECT_ACTIONS} />)
-		const picker = screen.getByRole<HTMLSelectElement>('combobox', { name: 'Project' })
-		expect(Array.from(picker.options, (option) => option.text)).toEqual([
+		expect(
+			within(screen.getByRole('group', { name: 'Project' })).queryByRole('combobox'),
+		).toBeNull()
+		fireEvent.click(screen.getByRole('button', { name: 'Change project…' }))
+		const openProject = screen.getByRole('dialog', { name: 'Open project' })
+		const radios = within(openProject).getAllByRole<HTMLInputElement>('radio')
+		expect(radios.map((radio) => radio.closest('label')!.textContent)).toEqual([
 			'Home — Yearly',
 			'Work 2027 — Weekly',
 			'Untitled — Daily',
 		])
-		expect(picker.value).toBe(work.id)
+		expect(radios.map((radio) => radio.checked)).toEqual([false, true, false])
+		fireEvent.click(within(openProject).getByRole('button', { name: 'Cancel' }))
 		const name = screen.getByRole<HTMLInputElement>('textbox', { name: 'Name' })
 		expect(name.value).toBe('Work 2027')
 		expect(name.placeholder).toBe('Untitled')

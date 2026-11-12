@@ -11,11 +11,11 @@ import type { Project, ProjectId } from '../../workspace/Project'
 import { type OpenedProjectFile, parseProjectFile, projectFile } from '../../workspace/projectFile'
 import { Dialog } from '../components/Dialog'
 import { IconButton } from '../components/IconButton'
-import { LayoutIcon, NewIcon, OpenIcon, SaveIcon, TrashIcon } from '../components/icons'
+import { LayoutIcon, NewIcon, OpenIcon, SaveIcon, SwitchIcon, TrashIcon } from '../components/icons'
 import { downloadFile } from '../download'
-import { SelectField } from '../fields/SelectField'
 import { TextField } from '../fields/TextField'
 import { LAYOUT_VIEWS } from '../layouts/registry'
+import { OpenProjectDialog } from './OpenProjectDialog'
 import styles from './ProjectSection.module.css'
 import { Section } from './Section'
 
@@ -42,8 +42,8 @@ interface ProjectSectionProps {
 	onImport: (project: Project<ProjectId | null>) => void
 	/** Deletes a project, once confirmed. */
 	onDelete: (id: ProjectId) => void
-	/** The project picker, for the focus to go to once a project is created. */
-	pickerRef?: Ref<HTMLSelectElement>
+	/** The Change project button, for the focus to go to once a project is created. */
+	changeProjectRef?: Ref<HTMLButtonElement>
 }
 
 /** A project's name as shown: trimmed, or "Untitled". */
@@ -51,7 +51,7 @@ function shownName({ name }: Project): string {
 	return name.trim() || 'Untitled'
 }
 
-/** The picker's label of a project: its name and its layout's short name, "Work 2027 — Weekly". */
+/** A project's label in the Open project dialog: its name and its layout's short name, "Work 2027 — Weekly". */
 function projectLabel(project: Project): string {
 	return `${shownName(project)} — ${LAYOUT_VIEWS[project.layout].name}`
 }
@@ -96,11 +96,11 @@ function actionLabel(target: EventTarget): string {
 }
 
 /**
- * The project being made: the picker of the projects kept in this browser, the open one's name
- * and its layout, which it keeps, above the starting of a new project, the opening of a project
- * file, the saving of the open project to one and its deleting. Opening a file of a project
- * already kept, or deleting one, asks first. Without a project, only New and Open show. Always
- * open.
+ * The project being made: the open one's name and its layout, which it keeps, above the starting
+ * of a new project, the opening of a project file, the saving of the open project to one, the
+ * changing of it for another of the projects kept in this browser, chosen in the Open project
+ * dialog, and its deleting. Opening a file of a project already kept, or deleting one, asks
+ * first. Without a project, only New and Open show. Always open.
  */
 export function ProjectSection({
 	workspace,
@@ -109,7 +109,7 @@ export function ProjectSection({
 	onNew,
 	onImport,
 	onDelete,
-	pickerRef,
+	changeProjectRef,
 }: ProjectSectionProps) {
 	const project = openProject(workspace)
 
@@ -119,11 +119,25 @@ export function ProjectSection({
 	const [hint, setHint] = useState('')
 	const [pendingOverwrite, setPendingOverwrite] = useState<PendingOverwrite | null>(null)
 	const [confirmingDelete, setConfirmingDelete] = useState(false)
+	const [choosingProject, setChoosingProject] = useState(false)
 
 	const projectOptions = projectList(workspace).map((listed) => ({
 		value: listed.id,
 		label: projectLabel(listed),
 	}))
+
+	function handleChangeClick() {
+		setChoosingProject(true)
+	}
+
+	function handleOpenProjectSubmit(id: ProjectId) {
+		setChoosingProject(false)
+		onOpen(id)
+	}
+
+	function handleOpenProjectCancel() {
+		setChoosingProject(false)
+	}
 
 	function handleActionsPointerOver(event: PointerEvent<HTMLDivElement>) {
 		setHint(actionLabel(event.target))
@@ -208,13 +222,6 @@ export function ProjectSection({
 		<Section title="Project" icon={<LayoutIcon />} collapsible={false}>
 			{project !== null && (
 				<>
-					<SelectField
-						label="Project"
-						value={project.id}
-						options={projectOptions}
-						onChange={onOpen}
-						ref={pickerRef}
-					/>
 					<TextField
 						label="Name"
 						value={project.name}
@@ -248,6 +255,12 @@ export function ProjectSection({
 								onClick={handleSaveClick}
 							/>
 							<IconButton
+								label="Change project…"
+								icon={<SwitchIcon />}
+								onClick={handleChangeClick}
+								ref={changeProjectRef}
+							/>
+							<IconButton
 								label="Delete project"
 								icon={<TrashIcon />}
 								onClick={handleDeleteClick}
@@ -279,6 +292,14 @@ export function ProjectSection({
 				</p>
 			)}
 
+			{choosingProject && project !== null && (
+				<OpenProjectDialog
+					projects={projectOptions}
+					openId={project.id}
+					onOpen={handleOpenProjectSubmit}
+					onCancel={handleOpenProjectCancel}
+				/>
+			)}
 			{pendingOverwrite !== null && (
 				<Dialog
 					title="Overwrite project"
