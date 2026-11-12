@@ -85,7 +85,9 @@ jobs:
             exit 0
           fi
           archive="$(node -p "require('./package.json').name")-$version.zip"
+          # The license goes in the zip only, not in the deployed site.
           (cd dist && zip -qr "../$archive" .)
+          zip -qj "$archive" LICENSE
           gh release upload "$tag" "$archive" --clobber
 
   deploy:

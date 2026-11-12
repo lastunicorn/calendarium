@@ -80,3 +80,7 @@ Then open http://localhost:5173.
 | `npm run lint`       | Lint with oxlint                             |
 | `npm run format`     | Format with Prettier                         |
 | `npm run typecheck`  | Type-check only                              |
+
+## License
+
+Calendarium is licensed under the [Apache License 2.0](LICENSE).
