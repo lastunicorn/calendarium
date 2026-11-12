@@ -81,10 +81,10 @@ describe('WorkspaceForm', () => {
 				.map((button) => button.title),
 		).toEqual([
 			'New project…',
-			'Open a project file',
-			'Save project to a file',
 			'Change project…',
 			'Delete project',
+			'Open a project file',
+			'Save project to a file',
 		])
 		const toggles = screen.getAllByRole('button', { expanded: false })
 		expect(toggles.map((button) => button.textContent)).toEqual(titles)
@@ -116,10 +116,10 @@ describe('WorkspaceForm', () => {
 				.map((button) => button.title),
 		).toEqual([
 			'New project…',
-			'Open a project file',
-			'Save project to a file',
 			'Change project…',
 			'Delete project',
+			'Open a project file',
+			'Save project to a file',
 		])
 	})
 

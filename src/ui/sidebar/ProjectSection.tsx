@@ -97,10 +97,10 @@ function actionLabel(target: EventTarget): string {
 }
 
 /**
- * The project being made: the open one's name and its layout, which it keeps, above the starting
- * of a new project, the opening of a project file, the saving of the open project to one, the
- * changing of it for another of the projects kept in this browser, chosen in the Open project
- * dialog, and its deleting. Opening a file of a project already kept, or deleting one, asks
+ * The project being made: the starting of a new project, the changing of the open one for another
+ * of the projects kept in this browser, chosen in the Open project dialog, and its deleting, then,
+ * apart, the opening of a project file and the saving of the open project to one, above the open
+ * project's name and its layout, which it keeps. Opening a file of a project already kept, or deleting one, asks
  * first. Without a project, only New and Open show. Always open.
  */
 export function ProjectSection({
@@ -221,17 +221,6 @@ export function ProjectSection({
 
 	return (
 		<Section title="Project" icon={<LayoutIcon />} collapsible={false}>
-			{project !== null && (
-				<>
-					<TextField
-						label="Name"
-						value={project.name}
-						placeholder="Untitled"
-						onChange={onRename}
-					/>
-					<ReadOnlyField label="Layout" value={LAYOUT_VIEWS[project.layout].label} />
-				</>
-			)}
 			<div className={styles.actionsGroup}>
 				<div
 					className={styles.actions}
@@ -243,18 +232,8 @@ export function ProjectSection({
 					onBlur={handleActionsLeave}
 				>
 					<IconButton label="New project…" icon={<NewIcon />} onClick={handleNewClick} />
-					<IconButton
-						label="Open a project file"
-						icon={<OpenIcon />}
-						onClick={handleOpenClick}
-					/>
 					{project !== null && (
 						<>
-							<IconButton
-								label="Save project to a file"
-								icon={<SaveIcon />}
-								onClick={handleSaveClick}
-							/>
 							<IconButton
 								label="Change project…"
 								icon={<SwitchIcon />}
@@ -267,6 +246,24 @@ export function ProjectSection({
 								onClick={handleDeleteClick}
 							/>
 						</>
+					)}
+					{/* The file actions, importing and exporting a project, apart from the others. */}
+					<div
+						className={styles.separator}
+						role="separator"
+						aria-orientation="vertical"
+					/>
+					<IconButton
+						label="Open a project file"
+						icon={<OpenIcon />}
+						onClick={handleOpenClick}
+					/>
+					{project !== null && (
+						<IconButton
+							label="Save project to a file"
+							icon={<SaveIcon />}
+							onClick={handleSaveClick}
+						/>
 					)}
 					<input
 						ref={fileInput}
@@ -291,6 +288,18 @@ export function ProjectSection({
 				<p className={styles.notice} role="status">
 					{openNotice}
 				</p>
+			)}
+
+			{project !== null && (
+				<>
+					<TextField
+						label="Name"
+						value={project.name}
+						placeholder="Untitled"
+						onChange={onRename}
+					/>
+					<ReadOnlyField label="Layout" value={LAYOUT_VIEWS[project.layout].label} />
+				</>
 			)}
 
 			{choosingProject && project !== null && (

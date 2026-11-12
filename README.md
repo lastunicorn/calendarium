@@ -17,11 +17,12 @@ Each calendar you make is a project, with a name (optional) and a layout, chosen
 
 The Project section at the top of the sidebar lets you:
 
-- **Pick** the project to work on, and **rename** it.
 - **New project…**: create one, naming it and choosing its layout. The app asks for one on its first launch.
+- **Change project…**: pick another of your projects to work on.
+- **Delete project**: remove it from your browser, once you confirm; save it to a file first to keep it.
 - **Open a project file**: add the project the file holds. If it was saved from a project you already have, the app asks whether to overwrite it.
 - **Save project to a file**: the open project, to a JSON file named after it, to keep or share it.
-- **Delete project**: remove it from your browser, once you confirm; save it to a file first to keep it.
+- **Rename** the open project, in the Name field under the buttons.
 
 Project files from earlier versions open as new projects, named after the file. The first time 6.0 opens, the settings an earlier version saved in your browser become projects: one for each layout whose settings you changed, and one for the layout that was shown.
 
