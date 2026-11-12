@@ -11,7 +11,15 @@ import type { Project, ProjectId } from '../../workspace/Project'
 import { type OpenedProjectFile, parseProjectFile, projectFile } from '../../workspace/projectFile'
 import { Dialog } from '../components/Dialog'
 import { IconButton } from '../components/IconButton'
-import { LayoutIcon, NewIcon, OpenIcon, SaveIcon, SwitchIcon, TrashIcon } from '../components/icons'
+import {
+	LayoutIcon,
+	NewIcon,
+	OpenIcon,
+	PrintIcon,
+	SaveIcon,
+	SwitchIcon,
+	TrashIcon,
+} from '../components/icons'
 import { downloadFile } from '../download'
 import { ReadOnlyField } from '../fields/ReadOnlyField'
 import { TextField } from '../fields/TextField'
@@ -19,6 +27,10 @@ import { LAYOUT_VIEWS } from '../layouts/registry'
 import { OpenProjectDialog } from './OpenProjectDialog'
 import styles from './ProjectSection.module.css'
 import { Section } from './Section'
+
+function handlePrintClick() {
+	window.print()
+}
 
 /** A project file that was read. */
 type OpenedFile = Extract<OpenedProjectFile, { ok: true }>
@@ -99,9 +111,10 @@ function actionLabel(target: EventTarget): string {
 /**
  * The project being made: the starting of a new project, the changing of the open one for another
  * of the projects kept in this browser, chosen in the Open project dialog, and its deleting, then,
- * apart, the opening of a project file and the saving of the open project to one, above the open
- * project's name and its layout, which it keeps. Opening a file of a project already kept, or deleting one, asks
- * first. Without a project, only New and Open show. Always open.
+ * apart, the opening of a project file and the saving of the open project to one, and, apart
+ * again, its printing, above the open project's name and its layout, which it keeps. Opening a
+ * file of a project already kept, or deleting one, asks first. Without a project, only New, Open
+ * and Print, disabled, show. Always open.
  */
 export function ProjectSection({
 	workspace,
@@ -265,6 +278,17 @@ export function ProjectSection({
 							onClick={handleSaveClick}
 						/>
 					)}
+					<div
+						className={styles.separator}
+						role="separator"
+						aria-orientation="vertical"
+					/>
+					<IconButton
+						label="Print"
+						icon={<PrintIcon />}
+						disabled={project === null}
+						onClick={handlePrintClick}
+					/>
 					<input
 						ref={fileInput}
 						type="file"

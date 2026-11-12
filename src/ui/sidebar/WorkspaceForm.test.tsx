@@ -85,6 +85,7 @@ describe('WorkspaceForm', () => {
 			'Delete project',
 			'Open a project file',
 			'Save project to a file',
+			'Print',
 		])
 		const toggles = screen.getAllByRole('button', { expanded: false })
 		expect(toggles.map((button) => button.textContent)).toEqual(titles)
@@ -120,6 +121,7 @@ describe('WorkspaceForm', () => {
 			'Delete project',
 			'Open a project file',
 			'Save project to a file',
+			'Print',
 		])
 	})
 
@@ -217,14 +219,14 @@ describe('WorkspaceForm', () => {
 		})
 	})
 
-	it('shows only New and Open, and no options, without a project', () => {
+	it('shows only New, Open and Print, and no options, without a project', () => {
 		render(<Form workspace={defaultWorkspace()} onUpdate={noop} {...PROJECT_ACTIONS} />)
 		const section = screen.getByRole('group', { name: 'Project' })
 		expect(
 			within(within(section).getByRole('toolbar'))
 				.getAllByRole('button')
 				.map((button) => button.title),
-		).toEqual(['New project…', 'Open a project file'])
+		).toEqual(['New project…', 'Open a project file', 'Print'])
 		expect(within(section).queryByRole('combobox')).toBeNull()
 		expect(within(section).queryByRole('textbox', { name: 'Name' })).toBeNull()
 		expect(

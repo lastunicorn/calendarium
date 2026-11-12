@@ -9,7 +9,7 @@ A browser app that generates a calendar to print on paper: a configuration panel
 1. **Open the app in your browser:**
    - <https://lastunicorn.github.io/calendarium/>
 2. **Configure calendar** in the left panel
-3. **Print** with the print button in the toolbar (see [Printing](#printing)).
+3. **Print** with the Print button in the Project section (see [Printing](#printing)).
 
 ## Configuration
 
@@ -22,6 +22,7 @@ The Project section at the top of the sidebar lets you:
 - **Delete project**: remove it from your browser, once you confirm; save it to a file first to keep it.
 - **Open a project file**: add the project the file holds. If it was saved from a project you already have, the app asks whether to overwrite it.
 - **Save project to a file**: the open project, to a JSON file named after it, to keep or share it.
+- **Print** the open project's calendar (see [Printing](#printing)).
 - **Rename** the open project, in the Name field under the buttons.
 
 Project files from earlier versions open as new projects, named after the file. The first time 6.0 opens, the settings an earlier version saved in your browser become projects: one for each layout whose settings you changed, and one for the layout that was shown.

@@ -6,7 +6,6 @@ import { Preview } from './ui/preview/Preview'
 import { NewProjectDialog } from './ui/sidebar/NewProjectDialog'
 import { WorkspaceForm } from './ui/sidebar/WorkspaceForm'
 import { Sidebar } from './ui/sidebar/Sidebar'
-import { Toolbar } from './ui/sidebar/Toolbar'
 import { usePreferences } from './ui/usePreferences'
 import { useWorkspace } from './ui/useWorkspace'
 import type { ProjectId } from './workspace/Project'
@@ -58,7 +57,6 @@ export default function App() {
 	return (
 		<div className={styles.app}>
 			<Sidebar width={preferences.sidebarWidth} onResize={resizeSidebar}>
-				<Toolbar disabled={project === null} />
 				<WorkspaceForm
 					workspace={workspace}
 					onOpenProject={openProjectById}
