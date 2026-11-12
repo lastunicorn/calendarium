@@ -13,6 +13,8 @@
 	--color-page-shadow: rgb(0 0 0 / 0.2);
 	--color-veil: rgb(255 255 255);
 	--color-backdrop: rgb(0 0 0 / 0.3);
+	--color-selection: #1a73e8;
+	--color-selection-text: #fff;
 
 	/* Printed calendar */
 	--color-rule: #999;

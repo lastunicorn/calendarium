@@ -1,5 +1,63 @@
-/* Scrolls within the dialog when there are more projects than fit on the screen. */
+.field {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	min-width: 0;
+	margin: 0;
+	padding: 0;
+	border: none;
+}
+
+/* Like a `RadioField`'s. */
+.legend {
+	margin-bottom: 8px;
+	padding: 0;
+	font-size: 0.875rem;
+	font-weight: 600;
+}
+
+/* Bordered like the dropdowns; about eight rows high, then a scroll bar for the rest. */
 .list {
-	max-height: min(400px, 60vh);
+	display: flex;
+	flex-direction: column;
+	max-height: min(260px, 50vh);
 	overflow-y: auto;
+	background: var(--color-surface);
+	border: 1px solid var(--color-border);
+	border-radius: 4px;
+}
+
+/* A whole row is the project's choice; a long name wraps rather than hides. */
+.row {
+	position: relative;
+	padding: 6px 10px;
+	font-size: 0.875rem;
+	overflow-wrap: anywhere;
+	cursor: pointer;
+	user-select: none;
+}
+
+.row:hover {
+	background: var(--color-section-title-background);
+}
+
+.row:has(.radio:checked) {
+	color: var(--color-selection-text);
+	background: var(--color-selection);
+}
+
+/* The keyboard's focus is on the hidden radio, so the row shows it. */
+.row:has(.radio:focus-visible) {
+	outline: 2px auto;
+	outline-offset: -2px;
+}
+
+/* Hidden, yet still focused and moved by the arrows, as a radio group's choice is. */
+.radio {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: 0;
+	opacity: 0;
+	pointer-events: none;
 }
