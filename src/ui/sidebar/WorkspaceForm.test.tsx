@@ -267,7 +267,7 @@ describe('WorkspaceForm', () => {
 		const name = screen.getByRole<HTMLInputElement>('textbox', { name: 'Name' })
 		expect(name.value).toBe('Work 2027')
 		expect(name.placeholder).toBe('Untitled')
-		expect(screen.getByText('Layout: Weekly (one week per page)')).not.toBeNull()
+		expect(screen.getByLabelText('Layout').textContent).toBe('Weekly (one week per page)')
 	})
 
 	it('labels the hovered or focused project action under the buttons', () => {

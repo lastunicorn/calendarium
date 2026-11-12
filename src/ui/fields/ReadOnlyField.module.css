@@ -1,0 +1,11 @@
+/* Sized like the inputs (`Field.module.css`), but filled and unbordered so it doesn't read as editable. */
+.value {
+	margin: 0;
+	padding: 6px 8px;
+	font-size: 0.875rem;
+	color: var(--color-text);
+	background: var(--color-section-title-background);
+	border: 1px solid transparent;
+	border-radius: 4px;
+	overflow-wrap: anywhere;
+}

@@ -13,6 +13,7 @@ import { Dialog } from '../components/Dialog'
 import { IconButton } from '../components/IconButton'
 import { LayoutIcon, NewIcon, OpenIcon, SaveIcon, SwitchIcon, TrashIcon } from '../components/icons'
 import { downloadFile } from '../download'
+import { ReadOnlyField } from '../fields/ReadOnlyField'
 import { TextField } from '../fields/TextField'
 import { LAYOUT_VIEWS } from '../layouts/registry'
 import { OpenProjectDialog } from './OpenProjectDialog'
@@ -228,7 +229,7 @@ export function ProjectSection({
 						placeholder="Untitled"
 						onChange={onRename}
 					/>
-					<p className={styles.layout}>Layout: {LAYOUT_VIEWS[project.layout].label}</p>
+					<ReadOnlyField label="Layout" value={LAYOUT_VIEWS[project.layout].label} />
 				</>
 			)}
 			<div className={styles.actionsGroup}>

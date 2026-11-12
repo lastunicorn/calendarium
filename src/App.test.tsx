@@ -148,7 +148,7 @@ describe('App new project', () => {
 		createProject('Ours', layout)
 		expect(screen.queryByRole('dialog')).toBeNull()
 		expect(projectLabels()).toEqual([`Ours — ${name}`])
-		expect(screen.getByText(`Layout: ${label}`)).not.toBeNull()
+		expect(screen.getByLabelText('Layout').textContent).toBe(label)
 		expect(printDisabled()).toBe(false)
 		expect(container.querySelectorAll('main section').length).toBeGreaterThan(0)
 
@@ -211,7 +211,9 @@ describe('App projects', () => {
 		pick('Wall — Yearly')
 		expect(screen.queryByRole('dialog')).toBeNull()
 		expect(openLabel()).toBe('Wall — Yearly')
-		expect(screen.getByText('Layout: Yearly (the whole year on one page)')).not.toBeNull()
+		expect(screen.getByLabelText('Layout').textContent).toBe(
+			'Yearly (the whole year on one page)',
+		)
 		expect(year()).toBe(THIS_YEAR)
 
 		pick('Desk — Monthly')

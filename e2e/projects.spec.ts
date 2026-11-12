@@ -30,7 +30,7 @@ test('a project saved to a file opens back with its name, layout and settings', 
 
 	await page.locator('input[type="file"]').setInputFiles(file)
 	await expect(project.getByRole('textbox', { name: 'Name' })).toHaveValue('Desk 2031')
-	await expect(project.getByText('Layout: Monthly', { exact: false })).toBeVisible()
+	await expect(project.getByLabel('Layout')).toHaveText('Monthly (one month per page)')
 	await expect(page.getByRole('spinbutton', { name: 'Year' })).toHaveValue('2031')
 	await expect(page.locator('main section')).toHaveCount(12)
 })

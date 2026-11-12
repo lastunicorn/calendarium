@@ -29,10 +29,3 @@
 	font-size: 0.75rem;
 	color: var(--color-text-muted);
 }
-
-/* The open project's layout, which it keeps: read, not edited. */
-.layout {
-	margin: 0;
-	font-size: 0.875rem;
-	color: var(--color-text-muted);
-}
