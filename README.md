@@ -68,7 +68,7 @@ Opening `index.html` directly from the disk doesn't work: browsers don't load th
 
 #### Requirements
 
-- Node.js 22 or later (CI uses 24) and npm
+- Node.js 22.22, 24.15 or 26 and later (the minimum of Vitest and jsdom; `.nvmrc` names 24, the version CI uses) and npm
 
 #### Clone and run
 
