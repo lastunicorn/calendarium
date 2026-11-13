@@ -1,8 +1,16 @@
 # Calendarium
 
-[![GitHub Build](https://img.shields.io/github/actions/workflow/status/lastunicorn/bcr-toolkit/build-master.yml?logo=github)](https://github.com/lastunicorn/calendarium/actions/workflows/build-master.yml)
+[![GitHub Build](https://img.shields.io/github/actions/workflow/status/lastunicorn/calendarium/build-master.yml?logo=github)](https://github.com/lastunicorn/calendarium/actions/workflows/build-master.yml)
 
 A browser app that generates a calendar to print on paper: a configuration panel on the left and a WYSIWYG page preview (A4, A3 or Letter, portrait or landscape) on the right.
+
+<p>
+  <img src="doc/images/monthly-page.png" alt="A printed page of the monthly layout: January 2027 with its events" width="425">
+  <img src="doc/images/yearly-page.png" alt="A printed page of the yearly layout: the twelve months of 2027" width="300">
+  <img src="doc/images/weekly-page.png" alt="A printed page of the weekly layout: one week with an hourly schedule" width="425">
+</p>
+
+What each release changed is in the [changelog](CHANGELOG.md).
 
 ## How to use
 
@@ -29,7 +37,13 @@ Project files from earlier versions open as new projects, named after the file. 
 
 ## Printing
 
-Use Chrome/Chromium: **Print → Destination: Save as PDF, Paper size: matching the selection, Margins: None, Scale: 100%**.
+Use Chrome or another Chromium-based browser (Edge, Brave, …): **Print → Destination: Save as PDF, Paper size: matching the selection, Margins: None, Scale: 100%**, and under More settings **Headers and footers: off** (otherwise Chrome adds the date, title and address where the margins leave room) and **Background graphics: on** (Chromium prints the weekend shading anyway; other browsers may need it).
+
+For a booklet, choose a paper size twice the page's (A3 for A4 pages) and print double-sided, flipping on the short edge.
+
+## Browser support
+
+The app works in the current versions of Chrome, Edge, Firefox and Safari. Printing to the exact paper size is tested in Chrome and Chromium-based browsers only: in Firefox and Safari the preview works, but the printed pages may not match it.
 
 ## Running locally
 
@@ -54,7 +68,7 @@ Opening `index.html` directly from the disk doesn't work: browsers don't load th
 
 #### Requirements
 
-- Node.js 20+ and npm
+- Node.js 22 or later (CI uses 24) and npm
 
 #### Clone and run
 
