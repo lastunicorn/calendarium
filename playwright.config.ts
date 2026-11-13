@@ -15,10 +15,19 @@ const VISUAL_PORT = 4174
 
 const port = VISUAL_DIST === undefined ? PORT : VISUAL_PORT
 
+const CI = !!process.env.CI
+
 /**
- * End-to-end print tests: the built app in Chromium, the print target. They check what unit tests
- * can't: that `@page`, page breaks and mm sizing produce the expected PDF, and (`visual.spec.ts`)
- * which printed pages a change alters.
+ * Where CI's HTML report goes, apart for the visual run, so it doesn't replace the e2e tests'
+ * (each run empties its report's folder); CI uploads `playwright-report/`.
+ */
+const REPORT_FOLDER = `playwright-report/${VISUAL_DIST === undefined ? 'e2e' : 'visual'}`
+
+/**
+ * End-to-end tests: the built app in Chromium, the print target. They check what unit tests can't:
+ * that `@page`, page breaks and mm sizing produce the expected PDF, and (`visual.spec.ts`) which
+ * printed pages a change alters. The preview's screen behavior (`screen.spec.ts`) and the file
+ * round trip run in Firefox too, which can't print to PDF.
  */
 export default defineConfig({
 	testDir: 'e2e',
@@ -26,16 +35,28 @@ export default defineConfig({
 	snapshotPathTemplate: '{snapshotDir}/{arg}{ext}',
 	// Both builds are drawn on the same machine, so any pixel that differs is a change.
 	expect: { toHaveScreenshot: { threshold: 0, maxDiffPixelRatio: 0.0001 } },
-	forbidOnly: !!process.env.CI,
-	reporter: process.env.CI ? 'github' : 'list',
+	forbidOnly: CI,
+	// A test failing then passing on CI is reported as flaky, not failed. A visual difference is
+	// a change, never flaky, so the visual run doesn't retry.
+	retries: CI && VISUAL_DIST === undefined ? 2 : 0,
+	reporter: CI ? [['github'], ['html', { open: 'never', outputFolder: REPORT_FOLDER }]] : 'list',
 	use: {
 		baseURL: `http://localhost:${port}`,
 		// Month and weekday names follow the browser language by default.
 		locale: 'en-GB',
-		// On CI, a failed test's trace goes to test-results/, which CI uploads.
-		trace: process.env.CI ? 'retain-on-failure' : 'off',
+		// A failed test's first retry records its trace, and each failed try its screenshot, in
+		// test-results/, which CI uploads; the HTML report shows them.
+		trace: 'on-first-retry',
+		screenshot: 'only-on-failure',
 	},
-	projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
+	projects: [
+		{ name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+		{
+			name: 'firefox',
+			use: { ...devices['Desktop Firefox'] },
+			testMatch: /(projects|screen)\.spec\.ts$/,
+		},
+	],
 	webServer: {
 		command:
 			VISUAL_DIST === undefined
