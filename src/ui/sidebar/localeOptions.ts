@@ -1,0 +1,81 @@
+import { LOCALES, type Locale } from '../../core/locale'
+import { optionsFrom } from '../fields/options'
+
+/**
+ * More words to find a language by: its code, and its language and country names in English and in
+ * itself, so "Brasil" or "Deutschland" finds it too.
+ */
+export function localeKeywords(locale: Locale): string[] {
+	const { language, region } = new Intl.Locale(locale)
+	return [
+		locale,
+		...['en', locale].flatMap((displayLocale) => [
+			new Intl.DisplayNames(displayLocale, { type: 'language' }).of(language),
+			region === undefined
+				? undefined
+				: new Intl.DisplayNames(displayLocale, { type: 'region' }).of(region),
+		]),
+	].filter((name) => name !== undefined)
+}
+
+/**
+ * The Language field's options: each language's name in English and in itself, so a reader can
+ * find their own, in alphabetical order. A new locale needs its label here (compile-enforced).
+ */
+export const LOCALE_OPTIONS = optionsFrom(LOCALES, {
+	'en-US': 'English (US)',
+	'en-GB': 'English (UK)',
+	'ro-RO': 'Romanian (Română)',
+	'de-DE': 'German (Deutsch, Deutschland)',
+	'fr-FR': 'French (Français, France)',
+	'es-ES': 'Spanish (Español, España)',
+	'it-IT': 'Italian (Italiano)',
+	'ja-JP': 'Japanese (日本語)',
+	'pt-BR': 'Portuguese (Português, Brasil)',
+	'nl-NL': 'Dutch (Nederlands)',
+	'pl-PL': 'Polish (Polski)',
+	'cs-CZ': 'Czech (Čeština)',
+	'sk-SK': 'Slovak (Slovenčina)',
+	'hu-HU': 'Hungarian (Magyar)',
+	'hr-HR': 'Croatian (Hrvatski)',
+	'bg-BG': 'Bulgarian (Български)',
+	'tr-TR': 'Turkish (Türkçe)',
+	'uk-UA': 'Ukrainian (Українська)',
+	'ru-RU': 'Russian (Русский)',
+	'sv-SE': 'Swedish (Svenska)',
+	'da-DK': 'Danish (Dansk)',
+	'nb-NO': 'Norwegian (Norsk bokmål)',
+	'fi-FI': 'Finnish (Suomi)',
+	'zh-CN': 'Chinese (中文, 简体)',
+	'ko-KR': 'Korean (한국어)',
+	'af-ZA': 'Afrikaans',
+	'am-ET': 'Amharic (አማርኛ)',
+	'ca-ES': 'Catalan (Català)',
+	'et-EE': 'Estonian (Eesti)',
+	'fil-PH': 'Filipino',
+	'gu-IN': 'Gujarati (ગુજરાતી)',
+	'hi-IN': 'Hindi (हिन्दी)',
+	'id-ID': 'Indonesian (Bahasa Indonesia)',
+	'kn-IN': 'Kannada (ಕನ್ನಡ)',
+	'lt-LT': 'Lithuanian (Lietuvių)',
+	'lv-LV': 'Latvian (Latviešu)',
+	'ml-IN': 'Malayalam (മലയാളം)',
+	'ms-MY': 'Malay (Bahasa Melayu)',
+	'sl-SI': 'Slovenian (Slovenščina)',
+	'sr-RS': 'Serbian (Српски)',
+	'sw-TZ': 'Swahili (Kiswahili)',
+	'ta-IN': 'Tamil (தமிழ்)',
+	'te-IN': 'Telugu (తెలుగు)',
+	'th-TH': 'Thai (ไทย)',
+	'vi-VN': 'Vietnamese (Tiếng Việt)',
+	'zh-TW': 'Chinese (中文, 繁體, 台灣)',
+	'el-GR': 'Greek (Ελληνικά)',
+	'pt-PT': 'Portuguese (Português, Portugal)',
+	'es-MX': 'Spanish (Español, México)',
+	'fr-CA': 'French (Français, Canada)',
+	'de-AT': 'German (Deutsch, Österreich)',
+	'de-CH': 'German (Deutsch, Schweiz)',
+	'zh-HK': 'Chinese (中文, 繁體, 香港)',
+})
+	.map((option) => ({ ...option, keywords: localeKeywords(option.value) }))
+	.toSorted((a, b) => a.label.localeCompare(b.label, 'en'))

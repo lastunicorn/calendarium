@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState, type RefObject } from 'react'
 
+import { horizontalScroll, mostVisiblePage, type ScreenRect } from './currentPage'
+
 /** A page gone to from the indicator, kept as the current one until the view scrolls away. */
 interface PinnedPage {
 	index: number
@@ -12,27 +14,10 @@ function pageElements(pages: HTMLElement): HTMLElement[] {
 	return [...pages.querySelectorAll('section')]
 }
 
-/**
- * The index of the page showing the most of itself in `area`'s visible part, the first on a tie,
- * so a page gone to stays current when the next ones fit in the view too.
- */
-function mostVisiblePage(area: HTMLElement, pages: HTMLElement[]): number {
-	const view = area.getBoundingClientRect()
-	const right = view.left + area.clientWidth
-	const bottom = view.top + area.clientHeight
-	let best = 0
-	let bestArea = -1
-	pages.forEach((page, index) => {
-		const rect = page.getBoundingClientRect()
-		const width = Math.min(rect.right, right) - Math.max(rect.left, view.left)
-		const height = Math.min(rect.bottom, bottom) - Math.max(rect.top, view.top)
-		const visible = Math.max(width, 0) * Math.max(height, 0)
-		if (visible > bestArea) {
-			best = index
-			bestArea = visible
-		}
-	})
-	return best
+/** The part of `area` that shows its pages: from its top left corner, its scroll bars aside. */
+function viewRect(area: HTMLElement): ScreenRect {
+	const { left, top } = area.getBoundingClientRect()
+	return { left, top, right: left + area.clientWidth, bottom: top + area.clientHeight }
 }
 
 /**
@@ -67,7 +52,12 @@ export function useCurrentPage(
 				return
 			}
 			pinned.current = null
-			setCurrent(mostVisiblePage(area, pages))
+			setCurrent(
+				mostVisiblePage(
+					viewRect(area),
+					pages.map((page) => page.getBoundingClientRect()),
+				),
+			)
 		}
 
 		update()
@@ -98,9 +88,10 @@ export function useCurrentPage(
 		const left = view.left + parseFloat(style.paddingLeft)
 		const right = view.left + area.clientWidth - parseFloat(style.paddingRight)
 		area.scrollTop += rect.top - view.top - parseFloat(style.paddingTop)
-		if (rect.left < left) area.scrollLeft += rect.left - left
-		else if (rect.right > right)
-			area.scrollLeft += Math.min(rect.right - right, rect.left - left)
+		area.scrollLeft += horizontalScroll(
+			{ start: rect.left, end: rect.right },
+			{ start: left, end: right },
+		)
 		pinned.current = { index, scrollTop: area.scrollTop, scrollLeft: area.scrollLeft }
 		setCurrent(index)
 	}
