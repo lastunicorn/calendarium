@@ -28,6 +28,21 @@
 	/* Preview */
 	--color-binding: #777;
 
+	/* App spacing scale */
+	--space-1: 4px;
+	--space-2: 8px;
+	--space-3: 12px;
+	--space-4: 16px;
+	--space-6: 24px;
+	/* The sidebar's inner padding; the section title bands and the form's scrollbar reach across it. */
+	--sidebar-padding: var(--space-4);
+	/* Between pages, spreads and booklet sheets on screen. */
+	--page-gap: var(--space-6);
+
+	/* Printed rules */
+	--rule-light: 0.2mm;
+	--rule-heavy: 0.3mm;
+
 	font-family: system-ui, sans-serif;
 	color: var(--color-text);
 	background: var(--color-app-background);

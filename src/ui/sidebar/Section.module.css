@@ -2,7 +2,7 @@
 	position: relative;
 	display: flex;
 	flex-direction: column;
-	gap: 16px;
+	gap: var(--space-4);
 	margin: 0;
 	padding: 0;
 	border: none;
@@ -10,7 +10,7 @@
 
 /* Collapsed sections stack their bands flush; an open one keeps room below its fields. */
 .open {
-	padding-bottom: 16px;
+	padding-bottom: var(--space-4);
 }
 
 /* Its children lay out as the section's own. */
@@ -20,15 +20,15 @@
 
 /* A band across the whole sidebar: the negative margins cancel the form's side padding. */
 .title {
-	width: calc(100% + 32px);
-	margin: 0 -16px;
+	width: calc(100% + 2 * var(--sidebar-padding));
+	margin: 0 calc(-1 * var(--sidebar-padding));
 	padding: 0;
 	background: var(--color-section-title-background);
 }
 
 /* Spaced from the fields only while they show. */
 .open > .title {
-	margin-bottom: 12px;
+	margin-bottom: var(--space-3);
 }
 
 /* The whole band toggles the section; a section that can't collapse shows its title alone. */
@@ -38,7 +38,7 @@
 	align-items: center;
 	gap: 6px;
 	width: 100%;
-	padding: 9px 16px;
+	padding: 9px var(--sidebar-padding);
 	border: none;
 	background: none;
 	font: inherit;
@@ -117,13 +117,13 @@
  */
 .veil {
 	position: absolute;
-	inset: -12px -16px 0;
+	inset: calc(-1 * var(--space-3)) calc(-1 * var(--sidebar-padding)) 0;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	gap: 12px;
-	padding: 16px;
+	gap: var(--space-3);
+	padding: var(--space-4);
 	background: var(--color-veil);
 	text-align: center;
 }
@@ -136,17 +136,17 @@
 
 /* A little larger than a bare button, to match the question above it. */
 .resetConfirm {
-	padding: 4px 16px;
+	padding: var(--space-1) var(--space-4);
 	font-size: 0.875rem;
 }
 
 /* A bare icon in the veil's top right corner, faint until hovered or focused, like the reset button. */
 .resetCancel {
 	position: absolute;
-	top: 8px;
-	right: 8px;
+	top: var(--space-2);
+	right: var(--space-2);
 	display: inline-flex;
-	padding: 4px;
+	padding: var(--space-1);
 	color: var(--color-text-faint);
 	background: none;
 	border: none;

@@ -44,11 +44,11 @@
 	align-content: start;
 	min-height: 0;
 	overflow: hidden;
-	border-top: 0.2mm solid var(--color-rule-light);
+	border-top: var(--rule-light) solid var(--color-rule-light);
 }
 
 .ruledLine {
-	border-bottom: 0.2mm solid var(--color-rule-light);
+	border-bottom: var(--rule-light) solid var(--color-rule-light);
 }
 
 /*
@@ -85,12 +85,12 @@
 .squareGrid {
 	position: relative;
 	flex-shrink: 0;
-	width: calc(round(down, 100% - 0.2mm, var(--square-size)) + 0.2mm);
-	height: calc(round(down, 100% - 0.2mm, var(--square-size)) + 0.2mm);
+	width: calc(round(down, 100% - var(--rule-light), var(--square-size)) + var(--rule-light));
+	height: calc(round(down, 100% - var(--rule-light), var(--square-size)) + var(--rule-light));
 	overflow: clip;
 	overflow-clip-margin: 0.5mm;
-	border-top: 0.2mm solid var(--color-rule-light);
-	border-left: 0.2mm solid var(--color-rule-light);
+	border-top: var(--rule-light) solid var(--color-rule-light);
+	border-left: var(--rule-light) solid var(--color-rule-light);
 }
 
 .squareRows,
@@ -112,11 +112,11 @@
 }
 
 .squareRow {
-	border-bottom: 0.2mm solid var(--color-rule-light);
+	border-bottom: var(--rule-light) solid var(--color-rule-light);
 }
 
 .squareColumn {
-	border-right: 0.2mm solid var(--color-rule-light);
+	border-right: var(--rule-light) solid var(--color-rule-light);
 }
 
 /*
@@ -143,7 +143,7 @@
 	flex: 1;
 	display: grid;
 	min-height: 0;
-	border-top: 0.2mm solid var(--color-cell-border);
+	border-top: var(--rule-light) solid var(--color-cell-border);
 }
 
 /* The label sits left of a writing area split by a light half-hour line. */
@@ -151,7 +151,7 @@
 	position: relative;
 	display: flex;
 	min-height: 0;
-	border-bottom: 0.2mm solid var(--color-cell-border);
+	border-bottom: var(--rule-light) solid var(--color-cell-border);
 }
 
 /* The half-hour line, from the label column to the right edge. */
@@ -161,7 +161,7 @@
 	top: 50%;
 	right: 0;
 	left: 16mm;
-	border-top: 0.2mm solid var(--color-rule-light);
+	border-top: var(--rule-light) solid var(--color-rule-light);
 }
 
 .hourLabel {
@@ -170,7 +170,7 @@
 	padding-top: 1mm;
 	font-size: 8pt;
 	color: var(--color-text-muted);
-	border-right: 0.2mm solid var(--color-cell-border);
+	border-right: var(--rule-light) solid var(--color-cell-border);
 }
 
 /*
@@ -181,7 +181,7 @@
 .footer {
 	flex: none;
 	margin-top: auto;
-	border: 0.2mm solid var(--color-cell-border);
+	border: var(--rule-light) solid var(--color-cell-border);
 }
 
 .schedule + .footer {

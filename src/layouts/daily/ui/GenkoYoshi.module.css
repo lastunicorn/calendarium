@@ -155,7 +155,7 @@
 
 .guide {
 	stroke: var(--color-rule);
-	stroke-width: 0.3mm;
+	stroke-width: var(--rule-heavy);
 	stroke-linecap: round;
 	stroke-dasharray: 0 0.7mm;
 }

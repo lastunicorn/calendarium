@@ -36,14 +36,14 @@
 	font-size: var(--mini-month-weekday-size, 8pt);
 	font-weight: 600;
 	text-transform: uppercase;
-	border-bottom: 0.3mm solid var(--color-rule);
+	border-bottom: var(--rule-heavy) solid var(--color-rule);
 }
 
 .weekNumber {
 	padding-right: 1mm;
 	font-size: var(--mini-month-week-number-size, 7.5pt);
 	color: var(--color-week-number);
-	border-right: 0.3mm solid var(--color-rule-light);
+	border-right: var(--rule-heavy) solid var(--color-rule-light);
 }
 
 .weekNumber.emptyWeek {
@@ -79,7 +79,7 @@
 	height: 1.8em;
 	max-height: 100%;
 	aspect-ratio: 1;
-	border: 0.3mm solid currentColor;
+	border: var(--rule-heavy) solid currentColor;
 	border-radius: 50%;
 }
 

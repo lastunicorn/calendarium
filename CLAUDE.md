@@ -95,10 +95,11 @@ Use these words in code, comments and docs, each for one thing. The terms only o
 - Each component's styles live in a co-located CSS Module: `ProjectSection.tsx` → `ProjectSection.module.css`, imported as `import styles from './ProjectSection.module.css'`.
 - Use camelCase class names (`.a4Portrait`) so they read as `styles.a4Portrait`.
 - Keep a component's print overrides (`@media print`) in its own module file.
-- `src/index.css` holds only global styles: reset, `:root` fonts/colors (CSS variables), `body`, and the global `@page { margin: 0 }`. No component classes there.
+- `src/index.css` holds only global styles: reset, `:root` fonts, colors, spacing and rule widths (CSS variables), `body`, and the global `@page { margin: 0 }`. No component classes there.
 - Size anything inside a printed page in `mm`/`pt`, never `px`.
 - Draw thin lines as borders, never as background gradients: a sub-pixel gradient line can vanish depending on zoom and pixel position (Firefox especially), while a non-zero border always gets at least one device pixel.
 - Use the color variables from `:root` in `index.css` (`var(--color-weekend)`), never literal colors in a module; add a variable when a new color is needed.
+- Space the app's chrome with the `--space-*` scale in `index.css`; the sidebar's padding (`--sidebar-padding`, which the section bands and the form reach across) and the space between pages on screen (`--page-gap`) have their own tokens. Printed rules are `--rule-light` or `--rule-heavy`.
 
 ### Event handlers
 

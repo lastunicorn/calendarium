@@ -9,7 +9,7 @@
 
 .sideBySide {
 	grid-template-columns: auto auto;
-	row-gap: 24px;
+	row-gap: var(--page-gap);
 }
 
 .booklet > [data-side-start] {
@@ -19,7 +19,7 @@
 @media screen {
 	/* The space between sheets, as between the pages of other layouts. */
 	.stacked > [data-side-start] {
-		margin-top: 24px;
+		margin-top: var(--page-gap);
 	}
 }
 

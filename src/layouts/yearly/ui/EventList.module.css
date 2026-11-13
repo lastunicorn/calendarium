@@ -21,7 +21,7 @@
 	display: flex;
 	gap: 3mm;
 	padding: 1.2mm 0;
-	border-bottom: 0.2mm solid var(--color-rule-light);
+	border-bottom: var(--rule-light) solid var(--color-rule-light);
 	break-inside: avoid;
 }
 

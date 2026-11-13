@@ -54,8 +54,8 @@
 	flex: 1;
 	display: grid;
 	min-height: 0;
-	border-top: 0.3mm solid var(--color-rule);
-	border-left: 0.2mm solid var(--color-cell-border);
+	border-top: var(--rule-heavy) solid var(--color-rule);
+	border-left: var(--rule-light) solid var(--color-cell-border);
 }
 
 /*
@@ -64,9 +64,9 @@
  */
 .footer {
 	flex: none;
-	border-right: 0.2mm solid var(--color-cell-border);
-	border-bottom: 0.2mm solid var(--color-cell-border);
-	border-left: 0.2mm solid var(--color-cell-border);
+	border-right: var(--rule-light) solid var(--color-cell-border);
+	border-bottom: var(--rule-light) solid var(--color-cell-border);
+	border-left: var(--rule-light) solid var(--color-cell-border);
 }
 
 /* As many cells as the page has: 7, 6 with the weekend reduced, 5 without it. */
@@ -103,8 +103,8 @@
 	min-width: 0;
 	min-height: 0;
 	overflow: hidden;
-	border-right: 0.2mm solid var(--color-cell-border);
-	border-bottom: 0.2mm solid var(--color-cell-border);
+	border-right: var(--rule-light) solid var(--color-cell-border);
+	border-bottom: var(--rule-light) solid var(--color-cell-border);
 }
 
 .label {
@@ -172,7 +172,7 @@
 }
 
 .across {
-	border-top: 0.2mm solid var(--color-cell-border);
+	border-top: var(--rule-light) solid var(--color-cell-border);
 }
 
 .hour {
@@ -182,11 +182,11 @@
 }
 
 .down .hour {
-	border-top: 0.2mm solid var(--color-cell-border);
+	border-top: var(--rule-light) solid var(--color-cell-border);
 }
 
 .across .hour + .hour {
-	border-left: 0.2mm solid var(--color-cell-border);
+	border-left: var(--rule-light) solid var(--color-cell-border);
 }
 
 /* The light half-hour line, clear of the label. */
@@ -199,14 +199,14 @@
 	top: 50%;
 	right: 0;
 	left: 0;
-	border-top: 0.2mm solid var(--color-rule-light);
+	border-top: var(--rule-light) solid var(--color-rule-light);
 }
 
 .across .hour::after {
 	top: 3.5mm;
 	bottom: 0;
 	left: 50%;
-	border-left: 0.2mm solid var(--color-rule-light);
+	border-left: var(--rule-light) solid var(--color-rule-light);
 }
 
 .hourLabel {

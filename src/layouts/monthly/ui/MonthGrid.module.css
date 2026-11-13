@@ -5,8 +5,8 @@
 	/* `minmax(0, …)`: a long weekday name doesn't widen its column, the days stay evenly spaced. */
 	grid-template-columns: repeat(7, minmax(0, 1fr));
 	min-height: 0;
-	border-top: 0.3mm solid var(--color-rule);
-	border-left: 0.2mm solid var(--color-cell-border);
+	border-top: var(--rule-heavy) solid var(--color-rule);
+	border-left: var(--rule-light) solid var(--color-cell-border);
 }
 
 .withWeekNumbers {
@@ -16,8 +16,8 @@
 .weekday,
 .weekNumber,
 .day {
-	border-right: 0.2mm solid var(--color-cell-border);
-	border-bottom: 0.2mm solid var(--color-cell-border);
+	border-right: var(--rule-light) solid var(--color-cell-border);
+	border-bottom: var(--rule-light) solid var(--color-cell-border);
 }
 
 /* The lines stay, transparent, so the cells keep their size with or without them. */
@@ -38,7 +38,7 @@
 	/* A full name too long for narrow paper is cut short rather than spilling into the next column. */
 	text-overflow: ellipsis;
 	white-space: nowrap;
-	border-bottom: 0.3mm solid var(--color-rule);
+	border-bottom: var(--rule-heavy) solid var(--color-rule);
 }
 
 .weekNumber {

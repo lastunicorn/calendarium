@@ -13,7 +13,7 @@
 	flex-direction: column;
 	/* `safe` keeps the pages' left edge reachable when they are wider than the preview area. */
 	align-items: safe center;
-	padding: 24px;
+	padding: var(--page-gap);
 	overflow: auto;
 }
 
@@ -27,7 +27,7 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	gap: 24px;
+	gap: var(--page-gap);
 }
 
 /* The viewer's zoom (`--preview-zoom`, set by `Preview`), on screen only: print keeps the paper size. */

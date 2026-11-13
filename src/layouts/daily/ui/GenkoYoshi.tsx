@@ -17,7 +17,7 @@ const FURIGANA_CLASSES: Record<GenkoYoshiFurigana, string | undefined> = {
 	right: styles.furiganaRight,
 }
 
-/** The width of the grid's lines, in mm. */
+/** The width of the grid's lines, in mm, for the path math: `--rule-light` in `index.css`. */
 const LINE_WIDTH = 0.2
 
 /** The class laying the grid out in columns, a gap between them, or in rows, per direction. */
