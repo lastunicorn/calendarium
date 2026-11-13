@@ -8,7 +8,7 @@ import {
 } from 'react'
 
 import type { Project, ProjectId } from '../../workspace/Project'
-import { parseProjectFile, projectFile, type OpenedProjectFile } from '../../workspace/projectFile'
+import { projectFile, readProjectFile, type OpenedProjectFile } from '../../workspace/projectFile'
 import type { SaveFailure } from '../../workspace/storage'
 import { openProject, projectList, type Workspace } from '../../workspace/Workspace'
 import { Dialog } from '../components/Dialog'
@@ -95,6 +95,8 @@ function describeRejected(
 			return `${fileName} is not a calendar project file.`
 		case 'unknownLayout':
 			return `${fileName} was made by a newer version, with a layout this one doesn’t have.`
+		case 'tooLarge':
+			return `${fileName} is too large to be a calendar project file (over 1 MB).`
 	}
 }
 
@@ -213,7 +215,7 @@ export function ProjectSection({
 		input.value = ''
 		if (!file) return
 
-		const opened = parseProjectFile(await file.text(), file.name)
+		const opened = await readProjectFile(file)
 		setOpenError('')
 		setOpenNotice('')
 		if (!opened.ok) {

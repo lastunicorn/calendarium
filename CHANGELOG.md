@@ -43,6 +43,7 @@ The app now keeps a list of projects, each with an id, an optional name, a layou
 ### Fixed
 
 - Day layout: the Dots fill prints sharp, round dots, where Chrome printed them as blurry gray squares.
+- Opening a file over 1 MB is refused as too large to be a project file, instead of freezing the tab, and an event list of more than 10,000 lines in a file or stored project is ignored.
 
 ## 5.0.0 — 2026-10-24
 

@@ -1,6 +1,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import { defaultLayoutOptions, LAYOUT_IDS } from './index'
+import { MAX_EVENT_LINES } from './common'
+import { defaultLayoutOptions, LAYOUT_IDS, layoutSpec } from './index'
+import { parseOptions } from './LayoutSpec'
 
 describe('default locale', () => {
 	afterEach(() => {
@@ -39,5 +41,25 @@ describe('default week start', () => {
 	it('lets the language choose the first day of the week in every layout', () => {
 		for (const layout of LAYOUT_IDS)
 			expect(defaultLayoutOptions(layout).calendar.weekStart).toBe('auto')
+	})
+})
+
+describe('event list', () => {
+	it('is read up to MAX_EVENT_LINES lines in every layout', () => {
+		const events = Array.from({ length: MAX_EVENT_LINES }, () => '0000-12-25 Christmas')
+		for (const layout of LAYOUT_IDS) {
+			const ignored: string[] = []
+			expect(parseOptions(layoutSpec(layout), { events }, ignored).events).toEqual(events)
+			expect(ignored).toEqual([])
+		}
+	})
+
+	it('is ignored past MAX_EVENT_LINES lines, keeping the empty default', () => {
+		const events = Array.from({ length: MAX_EVENT_LINES + 1 }, () => '0000-12-25 Christmas')
+		for (const layout of LAYOUT_IDS) {
+			const ignored: string[] = []
+			expect(parseOptions(layoutSpec(layout), { events }, ignored).events).toEqual([])
+			expect(ignored).toEqual(['events'])
+		}
 	})
 })

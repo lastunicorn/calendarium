@@ -41,9 +41,15 @@ export function projectFile(project: Project): ProjectFile {
 
 /**
  * A project read from an opened file (see `ParsedProject`): its id is `null` when the file has
- * none, as a legacy one never has.
+ * none, as a legacy one never has. A file over `MAX_PROJECT_FILE_SIZE` is refused unread.
  */
-export type OpenedProjectFile = ParsedProject
+export type OpenedProjectFile = ParsedProject | { ok: false; reason: 'tooLarge' }
+
+/**
+ * The largest file read as a project, in bytes: 1 MB. A project file takes a few kilobytes, and
+ * parsing a far larger one would freeze the tab.
+ */
+export const MAX_PROJECT_FILE_SIZE = 1024 * 1024
 
 /**
  * The name the file names of 5 were generated as, `calendar-<layout>-<year>`, with the layout's
@@ -77,4 +83,10 @@ export function parseProjectFile(text: string, fileName: string): OpenedProjectF
 	const fields = legacyFile(raw)
 	if (fields === null) return { ok: false, reason: 'notProject' }
 	return parseProjectFields({ ...fields, name: nameFromFileName(fileName) }, false)
+}
+
+/** Reads an opened file as a project (`parseProjectFile`), unless it is too large to be one. */
+export async function readProjectFile(file: File): Promise<OpenedProjectFile> {
+	if (file.size > MAX_PROJECT_FILE_SIZE) return { ok: false, reason: 'tooLarge' }
+	return parseProjectFile(await file.text(), file.name)
 }

@@ -65,10 +65,21 @@ export function commonDefaults(): CommonOptions {
 	}
 }
 
+/**
+ * The most lines an event list read from storage or a file may have: far more than any calendar
+ * needs, so a list past it is a corrupt or hostile one, which would slow every page plan.
+ */
+export const MAX_EVENT_LINES = 10_000
+
+/** An event list of at most `MAX_EVENT_LINES` lines. */
+function isEventLines(value: unknown): value is string[] {
+	return isStringArray(value) && value.length <= MAX_EVENT_LINES
+}
+
 /** The validators of the options every layout has; each layout's spec extends them. */
 export const COMMON_VALIDATORS: Validators<CommonOptions> = {
 	calendar: { year: isYear, locale: oneOf(LOCALES), weekStart: isWeekStartSetting },
-	events: isStringArray,
+	events: isEventLines,
 	page: PAGE_VALIDATORS,
 }
 

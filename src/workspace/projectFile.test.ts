@@ -1,10 +1,15 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
 import { defaultLayoutOptions, type LayoutId } from '../layouts'
 import { LEGACY_FILE_FORMAT } from './legacy'
 import type { Project } from './Project'
 import { PROJECT_FORMAT, serializeProject } from './projectDocument'
-import { parseProjectFile, projectFile } from './projectFile'
+import {
+	MAX_PROJECT_FILE_SIZE,
+	parseProjectFile,
+	projectFile,
+	readProjectFile,
+} from './projectFile'
 import { APP_VERSION, FORMAT_VERSION } from './version'
 
 const ID = '3f0c9a52-7d1e-4b8a-9c61-2e5f4a8b7d10'
@@ -326,5 +331,27 @@ describe('parseProjectFile of a legacy file', () => {
 			ok: true,
 			ignored: ['page.margins.top', 'content.schedule.firstHour'],
 		})
+	})
+})
+
+describe('readProjectFile', () => {
+	it('reads a file of up to MAX_PROJECT_FILE_SIZE bytes as a project', async () => {
+		const project = weekly('Work')
+		const { text } = projectFile(project)
+		const padded = text + ' '.repeat(MAX_PROJECT_FILE_SIZE - new Blob([text]).size)
+		expect(await readProjectFile(new File([padded], 'work.json'))).toEqual({
+			ok: true,
+			project,
+			ignored: [],
+			newer: false,
+		})
+	})
+
+	it('refuses a larger file unread', async () => {
+		const text = projectFile(weekly('Work')).text
+		const file = new File([text + ' '.repeat(MAX_PROJECT_FILE_SIZE)], 'work.json')
+		const textSpy = vi.spyOn(file, 'text')
+		expect(await readProjectFile(file)).toEqual({ ok: false, reason: 'tooLarge' })
+		expect(textSpy).not.toHaveBeenCalled()
 	})
 })
