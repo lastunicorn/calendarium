@@ -1,4 +1,5 @@
-import { expect, type Page, test } from '@playwright/test'
+import { expect, test } from '@playwright/test'
+import { clippedPages, openSection, pdfPageSizes, showLayout } from './helpers.ts'
 
 /** PostScript points per mm: PDF sizes are in points. */
 const POINTS_PER_MM = 72 / 25.4
@@ -22,60 +23,6 @@ const CASES: PrintCase[] = [
 	{ layout: 'weekly', pages: 53, width: 297, height: 210 },
 	{ layout: 'daily', pages: 366, width: 210, height: 297 },
 ]
-
-/** Expands the sidebar section titled `title`, which starts collapsed. */
-async function openSection(page: Page, title: string) {
-	await page.getByRole('button', { name: title, exact: true }).click()
-}
-
-/**
- * Shows `layout` for `year` as a user would: creates a project of it in the New project dialog,
- * which opens by itself on a fresh page, picking the layout by its label ("Weekly (one week per
- * page)"), then sets the year in the sidebar.
- */
-async function showLayout(page: Page, layout: string, year: number) {
-	await page.goto('/')
-	const dialog = page.getByRole('dialog', { name: 'New project' })
-	await dialog.getByRole('radio', { name: new RegExp(`^${layout} `, 'i') }).check()
-	await dialog.getByRole('button', { name: 'Create' }).click()
-	await expect(dialog).toBeHidden()
-	await openSection(page, 'Calendar')
-	const yearField = page.getByRole('spinbutton', { name: 'Year' })
-	await yearField.fill(String(year))
-	await expect(yearField).toHaveValue(String(year))
-}
-
-/**
- * The size of every page of a PDF, in points, from the `/MediaBox` of each page object. Chromium
- * writes them uncompressed, so no PDF library is needed.
- */
-function pdfPageSizes(pdf: Buffer): { width: number; height: number }[] {
-	const text = pdf.toString('latin1')
-	const pages = text.match(/\/Type\s*\/Page\b[^]*?endobj/g) ?? []
-	return pages.map((page) => {
-		const box = /\/MediaBox\s*\[\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)\s*\]/.exec(page)
-		if (box === null) throw new Error('A PDF page has no /MediaBox')
-		return {
-			width: Number(box[3]) - Number(box[1]),
-			height: Number(box[4]) - Number(box[2]),
-		}
-	})
-}
-
-/** The numbers of the pages whose content doesn't fit inside them, as printed. */
-async function clippedPages(page: Page): Promise<number[]> {
-	// Print media turns off `content-visibility`, so every page is laid out as it prints.
-	await page.emulateMedia({ media: 'print' })
-	return page.locator('main section').evaluateAll((sections) =>
-		sections.flatMap((section, index) =>
-			// The same test as `useOverflow`, which only runs on screen, for visible pages.
-			section.scrollHeight > section.clientHeight + 1 ||
-			section.scrollWidth > section.clientWidth + 1
-				? [index + 1]
-				: [],
-		),
-	)
-}
 
 for (const { layout, pages, width, height } of CASES) {
 	test(`${layout} prints ${pages} page(s) of ${width} × ${height} mm`, async ({ page }) => {

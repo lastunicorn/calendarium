@@ -69,17 +69,18 @@ Then open http://localhost:5173.
 
 #### Commands
 
-| Command              | What it does                                 |
-| -------------------- | -------------------------------------------- |
-| `npm install`        | Install dependencies                         |
-| `npm run dev`        | Start the dev server (http://localhost:5173) |
-| `npm run build`      | Type-check and build to `dist/`              |
-| `npm test`           | Run unit and component tests once (Vitest)   |
-| `npm run test:watch` | Run tests in watch mode                      |
-| `npm run test:e2e`   | Run the Playwright print tests (Chromium)    |
-| `npm run lint`       | Lint with oxlint                             |
-| `npm run format`     | Format with Prettier                         |
-| `npm run typecheck`  | Type-check only                              |
+| Command               | What it does                                                                              |
+| --------------------- | ----------------------------------------------------------------------------------------- |
+| `npm install`         | Install dependencies                                                                      |
+| `npm run dev`         | Start the dev server (http://localhost:5173)                                              |
+| `npm run build`       | Type-check and build to `dist/`                                                           |
+| `npm test`            | Run unit and component tests once (Vitest)                                                |
+| `npm run test:watch`  | Run tests in watch mode                                                                   |
+| `npm run test:e2e`    | Run the Playwright print tests (Chromium)                                                 |
+| `npm run test:visual` | Show which printed pages the uncommitted changes alter (or pass a commit to compare with) |
+| `npm run lint`        | Lint with oxlint                                                                          |
+| `npm run format`      | Format with Prettier                                                                      |
+| `npm run typecheck`   | Type-check only                                                                           |
 
 ## License
 

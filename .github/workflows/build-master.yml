@@ -9,6 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # The whole history, for the visual comparison's base commit.
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 24
@@ -21,3 +24,23 @@ jobs:
       - run: npm run build
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
+      # Reports the printed pages this push or pull request changes, against the commit before it
+      # (or the pull request's base), without failing the build: a change of look may be meant.
+      - name: Visual changes
+        id: visual
+        continue-on-error: true
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          if [ -z "$BASE" ] || ! git cat-file -e "$BASE^{commit}" 2>/dev/null; then
+            echo "No base commit to compare with (a new branch)."
+            exit 0
+          fi
+          scripts/visual-diff.sh "$BASE"
+      # Each changed page's expected, actual and diff images.
+      - uses: actions/upload-artifact@v4
+        if: always() && (failure() || steps.visual.outcome == 'failure')
+        with:
+          name: playwright-results
+          path: test-results/
+          retention-days: 14
