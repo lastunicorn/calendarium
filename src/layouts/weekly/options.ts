@@ -120,8 +120,8 @@ const CONTENT_VALIDATORS: Validators<WeeklyContent> = {
 export const WEEKLY_SPEC: LayoutSpec<WeeklyOptions> = {
 	// Columns side by side fit landscape, with room for three-letter weekdays. The weekend
 	// shares a cell, leaving the weekdays room for an hourly schedule.
-	defaults: () => {
-		const { page, ...common } = commonDefaults()
+	defaults: (env) => {
+		const { page, ...common } = commonDefaults(env)
 		// The groups in sidebar order, which files keep: the page last.
 		return {
 			...common,

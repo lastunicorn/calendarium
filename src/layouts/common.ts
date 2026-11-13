@@ -1,4 +1,5 @@
 import { buildYear, isYear, type CalendarMonth, type WeekStart } from '../core/calendar'
+import { currentEnvironment, type Environment } from '../core/environment'
 import { parseEvents, type CalendarEvent } from '../core/events'
 import {
 	isWeekStartSetting,
@@ -32,11 +33,10 @@ export interface CommonOptions {
 }
 
 /**
- * The browser's language when the calendar has it, so a German browser starts in German.
- * English, of any region, and unsupported languages start in British English.
+ * The browser's language `tag` when the calendar has it, so a German browser starts in German.
+ * English, of any region, unsupported languages and no language start in British English.
  */
-function defaultLocale(): Locale {
-	const tag = globalThis.navigator?.language
+function defaultLocale(tag: string | undefined): Locale {
 	if (tag === undefined) return 'en-GB'
 	const { language, region } = new Intl.Locale(tag)
 	if (language === 'en') return 'en-GB'
@@ -48,10 +48,13 @@ function defaultLocale(): Locale {
 	)
 }
 
-/** The options shared by every layout, with the values all layouts start from. */
-export function commonDefaults(): CommonOptions {
+/**
+ * The options shared by every layout, with the values all layouts start from in `env`: its year,
+ * in its language.
+ */
+export function commonDefaults(env: Environment = currentEnvironment()): CommonOptions {
 	return {
-		calendar: { year: new Date().getFullYear(), locale: defaultLocale(), weekStart: 'auto' },
+		calendar: { year: env.year, locale: defaultLocale(env.language), weekStart: 'auto' },
 		events: [],
 		page: {
 			paperSize: 'a4',

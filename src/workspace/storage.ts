@@ -1,6 +1,6 @@
+import { currentEnvironment, type Environment } from '../core/environment'
 import { asObject } from '../core/validation'
 import {
-	defaultLayoutOptions,
 	hasDefaultOptions,
 	LAYOUT_IDS,
 	layoutSpec,
@@ -92,12 +92,15 @@ function writeWorkspaceRecord(open: ProjectId | null): void {
 }
 
 /**
- * Whether `options` are `layout`'s defaults, its year aside: 5 stored all four layouts, each with
- * the year it was first saved in, which says nothing about whether it was used.
+ * Whether `options` are `layout`'s defaults in `env`, its year aside: 5 stored all four layouts,
+ * each with the year it was first saved in, which says nothing about whether it was used.
  */
-function hasDefaultsBesidesYear(layout: LayoutId, options: AnyLayoutOptions): boolean {
-	const { year } = defaultLayoutOptions(layout).calendar
-	return hasDefaultOptions(layout, { ...options, calendar: { ...options.calendar, year } })
+function hasDefaultsBesidesYear(
+	layout: LayoutId,
+	options: AnyLayoutOptions,
+	env: Environment,
+): boolean {
+	return hasDefaultOptions(layout, options, { ...env, year: options.calendar.year })
 }
 
 /**
@@ -113,13 +116,14 @@ function migrateLegacy(): Workspace | null {
 	const legacy = data === null ? null : legacyWorkspace(data)
 	if (legacy === null) return null
 
+	const env = currentEnvironment()
 	const projects: Project[] = []
 	let open: ProjectId | null = null
 	for (const layout of LAYOUT_IDS) {
 		const shown = layout === legacy.shown
 		if (!shown && !Object.hasOwn(legacy.layouts, layout)) continue
-		const options = parseOptions(layoutSpec(layout), legacy.layouts[layout])
-		if (!shown && hasDefaultsBesidesYear(layout, options)) continue
+		const options = parseOptions(layoutSpec(layout), legacy.layouts[layout], [], env)
+		if (!shown && hasDefaultsBesidesYear(layout, options, env)) continue
 		const project = { id: newProjectId(), name: '', layout, options } as Project
 		projects.push(project)
 		if (shown) open = project.id

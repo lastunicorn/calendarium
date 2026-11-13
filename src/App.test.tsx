@@ -2,6 +2,7 @@ import { fireEvent, render, screen, waitFor, within } from '@testing-library/rea
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import App from './App'
+import { currentEnvironment } from './core/environment'
 import { defaultLayoutOptions, LAYOUT_IDS } from './layouts'
 import { LAYOUT_VIEWS } from './ui/layouts/registry'
 import { LEGACY_FILE_FORMAT } from './workspace/legacy'
@@ -114,7 +115,7 @@ function monthlyFile(id: string, name: string, year: number): string {
 	return serializeProject({ id, name, layout: 'monthly', options }, { pretty: true })
 }
 
-const THIS_YEAR = String(new Date().getFullYear())
+const THIS_YEAR = String(currentEnvironment().year)
 
 describe('App without a project', () => {
 	it('asks for a new project on a first launch, the first layout chosen, with nothing to print', () => {

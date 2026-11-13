@@ -99,6 +99,30 @@ describe('layers', () => {
 	})
 })
 
+// What the app reads from where it runs is read in one place each, so the domain stays
+// deterministic: the clock and the browser's language by `core/environment.ts`, and a `Date`
+// built only there and by `utcDate`. Tests are exempt.
+
+/** Each environment read, with the only files allowed to make it. */
+const ENVIRONMENT_READS: { pattern: RegExp; allowed: string[] }[] = [
+	{ pattern: /\bnew Date\(/, allowed: ['core/calendar.ts', 'core/environment.ts'] },
+	{ pattern: /\bnavigator\b/, allowed: ['core/environment.ts'] },
+]
+
+describe('environment', () => {
+	it('is read only by the files allowed to', () => {
+		const offending = ENVIRONMENT_READS.flatMap(({ pattern, allowed }) =>
+			FILES.filter(
+				(file) =>
+					!/\.test\.tsx?$/.test(file) &&
+					!allowed.includes(file) &&
+					pattern.test(SOURCES[`./${file}`]),
+			).map((file) => `${file}: ${pattern.source}`),
+		)
+		expect(offending).toEqual([])
+	})
+})
+
 describe('layouts', () => {
 	it('have a folder each, named after its id', () => {
 		const folders = new Set(FILES.map(layoutOf).filter((layout) => layout !== null))

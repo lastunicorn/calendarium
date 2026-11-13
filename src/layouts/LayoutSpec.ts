@@ -1,3 +1,4 @@
+import type { Environment } from '../core/environment'
 import { asObject, copyValid, type UntrustedObject, type Validators } from '../core/validation'
 import type { CommonOptions } from './common'
 
@@ -21,8 +22,11 @@ export type LayoutMigrations = Readonly<Partial<Record<number, OptionsMigration>
  * are brought to the current shape.
  */
 export interface LayoutSpec<O> {
-	/** A fresh copy of the layout's default options, picked for how it is drawn. */
-	defaults: () => O
+	/**
+	 * A fresh copy of the layout's default options, picked for how it is drawn, in `env` (today's
+	 * year and the browser's language when not given).
+	 */
+	defaults: (env?: Environment) => O
 	/** One check per field, a nested table for an object like `page`, applied field by field when parsing. */
 	validators: Validators<O>
 	/**
@@ -61,14 +65,16 @@ export function defineLayout<const Id extends string, O extends CommonOptions>(
 /**
  * Keeps only the valid fields of untrusted options in the current shape, falling back to the
  * spec's defaults, then applies its cross-field rules. Fields that were present but invalid are
- * added to `ignored` as their paths (`firstHour`, `page.margins.top`).
+ * added to `ignored` as their paths (`firstHour`, `page.margins.top`). The defaults are those of
+ * `env`, when given.
  */
 export function parseOptions<O extends object>(
 	spec: LayoutSpec<O>,
 	data: unknown,
 	ignored: string[] = [],
+	env?: Environment,
 ): O {
-	const options = spec.defaults()
+	const options = spec.defaults(env)
 	const stored = asObject(data)
 	if (stored === null) return options
 	copyValid(options, stored, spec.validators, ignored)

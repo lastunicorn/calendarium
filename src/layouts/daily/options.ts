@@ -186,8 +186,8 @@ const CONTENT_VALIDATORS: Validators<DailyContent> = {
 
 export const DAILY_SPEC: LayoutSpec<DailyOptions> = {
 	// A tall schedule fits portrait.
-	defaults: () => {
-		const { page, ...common } = commonDefaults()
+	defaults: (env) => {
+		const { page, ...common } = commonDefaults(env)
 		// The groups in sidebar order, which files keep: the page last.
 		return {
 			...common,

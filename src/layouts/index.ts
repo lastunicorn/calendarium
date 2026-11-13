@@ -1,4 +1,5 @@
 import { sameData } from '../core/data'
+import type { Environment } from '../core/environment'
 import { oneOf, type UntrustedObject } from '../core/validation'
 import { DAILY } from './daily'
 import type { LayoutSpec } from './LayoutSpec'
@@ -63,17 +64,24 @@ export function migrateLayoutOptions(
 	return step === undefined ? options : step(options)
 }
 
-/** A fresh copy of `layout`'s default options. */
-export function defaultLayoutOptions<K extends LayoutId>(layout: K): LayoutOptions[K] {
-	return layoutSpec(layout).defaults()
+/** A fresh copy of `layout`'s default options in `env` (by default, the current one). */
+export function defaultLayoutOptions<K extends LayoutId>(
+	layout: K,
+	env?: Environment,
+): LayoutOptions[K] {
+	return layoutSpec(layout).defaults(env)
 }
 
-/** Whether `options` are `layout`'s defaults, nested fields included: nothing a new project would change. */
+/**
+ * Whether `options` are `layout`'s defaults in `env`, nested fields included: nothing a new
+ * project would change.
+ */
 export function hasDefaultOptions<K extends LayoutId>(
 	layout: K,
 	options: LayoutOptions[K],
+	env?: Environment,
 ): boolean {
-	return sameData(options, defaultLayoutOptions(layout))
+	return sameData(options, defaultLayoutOptions(layout, env))
 }
 
 /** `options` with its layout's rules applied; the same object when it already follows them. */

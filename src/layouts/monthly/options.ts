@@ -128,8 +128,8 @@ const CONTENT_VALIDATORS: Validators<MonthlyContent> = {
 
 export const MONTHLY_SPEC: LayoutSpec<MonthlyOptions> = {
 	// Large writing cells fit landscape, with room for full weekday names.
-	defaults: () => {
-		const { page, ...common } = commonDefaults()
+	defaults: (env) => {
+		const { page, ...common } = commonDefaults(env)
 		// The groups in sidebar order, which files keep: the page last.
 		return {
 			...common,

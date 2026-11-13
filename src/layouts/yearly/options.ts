@@ -42,8 +42,8 @@ const CONTENT_VALIDATORS: Validators<YearlyContent> = {
 
 export const YEARLY_SPEC: LayoutSpec<YearlyOptions> = {
 	// 12 small months fit portrait; one-letter weekdays keep them narrow.
-	defaults: () => {
-		const { page, ...common } = commonDefaults()
+	defaults: (env) => {
+		const { page, ...common } = commonDefaults(env)
 		// The groups in sidebar order, which files keep: the page last.
 		return {
 			...common,

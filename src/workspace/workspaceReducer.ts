@@ -1,4 +1,5 @@
 import { applyPatch, type Patch } from '../core/data'
+import type { Environment } from '../core/environment'
 import {
 	defaultLayoutOptions,
 	normalizeLayout,
@@ -9,13 +10,13 @@ import type { Project, ProjectId } from './Project'
 import { openProject, projectList, type Workspace } from './Workspace'
 
 /**
- * The commands that change the `Workspace` aggregate, the only way it changes. Ids are given by
- * the caller, so the reducer stays pure. The commands on the open project act on nothing when
+ * The commands that change the `Workspace` aggregate, the only way it changes. Ids, and the
+ * environment the defaults are taken in, are given by the caller, so the reducer stays pure. The commands on the open project act on nothing when
  * none is open.
  */
 export type WorkspaceAction =
-	/** Adds a project of `layout` with its defaults, and opens it. */
-	| { type: 'createProject'; id: ProjectId; name: string; layout: LayoutId }
+	/** Adds a project of `layout` with its defaults in `env`, and opens it. */
+	| { type: 'createProject'; id: ProjectId; name: string; layout: LayoutId; env: Environment }
 	/** Opens another project; an unknown id changes nothing. */
 	| { type: 'openProject'; id: ProjectId }
 	/** Renames the open project. */
@@ -27,8 +28,8 @@ export type WorkspaceAction =
 	| {
 			[K in LayoutId]: { type: 'updateOptions'; layout: K; patch: Patch<LayoutOptions[K]> }
 	  }[LayoutId]
-	/** Puts the open project's options back to its layout's defaults, keeping its id and name. */
-	| { type: 'resetOptions' }
+	/** Puts the open project's options back to its layout's defaults in `env`, keeping its id and name. */
+	| { type: 'resetOptions'; env: Environment }
 	/**
 	 * Removes a project; if it was open, opens its neighbor in `projectList` (the next one, or the
 	 * previous when it was the last), or none. An unknown id changes nothing.
@@ -64,8 +65,13 @@ export function workspaceReducer(workspace: Workspace, action: WorkspaceAction):
 	switch (action.type) {
 		case 'createProject': {
 			if (Object.hasOwn(workspace.projects, action.id)) return workspace
-			const { id, name, layout } = action
-			const project = { id, name, layout, options: defaultLayoutOptions(layout) } as Project
+			const { id, name, layout, env } = action
+			const project = {
+				id,
+				name,
+				layout,
+				options: defaultLayoutOptions(layout, env),
+			} as Project
 			return { ...withProject(workspace, project), open: id }
 		}
 		case 'openProject':
@@ -92,7 +98,7 @@ export function workspaceReducer(workspace: Workspace, action: WorkspaceAction):
 		case 'resetOptions': {
 			const project = openProject(workspace)
 			if (project === null) return workspace
-			const options = defaultLayoutOptions(project.layout)
+			const options = defaultLayoutOptions(project.layout, action.env)
 			return withProject(workspace, { ...project, options } as Project)
 		}
 		case 'deleteProject': {

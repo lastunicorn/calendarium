@@ -1,9 +1,13 @@
 import { describe, expect, it } from 'vitest'
 
+import type { Environment } from '../core/environment'
 import { defaultLayoutOptions } from '../layouts'
 import type { Project } from './Project'
 import { defaultWorkspace, openProject, type Workspace } from './Workspace'
 import { workspaceReducer } from './workspaceReducer'
+
+/** The environment the tests' defaults are taken in. */
+const ENV: Environment = { year: 2026, language: 'de-DE' }
 
 /** The `n`th test id, a valid project id that sorts by `n`. */
 function id(n: number): string {
@@ -14,25 +18,32 @@ function id(n: number): string {
 function created(names: string[], layout: Project['layout'] = 'yearly'): Workspace {
 	return names.reduce(
 		(workspace, name, i) =>
-			workspaceReducer(workspace, { type: 'createProject', id: id(i + 1), name, layout }),
+			workspaceReducer(workspace, {
+				type: 'createProject',
+				id: id(i + 1),
+				name,
+				layout,
+				env: ENV,
+			}),
 		defaultWorkspace(),
 	)
 }
 
 describe('createProject', () => {
-	it('adds a project with its layout’s defaults, and opens it', () => {
+	it('adds a project with its layout’s defaults in the command’s environment, and opens it', () => {
 		const workspace = workspaceReducer(created(['Home']), {
 			type: 'createProject',
 			id: id(9),
 			name: 'Work',
 			layout: 'weekly',
+			env: ENV,
 		})
 		expect(workspace.open).toBe(id(9))
 		expect(workspace.projects[id(9)]).toEqual({
 			id: id(9),
 			name: 'Work',
 			layout: 'weekly',
-			options: defaultLayoutOptions('weekly'),
+			options: defaultLayoutOptions('weekly', ENV),
 		})
 		expect(Object.keys(workspace.projects)).toEqual([id(1), id(9)])
 	})
@@ -45,6 +56,7 @@ describe('createProject', () => {
 				id: id(1),
 				name: 'Work',
 				layout: 'daily',
+				env: ENV,
 			}),
 		).toBe(workspace)
 	})
@@ -93,7 +105,7 @@ describe('updateOptions', () => {
 			layout: 'yearly',
 			patch: { calendar: { year: 2030 }, header: { title: 'Hi' } },
 		})
-		const defaults = defaultLayoutOptions('yearly')
+		const defaults = defaultLayoutOptions('yearly', ENV)
 		expect(updated.projects[id(2)]).toEqual({
 			...workspace.projects[id(2)],
 			options: {
@@ -158,19 +170,19 @@ describe('updateOptions', () => {
 })
 
 describe('resetOptions', () => {
-	it('puts the open project’s options back to the defaults, keeping its id and name', () => {
+	it('puts the open project’s options back to the defaults in the command’s environment, keeping its id and name', () => {
 		let workspace = created(['Home', 'Work'], 'daily')
 		workspace = workspaceReducer(workspace, {
 			type: 'updateOptions',
 			layout: 'daily',
 			patch: { calendar: { year: 1999 }, content: { schedule: { firstHour: 3 } } },
 		})
-		const reset = workspaceReducer(workspace, { type: 'resetOptions' })
+		const reset = workspaceReducer(workspace, { type: 'resetOptions', env: ENV })
 		expect(reset.projects[id(2)]).toEqual({
 			id: id(2),
 			name: 'Work',
 			layout: 'daily',
-			options: defaultLayoutOptions('daily'),
+			options: defaultLayoutOptions('daily', ENV),
 		})
 		expect(reset.projects[id(1)]).toBe(workspace.projects[id(1)])
 		expect(reset.open).toBe(id(2))
@@ -178,7 +190,7 @@ describe('resetOptions', () => {
 
 	it('changes nothing without an open project', () => {
 		const none = defaultWorkspace()
-		expect(workspaceReducer(none, { type: 'resetOptions' })).toBe(none)
+		expect(workspaceReducer(none, { type: 'resetOptions', env: ENV })).toBe(none)
 	})
 })
 

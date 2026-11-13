@@ -1,17 +1,22 @@
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
 
 import { MAX_EVENT_LINES } from './common'
 import { defaultLayoutOptions, LAYOUT_IDS, layoutSpec } from './index'
 import { parseOptions } from './LayoutSpec'
 
-describe('default locale', () => {
-	afterEach(() => {
-		vi.unstubAllGlobals()
+describe('default year', () => {
+	it('is the environment’s in every layout', () => {
+		for (const layout of LAYOUT_IDS) {
+			const env = { year: 1999, language: 'en-GB' }
+			expect(defaultLayoutOptions(layout, env).calendar.year).toBe(1999)
+		}
 	})
+})
 
-	function defaultLocalesFor(language: string) {
-		vi.stubGlobal('navigator', { language })
-		return LAYOUT_IDS.map((layout) => defaultLayoutOptions(layout).calendar.locale)
+describe('default locale', () => {
+	function defaultLocalesFor(language: string | undefined) {
+		const env = { year: 2026, language }
+		return LAYOUT_IDS.map((layout) => defaultLayoutOptions(layout, env).calendar.locale)
 	}
 
 	it('is British English for every layout in an English browser', () => {
@@ -34,6 +39,7 @@ describe('default locale', () => {
 
 	it('falls back to British English', () => {
 		expect(defaultLocalesFor('he-IL')).toEqual(LAYOUT_IDS.map(() => 'en-GB'))
+		expect(defaultLocalesFor(undefined)).toEqual(LAYOUT_IDS.map(() => 'en-GB'))
 	})
 })
 

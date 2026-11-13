@@ -51,6 +51,7 @@ describe('normalizeLayout', () => {
 			id,
 			name: '',
 			layout,
+			env: { year: 2026, language: 'en-GB' },
 		})
 		const updated = workspaceReducer(created, {
 			type: 'updateOptions',

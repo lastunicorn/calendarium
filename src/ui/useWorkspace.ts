@@ -1,6 +1,7 @@
 import { useEffect, useReducer, useRef, useState } from 'react'
 
 import type { Patch } from '../core/data'
+import { currentEnvironment } from '../core/environment'
 import type { LayoutId, LayoutOptions } from '../layouts'
 import { newProjectId, type Project, type ProjectId } from '../workspace/Project'
 import { loadWorkspace, saveWorkspace, type SaveFailure } from '../workspace/storage'
@@ -14,7 +15,8 @@ export type UpdateLayoutOptions = <K extends LayoutId>(
 
 /**
  * The app's single workspace state: loaded from and saved to `localStorage`, with why the last
- * save wasn't written, `null` when it was. New projects' ids are made here, so the reducer stays pure.
+ * save wasn't written, `null` when it was. New projects' ids, and the environment defaults are
+ * taken in, are made here, so the reducer stays pure.
  */
 export function useWorkspace() {
 	const [workspace, dispatch] = useReducer(workspaceReducer, undefined, loadWorkspace)
@@ -32,7 +34,13 @@ export function useWorkspace() {
 
 	/** Adds a project with its layout's defaults, and opens it. */
 	function createProject(name: string, layout: LayoutId) {
-		dispatch({ type: 'createProject', id: newProjectId(), name, layout })
+		dispatch({
+			type: 'createProject',
+			id: newProjectId(),
+			name,
+			layout,
+			env: currentEnvironment(),
+		})
 	}
 
 	function openProject(id: ProjectId) {
@@ -50,7 +58,7 @@ export function useWorkspace() {
 
 	/** Puts the open project's options back to its layout's defaults. */
 	function resetOptions() {
-		dispatch({ type: 'resetOptions' })
+		dispatch({ type: 'resetOptions', env: currentEnvironment() })
 	}
 
 	function deleteProject(id: ProjectId) {
