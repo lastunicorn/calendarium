@@ -1,12 +1,25 @@
-name: Build on master
+name: CI
 
+# A branch's pushes are checked through its pull request, master's as they land: a pull request's
+# push would otherwise run twice.
 on:
   push:
+    branches: [master]
   pull_request:
+
+permissions:
+  contents: read
+
+# A pull request's new push cancels the run of its previous one; master's runs all finish, each
+# comparing its push's pages with the commit before.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   check:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
         with:
@@ -22,9 +35,22 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
-      - run: npx playwright install --with-deps chromium
+      # The browsers are kept between runs, by the installed Playwright version; the system
+      # libraries they need are installed each time, apt's packages not being cached.
+      - name: Playwright version
+        id: playwright
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v6
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+      - if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+      - if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
       - run: npm run test:e2e
-      # Reports the printed pages this push or pull request changes, against the commit before it
+      # Reports the printed pages this push to master or pull request changes, against the commit before it
       # (or the pull request's base), without failing the build: a change of look may be meant.
       - name: Visual changes
         id: visual
@@ -37,10 +63,12 @@ jobs:
             exit 0
           fi
           scripts/visual-diff.sh "$BASE"
-      # Each changed page's expected, actual and diff images.
+      # A failed e2e test's trace, or each changed page's expected, actual and diff images; nothing
+      # when an earlier step failed.
       - uses: actions/upload-artifact@v7
         if: always() && (failure() || steps.visual.outcome == 'failure')
         with:
           name: playwright-results
           path: test-results/
+          if-no-files-found: ignore
           retention-days: 14

@@ -32,6 +32,8 @@ export default defineConfig({
 		baseURL: `http://localhost:${port}`,
 		// Month and weekday names follow the browser language by default.
 		locale: 'en-GB',
+		// On CI, a failed test's trace goes to test-results/, which CI uploads.
+		trace: process.env.CI ? 'retain-on-failure' : 'off',
 	},
 	projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
 	webServer: {
