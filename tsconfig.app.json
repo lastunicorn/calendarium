@@ -17,6 +17,10 @@
 		"resolveJsonModule": true,
 		"jsx": "react-jsx",
 
+		/* Type checking: the default since TypeScript 6, written out so it doesn't rest on the compiler's
+		   default; why noUncheckedIndexedAccess and exactOptionalPropertyTypes stay off: doc/typescript-strictness.md */
+		"strict": true,
+
 		/* Linting */
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
