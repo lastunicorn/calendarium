@@ -1,11 +1,11 @@
-import { DAY_PAGE_HEADINGS, type DayPageHeading, type DailyHeader } from '../options'
 import { HeaderIcon } from '../../../ui/components/icons'
 import { CheckboxField } from '../../../ui/fields/CheckboxField'
 import { optionsFrom } from '../../../ui/fields/options'
 import { RadioField } from '../../../ui/fields/RadioField'
 import { DAY_WEEK_NUMBER_DESCRIPTION } from '../../../ui/sidebar/descriptions'
 import { HeadingFontSizeField } from '../../../ui/sidebar/HeadingFontSizeField'
-import { type OptionsSectionProps, Section } from '../../../ui/sidebar/Section'
+import { Section, type OptionsSectionProps } from '../../../ui/sidebar/Section'
+import { DAY_PAGE_HEADINGS, type DailyHeader, type DayPageHeading } from '../options'
 
 const DAY_PAGE_HEADING_OPTIONS = optionsFrom(DAY_PAGE_HEADINGS, {
 	weekday: 'Weekday (date below)',

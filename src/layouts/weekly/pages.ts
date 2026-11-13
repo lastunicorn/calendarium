@@ -1,18 +1,18 @@
 import {
 	buildMonth,
-	type WeekDay,
 	weekdayColumn,
 	weekMonth,
 	weekNumber,
 	weeksOfYear,
+	type WeekDay,
 } from '../../core/calendar'
 import { eventNames } from '../../core/events'
 import { dateRangeName, hourNames, monthYearName, weekdayNames } from '../../core/locale'
 import { isHighlightedWeekDay } from '../../core/weekend'
 import type { CalendarModel } from '../common'
 import type { HeadingAlign } from '../heading'
-import { type MiniMonthPlan, monthEventDays } from '../monthGrid'
-import { splitWeekCells, type WeekCell, weekCells } from './cells'
+import { monthEventDays, type MiniMonthPlan } from '../monthGrid'
+import { splitWeekCells, weekCells, type WeekCell } from './cells'
 import { WEEK_PAGE_MESSAGES } from './messages'
 import type { WeeklyOptions } from './options'
 

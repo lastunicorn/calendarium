@@ -1,7 +1,7 @@
-import type { WeeklyOptions } from '../options'
-import { planWeekPages } from '../pages'
 import { Page } from '../../../ui/layouts/Page'
 import { usePagePlan } from '../../../ui/layouts/usePagePlan'
+import type { WeeklyOptions } from '../options'
+import { planWeekPages } from '../pages'
 import { WeekPage } from './WeekPage'
 
 interface WeeklyLayoutProps {

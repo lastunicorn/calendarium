@@ -1,9 +1,10 @@
 import { useEffect, useReducer, useRef, useState } from 'react'
+
 import type { Patch } from '../core/data'
-import type { LayoutOptions, LayoutId } from '../layouts'
+import type { LayoutId, LayoutOptions } from '../layouts'
 import { newProjectId, type Project, type ProjectId } from '../workspace/Project'
-import { type WorkspaceAction, workspaceReducer } from '../workspace/workspaceReducer'
-import { loadWorkspace, type SaveFailure, saveWorkspace } from '../workspace/storage'
+import { loadWorkspace, saveWorkspace, type SaveFailure } from '../workspace/storage'
+import { workspaceReducer, type WorkspaceAction } from '../workspace/workspaceReducer'
 
 /** Changes some of one layout's options, nested objects field by field. */
 export type UpdateLayoutOptions = <K extends LayoutId>(

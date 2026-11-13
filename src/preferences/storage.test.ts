@@ -1,7 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { memoryStorage } from '../test/memoryStorage'
 import { defaultPreferences } from './Preferences'
 import { loadPreferences, savePreferences } from './storage'
-import { memoryStorage } from '../test/memoryStorage'
 
 describe('preferences storage', () => {
 	beforeEach(() => {

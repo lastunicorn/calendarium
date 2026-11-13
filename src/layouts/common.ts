@@ -1,11 +1,11 @@
-import { buildYear, type CalendarMonth, isYear, type WeekStart } from '../core/calendar'
-import { type CalendarEvent, parseEvents } from '../core/events'
+import { buildYear, isYear, type CalendarMonth, type WeekStart } from '../core/calendar'
+import { parseEvents, type CalendarEvent } from '../core/events'
 import {
 	isWeekStartSetting,
-	type Locale,
 	LOCALES,
 	monthNames,
 	resolveWeekStart,
+	type Locale,
 	type WeekStartSetting,
 } from '../core/locale'
 import { margins, normalizePage, PAGE_VALIDATORS, type PageSetup } from '../core/paper'

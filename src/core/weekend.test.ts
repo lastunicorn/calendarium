@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { buildMonth, type CalendarDay, weeksOfYear } from './calendar'
+
+import { buildMonth, weeksOfYear, type CalendarDay } from './calendar'
 import {
 	isFilledColumnHeading,
 	isHighlightedColumn,

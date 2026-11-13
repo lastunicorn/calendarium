@@ -1,8 +1,8 @@
-import type { WeeklyMiniMonth } from '../options'
 import { CalendarIcon } from '../../../ui/components/icons'
 import { CheckboxField } from '../../../ui/fields/CheckboxField'
 import { MiniMonthFields } from '../../../ui/sidebar/MiniMonthFields'
-import { type OptionsSectionProps, Section } from '../../../ui/sidebar/Section'
+import { Section, type OptionsSectionProps } from '../../../ui/sidebar/Section'
+import type { WeeklyMiniMonth } from '../options'
 
 /**
  * Whether the week's month and the next are drawn small beside the heading, how they look and

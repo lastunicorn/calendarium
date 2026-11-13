@@ -1,4 +1,4 @@
-import { buildMonth, type CalendarDay, visibleWeeks } from '../../core/calendar'
+import { buildMonth, visibleWeeks, type CalendarDay } from '../../core/calendar'
 import { eventNames } from '../../core/events'
 import { monthYearName, weekdayNames } from '../../core/locale'
 import type { WeekendHighlight } from '../../core/weekend'

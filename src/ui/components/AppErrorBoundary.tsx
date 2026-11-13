@@ -1,4 +1,5 @@
 import { Component, type ErrorInfo, type MouseEvent, type ReactNode } from 'react'
+
 import type { Project } from '../../workspace/Project'
 import { projectFile } from '../../workspace/projectFile'
 import { loadWorkspace } from '../../workspace/storage'

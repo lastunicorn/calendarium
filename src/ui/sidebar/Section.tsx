@@ -1,8 +1,9 @@
-import { type ReactNode, useEffect, useId, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
+
 import type { Patch } from '../../core/data'
 import { ChevronIcon, CloseIcon, ResetIcon } from '../components/icons'
-import styles from './Section.module.css'
 import { useOpenSectionsContext } from './openSections'
+import styles from './Section.module.css'
 
 /**
  * Props shared by groups of fields: a layout's options, or the part of them the fields edit, and a

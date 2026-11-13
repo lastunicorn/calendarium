@@ -1,7 +1,8 @@
-import { type ChangeEvent, useRef } from 'react'
+import { useRef, type ChangeEvent } from 'react'
+
+import type { Description } from './description'
 import { Field } from './Field'
 import styles from './TextField.module.css'
-import type { Description } from './description'
 
 interface TextFieldProps {
 	label: string

@@ -1,8 +1,8 @@
-import type { CommonOptions } from '../../layouts/common'
 import { eventLines, invalidEventLines } from '../../core/events'
+import type { CommonOptions } from '../../layouts/common'
 import { EventsIcon } from '../components/icons'
 import { TextAreaField } from '../fields/TextAreaField'
-import { type OptionsSectionProps, Section } from './Section'
+import { Section, type OptionsSectionProps } from './Section'
 
 /** A warning naming the lines of `events` that aren't an event, or none when all are. */
 function eventsError(events: readonly string[]): string | undefined {

@@ -1,11 +1,11 @@
-import type { HeadingAlign } from '../../heading'
-import type { MonthlyHeader } from '../options'
 import { HeaderIcon } from '../../../ui/components/icons'
 import { RadioField } from '../../../ui/fields/RadioField'
 import { TextField } from '../../../ui/fields/TextField'
-import { HeadingFontSizeField } from '../../../ui/sidebar/HeadingFontSizeField'
 import { HEADING_ALIGN_OPTIONS } from '../../../ui/sidebar/fieldOptions'
-import { type OptionsSectionProps, Section } from '../../../ui/sidebar/Section'
+import { HeadingFontSizeField } from '../../../ui/sidebar/HeadingFontSizeField'
+import { Section, type OptionsSectionProps } from '../../../ui/sidebar/Section'
+import type { HeadingAlign } from '../../heading'
+import type { MonthlyHeader } from '../options'
 
 const TITLE_DESCRIPTION = [
 	'Printed at the top of every page, with the month and year below it.',

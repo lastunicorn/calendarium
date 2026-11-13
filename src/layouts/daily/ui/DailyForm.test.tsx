@@ -1,7 +1,8 @@
 import { screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
-import { DAILY_SPEC } from '../options'
+
 import { formSectionTitles } from '../../../test/formSections'
+import { DAILY_SPEC } from '../options'
 import { DailyForm } from './DailyForm'
 
 describe('DailyForm', () => {

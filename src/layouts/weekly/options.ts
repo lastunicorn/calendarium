@@ -1,28 +1,28 @@
 import { WEEKDAY_FORMATS, type WeekdayFormat } from '../../core/locale'
 import { margins } from '../../core/paper'
 import { isBoolean, oneOf, type Validators } from '../../core/validation'
-import { COMMON_VALIDATORS, type CommonOptions, commonDefaults, normalizeCommon } from '../common'
+import { COMMON_VALIDATORS, commonDefaults, normalizeCommon, type CommonOptions } from '../common'
 import { FOOTER_VALIDATORS, footerDefaults, type PageFooter } from '../footer'
-import { HEADING_ALIGNMENTS, type HeadingAlignment, isHeadingFontSize } from '../heading'
+import { HEADING_ALIGNMENTS, isHeadingFontSize, type HeadingAlignment } from '../heading'
 import type { LayoutSpec } from '../LayoutSpec'
-import { WEEKLY_MIGRATIONS } from './migrations'
 import {
 	MINI_MONTH_STYLE_VALIDATORS,
-	type MiniMonthStyle,
 	miniMonthStyleDefaults,
+	type MiniMonthStyle,
 } from '../monthGrid'
 import {
-	type HourSchedule,
 	orderContentHours,
 	SCHEDULE_VALIDATORS,
 	scheduleDefaults,
+	type HourSchedule,
 } from '../schedule'
 import {
 	WEEK_DAY_DIRECTIONS,
-	type WeekDayDirection,
 	WEEKEND_DISPLAYS,
+	type WeekDayDirection,
 	type WeekendDisplay,
 } from './cells'
+import { WEEKLY_MIGRATIONS } from './migrations'
 
 /** What fills each day's cell on a `weekly` page under its label: nothing, or an hourly schedule. */
 export const WEEK_PAGE_FILLS = ['none', 'hours'] as const

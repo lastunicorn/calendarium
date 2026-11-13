@@ -1,5 +1,5 @@
-import type { MonthlyOptions } from '../options'
 import type { LayoutView } from '../../../ui/layouts/LayoutView'
+import type { MonthlyOptions } from '../options'
 import { MonthlyForm } from './MonthlyForm'
 import { MonthlyLayout } from './MonthlyLayout'
 

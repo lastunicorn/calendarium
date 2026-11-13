@@ -1,18 +1,4 @@
-import {
-	WEEK_DAY_DIRECTIONS,
-	type WeekDayDirection,
-	WEEKEND_DISPLAYS,
-	type WeekendDisplay,
-} from '../cells'
-import {
-	START_PAGES,
-	type StartPage,
-	WEEK_PAGE_FILLS,
-	type WeekPageFill,
-	type WeeklyContent,
-} from '../options'
 import type { Patch } from '../../../core/data'
-import type { HourSchedule } from '../../schedule'
 import type { WeekdayFormat } from '../../../core/locale'
 import { ContentIcon } from '../../../ui/components/icons'
 import { CheckboxField } from '../../../ui/fields/CheckboxField'
@@ -20,7 +6,21 @@ import { optionsFrom } from '../../../ui/fields/options'
 import { RadioField } from '../../../ui/fields/RadioField'
 import { WEEKDAY_FORMAT_OPTIONS } from '../../../ui/sidebar/fieldOptions'
 import { ScheduleFields } from '../../../ui/sidebar/ScheduleFields'
-import { type OptionsSectionProps, Section } from '../../../ui/sidebar/Section'
+import { Section, type OptionsSectionProps } from '../../../ui/sidebar/Section'
+import type { HourSchedule } from '../../schedule'
+import {
+	WEEK_DAY_DIRECTIONS,
+	WEEKEND_DISPLAYS,
+	type WeekDayDirection,
+	type WeekendDisplay,
+} from '../cells'
+import {
+	START_PAGES,
+	WEEK_PAGE_FILLS,
+	type StartPage,
+	type WeeklyContent,
+	type WeekPageFill,
+} from '../options'
 
 const HOURS_DESCRIPTION = [
 	'Display a grid with hours for each day.',

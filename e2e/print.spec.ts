@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test'
+
 import { clippedPages, openSection, pdfPageSizes, showLayout } from './helpers.ts'
 
 /** PostScript points per mm: PDF sizes are in points. */

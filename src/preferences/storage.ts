@@ -1,5 +1,5 @@
 import { asObject, type UntrustedObject } from '../core/validation'
-import { defaultPreferences, type Preferences, parsePreferences } from './Preferences'
+import { defaultPreferences, parsePreferences, type Preferences } from './Preferences'
 
 const STORAGE_KEY = 'calendarium-preferences'
 

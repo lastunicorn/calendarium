@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
+
 import { isProjectId, newProjectId } from './Project'
 
 describe('isProjectId', () => {

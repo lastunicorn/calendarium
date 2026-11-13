@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest'
+
 import { applyPatch, type Patch } from '../../core/data'
 import { calendarModel } from '../common'
 import { defaultLayoutOptions } from '../index'
 import type { DailyContent, DailyOptions } from './options'
-import { type DayPages, planDayPages } from './pages'
+import { planDayPages, type DayPages } from './pages'
 
 /** The plan of the default day layout for `year`, in British English with Monday weeks, changed by `changes`. */
 function plan(year: number, changes: Patch<DailyOptions> = {}): DayPages[] {

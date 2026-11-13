@@ -1,12 +1,13 @@
 import { memo } from 'react'
+
 import type { PageSetup } from '../../../core/paper'
-import type { DayFill, DayPages } from '../pages'
 import { CalendarHeader } from '../../../ui/layouts/CalendarHeader'
-import styles from './DayPage.module.css'
-import { dayFillComponent } from './fills'
 import { MiniMonth } from '../../../ui/layouts/MiniMonth'
 import { miniMonthSizeClass } from '../../../ui/layouts/miniMonthSize'
 import { Page } from '../../../ui/layouts/Page'
+import type { DayFill, DayPages } from '../pages'
+import styles from './DayPage.module.css'
+import { dayFillComponent } from './fills'
 
 interface DayLinesProps {
 	fill: DayFill

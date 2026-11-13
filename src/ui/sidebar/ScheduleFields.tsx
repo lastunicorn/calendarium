@@ -1,5 +1,5 @@
-import { type HourSchedule, isHour, MAX_HOUR, MIN_HOUR } from '../../layouts/schedule'
 import { HOUR_FORMATS, type HourFormat } from '../../core/locale'
+import { isHour, MAX_HOUR, MIN_HOUR, type HourSchedule } from '../../layouts/schedule'
 import { NumberField } from '../fields/NumberField'
 import { optionsFrom } from '../fields/options'
 import { RadioField } from '../fields/RadioField'

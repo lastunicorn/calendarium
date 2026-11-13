@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+
 import { applyPatch } from '../core/data'
 import { defaultLayoutOptions, LAYOUT_IDS } from '../layouts'
 import type { Project } from './Project'

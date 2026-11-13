@@ -1,7 +1,8 @@
 import type { KeyboardEvent, PointerEvent, ReactNode } from 'react'
+
+import { SIDEBAR_MIN_WIDTH } from '../../preferences/Preferences'
 import { APP_VERSION } from '../../workspace/version'
 import styles from './Sidebar.module.css'
-import { SIDEBAR_MIN_WIDTH } from '../../preferences/Preferences'
 
 /** How far one arrow key press moves the sidebar's edge, in px. */
 const KEYBOARD_STEP = 16

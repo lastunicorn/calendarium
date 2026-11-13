@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+
 import {
 	buildMonth,
 	buildYear,
@@ -11,13 +12,13 @@ import {
 	MAX_YEAR,
 	MIN_YEAR,
 	plainDate,
-	weekdayColumn,
-	type WeekStart,
-	WEEKS_PER_MONTH,
 	visibleWeeks,
+	weekdayColumn,
 	weekMonth,
 	weekNumber,
+	WEEKS_PER_MONTH,
 	weeksOfYear,
+	type WeekStart,
 } from './calendar'
 
 const WEEK_STARTS: WeekStart[] = [0, 1, 2, 3, 4, 5, 6]

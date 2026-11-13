@@ -1,5 +1,5 @@
-import type { LayoutMigrations } from '../LayoutSpec'
 import { asObject } from '../../core/validation'
+import type { LayoutMigrations } from '../LayoutSpec'
 import {
 	commonGroups,
 	footerGroup,

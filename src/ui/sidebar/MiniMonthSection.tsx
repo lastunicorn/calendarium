@@ -2,7 +2,7 @@ import type { MiniMonthOptions } from '../../layouts/monthGrid'
 import { CalendarIcon } from '../components/icons'
 import { CheckboxField } from '../fields/CheckboxField'
 import { MiniMonthFields } from './MiniMonthFields'
-import { type OptionsSectionProps, Section } from './Section'
+import { Section, type OptionsSectionProps } from './Section'
 
 /** Whether a page shows a small month for context, how it looks and whether it circles events. */
 export function MiniMonthSection({

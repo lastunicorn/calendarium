@@ -1,4 +1,4 @@
-import { type RefObject, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type RefObject } from 'react'
 
 /** A page gone to from the indicator, kept as the current one until the view scrolls away. */
 interface PinnedPage {

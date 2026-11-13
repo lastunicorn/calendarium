@@ -1,4 +1,4 @@
-import { type RefObject, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type RefObject } from 'react'
 
 /**
  * Whether `ref`'s content is larger than its box (it would be clipped). Checked after each render

@@ -1,7 +1,8 @@
 import { render } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
-import { commonDefaults } from '../../layouts/common'
+
 import type { PageSetup } from '../../core/paper'
+import { commonDefaults } from '../../layouts/common'
 import { Page } from '../layouts/Page'
 import { Booklet } from './Booklet'
 

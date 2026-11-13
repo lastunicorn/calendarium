@@ -1,13 +1,14 @@
 import {
-	type FormEvent,
-	type ReactNode,
-	type SyntheticEvent,
 	useEffect,
 	useId,
 	useRef,
+	type FormEvent,
+	type ReactNode,
+	type SyntheticEvent,
 } from 'react'
-import { CloseIcon } from './icons'
+
 import styles from './Dialog.module.css'
+import { CloseIcon } from './icons'
 
 interface DialogProps {
 	title: string

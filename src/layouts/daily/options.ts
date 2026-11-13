@@ -1,16 +1,16 @@
 import { isBoolean, oneOf, type Validators } from '../../core/validation'
+import { COMMON_VALIDATORS, commonDefaults, normalizeCommon, type CommonOptions } from '../common'
 import { FOOTER_VALIDATORS, footerDefaults, type PageFooter } from '../footer'
 import { isHeadingFontSize } from '../heading'
-import { COMMON_VALIDATORS, type CommonOptions, commonDefaults, normalizeCommon } from '../common'
 import type { LayoutSpec } from '../LayoutSpec'
-import { DAILY_MIGRATIONS } from './migrations'
-import { MINI_MONTH_VALIDATORS, type MiniMonthOptions, miniMonthDefaults } from '../monthGrid'
+import { MINI_MONTH_VALIDATORS, miniMonthDefaults, type MiniMonthOptions } from '../monthGrid'
 import {
-	type HourSchedule,
 	orderContentHours,
 	SCHEDULE_VALIDATORS,
 	scheduleDefaults,
+	type HourSchedule,
 } from '../schedule'
+import { DAILY_MIGRATIONS } from './migrations'
 
 /**
  * What fills a `daily` page under its header: an hourly schedule, plain ruled lines, a

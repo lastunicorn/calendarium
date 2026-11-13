@@ -1,5 +1,5 @@
-import { migrateLayoutOptions } from '../layouts'
 import { asObject, type UntrustedObject } from '../core/validation'
+import { migrateLayoutOptions } from '../layouts'
 import { FORMAT_VERSION, isLaterAppVersion } from './version'
 
 // Stored data and files are tagged with the same `FORMAT_VERSION` (the app's major version) and

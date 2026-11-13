@@ -1,8 +1,9 @@
-import { type ChangeEvent, useId } from 'react'
-import { InfoBalloon, InfoButton } from './Info'
-import styles from './RadioField.module.css'
-import type { Option } from './options'
+import { useId, type ChangeEvent } from 'react'
+
 import type { Description } from './description'
+import { InfoBalloon, InfoButton } from './Info'
+import type { Option } from './options'
+import styles from './RadioField.module.css'
 
 interface RadioFieldProps<T extends string | number> {
 	label: string

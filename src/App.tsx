@@ -1,11 +1,12 @@
 import { useCallback, useRef, useState } from 'react'
+
 import styles from './App.module.css'
 import type { LayoutId } from './layouts'
 import { EmptyPreview } from './ui/preview/EmptyPreview'
 import { Preview } from './ui/preview/Preview'
 import { NewProjectDialog } from './ui/sidebar/NewProjectDialog'
-import { WorkspaceForm } from './ui/sidebar/WorkspaceForm'
 import { Sidebar } from './ui/sidebar/Sidebar'
+import { WorkspaceForm } from './ui/sidebar/WorkspaceForm'
 import { usePreferences } from './ui/usePreferences'
 import { useWorkspace } from './ui/useWorkspace'
 import type { ProjectId } from './workspace/Project'

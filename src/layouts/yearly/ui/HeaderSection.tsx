@@ -1,10 +1,10 @@
 import { yearName } from '../../../core/locale'
-import type { CalendarOptions } from '../../common'
-import type { YearlyHeader } from '../options'
 import { HeaderIcon } from '../../../ui/components/icons'
 import { TextField } from '../../../ui/fields/TextField'
 import { HeadingFontSizeField } from '../../../ui/sidebar/HeadingFontSizeField'
-import { type OptionsSectionProps, Section } from '../../../ui/sidebar/Section'
+import { Section, type OptionsSectionProps } from '../../../ui/sidebar/Section'
+import type { CalendarOptions } from '../../common'
+import type { YearlyHeader } from '../options'
 
 interface HeaderSectionProps extends OptionsSectionProps<YearlyHeader> {
 	/** The calendar the header is printed on: the year it names when the title is empty. */

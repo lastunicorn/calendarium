@@ -1,12 +1,12 @@
-import type { CalendarOptions } from '../../layouts/common'
 import { isYear, MAX_YEAR, MIN_YEAR } from '../../core/calendar'
-import { type Locale, LOCALES, type WeekStartSetting } from '../../core/locale'
+import { LOCALES, type Locale, type WeekStartSetting } from '../../core/locale'
+import type { CalendarOptions } from '../../layouts/common'
 import { CalendarIcon } from '../components/icons'
 import { ComboboxField } from '../fields/ComboboxField'
 import { NumberField } from '../fields/NumberField'
-import { type Option, optionsFrom } from '../fields/options'
+import { optionsFrom, type Option } from '../fields/options'
 import { SelectField } from '../fields/SelectField'
-import { type OptionsSectionProps, Section } from './Section'
+import { Section, type OptionsSectionProps } from './Section'
 
 /** Week start options in panel order: the language's own day, then Monday to Sunday. */
 const WEEK_START_OPTIONS: Option<WeekStartSetting>[] = [

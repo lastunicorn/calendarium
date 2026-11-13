@@ -1,7 +1,8 @@
-import { type ChangeEvent, useId } from 'react'
+import { useId, type ChangeEvent } from 'react'
+
 import styles from './CheckboxField.module.css'
-import { InfoBalloon, InfoButton } from './Info'
 import type { Description } from './description'
+import { InfoBalloon, InfoButton } from './Info'
 
 interface CheckboxFieldProps {
 	label: string

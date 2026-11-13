@@ -1,4 +1,5 @@
-import { expect, type Page, test } from '@playwright/test'
+import { expect, test, type Page } from '@playwright/test'
+
 import { openProjectFile } from './helpers.ts'
 
 // Which printed pages a change alters: `scripts/visual-diff.sh` (`npm run test:visual`) runs these

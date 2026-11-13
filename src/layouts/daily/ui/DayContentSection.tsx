@@ -1,29 +1,29 @@
-import {
-	DAY_PAGE_FILLS,
-	type DayPageFill,
-	type DailyContent,
-	MAX_GENKO_YOSHI_SQUARE_SIZE,
-	MAX_RULED_LINE_SPACING,
-	MAX_SQUARE_SIZE,
-	MIN_GENKO_YOSHI_SQUARE_SIZE,
-	MIN_RULED_LINE_SPACING,
-	MIN_SQUARE_SIZE,
-	FILL_ALIGNMENTS,
-	type FillAlignment,
-	GENKO_YOSHI_DIRECTIONS,
-	GENKO_YOSHI_FURIGANA,
-	type GenkoYoshiDirection,
-	type GenkoYoshiFurigana,
-} from '../options'
 import type { Patch } from '../../../core/data'
-import type { HourSchedule } from '../../schedule'
 import { ContentIcon } from '../../../ui/components/icons'
 import { CheckboxField } from '../../../ui/fields/CheckboxField'
 import { NumberField } from '../../../ui/fields/NumberField'
 import { optionsFrom } from '../../../ui/fields/options'
 import { RadioField } from '../../../ui/fields/RadioField'
 import { ScheduleFields } from '../../../ui/sidebar/ScheduleFields'
-import { type OptionsSectionProps, Section } from '../../../ui/sidebar/Section'
+import { Section, type OptionsSectionProps } from '../../../ui/sidebar/Section'
+import type { HourSchedule } from '../../schedule'
+import {
+	DAY_PAGE_FILLS,
+	FILL_ALIGNMENTS,
+	GENKO_YOSHI_DIRECTIONS,
+	GENKO_YOSHI_FURIGANA,
+	MAX_GENKO_YOSHI_SQUARE_SIZE,
+	MAX_RULED_LINE_SPACING,
+	MAX_SQUARE_SIZE,
+	MIN_GENKO_YOSHI_SQUARE_SIZE,
+	MIN_RULED_LINE_SPACING,
+	MIN_SQUARE_SIZE,
+	type DailyContent,
+	type DayPageFill,
+	type FillAlignment,
+	type GenkoYoshiDirection,
+	type GenkoYoshiFurigana,
+} from '../options'
 
 const DAY_PAGE_FILL_OPTIONS = optionsFrom(DAY_PAGE_FILLS, {
 	hours: 'Hourly schedule',

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+
 import { weeksOfYear } from '../../core/calendar'
 import { splitWeekCells, weekCells } from './cells'
 

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { MONTHLY_SPEC } from '../options'
+
 import { formSectionTitles } from '../../../test/formSections'
+import { MONTHLY_SPEC } from '../options'
 import { MonthlyForm } from './MonthlyForm'
 
 describe('MonthlyForm', () => {

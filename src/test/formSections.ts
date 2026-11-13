@@ -1,7 +1,8 @@
 import { render, screen } from '@testing-library/react'
-import { type ComponentType, createElement } from 'react'
+import { createElement, type ComponentType } from 'react'
+
+import { OpenSectionsContext, type OpenSections } from '../ui/sidebar/openSections'
 import type { OptionsSectionProps } from '../ui/sidebar/Section'
-import { type OpenSections, OpenSectionsContext } from '../ui/sidebar/openSections'
 
 function noop() {}
 

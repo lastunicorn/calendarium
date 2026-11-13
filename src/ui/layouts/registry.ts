@@ -1,9 +1,9 @@
-import type { LayoutOptions, LayoutId } from '../../layouts'
+import type { LayoutId, LayoutOptions } from '../../layouts'
 import { DAILY_VIEW } from '../../layouts/daily/ui'
-import type { LayoutView } from './LayoutView'
 import { MONTHLY_VIEW } from '../../layouts/monthly/ui'
 import { WEEKLY_VIEW } from '../../layouts/weekly/ui'
 import { YEARLY_VIEW } from '../../layouts/yearly/ui'
+import type { LayoutView } from './LayoutView'
 
 /**
  * Each layout's component, form and labels. Keyed by every `LayoutId`, so a new id without a view

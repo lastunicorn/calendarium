@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+
 import { bookletPageCount, bookletSides } from './booklet'
 
 describe('bookletPageCount', () => {

@@ -1,11 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { defaultLayoutOptions } from '../layouts'
 import { memoryStorage } from '../test/memoryStorage'
 import type { Project } from './Project'
 import { serializeProject } from './projectDocument'
 import { loadWorkspace, saveWorkspace } from './storage'
-import { defaultWorkspace, openProject, projectList, type Workspace } from './Workspace'
 import { APP_VERSION, FORMAT_VERSION } from './version'
+import { defaultWorkspace, openProject, projectList, type Workspace } from './Workspace'
 
 /** The `n`th test id, a valid project id that sorts by `n`. */
 function id(n: number): string {

@@ -1,13 +1,13 @@
 import {
-	type Margins,
 	margins,
-	type Orientation,
 	ORIENTATIONS,
 	PAPER_SIZES,
+	SPINES,
+	type Margins,
+	type Orientation,
+	type PageSetup,
 	type PaperSize,
 	type Spine,
-	SPINES,
-	type PageSetup,
 } from '../../core/paper'
 import { PageIcon } from '../components/icons'
 import { CheckboxField } from '../fields/CheckboxField'
@@ -15,7 +15,7 @@ import { MarginsField } from '../fields/MarginsField'
 import { optionsFrom } from '../fields/options'
 import { RadioField } from '../fields/RadioField'
 import { SelectField } from '../fields/SelectField'
-import { type OptionsSectionProps, Section } from './Section'
+import { Section, type OptionsSectionProps } from './Section'
 
 const PAPER_SIZE_OPTIONS = optionsFrom(PAPER_SIZES, {
 	a3: 'A3',

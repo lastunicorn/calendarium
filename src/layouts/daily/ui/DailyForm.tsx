@@ -1,4 +1,3 @@
-import type { DailyOptions } from '../options'
 import { CalendarSection } from '../../../ui/sidebar/CalendarSection'
 import { EventsSection } from '../../../ui/sidebar/EventsSection'
 import { FooterSection } from '../../../ui/sidebar/FooterSection'
@@ -6,6 +5,7 @@ import { MiniMonthSection } from '../../../ui/sidebar/MiniMonthSection'
 import { optionsGroup } from '../../../ui/sidebar/optionsGroup'
 import { PageSection } from '../../../ui/sidebar/PageSection'
 import type { OptionsSectionProps } from '../../../ui/sidebar/Section'
+import type { DailyOptions } from '../options'
 import { DayContentSection } from './DayContentSection'
 import { HeaderSection } from './HeaderSection'
 

@@ -1,9 +1,10 @@
 import type { ChangeEvent, Ref } from 'react'
+
+import type { Description } from './description'
 import dropdown from './Dropdown.module.css'
 import { DropdownArrow } from './DropdownArrow'
 import { Field } from './Field'
 import type { Option } from './options'
-import type { Description } from './description'
 
 interface SelectFieldProps<T extends string | number> {
 	label: string

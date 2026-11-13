@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
+
 import { LAYOUT_IDS, layoutSpec } from '../layouts'
 import type { OptionsMigration } from '../layouts/LayoutSpec'
 import { legacyFile, legacyWorkspace } from './legacy'

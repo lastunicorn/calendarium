@@ -7,7 +7,7 @@ import {
 import { FooterIcon } from '../components/icons'
 import { CheckboxField } from '../fields/CheckboxField'
 import { NumberField } from '../fields/NumberField'
-import { type OptionsSectionProps, Section } from './Section'
+import { Section, type OptionsSectionProps } from './Section'
 
 /** Whether a layout's sheets keep an empty footer, and its height. */
 export function FooterSection({ options, defaults, onUpdate }: OptionsSectionProps<PageFooter>) {

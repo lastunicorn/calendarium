@@ -1,6 +1,7 @@
-import { type ToggleEvent, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type ToggleEvent } from 'react'
+
 import { InfoIcon } from '../components/icons'
-import { type Description, descriptionParagraphs } from './description'
+import { descriptionParagraphs, type Description } from './description'
 import styles from './Info.module.css'
 
 interface InfoButtonProps {

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+
 import { copyValid, isBoolean, isString, isStringArray, type Validators } from './validation'
 
 describe('isStringArray', () => {

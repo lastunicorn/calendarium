@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react'
+
 import { mmToPx } from '../../../../core/paper'
 import type { FillAlignment, GenkoYoshiDirection, GenkoYoshiFurigana } from '../../options'
 import type { GenkoYoshiFill } from '../../pages'

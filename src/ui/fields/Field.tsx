@@ -1,7 +1,8 @@
-import { type ReactNode, useId } from 'react'
+import { useId, type ReactNode } from 'react'
+
+import type { Description } from './description'
 import styles from './Field.module.css'
 import { InfoBalloon, InfoButton } from './Info'
-import type { Description } from './description'
 
 /** What a field's control spreads onto itself: its id, which the label points at, and its description. */
 export interface FieldControlProps {

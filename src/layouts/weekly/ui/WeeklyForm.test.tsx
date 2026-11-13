@@ -1,7 +1,8 @@
 import { screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
-import { WEEKLY_SPEC } from '../options'
+
 import { formSectionTitles } from '../../../test/formSections'
+import { WEEKLY_SPEC } from '../options'
 import { WeeklyForm } from './WeeklyForm'
 
 describe('WeeklyForm', () => {

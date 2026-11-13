@@ -1,4 +1,5 @@
-import { type ChangeEvent, type FocusEvent, type KeyboardEvent, useState } from 'react'
+import { useState, type ChangeEvent, type FocusEvent, type KeyboardEvent } from 'react'
+
 import { bookletSides } from '../../core/booklet'
 import { IconButton } from '../components/IconButton'
 import { ChevronIcon, ChevronLeftIcon } from '../components/icons'

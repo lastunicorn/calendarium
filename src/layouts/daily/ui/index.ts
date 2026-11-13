@@ -1,5 +1,5 @@
-import type { DailyOptions } from '../options'
 import type { LayoutView } from '../../../ui/layouts/LayoutView'
+import type { DailyOptions } from '../options'
 import { DailyForm } from './DailyForm'
 import { DailyLayout } from './DailyLayout'
 

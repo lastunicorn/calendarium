@@ -1,8 +1,8 @@
-import type { MonthlyMiniMonth } from '../options'
 import { CalendarIcon } from '../../../ui/components/icons'
 import { CheckboxField } from '../../../ui/fields/CheckboxField'
 import { MiniMonthFields } from '../../../ui/sidebar/MiniMonthFields'
-import { type OptionsSectionProps, Section } from '../../../ui/sidebar/Section'
+import { Section, type OptionsSectionProps } from '../../../ui/sidebar/Section'
+import type { MonthlyMiniMonth } from '../options'
 
 /** Whether the previous and the next month are drawn small beside the heading, and how they look. */
 export function MiniMonthsSection({

@@ -1,5 +1,6 @@
 import { render } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
+
 import { MONTHLY_SPEC } from '../options'
 import { MonthlyLayout } from './MonthlyLayout'
 

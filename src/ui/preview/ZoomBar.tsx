@@ -1,12 +1,13 @@
 import type { ChangeEvent } from 'react'
+
 import {
 	DEFAULT_ZOOM,
 	PREVIEW_ZOOMS,
-	type PreviewZoom,
-	type ZoomFit,
 	ZOOM_LEVELS,
 	zoomedIn,
 	zoomedOut,
+	type PreviewZoom,
+	type ZoomFit,
 } from '../../preferences/zoom'
 import { IconButton } from '../components/IconButton'
 import { ResetIcon, ZoomInIcon, ZoomOutIcon } from '../components/icons'

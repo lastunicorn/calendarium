@@ -1,11 +1,12 @@
 import { fireEvent, render, screen, within } from '@testing-library/react'
-import { type ComponentProps, useState } from 'react'
+import { useState, type ComponentProps } from 'react'
 import { describe, expect, it, vi } from 'vitest'
+
+import { margins } from '../../core/paper'
 import { defaultLayoutOptions, LAYOUT_IDS, type LayoutId } from '../../layouts'
+import { defaultPreferences, withSectionToggled } from '../../preferences/Preferences'
 import type { Project } from '../../workspace/Project'
 import { defaultWorkspace, type Workspace } from '../../workspace/Workspace'
-import { margins } from '../../core/paper'
-import { defaultPreferences, withSectionToggled } from '../../preferences/Preferences'
 import { WorkspaceForm } from './WorkspaceForm'
 
 function noop() {}

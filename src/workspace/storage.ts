@@ -1,13 +1,19 @@
-import { defaultWorkspace, projectList, type Workspace } from './Workspace'
-import { defaultLayoutOptions, hasDefaultOptions, LAYOUT_IDS, layoutSpec } from '../layouts'
-import type { AnyLayoutOptions, LayoutId } from '../layouts'
-import { parseOptions } from '../layouts/LayoutSpec'
 import { asObject } from '../core/validation'
+import {
+	defaultLayoutOptions,
+	hasDefaultOptions,
+	LAYOUT_IDS,
+	layoutSpec,
+	type AnyLayoutOptions,
+	type LayoutId,
+} from '../layouts'
+import { parseOptions } from '../layouts/LayoutSpec'
 import { legacyWorkspace } from './legacy'
 import { isFromLaterVersion } from './migrations'
 import { isProjectId, newProjectId, type Project, type ProjectId } from './Project'
 import { parseProjectDocument, serializeProject } from './projectDocument'
 import { APP_VERSION, FORMAT_VERSION } from './version'
+import { defaultWorkspace, projectList, type Workspace } from './Workspace'
 
 // The `Workspace` repository. Each project is one key, so two tabs editing different projects
 // don't overwrite each other:

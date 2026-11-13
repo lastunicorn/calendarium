@@ -1,5 +1,5 @@
-import type { WeeklyOptions } from '../options'
 import type { LayoutView } from '../../../ui/layouts/LayoutView'
+import type { WeeklyOptions } from '../options'
 import { WeeklyForm } from './WeeklyForm'
 import { WeeklyLayout } from './WeeklyLayout'
 

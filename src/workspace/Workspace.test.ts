@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+
 import { defaultLayoutOptions } from '../layouts'
 import type { Project } from './Project'
 import { defaultWorkspace, openProject, projectList, type Workspace } from './Workspace'

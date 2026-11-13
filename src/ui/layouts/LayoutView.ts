@@ -1,4 +1,5 @@
 import type { ComponentType } from 'react'
+
 import type { OptionsSectionProps } from '../sidebar/Section'
 
 /** What the UI knows about one layout, given its options type `O`. */

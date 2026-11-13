@@ -1,12 +1,12 @@
-import type { HeadingAlignment } from '../../heading'
-import type { WeeklyHeader } from '../options'
 import { HeaderIcon } from '../../../ui/components/icons'
 import { CheckboxField } from '../../../ui/fields/CheckboxField'
 import { RadioField } from '../../../ui/fields/RadioField'
 import { WEEK_NUMBER_DESCRIPTION } from '../../../ui/sidebar/descriptions'
 import { HEADING_ALIGNMENT_OPTIONS } from '../../../ui/sidebar/fieldOptions'
 import { HeadingFontSizeField } from '../../../ui/sidebar/HeadingFontSizeField'
-import { type OptionsSectionProps, Section } from '../../../ui/sidebar/Section'
+import { Section, type OptionsSectionProps } from '../../../ui/sidebar/Section'
+import type { HeadingAlignment } from '../../heading'
+import type { WeeklyHeader } from '../options'
 
 /** What a week's heading shows besides the dates of its days, and where it sits. */
 export function HeaderSection({ options, defaults, onUpdate }: OptionsSectionProps<WeeklyHeader>) {

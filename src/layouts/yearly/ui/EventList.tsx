@@ -1,5 +1,5 @@
-import type { EventListPage } from '../pages'
 import { CalendarHeader } from '../../../ui/layouts/CalendarHeader'
+import type { EventListPage } from '../pages'
 import styles from './EventList.module.css'
 
 /** The year's events, one per line with its date, in columns filling the page. */

@@ -1,12 +1,12 @@
-import { openProject, projectList, type Workspace } from './Workspace'
-import type { Project, ProjectId } from './Project'
 import { applyPatch, type Patch } from '../core/data'
 import {
 	defaultLayoutOptions,
-	type LayoutOptions,
-	type LayoutId,
 	normalizeLayout,
+	type LayoutId,
+	type LayoutOptions,
 } from '../layouts'
+import type { Project, ProjectId } from './Project'
+import { openProject, projectList, type Workspace } from './Workspace'
 
 /**
  * The commands that change the `Workspace` aggregate, the only way it changes. Ids are given by

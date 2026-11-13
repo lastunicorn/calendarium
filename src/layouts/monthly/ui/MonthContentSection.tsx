@@ -1,14 +1,3 @@
-import {
-	DAY_NUMBER_HORIZONTAL_ALIGNMENTS,
-	DAY_NUMBER_VERTICAL_ALIGNMENTS,
-	MAX_DAY_NUMBER_FONT_SIZE,
-	MIN_DAY_NUMBER_FONT_SIZE,
-	MAX_WEEKDAY_FONT_SIZE,
-	MIN_WEEKDAY_FONT_SIZE,
-	type DayNumberHorizontalAlignment,
-	type DayNumberVerticalAlignment,
-	type MonthlyContent,
-} from '../options'
 import { ContentIcon } from '../../../ui/components/icons'
 import { CheckboxField } from '../../../ui/fields/CheckboxField'
 import { NumberField } from '../../../ui/fields/NumberField'
@@ -16,7 +5,18 @@ import { optionsFrom } from '../../../ui/fields/options'
 import { RadioField } from '../../../ui/fields/RadioField'
 import { WEEKDAY_FORMAT_OPTIONS } from '../../../ui/sidebar/fieldOptions'
 import { MonthGridFields } from '../../../ui/sidebar/MonthGridFields'
-import { type OptionsSectionProps, Section } from '../../../ui/sidebar/Section'
+import { Section, type OptionsSectionProps } from '../../../ui/sidebar/Section'
+import {
+	DAY_NUMBER_HORIZONTAL_ALIGNMENTS,
+	DAY_NUMBER_VERTICAL_ALIGNMENTS,
+	MAX_DAY_NUMBER_FONT_SIZE,
+	MAX_WEEKDAY_FONT_SIZE,
+	MIN_DAY_NUMBER_FONT_SIZE,
+	MIN_WEEKDAY_FONT_SIZE,
+	type DayNumberHorizontalAlignment,
+	type DayNumberVerticalAlignment,
+	type MonthlyContent,
+} from '../options'
 
 const DAY_NUMBER_HORIZONTAL_ALIGNMENT_OPTIONS = optionsFrom(DAY_NUMBER_HORIZONTAL_ALIGNMENTS, {
 	left: 'Left',

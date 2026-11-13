@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest'
+
 import { plainDate } from './calendar'
 import {
-	dateRangeName,
 	dateFormatter,
+	dateRangeName,
 	dayMonthName,
 	fullDateName,
 	hourNames,

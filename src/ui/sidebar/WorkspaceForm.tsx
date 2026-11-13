@@ -1,14 +1,15 @@
-import type { Project, ProjectId } from '../../workspace/Project'
-import { openProject, type Workspace } from '../../workspace/Workspace'
-import type { SaveFailure } from '../../workspace/storage'
-import { type Ref, useMemo } from 'react'
+import { useMemo, type Ref } from 'react'
+
 import type { Patch } from '../../core/data'
-import { defaultLayoutOptions, type LayoutOptions, type LayoutId } from '../../layouts'
+import { defaultLayoutOptions, type LayoutId, type LayoutOptions } from '../../layouts'
+import type { Project, ProjectId } from '../../workspace/Project'
+import type { SaveFailure } from '../../workspace/storage'
+import { openProject, type Workspace } from '../../workspace/Workspace'
 import { layoutView } from '../layouts/registry'
 import type { UpdateLayoutOptions } from '../useWorkspace'
-import styles from './WorkspaceForm.module.css'
+import { OpenSectionsContext, type OpenSections } from './openSections'
 import { ProjectSection } from './ProjectSection'
-import { type OpenSections, OpenSectionsContext } from './openSections'
+import styles from './WorkspaceForm.module.css'
 
 interface WorkspaceFormProps {
 	workspace: Workspace

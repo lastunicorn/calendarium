@@ -2,10 +2,10 @@ import { asObject } from '../core/validation'
 import { LEGACY_FILE_FORMAT, legacyFile } from './legacy'
 import type { Project } from './Project'
 import {
-	type ParsedProject,
 	parseProjectDocument,
 	parseProjectFields,
 	serializeProject,
+	type ParsedProject,
 } from './projectDocument'
 
 /** A project file to download. */

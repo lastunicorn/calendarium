@@ -1,11 +1,11 @@
-import { isLayoutId, type LayoutId, migrateLayoutOptions } from '../layouts'
 import { asObject, type UntrustedObject } from '../core/validation'
+import { isLayoutId, migrateLayoutOptions, type LayoutId } from '../layouts'
 import {
 	applyMigrations,
 	FIRST_FORMAT_VERSION,
+	versionOf,
 	type Migration,
 	type StoredData,
-	versionOf,
 } from './migrations'
 
 // The formats of 3 to 5, frozen: storage held one set of options per layout, a file one layout's

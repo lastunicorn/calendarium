@@ -1,5 +1,6 @@
 import { render } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
+
 import { applyPatch, type Patch } from '../../../core/data'
 import { DAILY_SPEC, type DailyOptions } from '../options'
 import { DailyLayout } from './DailyLayout'

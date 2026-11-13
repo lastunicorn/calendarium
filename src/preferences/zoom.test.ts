@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+
 import { isPreviewZoom, zoomAt, zoomedIn, zoomedOut, zoomScale } from './zoom'
 
 const SHEET = { width: 200, height: 300 }

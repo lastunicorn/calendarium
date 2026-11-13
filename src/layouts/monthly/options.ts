@@ -1,16 +1,16 @@
 import { WEEKDAY_FORMATS } from '../../core/locale'
 import { margins } from '../../core/paper'
 import { isBoolean, isString, oneOf, type Validators } from '../../core/validation'
-import { COMMON_VALIDATORS, type CommonOptions, commonDefaults, normalizeCommon } from '../common'
-import { HEADING_ALIGNS, type HeadingAlign, isHeadingFontSize } from '../heading'
+import { COMMON_VALIDATORS, commonDefaults, normalizeCommon, type CommonOptions } from '../common'
+import { HEADING_ALIGNS, isHeadingFontSize, type HeadingAlign } from '../heading'
 import type { LayoutSpec } from '../LayoutSpec'
 import {
 	MINI_MONTH_STYLE_VALIDATORS,
+	miniMonthStyleDefaults,
 	MONTH_GRID_VALIDATORS,
+	monthGridDefaults,
 	type MiniMonthStyle,
 	type MonthGridOptions,
-	miniMonthStyleDefaults,
-	monthGridDefaults,
 } from '../monthGrid'
 import { MONTHLY_MIGRATIONS } from './migrations'
 

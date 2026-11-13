@@ -1,4 +1,5 @@
 import type { ComponentType } from 'react'
+
 import type { DayFill } from '../../pages'
 import { Dots } from './Dots'
 import { GenkoYoshi } from './GenkoYoshi'

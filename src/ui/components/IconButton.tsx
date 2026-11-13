@@ -1,4 +1,5 @@
 import type { MouseEventHandler, ReactNode, Ref } from 'react'
+
 import styles from './IconButton.module.css'
 
 interface IconButtonProps {

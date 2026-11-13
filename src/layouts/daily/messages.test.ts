@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+
 import { LOCALES } from '../../core/locale'
 import { DAY_PAGE_MESSAGES } from './messages'
 

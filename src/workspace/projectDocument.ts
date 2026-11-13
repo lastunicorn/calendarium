@@ -1,6 +1,6 @@
+import { asObject, type UntrustedObject } from '../core/validation'
 import { isLayoutId, layoutSpec } from '../layouts'
 import { parseOptions } from '../layouts/LayoutSpec'
-import { asObject, type UntrustedObject } from '../core/validation'
 import { isFromLaterVersion, upgradeProject } from './migrations'
 import { isProjectId, type Project, type ProjectId } from './Project'
 import { APP_VERSION, FORMAT_VERSION } from './version'

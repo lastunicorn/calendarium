@@ -1,12 +1,12 @@
-import type { MonthlyOptions } from '../options'
-import { planMonthPages } from '../pages'
 import { CalendarHeader } from '../../../ui/layouts/CalendarHeader'
 import { MiniMonth } from '../../../ui/layouts/MiniMonth'
 import { miniMonthSizeClass } from '../../../ui/layouts/miniMonthSize'
-import { MonthGrid } from './MonthGrid'
-import styles from './MonthlyLayout.module.css'
 import { Page } from '../../../ui/layouts/Page'
 import { usePagePlan } from '../../../ui/layouts/usePagePlan'
+import type { MonthlyOptions } from '../options'
+import { planMonthPages } from '../pages'
+import { MonthGrid } from './MonthGrid'
+import styles from './MonthlyLayout.module.css'
 
 interface MonthlyLayoutProps {
 	options: MonthlyOptions

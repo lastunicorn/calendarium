@@ -1,10 +1,10 @@
 import {
 	isMargin,
-	margins,
 	MARGIN_SIDES,
+	margins,
+	MAX_MARGIN,
 	type Margins,
 	type MarginSide,
-	MAX_MARGIN,
 	type Orientation,
 	type Spine,
 } from '../../core/paper'

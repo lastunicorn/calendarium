@@ -1,4 +1,4 @@
-import { type ChangeEvent, useState } from 'react'
+import { useState, type ChangeEvent } from 'react'
 
 interface NumberInputProps {
 	id?: string

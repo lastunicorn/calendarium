@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+
 import { parseOptions } from '../LayoutSpec'
 import { DAILY_MIGRATIONS } from './migrations'
 import { DAILY_SPEC } from './options'

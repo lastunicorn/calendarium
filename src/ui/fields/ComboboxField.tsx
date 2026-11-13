@@ -1,20 +1,21 @@
 import {
-	type ChangeEvent,
-	type FocusEvent,
-	type KeyboardEvent,
-	type MouseEvent,
 	useEffect,
 	useId,
 	useMemo,
 	useRef,
 	useState,
+	type ChangeEvent,
+	type FocusEvent,
+	type KeyboardEvent,
+	type MouseEvent,
 } from 'react'
+
 import styles from './ComboboxField.module.css'
+import type { Description } from './description'
 import dropdown from './Dropdown.module.css'
 import { DropdownArrow } from './DropdownArrow'
 import { Field } from './Field'
-import { type FilterOption, matchesFilter, searchText } from './filter'
-import type { Description } from './description'
+import { matchesFilter, searchText, type FilterOption } from './filter'
 
 interface ComboboxFieldProps<T extends string | number> {
 	label: string

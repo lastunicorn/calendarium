@@ -1,15 +1,16 @@
 import { describe, expect, it } from 'vitest'
+
 import {
 	contentBox,
 	margins,
 	mmToPx,
 	normalizePage,
-	type PageSetup,
 	pageDimensions,
 	pageSizeCss,
 	PAPER_SIZES,
 	PAPERS,
 	sheetDimensions,
+	type PageSetup,
 } from './paper'
 
 describe('pageDimensions', () => {

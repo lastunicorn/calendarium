@@ -1,8 +1,8 @@
 import type { CalendarMonth } from '../core/calendar'
-import { type CalendarEvent, eventNames } from '../core/events'
+import { eventNames, type CalendarEvent } from '../core/events'
 import type { WeekdayFormat } from '../core/locale'
-import { WEEKEND_HIGHLIGHTS, type WeekendHighlight } from '../core/weekend'
 import { isBoolean, oneOf, type Validators } from '../core/validation'
+import { WEEKEND_HIGHLIGHTS, type WeekendHighlight } from '../core/weekend'
 
 /**
  * The weekday formats a month grid's columns have room for: not `full`, except on a page of its

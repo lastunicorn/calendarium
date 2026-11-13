@@ -1,15 +1,16 @@
 import {
+	useRef,
+	useState,
 	type ChangeEvent,
 	type FocusEvent,
 	type PointerEvent,
 	type Ref,
-	useRef,
-	useState,
 } from 'react'
-import { openProject, projectList, type Workspace } from '../../workspace/Workspace'
+
 import type { Project, ProjectId } from '../../workspace/Project'
+import { parseProjectFile, projectFile, type OpenedProjectFile } from '../../workspace/projectFile'
 import type { SaveFailure } from '../../workspace/storage'
-import { type OpenedProjectFile, parseProjectFile, projectFile } from '../../workspace/projectFile'
+import { openProject, projectList, type Workspace } from '../../workspace/Workspace'
 import { Dialog } from '../components/Dialog'
 import { IconButton } from '../components/IconButton'
 import {

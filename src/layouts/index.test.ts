@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+
 import { hasDefaultOptions, LAYOUT_IDS, layoutSpec, migrateLayoutOptions } from './index'
 import { parseOptions } from './LayoutSpec'
 

@@ -1,12 +1,13 @@
-import { type RefObject, useEffect, useEffectEvent, useRef } from 'react'
+import { useEffect, useEffectEvent, useRef, type RefObject } from 'react'
+
 import {
 	DEFAULT_ZOOM,
 	MAX_ZOOM,
 	MIN_ZOOM,
-	type PreviewZoom,
 	zoomAt,
 	zoomedIn,
 	zoomedOut,
+	type PreviewZoom,
 } from '../../preferences/zoom'
 
 /** A point on screen, in px from the window's top left corner. */

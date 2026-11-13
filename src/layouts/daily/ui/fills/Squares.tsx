@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react'
+
 import type { DayFill } from '../../pages'
 import { squareAreaClass } from './squareArea'
 import styles from './Squares.module.css'

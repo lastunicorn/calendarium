@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+
 import { parseOptions } from '../LayoutSpec'
 import { MONTHLY_MIGRATIONS } from './migrations'
 import { MONTHLY_SPEC } from './options'

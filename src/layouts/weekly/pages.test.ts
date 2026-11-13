@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+
 import { applyPatch, type Patch } from '../../core/data'
 import { calendarModel } from '../common'
 import { defaultLayoutOptions } from '../index'

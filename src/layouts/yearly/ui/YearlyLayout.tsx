@@ -1,10 +1,10 @@
-import type { YearlyOptions } from '../options'
-import { planYearPage } from '../pages'
 import { CalendarHeader } from '../../../ui/layouts/CalendarHeader'
-import { EventList } from './EventList'
 import { MiniMonth } from '../../../ui/layouts/MiniMonth'
 import { Page } from '../../../ui/layouts/Page'
 import { usePagePlan } from '../../../ui/layouts/usePagePlan'
+import type { YearlyOptions } from '../options'
+import { planYearPage } from '../pages'
+import { EventList } from './EventList'
 import styles from './YearlyLayout.module.css'
 
 interface YearlyLayoutProps {

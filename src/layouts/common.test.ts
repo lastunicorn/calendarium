@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
+
 import { defaultLayoutOptions, LAYOUT_IDS } from './index'
 
 describe('default locale', () => {

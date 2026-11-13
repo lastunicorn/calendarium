@@ -1,4 +1,4 @@
-import { daysInMonth, type PlainDate, plainDate } from './calendar'
+import { daysInMonth, plainDate, type PlainDate } from './calendar'
 
 /** A named day: on one date, or every year on the same month and day. */
 export interface CalendarEvent {

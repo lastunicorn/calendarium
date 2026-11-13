@@ -1,6 +1,6 @@
+import type { Description } from './description'
 import { Field } from './Field'
 import { NumberInput } from './NumberInput'
-import type { Description } from './description'
 
 interface NumberFieldProps {
 	label: string

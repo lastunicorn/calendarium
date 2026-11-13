@@ -1,4 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react'
+
 import type { AnyLayoutOptions, LayoutId } from '../../layouts'
 import styles from './PreviewErrorBoundary.module.css'
 

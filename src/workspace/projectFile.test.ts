@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+
 import { defaultLayoutOptions, type LayoutId } from '../layouts'
 import { LEGACY_FILE_FORMAT } from './legacy'
 import type { Project } from './Project'

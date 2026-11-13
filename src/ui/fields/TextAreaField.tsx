@@ -1,7 +1,8 @@
 import type { ChangeEvent } from 'react'
+
+import type { Description } from './description'
 import { Field } from './Field'
 import styles from './TextAreaField.module.css'
-import type { Description } from './description'
 
 interface TextAreaFieldProps {
 	label: string

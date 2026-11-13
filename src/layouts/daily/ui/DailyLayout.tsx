@@ -1,6 +1,6 @@
+import { usePagePlan } from '../../../ui/layouts/usePagePlan'
 import type { DailyOptions } from '../options'
 import { planDayPages } from '../pages'
-import { usePagePlan } from '../../../ui/layouts/usePagePlan'
 import { DayPage } from './DayPage'
 
 interface DailyLayoutProps {

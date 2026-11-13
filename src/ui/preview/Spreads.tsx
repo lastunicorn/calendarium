@@ -1,4 +1,5 @@
-import { type CSSProperties, type ReactNode, useLayoutEffect, useRef, useState } from 'react'
+import { useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+
 import type { PageSetup } from '../../core/paper'
 import { BINDING_WIDTH, ringCount, spreadCount, spreadOf } from './spreadLayout'
 import styles from './Spreads.module.css'

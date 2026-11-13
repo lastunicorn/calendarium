@@ -1,7 +1,8 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
-import type { Project } from '../../workspace/Project'
+
 import { defaultLayoutOptions, LAYOUT_IDS, type LayoutId } from '../../layouts'
+import type { Project } from '../../workspace/Project'
 import { Preview } from './Preview'
 
 function noop() {}

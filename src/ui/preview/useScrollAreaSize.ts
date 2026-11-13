@@ -1,4 +1,5 @@
-import { type RefObject, useLayoutEffect, useState } from 'react'
+import { useLayoutEffect, useState, type RefObject } from 'react'
+
 import type { Size } from '../../preferences/zoom'
 
 interface ScrollAreaSize extends Size {

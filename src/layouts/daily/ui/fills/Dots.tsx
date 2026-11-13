@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react'
+
 import { mmToPx } from '../../../../core/paper'
 import type { DayFill } from '../../pages'
 import styles from './Dots.module.css'

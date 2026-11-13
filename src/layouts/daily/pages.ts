@@ -1,4 +1,4 @@
-import { type CalendarDay, dayOfYear, daysOfYear, isoWeek } from '../../core/calendar'
+import { dayOfYear, daysOfYear, isoWeek, type CalendarDay } from '../../core/calendar'
 import { eventNames } from '../../core/events'
 import {
 	fullDateName,
@@ -7,17 +7,17 @@ import {
 	weekdayName,
 	weekdayNames,
 } from '../../core/locale'
-import { DAY_PAGE_MESSAGES } from './messages'
 import { contentBox } from '../../core/paper'
 import type { CalendarModel } from '../common'
-import { type MiniMonthPlan, monthEventDays } from '../monthGrid'
+import { monthEventDays, type MiniMonthPlan } from '../monthGrid'
+import { DAY_PAGE_MESSAGES } from './messages'
 import {
-	type DailyOptions,
 	GENKO_YOSHI_COLUMN_GAP_PERCENT,
 	GENKO_YOSHI_FURIGANA_DIVISOR,
+	type DailyOptions,
+	type FillAlignment,
 	type GenkoYoshiDirection,
 	type GenkoYoshiFurigana,
-	type FillAlignment,
 } from './options'
 
 /** The dot between the subheading's parts, with en spaces either side for more room than plain ones. */

@@ -1,7 +1,7 @@
 import { eventsOfYear } from '../../core/events'
 import { dayMonthName, weekdayNames, yearName } from '../../core/locale'
 import type { CalendarModel } from '../common'
-import { type MiniMonthPlan, monthEventDays } from '../monthGrid'
+import { monthEventDays, type MiniMonthPlan } from '../monthGrid'
 import { YEAR_PAGE_MESSAGES } from './messages'
 import type { YearlyOptions } from './options'
 

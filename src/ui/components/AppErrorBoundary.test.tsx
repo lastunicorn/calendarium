@@ -1,5 +1,6 @@
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { defaultLayoutOptions } from '../../layouts'
 import type { Project } from '../../workspace/Project'
 import { serializeProject } from '../../workspace/projectDocument'

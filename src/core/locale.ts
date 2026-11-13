@@ -1,4 +1,4 @@
-import { isWeekStart, type PlainDate, utcDate, type WeekStart } from './calendar'
+import { isWeekStart, utcDate, type PlainDate, type WeekStart } from './calendar'
 
 /** BCP 47 tags of the languages month and weekday names, and the printed text, can be shown in. */
 export const LOCALES = [
