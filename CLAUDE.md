@@ -88,6 +88,7 @@ Use these words in code, comments and docs, each for one thing. The terms only o
 
 - Indent with tabs (enforced by Prettier and `.editorconfig`); Markdown and YAML use 2 spaces.
 - Run `npm run format` after editing.
+- oxlint (`.oxlintrc.json`) runs the `react`, `typescript`, `oxc`, `import`, `jsx-a11y` and `unicorn` plugins, correctness as errors and suspicious as warnings, and `npm run lint` must show neither. A finding that is deliberate gets an `// oxlint-disable-next-line <rule> -- <reason>` comment, not a config change; tests may use `!` and nested helpers.
 - A `.tsx` file exports only components (oxlint `react/only-export-components`, for Fast Refresh); put shared constants in a `.ts` file next to it, as each layout folder's `index.ts` does.
 
 ### Styles

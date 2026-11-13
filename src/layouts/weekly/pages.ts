@@ -179,6 +179,7 @@ export function planWeekPages(options: WeeklyOptions, model: CalendarModel): Wee
 		const singleLines = mostEvents(cells.filter((cell) => cell.length === 1).flat())
 		return {
 			key: days[0].key,
+			// oxlint-disable-next-line typescript/no-non-null-assertion -- a week has at least five days
 			heading: dateRangeName(locale, days[0], days.at(-1)!),
 			subheading: header.showWeek ? WEEK_PAGE_MESSAGES[locale].week(weekNumber(days)) : '',
 			headingAlign: headingAlign(options),

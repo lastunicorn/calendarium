@@ -85,5 +85,5 @@ export function eventsOfYear(events: readonly CalendarEvent[], year: number): Da
 				event.day <= daysInMonth(year, event.month),
 		)
 		.map((event) => ({ date: plainDate(year, event.month, event.day), name: event.name }))
-		.sort((a, b) => a.date.key.localeCompare(b.date.key))
+		.toSorted((a, b) => a.date.key.localeCompare(b.date.key))
 }

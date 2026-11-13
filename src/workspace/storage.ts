@@ -72,9 +72,10 @@ function storedProjects(): Project[] {
 /** Writes `project` under its key, backing up a record a later version wrote there first. */
 function writeProject(project: Project): void {
 	const key = projectKey(project.id)
+	const stored = localStorage.getItem(key)
 	const previous = asObject(storedJson(key))
-	if (previous !== null && isFromLaterVersion(previous)) {
-		localStorage.setItem(PROJECT_BACKUP_KEY_PREFIX + project.id, localStorage.getItem(key)!)
+	if (stored !== null && previous !== null && isFromLaterVersion(previous)) {
+		localStorage.setItem(PROJECT_BACKUP_KEY_PREFIX + project.id, stored)
 	}
 	localStorage.setItem(key, serializeProject(project, { pretty: false }))
 }

@@ -94,7 +94,7 @@ const LOCALE_OPTIONS = optionsFrom(LOCALES, {
 	'zh-HK': 'Chinese (中文, 繁體, 香港)',
 })
 	.map((option) => ({ ...option, keywords: localeKeywords(option.value) }))
-	.sort((a, b) => a.label.localeCompare(b.label, 'en'))
+	.toSorted((a, b) => a.label.localeCompare(b.label, 'en'))
 
 /** Which year the calendar shows, in which language, and the day its weeks start on. */
 export function CalendarSection({

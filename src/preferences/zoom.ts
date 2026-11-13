@@ -6,6 +6,7 @@ export type ZoomLevel = (typeof ZOOM_LEVELS)[number]
 
 /** The lowest and highest zooms, in percent: the lowest and highest levels. */
 export const MIN_ZOOM = ZOOM_LEVELS[0]
+// oxlint-disable-next-line unicorn/prefer-at -- an index keeps the level's literal type, `at` adds undefined
 export const MAX_ZOOM = ZOOM_LEVELS[ZOOM_LEVELS.length - 1]
 
 /**

@@ -44,8 +44,8 @@ export function useScrollAreaSize(ref: RefObject<HTMLElement | null>): ScrollAre
 	useLayoutEffect(() => {
 		const element = ref.current
 		if (element === null) return
-		function update() {
-			const measured = measure(element!)
+		const update = () => {
+			const measured = measure(element)
 			setSize((current) => (sameSize(current, measured) ? current : measured))
 		}
 		update()

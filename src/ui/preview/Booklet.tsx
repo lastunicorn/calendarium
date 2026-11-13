@@ -45,6 +45,7 @@ export function Booklet({ setup, children }: BookletProps) {
 			placePage(pages[first], side, 0, stacked)
 			placePage(pages[second], side, 1, stacked)
 		})
+		// oxlint-disable-next-line react/exhaustive-effect-dependencies -- children: the pages to place
 	}, [children, blankPages, stacked])
 
 	return (

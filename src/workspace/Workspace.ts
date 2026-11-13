@@ -40,5 +40,5 @@ function compareProjects(a: Project, b: Project): number {
 
 /** Every project, in the order the Open project dialog lists them (see `compareProjects`). */
 export function projectList({ projects }: Workspace): Project[] {
-	return Object.values(projects).sort(compareProjects)
+	return Object.values(projects).toSorted(compareProjects)
 }

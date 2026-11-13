@@ -50,6 +50,7 @@ export function OpenProjectDialog({ projects, openId, onOpen, onCancel }: OpenPr
 				<legend className={styles.legend}>Projects</legend>
 				<div className={styles.list}>
 					{projects.map((project, index) => (
+						// oxlint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- a shortcut for Open
 						<label
 							key={project.value}
 							className={styles.row}

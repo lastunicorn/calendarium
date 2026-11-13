@@ -23,7 +23,8 @@ export function weekCells(week: Week, display: WeekendDisplay): WeekCell[] {
 	const reduce = display === 'reduced' && week[saturday + 1]?.weekday === 0
 	const cells: WeekCell[] = []
 	week.forEach((day, index) => {
-		if (reduce && index === saturday + 1) cells.at(-1)!.push(day)
+		const saturdayCell = cells.at(-1)
+		if (reduce && index === saturday + 1 && saturdayCell !== undefined) saturdayCell.push(day)
 		else cells.push([day])
 	})
 	return cells

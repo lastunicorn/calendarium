@@ -43,7 +43,9 @@ describe.each(LAYOUT_IDS)('the %s spec', (layout) => {
 	})
 
 	it('validates every field of its defaults', () => {
-		expect(Object.keys(spec.validators).sort()).toEqual(Object.keys(spec.defaults()).sort())
+		expect(Object.keys(spec.validators).toSorted()).toEqual(
+			Object.keys(spec.defaults()).toSorted(),
+		)
 	})
 
 	it('keeps its defaults as they are when normalizing', () => {

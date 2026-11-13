@@ -46,6 +46,7 @@ export function Spreads({ setup, children }: SpreadsProps) {
 			return
 		}
 		pages.forEach((page, index) => placePage(page, index, sideBySide))
+		// oxlint-disable-next-line react/exhaustive-effect-dependencies -- children: the pages to place
 	}, [children, pageCount, sideBySide])
 
 	const rings = Array.from({ length: ringCount(setup) }, (_, index) => (

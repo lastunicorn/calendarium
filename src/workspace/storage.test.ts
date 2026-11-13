@@ -56,7 +56,7 @@ describe('saveWorkspace and loadWorkspace', () => {
 	it('round-trip the workspace, one key per project and the open one in the workspace record', () => {
 		const workspace = workspaceOf([monthly(1, 'Home'), monthly(2, 'Work')], id(2))
 		saveWorkspace(defaultWorkspace(), workspace)
-		expect(Object.keys(stored()).sort()).toEqual([
+		expect(Object.keys(stored()).toSorted()).toEqual([
 			`calendarium-project:${id(1)}`,
 			`calendarium-project:${id(2)}`,
 			'calendarium-workspace',
@@ -245,7 +245,7 @@ describe('loadWorkspace of 5.x data', () => {
 		localStorage.setItem('calendarium-config', JSON.stringify(data))
 		const workspace = loadWorkspace()
 		const projects = projectList(workspace)
-		expect(projects.map((p) => p.layout).sort()).toEqual(['daily', 'monthly', 'weekly'])
+		expect(projects.map((p) => p.layout).toSorted()).toEqual(['daily', 'monthly', 'weekly'])
 		for (const project of projects) expect(project.name).toBe('')
 		expect(openProject(workspace)?.layout).toBe('weekly')
 		const byLayout = Object.fromEntries(projects.map((p) => [p.layout, p.options]))

@@ -187,7 +187,7 @@ describe('deleteProject', () => {
 
 	it('removes a project that is not open, keeping the open one', () => {
 		const deleted = workspaceReducer(workspace, { type: 'deleteProject', id: id(1) })
-		expect(Object.keys(deleted.projects).sort()).toEqual([id(2), id(3)])
+		expect(Object.keys(deleted.projects).toSorted()).toEqual([id(2), id(3)])
 		expect(deleted.open).toBe(id(3))
 	})
 

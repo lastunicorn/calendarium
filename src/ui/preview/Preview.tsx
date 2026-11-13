@@ -90,6 +90,7 @@ export function Preview({ project, onResetOptions, zoom, onZoom }: PreviewProps)
 		area.scrollLeft += rect.left + x * rect.width - point.x
 		area.scrollTop += rect.top + y * rect.height - point.y
 		anchor.current = null
+		// oxlint-disable-next-line react/exhaustive-effect-dependencies -- runs once the zoom is drawn
 	}, [zoom, scale])
 
 	/** Zooms to `next`, keeping `point` (the middle of the view by default) in place. */
@@ -130,6 +131,7 @@ export function Preview({ project, onResetOptions, zoom, onZoom }: PreviewProps)
 				ref={areaRef}
 				className={styles.preview}
 				lang={options.calendar.locale}
+				// oxlint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- scrolled with the keyboard
 				tabIndex={0}
 				aria-label="Preview"
 			>

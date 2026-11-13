@@ -101,7 +101,7 @@ describe('layers', () => {
 describe('layouts', () => {
 	it('have a folder each, named after its id', () => {
 		const folders = new Set(FILES.map(layoutOf).filter((layout) => layout !== null))
-		expect([...folders].sort()).toEqual([...LAYOUT_IDS].sort())
+		expect([...folders].toSorted()).toEqual(LAYOUT_IDS.toSorted())
 		for (const layout of folders) {
 			expect(SOURCES[`./layouts/${layout}/index.ts`], layout).toContain(
 				`defineLayout('${layout}',`,

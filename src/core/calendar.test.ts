@@ -71,7 +71,7 @@ describe('weekdayColumn', () => {
 	it('gives each weekday its own column for every week start', () => {
 		for (const weekStart of WEEK_STARTS) {
 			const columns = WEEK_STARTS.map((weekday) => weekdayColumn(weekday, weekStart))
-			expect([...columns].sort()).toEqual([0, 1, 2, 3, 4, 5, 6])
+			expect(columns.toSorted()).toEqual([0, 1, 2, 3, 4, 5, 6])
 		}
 	})
 })

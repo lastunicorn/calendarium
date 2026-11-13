@@ -174,6 +174,7 @@ export function ComboboxField<T extends string | number>({
 					</button>
 					<DropdownArrow />
 					{open && (
+						// oxlint-disable-next-line jsx-a11y/no-static-element-interactions -- keeps the focus in the filter
 						<div className={styles.popup} onMouseDown={handlePopupMouseDown}>
 							<input
 								className={styles.filter}
@@ -203,6 +204,7 @@ export function ComboboxField<T extends string | number>({
 								className={styles.list}
 							>
 								{shown.map(({ option }, index) => (
+									// oxlint-disable-next-line jsx-a11y/click-events-have-key-events -- the filter handles the keys
 									<li
 										key={option.value}
 										id={`${listId}-${index}`}

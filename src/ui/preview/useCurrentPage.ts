@@ -53,21 +53,21 @@ export function useCurrentPage(
 		const pagesBox = pagesRef.current
 		if (area === null || pagesBox === null) return
 
-		function update() {
-			const pages = pageElements(pagesBox!)
+		const update = () => {
+			const pages = pageElements(pagesBox)
 			setCount(pages.length)
 			const pin = pinned.current
 			if (
 				pin !== null &&
 				pin.index < pages.length &&
-				pin.scrollTop === area!.scrollTop &&
-				pin.scrollLeft === area!.scrollLeft
+				pin.scrollTop === area.scrollTop &&
+				pin.scrollLeft === area.scrollLeft
 			) {
 				setCurrent(pin.index)
 				return
 			}
 			pinned.current = null
-			setCurrent(mostVisiblePage(area!, pages))
+			setCurrent(mostVisiblePage(area, pages))
 		}
 
 		update()
