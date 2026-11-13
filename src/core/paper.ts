@@ -28,6 +28,14 @@ export function pageDimensions(size: PaperSize, orientation: Orientation) {
 	return orientation === 'portrait' ? { width, height } : { width: height, height: width }
 }
 
+/** CSS pixels per mm, 96 to the inch: the unit of an SVG's or a `path()`'s user units too. */
+export const PX_PER_MM = 96 / 25.4
+
+/** A length in mm in CSS pixels, rounded to a hundredth, as an SVG path's coordinates are written. */
+export function mmToPx(mm: number): number {
+	return Math.round(mm * PX_PER_MM * 100) / 100
+}
+
 export const MARGIN_SIDES = ['top', 'right', 'bottom', 'left'] as const
 export type MarginSide = (typeof MARGIN_SIDES)[number]
 

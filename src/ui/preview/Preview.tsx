@@ -1,7 +1,7 @@
 import { type CSSProperties, useLayoutEffect, useRef } from 'react'
 import type { Project } from '../../workspace/Project'
 import type { LayoutOptions, LayoutId } from '../../layouts'
-import { pageSizeCss, sheetDimensions } from '../../core/paper'
+import { pageSizeCss, PX_PER_MM, sheetDimensions } from '../../core/paper'
 import { type PreviewZoom, zoomScale } from '../../preferences/zoom'
 import { layoutView } from '../layouts/registry'
 import styles from './Preview.module.css'
@@ -14,9 +14,6 @@ import { useCurrentPage } from './useCurrentPage'
 import { PageIndicator } from './PageIndicator'
 import { ZoomBar } from './ZoomBar'
 import { type ScreenPoint, useZoomGestures } from './useZoomGestures'
-
-/** CSS px in a mm, the unit the pages are sized in. */
-const PX_PER_MM = 96 / 25.4
 
 interface PreviewProps {
 	/** The open project, whose pages are drawn. */

@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react'
+import { mmToPx } from '../../../core/paper'
 import type { FillAlignment, GenkoYoshiDirection, GenkoYoshiFurigana } from '../options'
 import type { GenkoYoshiFill } from '../pages'
 import styles from './GenkoYoshi.module.css'
@@ -54,14 +55,6 @@ function cellLayout({ size, gap, direction, furigana, furiganaSize }: GenkoYoshi
 	}
 }
 
-/** CSS pixels, an SVG's or a `path()`'s user units, per mm. */
-const PX_PER_MM = 96 / 25.4
-
-/** A length in mm as an SVG path's user units, rounded to a hundredth. */
-function px(mm: number): number {
-	return Math.round(mm * PX_PER_MM * 100) / 100
-}
-
 /**
  * The outline of the columns written vertically, or of the rows written horizontally, a
  * `clip-path` keeping the lines across them off the gaps between them: one rectangle along each,
@@ -73,10 +66,10 @@ function bandsClipPath(fill: GenkoYoshiFill): string {
 	const { width, height, columnStep, rowStep } = cellLayout(fill)
 	const vertical = fill.direction === 'vertical'
 	// The grid's length along the bands: their cells, with the far line.
-	const length = px((vertical ? fill.rows * rowStep : fill.columns * columnStep) + LINE_WIDTH)
-	const breadth = px(vertical ? width : height)
+	const length = mmToPx((vertical ? fill.rows * rowStep : fill.columns * columnStep) + LINE_WIDTH)
+	const breadth = mmToPx(vertical ? width : height)
 	const bands = Array.from({ length: vertical ? fill.columns : fill.rows }, (_, index) => {
-		const start = px(index * (vertical ? columnStep : rowStep) + LINE_WIDTH / 2)
+		const start = mmToPx(index * (vertical ? columnStep : rowStep) + LINE_WIDTH / 2)
 		return vertical
 			? `M${start} 0h${breadth}v${length}h${-breadth}Z`
 			: `M0 ${start}v${breadth}h${length}v${-breadth}Z`
@@ -100,8 +93,8 @@ function guidePath(fill: GenkoYoshiFill): string {
 		const left = column * columnStep + LINE_WIDTH / 2
 		for (let row = 0; row < fill.rows; row++) {
 			const top = row * rowStep + strip + LINE_WIDTH / 2
-			segments.push(`M${px(left)} ${px(top + size / 2)}h${px(size)}`)
-			segments.push(`M${px(left + size / 2)} ${px(top)}v${px(size)}`)
+			segments.push(`M${mmToPx(left)} ${mmToPx(top + size / 2)}h${mmToPx(size)}`)
+			segments.push(`M${mmToPx(left + size / 2)} ${mmToPx(top)}v${mmToPx(size)}`)
 		}
 	}
 	const path = segments.join('')

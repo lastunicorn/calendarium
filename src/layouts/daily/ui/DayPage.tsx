@@ -1,5 +1,5 @@
 import { type CSSProperties, memo } from 'react'
-import type { PageSetup } from '../../../core/paper'
+import { mmToPx, type PageSetup } from '../../../core/paper'
 import type { FillAlignment } from '../options'
 import type { DayFill, DayPages } from '../pages'
 import { CalendarHeader } from '../../../ui/layouts/CalendarHeader'
@@ -28,14 +28,6 @@ type DotsStyle = CSSProperties & Record<'--square-size' | '--dot-size', string>
 /** The `dots` fill as `planDayPages` plans it. */
 type DotsFill = Extract<DayFill, { kind: 'dots' }>
 
-/** CSS pixels, an SVG's user units, per mm. */
-const PX_PER_MM = 96 / 25.4
-
-/** A length in mm as an SVG path's user units, rounded to a hundredth. */
-function px(mm: number): number {
-	return Math.round(mm * PX_PER_MM * 100) / 100
-}
-
 /** The dots' path of each grid, shared by every day's sheets, which share their fill. */
 const dotPaths = new WeakMap<DotsFill, string>()
 
@@ -49,9 +41,9 @@ function dotPath(fill: DotsFill): string {
 	const radius = DOT_SIZE / 2
 	const segments: string[] = []
 	for (let row = 0; row <= fill.rows; row++) {
-		const y = px(radius + row * fill.size)
+		const y = mmToPx(radius + row * fill.size)
 		for (let column = 0; column <= fill.columns; column++) {
-			segments.push(`M${px(radius + column * fill.size)} ${y}h0`)
+			segments.push(`M${mmToPx(radius + column * fill.size)} ${y}h0`)
 		}
 	}
 	const path = segments.join('')

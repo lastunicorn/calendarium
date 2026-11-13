@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
 	contentBox,
 	margins,
+	mmToPx,
 	normalizePage,
 	type PageSetup,
 	pageDimensions,
@@ -25,6 +26,17 @@ describe('pageDimensions', () => {
 	it('lists every paper size taller than wide', () => {
 		for (const size of PAPER_SIZES)
 			expect(PAPERS[size].height).toBeGreaterThan(PAPERS[size].width)
+	})
+})
+
+describe('mmToPx', () => {
+	it('converts at 96 px to the inch', () => {
+		expect(mmToPx(25.4)).toBe(96)
+	})
+
+	it('rounds to a hundredth', () => {
+		expect(mmToPx(1)).toBe(3.78)
+		expect(mmToPx(0.5)).toBe(1.89)
 	})
 })
 
