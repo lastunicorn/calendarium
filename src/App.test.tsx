@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import App from './App'
 import { defaultLayoutOptions, LAYOUT_IDS } from './layouts'
 import { LAYOUT_VIEWS } from './ui/layouts/registry'
@@ -422,5 +422,30 @@ describe('App workspace', () => {
 		expect(screen.queryByRole('dialog')).toBeNull()
 		expect(projectLabels()).toEqual(['Desk — Monthly', 'Home — Yearly'])
 		expect(openLabel()).toBe('Desk — Monthly')
+	})
+})
+
+describe('App unsaved changes', () => {
+	afterEach(() => {
+		vi.restoreAllMocks()
+	})
+
+	it('says changes aren’t saved while storage is full, until a save is written again', async () => {
+		renderEmpty()
+		const setItem = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+			throw new DOMException('Full', 'QuotaExceededError')
+		})
+		createProject('Home', 'yearly')
+		const alert = await within(projectSection()).findByRole('alert')
+		expect(alert.textContent).toMatch(/storage is full/)
+		expect(localStorage.getItem('calendarium-workspace')).toBeNull()
+
+		setItem.mockRestore()
+		fireEvent.change(within(projectSection()).getByRole('textbox', { name: 'Name' }), {
+			target: { value: 'Desk' },
+		})
+		await waitFor(() => expect(within(projectSection()).queryByRole('alert')).toBeNull())
+		// The failed save's changes are written with the next one's.
+		expect(localStorage.getItem('calendarium-workspace')).not.toBeNull()
 	})
 })

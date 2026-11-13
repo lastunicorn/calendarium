@@ -22,8 +22,9 @@ function workspaceFor(
 	return { projects: { [id]: project }, open: id }
 }
 
-/** The project section's actions, doing nothing. */
+/** The project section's actions, doing nothing, every save written. */
 const PROJECT_ACTIONS = {
+	saveFailure: null,
 	onOpenProject: noop,
 	onRenameProject: noop,
 	onNewProject: noop,

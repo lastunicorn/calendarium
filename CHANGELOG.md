@@ -22,6 +22,7 @@ The app now keeps a list of projects, each with an id, an optional name, a layou
 - Delete project, in the Project section, once confirmed.
 - Opening a file saved from a project already in the list asks whether to overwrite it.
 - Without a project, the preview offers a New project button, and Print is disabled.
+- The Project section says when changes aren’t being saved in the browser, its storage full or unavailable, and suggests saving the project to a file; the notice goes once a save succeeds again, which also saves the changes it missed.
 - Week and day layouts: the mini calendars circle the days with an event, as the year layout's months do, unless "Show events" is unchecked in the Mini calendar section.
 - Year and month layouts: a "Title size (pt)" option in the Header section, as the week and day layouts have.
 - Day layout: a Genkō yōshi fill, Japanese manuscript paper: squares 10 to 20 mm a side (12 mm by default), one for each character, in columns with a blank space between them for furigana, or in rows with the space between the rows (Writing direction: Vertical, the default, or Horizontal). Each square can have a strip of its own for furigana, above it or right of it (Furigana: None, Top or Right), and dotted guide lines dividing it in half (Guide lines, off by default). The grid is aligned left, centered (the default) or right on the page, the same alignment as the squares and dots.

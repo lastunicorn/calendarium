@@ -125,6 +125,37 @@ describe('saveWorkspace and loadWorkspace', () => {
 	})
 })
 
+describe('saveWorkspace outcome', () => {
+	const workspace = workspaceOf([monthly(1, 'Home')], id(1))
+
+	/** Makes every storage write throw `error`. */
+	function failWrites(error: Error) {
+		vi.spyOn(localStorage, 'setItem').mockImplementation(() => {
+			throw error
+		})
+	}
+
+	it('says the save was written', () => {
+		expect(saveWorkspace(defaultWorkspace(), workspace)).toEqual({ saved: true })
+	})
+
+	it('says storage is full on a quota error', () => {
+		failWrites(new DOMException('Full', 'QuotaExceededError'))
+		expect(saveWorkspace(defaultWorkspace(), workspace)).toEqual({
+			saved: false,
+			reason: 'quota',
+		})
+	})
+
+	it('says storage is unavailable on any other error', () => {
+		failWrites(new DOMException('Blocked', 'SecurityError'))
+		expect(saveWorkspace(defaultWorkspace(), workspace)).toEqual({
+			saved: false,
+			reason: 'unavailable',
+		})
+	})
+})
+
 describe('loadWorkspace', () => {
 	it('gives an empty workspace without any data, and writes nothing', () => {
 		const writes = spyOnWrites()

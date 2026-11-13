@@ -1,9 +1,9 @@
-import { useEffect, useReducer, useRef } from 'react'
+import { useEffect, useReducer, useRef, useState } from 'react'
 import type { Patch } from '../core/data'
 import type { LayoutOptions, LayoutId } from '../layouts'
 import { newProjectId, type Project, type ProjectId } from '../workspace/Project'
 import { type WorkspaceAction, workspaceReducer } from '../workspace/workspaceReducer'
-import { loadWorkspace, saveWorkspace } from '../workspace/storage'
+import { loadWorkspace, type SaveFailure, saveWorkspace } from '../workspace/storage'
 
 /** Changes some of one layout's options, nested objects field by field. */
 export type UpdateLayoutOptions = <K extends LayoutId>(
@@ -12,19 +12,21 @@ export type UpdateLayoutOptions = <K extends LayoutId>(
 ) => void
 
 /**
- * The app's single workspace state: loaded from and saved to `localStorage`. New projects' ids
- * are made here, so the reducer stays pure.
+ * The app's single workspace state: loaded from and saved to `localStorage`, with why the last
+ * save wasn't written, `null` when it was. New projects' ids are made here, so the reducer stays pure.
  */
 export function useWorkspace() {
 	const [workspace, dispatch] = useReducer(workspaceReducer, undefined, loadWorkspace)
-	// Saved after each change, as what changed since the last save: the projects loaded are
-	// already stored.
+	// Saved after each change, as what changed since the last save written: the projects loaded
+	// are already stored, and a failed save's changes are written again with the next change.
 	const saved = useRef(workspace)
+	const [saveFailure, setSaveFailure] = useState<SaveFailure | null>(null)
 
 	useEffect(() => {
 		if (workspace === saved.current) return
-		saveWorkspace(saved.current, workspace)
-		saved.current = workspace
+		const outcome = saveWorkspace(saved.current, workspace)
+		if (outcome.saved) saved.current = workspace
+		setSaveFailure(outcome.saved ? null : outcome.reason)
 	}, [workspace])
 
 	/** Adds a project with its layout's defaults, and opens it. */
@@ -62,6 +64,7 @@ export function useWorkspace() {
 
 	return {
 		workspace,
+		saveFailure,
 		createProject,
 		openProject,
 		renameProject,

@@ -1,5 +1,6 @@
 import type { Project, ProjectId } from '../../workspace/Project'
 import { openProject, type Workspace } from '../../workspace/Workspace'
+import type { SaveFailure } from '../../workspace/storage'
 import { type Ref, useMemo } from 'react'
 import type { Patch } from '../../core/data'
 import { defaultLayoutOptions, type LayoutOptions, type LayoutId } from '../../layouts'
@@ -11,6 +12,8 @@ import { type OpenSections, OpenSectionsContext } from './openSections'
 
 interface WorkspaceFormProps {
 	workspace: Workspace
+	/** Why the workspace's last change wasn't saved in this browser; `null` when it was. */
+	saveFailure: SaveFailure | null
 	/** Opens another project. */
 	onOpenProject: (id: ProjectId) => void
 	/** Renames the open project. */
@@ -57,6 +60,7 @@ function LayoutForm<K extends LayoutId>({ layout, options, onUpdate }: LayoutFor
  */
 export function WorkspaceForm({
 	workspace,
+	saveFailure,
 	onOpenProject,
 	onRenameProject,
 	onUpdate,
@@ -79,6 +83,7 @@ export function WorkspaceForm({
 			<div className={styles.form}>
 				<ProjectSection
 					workspace={workspace}
+					saveFailure={saveFailure}
 					onOpen={onOpenProject}
 					onRename={onRenameProject}
 					onNew={onNewProject}

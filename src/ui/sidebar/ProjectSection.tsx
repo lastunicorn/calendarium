@@ -8,6 +8,7 @@ import {
 } from 'react'
 import { openProject, projectList, type Workspace } from '../../workspace/Workspace'
 import type { Project, ProjectId } from '../../workspace/Project'
+import type { SaveFailure } from '../../workspace/storage'
 import { type OpenedProjectFile, parseProjectFile, projectFile } from '../../workspace/projectFile'
 import { Dialog } from '../components/Dialog'
 import { IconButton } from '../components/IconButton'
@@ -45,6 +46,8 @@ interface PendingOverwrite {
 
 interface ProjectSectionProps {
 	workspace: Workspace
+	/** Why the workspace's last change wasn't saved in this browser; `null` when it was. */
+	saveFailure: SaveFailure | null
 	/** Opens another project. */
 	onOpen: (id: ProjectId) => void
 	/** Renames the open project. */
@@ -103,6 +106,15 @@ function describeRejected(
 	}
 }
 
+/** Why the changes aren't kept, for the user, and how to keep them anyway. */
+function describeSaveFailure(failure: SaveFailure): string {
+	const why =
+		failure === 'quota'
+			? 'this browser’s storage is full'
+			: 'this browser’s storage is unavailable'
+	return `Changes aren’t being saved: ${why}. Save the project to a file to keep it.`
+}
+
 /** The label of the action button `target` is in, or empty outside a button. */
 function actionLabel(target: EventTarget): string {
 	return (target instanceof Element && target.closest('button')?.title) || ''
@@ -113,11 +125,13 @@ function actionLabel(target: EventTarget): string {
  * of the projects kept in this browser, chosen in the Open project dialog, and its deleting, then,
  * apart, the opening of a project file and the saving of the open project to one, and, apart
  * again, its printing, above the open project's name and its layout, which it keeps. Opening a
- * file of a project already kept, or deleting one, asks first. Without a project, only New, Open
- * and Print, disabled, show. Always open.
+ * file of a project already kept, or deleting one, asks first. While changes can't be saved in
+ * this browser, it says so. Without a project, only New, Open and Print, disabled, show. Always
+ * open.
  */
 export function ProjectSection({
 	workspace,
+	saveFailure,
 	onOpen,
 	onRename,
 	onNew,
@@ -303,6 +317,12 @@ export function ProjectSection({
 				</p>
 			</div>
 
+			{/* Shown until a save is written again, since every change until then is lost on reload. */}
+			{saveFailure !== null && (
+				<p className={styles.error} role="alert">
+					{describeSaveFailure(saveFailure)}
+				</p>
+			)}
 			{openError && (
 				<p className={styles.error} role="alert">
 					{openError}

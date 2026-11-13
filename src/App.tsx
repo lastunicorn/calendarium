@@ -14,6 +14,7 @@ import { openProject } from './workspace/Workspace'
 export default function App() {
 	const {
 		workspace,
+		saveFailure,
 		createProject,
 		openProject: openProjectById,
 		renameProject,
@@ -59,6 +60,7 @@ export default function App() {
 			<Sidebar width={preferences.sidebarWidth} onResize={resizeSidebar}>
 				<WorkspaceForm
 					workspace={workspace}
+					saveFailure={saveFailure}
 					onOpenProject={openProjectById}
 					onRenameProject={renameProject}
 					onUpdate={updateOptions}

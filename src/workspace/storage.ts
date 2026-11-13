@@ -147,13 +147,31 @@ export function loadWorkspace(): Workspace {
 }
 
 /**
+ * Whether a save was written: `quota` when storage is full, `unavailable` when it refuses to be
+ * written at all (blocked, private mode, a security policy).
+ */
+export type SaveOutcome = { saved: true } | { saved: false; reason: SaveFailure }
+
+/** Why a save wasn't written. */
+export type SaveFailure = 'quota' | 'unavailable'
+
+/** Whether `error`, thrown by a storage write, says storage is full (Firefox once named it apart). */
+function isQuotaError(error: unknown): boolean {
+	return (
+		error instanceof DOMException &&
+		(error.name === 'QuotaExceededError' || error.name === 'NS_ERROR_DOM_QUOTA_REACHED')
+	)
+}
+
+/**
  * Saves what changed from `previous` to `next`: removes the keys of deleted projects, writes each
  * project whose object is not the previous one (a record a later version wrote backed up first,
  * since this version would drop what it doesn't know), and the workspace record when the open
  * project changed. Unchanged projects are never written, so nothing a later version stored is
- * lost by loading it.
+ * lost by loading it. A failed save may have written part of it; saving the same change again
+ * writes the rest, since each write is whole.
  */
-export function saveWorkspace(previous: Workspace, next: Workspace): void {
+export function saveWorkspace(previous: Workspace, next: Workspace): SaveOutcome {
 	try {
 		for (const id of Object.keys(previous.projects)) {
 			if (!Object.hasOwn(next.projects, id)) localStorage.removeItem(projectKey(id))
@@ -162,7 +180,9 @@ export function saveWorkspace(previous: Workspace, next: Workspace): void {
 			if (previous.projects[project.id] !== project) writeProject(project)
 		}
 		if (previous.open !== next.open) writeWorkspaceRecord(next.open)
-	} catch {
-		// Storage may be unavailable (private mode, quota); the app still works without it.
+		return { saved: true }
+	} catch (error) {
+		// The app still works without storage, but the user must be told the changes aren't kept.
+		return { saved: false, reason: isQuotaError(error) ? 'quota' : 'unavailable' }
 	}
 }
