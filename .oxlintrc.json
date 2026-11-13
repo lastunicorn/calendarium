@@ -84,5 +84,5 @@
 			}
 		}
 	],
-	"ignorePatterns": ["dist", "test-results", "playwright-report"]
+	"ignorePatterns": ["dist", "test-results", "playwright-report", "coverage"]
 }

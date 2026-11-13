@@ -25,6 +25,30 @@ export default defineConfig({
 	server: { port: Number(process.env.PORT) || undefined },
 	test: {
 		passWithNoTests: true,
+		// `npm run test:coverage`: what the unit and component tests run, in `coverage/` (`index.html`).
+		coverage: {
+			provider: 'v8',
+			include: ['src/**/*.{ts,tsx}'],
+			exclude: ['src/**/*.test.*', 'src/test/**', 'src/main.tsx', 'src/**/*.d.ts'],
+			reporter: ['text-summary', 'html'],
+			// A little under the measured values, so they catch regressions only: the domain folders
+			// (a layout's own files, not its `ui/`) close to fully, the whole app, UI included, looser.
+			thresholds: {
+				lines: 86,
+				statements: 86,
+				functions: 83,
+				branches: 84,
+				'src/core/**': { lines: 98, statements: 98, functions: 98, branches: 94 },
+				'src/layouts/{*,*/*}.ts': {
+					lines: 97,
+					statements: 97,
+					functions: 97,
+					branches: 97,
+				},
+				'src/workspace/**': { lines: 96, statements: 95, functions: 94, branches: 94 },
+				'src/preferences/**': { lines: 98, statements: 98, functions: 98, branches: 95 },
+			},
+		},
 		// Plain `.test.ts` files stay DOM-free; component tests (`.test.tsx`) run in jsdom.
 		projects: [
 			{ extends: true, test: { name: 'unit', include: ['src/**/*.test.ts'] } },
