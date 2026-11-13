@@ -1,0 +1,226 @@
+{
+	"shown": "weekly",
+	"layouts": {
+		"yearly": {
+			"options": {
+				"calendar": {
+					"year": 2031,
+					"locale": "fr-FR",
+					"weekStart": 0
+				},
+				"events": [
+					"2031-03-14 Fixture day",
+					"0000-12-25 Every year"
+				],
+				"header": {
+					"title": "Fixture title",
+					"subtitle": "Fixture subtitle",
+					"fontSize": 32
+				},
+				"content": {
+					"monthSize": "medium",
+					"weekdayFormat": "short",
+					"highlightWeekends": "off",
+					"showWeekNumbers": true
+				},
+				"page": {
+					"paperSize": "a3",
+					"orientation": "landscape",
+					"margins": {
+						"top": 14,
+						"right": 15,
+						"bottom": 16,
+						"left": 17
+					},
+					"equalMargins": false,
+					"mirrorMargins": true,
+					"spine": "top",
+					"booklet": true
+				}
+			},
+			"ignored": []
+		},
+		"monthly": {
+			"options": {
+				"calendar": {
+					"year": 2031,
+					"locale": "fr-FR",
+					"weekStart": 0
+				},
+				"events": [
+					"2031-03-14 Fixture day",
+					"0000-12-25 Every year"
+				],
+				"header": {
+					"title": "Fixture title",
+					"alignment": "right",
+					"fontSize": 24
+				},
+				"miniMonth": {
+					"showPreviousMonth": false,
+					"showNextMonth": false,
+					"showYear": false,
+					"size": "medium",
+					"weekdayFormat": "short",
+					"highlightWeekends": "off",
+					"showWeekNumbers": true
+				},
+				"content": {
+					"weekdayFormat": "short",
+					"highlightWeekends": "off",
+					"showWeekNumbers": true,
+					"showAdjacentMonthDays": true,
+					"showGridLines": false,
+					"weekdayFontSize": 15,
+					"dayNumber": {
+						"fontSize": 21,
+						"horizontalAlignment": "right",
+						"verticalAlignment": "bottom"
+					}
+				},
+				"page": {
+					"paperSize": "a3",
+					"orientation": "portrait",
+					"margins": {
+						"top": 12,
+						"right": 13,
+						"bottom": 14,
+						"left": 15
+					},
+					"equalMargins": false,
+					"mirrorMargins": true,
+					"spine": "left",
+					"booklet": true
+				}
+			},
+			"ignored": []
+		},
+		"weekly": {
+			"options": {
+				"calendar": {
+					"year": 2031,
+					"locale": "fr-FR",
+					"weekStart": 0
+				},
+				"events": [
+					"2031-03-14 Fixture day",
+					"0000-12-25 Every year"
+				],
+				"header": {
+					"alignment": "right",
+					"fontSize": 26,
+					"showWeek": false
+				},
+				"miniMonth": {
+					"showCurrentMonth": false,
+					"showNextMonth": false,
+					"showEvents": true,
+					"showYear": true,
+					"size": "medium",
+					"weekdayFormat": "short",
+					"highlightWeekends": "off",
+					"showWeekNumbers": false
+				},
+				"content": {
+					"twoPages": true,
+					"startPage": "even",
+					"dayDirection": "vertical",
+					"weekdayFormat": "full",
+					"highlightWeekendDays": false,
+					"weekendDisplay": "full",
+					"fill": "none",
+					"schedule": {
+						"hourFormat": "12h",
+						"firstHour": 12,
+						"lastHour": 15
+					}
+				},
+				"footer": {
+					"show": true,
+					"height": 27
+				},
+				"page": {
+					"paperSize": "a3",
+					"orientation": "portrait",
+					"margins": {
+						"top": 12,
+						"right": 13,
+						"bottom": 14,
+						"left": 15
+					},
+					"equalMargins": false,
+					"mirrorMargins": true,
+					"spine": "left",
+					"booklet": true
+				}
+			},
+			"ignored": []
+		},
+		"daily": {
+			"options": {
+				"calendar": {
+					"year": 2031,
+					"locale": "fr-FR",
+					"weekStart": 0
+				},
+				"events": [
+					"2031-03-14 Fixture day",
+					"0000-12-25 Every year"
+				],
+				"header": {
+					"heading": "weekday",
+					"fontSize": 30,
+					"showWeek": false,
+					"showDayOfYear": false,
+					"highlightWeekendDays": false
+				},
+				"miniMonth": {
+					"show": false,
+					"showYear": true,
+					"showEvents": true,
+					"size": "medium",
+					"weekdayFormat": "short",
+					"highlightWeekends": "off",
+					"showWeekNumbers": false
+				},
+				"content": {
+					"twoPages": true,
+					"fill": "ruled",
+					"ruledLineSpacing": 15,
+					"squareSize": 6,
+					"fillAlignment": "right",
+					"genkoYoshi": {
+						"squareSize": 12,
+						"direction": "vertical",
+						"furigana": "none",
+						"guides": false
+					},
+					"schedule": {
+						"hourFormat": "12h",
+						"firstHour": 11,
+						"lastHour": 16
+					}
+				},
+				"footer": {
+					"show": false,
+					"height": 20
+				},
+				"page": {
+					"paperSize": "a3",
+					"orientation": "landscape",
+					"margins": {
+						"top": 14,
+						"right": 15,
+						"bottom": 16,
+						"left": 17
+					},
+					"equalMargins": false,
+					"mirrorMargins": true,
+					"spine": "top",
+					"booklet": true
+				}
+			},
+			"ignored": []
+		}
+	}
+}

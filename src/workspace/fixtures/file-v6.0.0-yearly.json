@@ -1,0 +1,44 @@
+{
+	"format": "calendarium/project",
+	"version": 6,
+	"app": "6.0.0",
+	"id": "6f0e2c1a-3b4d-4e5f-8a6b-7c8d9e0f1a2b",
+	"name": "Fixture yearly",
+	"layout": "yearly",
+	"options": {
+		"calendar": {
+			"year": 2031,
+			"locale": "fr-FR",
+			"weekStart": 0
+		},
+		"events": [
+			"2031-03-14 Fixture day",
+			"0000-12-25 Every year"
+		],
+		"header": {
+			"title": "Fixture header.title",
+			"subtitle": "Fixture header.subtitle",
+			"fontSize": 34
+		},
+		"content": {
+			"monthSize": "small",
+			"weekdayFormat": "short",
+			"highlightWeekends": "off",
+			"showWeekNumbers": true
+		},
+		"page": {
+			"paperSize": "a3",
+			"orientation": "landscape",
+			"margins": {
+				"top": 15,
+				"right": 16,
+				"bottom": 17,
+				"left": 18
+			},
+			"equalMargins": false,
+			"mirrorMargins": true,
+			"spine": "top",
+			"booklet": true
+		}
+	}
+}

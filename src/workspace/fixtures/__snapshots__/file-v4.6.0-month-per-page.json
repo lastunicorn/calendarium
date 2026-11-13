@@ -1,0 +1,62 @@
+{
+	"ok": true,
+	"project": {
+		"id": null,
+		"name": "file-v4.6.0-month-per-page",
+		"layout": "monthly",
+		"options": {
+			"calendar": {
+				"year": 2031,
+				"locale": "fr-FR",
+				"weekStart": 0
+			},
+			"events": [
+				"2031-03-14 Fixture day",
+				"0000-12-25 Every year"
+			],
+			"header": {
+				"title": "Fixture title",
+				"alignment": "right",
+				"fontSize": 24
+			},
+			"miniMonth": {
+				"showPreviousMonth": false,
+				"showNextMonth": false,
+				"showYear": false,
+				"size": "medium",
+				"weekdayFormat": "short",
+				"highlightWeekends": "off",
+				"showWeekNumbers": true
+			},
+			"content": {
+				"weekdayFormat": "short",
+				"highlightWeekends": "off",
+				"showWeekNumbers": true,
+				"showAdjacentMonthDays": true,
+				"showGridLines": false,
+				"weekdayFontSize": 15,
+				"dayNumber": {
+					"fontSize": 21,
+					"horizontalAlignment": "right",
+					"verticalAlignment": "bottom"
+				}
+			},
+			"page": {
+				"paperSize": "a3",
+				"orientation": "portrait",
+				"margins": {
+					"top": 12,
+					"right": 13,
+					"bottom": 14,
+					"left": 15
+				},
+				"equalMargins": false,
+				"mirrorMargins": true,
+				"spine": "left",
+				"booklet": true
+			}
+		}
+	},
+	"ignored": [],
+	"newer": false
+}

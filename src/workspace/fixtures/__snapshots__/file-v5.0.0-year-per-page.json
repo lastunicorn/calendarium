@@ -1,0 +1,46 @@
+{
+	"ok": true,
+	"project": {
+		"id": null,
+		"name": "file-v5.0.0-year-per-page",
+		"layout": "yearly",
+		"options": {
+			"calendar": {
+				"year": 2031,
+				"locale": "fr-FR",
+				"weekStart": 0
+			},
+			"events": [
+				"2031-03-14 Fixture day",
+				"0000-12-25 Every year"
+			],
+			"header": {
+				"title": "Fixture title",
+				"subtitle": "Fixture subtitle",
+				"fontSize": 32
+			},
+			"content": {
+				"monthSize": "small",
+				"weekdayFormat": "short",
+				"highlightWeekends": "off",
+				"showWeekNumbers": true
+			},
+			"page": {
+				"paperSize": "a3",
+				"orientation": "landscape",
+				"margins": {
+					"top": 14,
+					"right": 15,
+					"bottom": 16,
+					"left": 17
+				},
+				"equalMargins": false,
+				"mirrorMargins": true,
+				"spine": "top",
+				"booklet": true
+			}
+		}
+	},
+	"ignored": [],
+	"newer": false
+}

@@ -1,0 +1,68 @@
+{
+	"ok": true,
+	"project": {
+		"id": null,
+		"name": "file-v5.0.0-week-per-page",
+		"layout": "weekly",
+		"options": {
+			"calendar": {
+				"year": 2031,
+				"locale": "fr-FR",
+				"weekStart": 0
+			},
+			"events": [
+				"2031-03-14 Fixture day",
+				"0000-12-25 Every year"
+			],
+			"header": {
+				"alignment": "right",
+				"fontSize": 26,
+				"showWeek": false
+			},
+			"miniMonth": {
+				"showCurrentMonth": false,
+				"showNextMonth": true,
+				"showEvents": true,
+				"showYear": true,
+				"size": "small",
+				"weekdayFormat": "short",
+				"highlightWeekends": "off",
+				"showWeekNumbers": false
+			},
+			"content": {
+				"twoPages": true,
+				"startPage": "even",
+				"dayDirection": "horizontal",
+				"weekdayFormat": "full",
+				"highlightWeekendDays": false,
+				"weekendDisplay": "full",
+				"fill": "none",
+				"schedule": {
+					"hourFormat": "12h",
+					"firstHour": 12,
+					"lastHour": 15
+				}
+			},
+			"footer": {
+				"show": true,
+				"height": 27
+			},
+			"page": {
+				"paperSize": "a3",
+				"orientation": "portrait",
+				"margins": {
+					"top": 12,
+					"right": 13,
+					"bottom": 14,
+					"left": 15
+				},
+				"equalMargins": false,
+				"mirrorMargins": true,
+				"spine": "left",
+				"booklet": true
+			}
+		}
+	},
+	"ignored": [],
+	"newer": false
+}

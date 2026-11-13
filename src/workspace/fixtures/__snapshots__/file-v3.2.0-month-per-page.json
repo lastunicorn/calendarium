@@ -1,0 +1,59 @@
+{
+	"ok": true,
+	"project": {
+		"id": null,
+		"name": "file-v3.2.0-month-per-page",
+		"layout": "monthly",
+		"options": {
+			"calendar": {
+				"year": 2031,
+				"locale": "fr-FR",
+				"weekStart": 0
+			},
+			"events": [],
+			"header": {
+				"title": "",
+				"alignment": "center",
+				"fontSize": 24
+			},
+			"miniMonth": {
+				"showPreviousMonth": true,
+				"showNextMonth": true,
+				"showYear": true,
+				"size": "medium",
+				"weekdayFormat": "narrow",
+				"highlightWeekends": "days",
+				"showWeekNumbers": false
+			},
+			"content": {
+				"weekdayFormat": "narrow",
+				"highlightWeekends": "off",
+				"showWeekNumbers": false,
+				"showAdjacentMonthDays": false,
+				"showGridLines": true,
+				"weekdayFontSize": 9,
+				"dayNumber": {
+					"fontSize": 14,
+					"horizontalAlignment": "left",
+					"verticalAlignment": "top"
+				}
+			},
+			"page": {
+				"paperSize": "a3",
+				"orientation": "portrait",
+				"margins": {
+					"top": 12,
+					"right": 13,
+					"bottom": 14,
+					"left": 15
+				},
+				"equalMargins": false,
+				"mirrorMargins": false,
+				"spine": "left",
+				"booklet": false
+			}
+		}
+	},
+	"ignored": [],
+	"newer": false
+}

@@ -1,0 +1,65 @@
+{
+	"ok": true,
+	"project": {
+		"id": null,
+		"name": "file-v3.2.0-week-per-page",
+		"layout": "weekly",
+		"options": {
+			"calendar": {
+				"year": 2031,
+				"locale": "fr-FR",
+				"weekStart": 0
+			},
+			"events": [],
+			"header": {
+				"alignment": "auto",
+				"fontSize": 20,
+				"showWeek": false
+			},
+			"miniMonth": {
+				"showCurrentMonth": true,
+				"showNextMonth": false,
+				"showEvents": true,
+				"showYear": false,
+				"size": "medium",
+				"weekdayFormat": "narrow",
+				"highlightWeekends": "days",
+				"showWeekNumbers": true
+			},
+			"content": {
+				"twoPages": false,
+				"startPage": "odd",
+				"dayDirection": "vertical",
+				"weekdayFormat": "narrow",
+				"highlightWeekendDays": false,
+				"weekendDisplay": "reduced",
+				"fill": "hours",
+				"schedule": {
+					"hourFormat": "auto",
+					"firstHour": 7,
+					"lastHour": 21
+				}
+			},
+			"footer": {
+				"show": false,
+				"height": 20
+			},
+			"page": {
+				"paperSize": "a3",
+				"orientation": "portrait",
+				"margins": {
+					"top": 12,
+					"right": 13,
+					"bottom": 14,
+					"left": 15
+				},
+				"equalMargins": false,
+				"mirrorMargins": false,
+				"spine": "left",
+				"booklet": false
+			}
+		}
+	},
+	"ignored": [],
+	"newer": false
+}

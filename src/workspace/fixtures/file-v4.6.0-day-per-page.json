@@ -1,0 +1,44 @@
+{
+	"format": "printable-calendar/layout",
+	"version": 4,
+	"app": "4.6.0",
+	"layout": "day-per-page",
+	"year": 2031,
+	"locale": "fr-FR",
+	"weekStart": 0,
+	"events": "2031-03-14 Fixture day\n0000-12-25 Every year",
+	"page": {
+		"paperSize": "a3",
+		"orientation": "landscape",
+		"margins": {
+			"top": 14,
+			"right": 15,
+			"bottom": 16,
+			"left": 17
+		},
+		"equalMargins": false,
+		"mirrorMargins": true,
+		"spine": "top",
+		"booklet": true
+	},
+	"dayPageTitle": "weekday",
+	"headingFontSize": 30,
+	"dayPageLines": "ruled",
+	"ruledLineSpacing": 15,
+	"squareSize": 6,
+	"squareGridAlignment": "right",
+	"twoPagesPerDay": true,
+	"hourFormat": "12h",
+	"firstHour": 11,
+	"lastHour": 16,
+	"highlightWeekendDays": false,
+	"miniMonth": {
+		"show": false,
+		"showYear": true,
+		"weekdayFormat": "short",
+		"highlightWeekends": "off",
+		"showWeekNumbers": false
+	},
+	"showHeaderWeek": false,
+	"showHeaderDayOfYear": false
+}

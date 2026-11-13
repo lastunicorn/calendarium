@@ -1,0 +1,30 @@
+{
+	"format": "printable-calendar/layout",
+	"version": 5,
+	"app": "5.0.0",
+	"layout": "year-per-page",
+	"year": 2031,
+	"locale": "fr-FR",
+	"weekStart": 0,
+	"events": "2031-03-14 Fixture day\n0000-12-25 Every year",
+	"page": {
+		"paperSize": "a3",
+		"orientation": "landscape",
+		"margins": {
+			"top": 14,
+			"right": 15,
+			"bottom": 16,
+			"left": 17
+		},
+		"equalMargins": false,
+		"mirrorMargins": true,
+		"spine": "top",
+		"booklet": true
+	},
+	"weekdayFormat": "short",
+	"highlightWeekends": "off",
+	"showWeekNumbers": true,
+	"title": "Fixture title",
+	"subtitle": "Fixture subtitle",
+	"monthSize": "small"
+}

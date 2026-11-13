@@ -1,0 +1,60 @@
+{
+	"format": "calendarium/project",
+	"version": 6,
+	"app": "6.0.0",
+	"id": "6f0e2c1a-3b4d-4e5f-8a6b-7c8d9e0f1a2b",
+	"name": "Fixture monthly",
+	"layout": "monthly",
+	"options": {
+		"calendar": {
+			"year": 2031,
+			"locale": "fr-FR",
+			"weekStart": 0
+		},
+		"events": [
+			"2031-03-14 Fixture day",
+			"0000-12-25 Every year"
+		],
+		"header": {
+			"title": "Fixture header.title",
+			"alignment": "right",
+			"fontSize": 26
+		},
+		"miniMonth": {
+			"showPreviousMonth": false,
+			"showNextMonth": false,
+			"showYear": false,
+			"size": "small",
+			"weekdayFormat": "short",
+			"highlightWeekends": "off",
+			"showWeekNumbers": true
+		},
+		"content": {
+			"weekdayFormat": "short",
+			"highlightWeekends": "off",
+			"showWeekNumbers": true,
+			"showAdjacentMonthDays": true,
+			"showGridLines": false,
+			"weekdayFontSize": 12,
+			"dayNumber": {
+				"fontSize": 18,
+				"horizontalAlignment": "right",
+				"verticalAlignment": "bottom"
+			}
+		},
+		"page": {
+			"paperSize": "a3",
+			"orientation": "portrait",
+			"margins": {
+				"top": 15,
+				"right": 16,
+				"bottom": 17,
+				"left": 18
+			},
+			"equalMargins": false,
+			"mirrorMargins": true,
+			"spine": "left",
+			"booklet": true
+		}
+	}
+}

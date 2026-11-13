@@ -1,0 +1,214 @@
+{
+	"shown": "weekly",
+	"layouts": {
+		"yearly": {
+			"options": {
+				"calendar": {
+					"year": 2031,
+					"locale": "fr-FR",
+					"weekStart": 0
+				},
+				"events": [],
+				"header": {
+					"title": "Fixture title",
+					"subtitle": "Fixture subtitle",
+					"fontSize": 32
+				},
+				"content": {
+					"monthSize": "medium",
+					"weekdayFormat": "short",
+					"highlightWeekends": "off",
+					"showWeekNumbers": true
+				},
+				"page": {
+					"paperSize": "a3",
+					"orientation": "landscape",
+					"margins": {
+						"top": 14,
+						"right": 15,
+						"bottom": 16,
+						"left": 17
+					},
+					"equalMargins": false,
+					"mirrorMargins": false,
+					"spine": "left",
+					"booklet": false
+				}
+			},
+			"ignored": []
+		},
+		"monthly": {
+			"options": {
+				"calendar": {
+					"year": 2031,
+					"locale": "fr-FR",
+					"weekStart": 0
+				},
+				"events": [],
+				"header": {
+					"title": "",
+					"alignment": "center",
+					"fontSize": 24
+				},
+				"miniMonth": {
+					"showPreviousMonth": true,
+					"showNextMonth": true,
+					"showYear": true,
+					"size": "medium",
+					"weekdayFormat": "narrow",
+					"highlightWeekends": "days",
+					"showWeekNumbers": false
+				},
+				"content": {
+					"weekdayFormat": "narrow",
+					"highlightWeekends": "off",
+					"showWeekNumbers": false,
+					"showAdjacentMonthDays": false,
+					"showGridLines": true,
+					"weekdayFontSize": 9,
+					"dayNumber": {
+						"fontSize": 14,
+						"horizontalAlignment": "left",
+						"verticalAlignment": "top"
+					}
+				},
+				"page": {
+					"paperSize": "a3",
+					"orientation": "portrait",
+					"margins": {
+						"top": 12,
+						"right": 13,
+						"bottom": 14,
+						"left": 15
+					},
+					"equalMargins": false,
+					"mirrorMargins": false,
+					"spine": "left",
+					"booklet": false
+				}
+			},
+			"ignored": []
+		},
+		"weekly": {
+			"options": {
+				"calendar": {
+					"year": 2031,
+					"locale": "fr-FR",
+					"weekStart": 0
+				},
+				"events": [],
+				"header": {
+					"alignment": "auto",
+					"fontSize": 20,
+					"showWeek": false
+				},
+				"miniMonth": {
+					"showCurrentMonth": true,
+					"showNextMonth": false,
+					"showEvents": true,
+					"showYear": false,
+					"size": "medium",
+					"weekdayFormat": "narrow",
+					"highlightWeekends": "days",
+					"showWeekNumbers": true
+				},
+				"content": {
+					"twoPages": false,
+					"startPage": "odd",
+					"dayDirection": "vertical",
+					"weekdayFormat": "narrow",
+					"highlightWeekendDays": false,
+					"weekendDisplay": "reduced",
+					"fill": "hours",
+					"schedule": {
+						"hourFormat": "auto",
+						"firstHour": 7,
+						"lastHour": 21
+					}
+				},
+				"footer": {
+					"show": false,
+					"height": 20
+				},
+				"page": {
+					"paperSize": "a3",
+					"orientation": "portrait",
+					"margins": {
+						"top": 12,
+						"right": 13,
+						"bottom": 14,
+						"left": 15
+					},
+					"equalMargins": false,
+					"mirrorMargins": false,
+					"spine": "left",
+					"booklet": false
+				}
+			},
+			"ignored": []
+		},
+		"daily": {
+			"options": {
+				"calendar": {
+					"year": 2031,
+					"locale": "fr-FR",
+					"weekStart": 0
+				},
+				"events": [],
+				"header": {
+					"heading": "date",
+					"fontSize": 24,
+					"showWeek": false,
+					"showDayOfYear": false,
+					"highlightWeekendDays": false
+				},
+				"miniMonth": {
+					"show": false,
+					"showYear": false,
+					"showEvents": true,
+					"size": "medium",
+					"weekdayFormat": "short",
+					"highlightWeekends": "off",
+					"showWeekNumbers": false
+				},
+				"content": {
+					"twoPages": false,
+					"fill": "ruled",
+					"ruledLineSpacing": 8,
+					"squareSize": 5,
+					"fillAlignment": "center",
+					"genkoYoshi": {
+						"squareSize": 12,
+						"direction": "vertical",
+						"furigana": "none",
+						"guides": false
+					},
+					"schedule": {
+						"hourFormat": "12h",
+						"firstHour": 13,
+						"lastHour": 14
+					}
+				},
+				"footer": {
+					"show": false,
+					"height": 20
+				},
+				"page": {
+					"paperSize": "a3",
+					"orientation": "landscape",
+					"margins": {
+						"top": 14,
+						"right": 15,
+						"bottom": 16,
+						"left": 17
+					},
+					"equalMargins": false,
+					"mirrorMargins": false,
+					"spine": "left",
+					"booklet": false
+				}
+			},
+			"ignored": []
+		}
+	}
+}

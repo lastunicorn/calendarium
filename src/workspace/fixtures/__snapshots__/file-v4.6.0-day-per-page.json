@@ -1,0 +1,73 @@
+{
+	"ok": true,
+	"project": {
+		"id": null,
+		"name": "file-v4.6.0-day-per-page",
+		"layout": "daily",
+		"options": {
+			"calendar": {
+				"year": 2031,
+				"locale": "fr-FR",
+				"weekStart": 0
+			},
+			"events": [
+				"2031-03-14 Fixture day",
+				"0000-12-25 Every year"
+			],
+			"header": {
+				"heading": "weekday",
+				"fontSize": 30,
+				"showWeek": false,
+				"showDayOfYear": false,
+				"highlightWeekendDays": false
+			},
+			"miniMonth": {
+				"show": false,
+				"showYear": true,
+				"showEvents": true,
+				"size": "medium",
+				"weekdayFormat": "short",
+				"highlightWeekends": "off",
+				"showWeekNumbers": false
+			},
+			"content": {
+				"twoPages": true,
+				"fill": "ruled",
+				"ruledLineSpacing": 15,
+				"squareSize": 6,
+				"fillAlignment": "right",
+				"genkoYoshi": {
+					"squareSize": 12,
+					"direction": "vertical",
+					"furigana": "none",
+					"guides": false
+				},
+				"schedule": {
+					"hourFormat": "12h",
+					"firstHour": 11,
+					"lastHour": 16
+				}
+			},
+			"footer": {
+				"show": false,
+				"height": 20
+			},
+			"page": {
+				"paperSize": "a3",
+				"orientation": "landscape",
+				"margins": {
+					"top": 14,
+					"right": 15,
+					"bottom": 16,
+					"left": 17
+				},
+				"equalMargins": false,
+				"mirrorMargins": true,
+				"spine": "top",
+				"booklet": true
+			}
+		}
+	},
+	"ignored": [],
+	"newer": false
+}

@@ -1,0 +1,22 @@
+{
+	"format": "printable-calendar/layout",
+	"version": 3,
+	"app": "3.2.0",
+	"layout": "month-per-page",
+	"year": 2031,
+	"locale": "fr-FR",
+	"weekStart": 0,
+	"weekdayFormat": "narrow",
+	"highlightWeekends": "off",
+	"showWeekNumbers": false,
+	"page": {
+		"paperSize": "a3",
+		"orientation": "portrait",
+		"margins": {
+			"top": 12,
+			"right": 13,
+			"bottom": 14,
+			"left": 15
+		}
+	}
+}

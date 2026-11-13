@@ -1,0 +1,30 @@
+{
+	"format": "printable-calendar/layout",
+	"version": 3,
+	"app": "3.2.0",
+	"layout": "day-per-page",
+	"year": 2031,
+	"locale": "fr-FR",
+	"weekStart": 0,
+	"weekdayFormat": "short",
+	"highlightWeekends": "off",
+	"showWeekNumbers": false,
+	"page": {
+		"paperSize": "a3",
+		"orientation": "landscape",
+		"margins": {
+			"top": 14,
+			"right": 15,
+			"bottom": 16,
+			"left": 17
+		}
+	},
+	"dayPageTitle": "date",
+	"dayPageLines": "ruled",
+	"hourFormat": "12h",
+	"firstHour": 13,
+	"lastHour": 14,
+	"showMiniMonth": false,
+	"showHeaderWeek": false,
+	"showHeaderDayOfYear": false
+}

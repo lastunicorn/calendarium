@@ -1,0 +1,43 @@
+{
+	"ok": true,
+	"project": {
+		"id": null,
+		"name": "file-v3.2.0-year-per-page",
+		"layout": "yearly",
+		"options": {
+			"calendar": {
+				"year": 2031,
+				"locale": "fr-FR",
+				"weekStart": 0
+			},
+			"events": [],
+			"header": {
+				"title": "Fixture title",
+				"subtitle": "Fixture subtitle",
+				"fontSize": 32
+			},
+			"content": {
+				"monthSize": "medium",
+				"weekdayFormat": "short",
+				"highlightWeekends": "off",
+				"showWeekNumbers": true
+			},
+			"page": {
+				"paperSize": "a3",
+				"orientation": "landscape",
+				"margins": {
+					"top": 14,
+					"right": 15,
+					"bottom": 16,
+					"left": 17
+				},
+				"equalMargins": false,
+				"mirrorMargins": false,
+				"spine": "left",
+				"booklet": false
+			}
+		}
+	},
+	"ignored": [],
+	"newer": false
+}
