@@ -88,7 +88,7 @@ Use these words in code, comments and docs, each for one thing. The terms only o
 
 - Indent with tabs (enforced by Prettier and `.editorconfig`); Markdown and YAML use 2 spaces.
 - Both tsconfigs set `"strict": true` explicitly; `noUncheckedIndexedAccess` and `exactOptionalPropertyTypes` were tried and stay off, for the reasons in `doc/typescript-strictness.md`.
-- Run `npm run format` after editing.
+- Run `npm run format` after editing. It also sorts imports (`@ianvs/prettier-plugin-sort-imports`, configured in `.prettierrc.json`): Node built-ins, then packages, a blank line, then relative paths, each block alphabetical; side-effect imports (`import './index.css'`) stay where they are and split the blocks around them.
 - oxlint (`.oxlintrc.json`) runs the `react`, `typescript`, `oxc`, `import`, `jsx-a11y` and `unicorn` plugins, correctness as errors and suspicious as warnings, and `npm run lint` must show neither. A finding that is deliberate gets an `// oxlint-disable-next-line <rule> -- <reason>` comment, not a config change; tests may use `!` and nested helpers.
 - A `.tsx` file exports only components (oxlint `react/only-export-components`, for Fast Refresh); put shared constants in a `.ts` file next to it, as each layout folder's `index.ts` does.
 
