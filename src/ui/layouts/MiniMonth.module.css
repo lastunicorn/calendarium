@@ -136,9 +136,3 @@
 	min-height: 0;
 	grid-template-rows: repeat(7, minmax(0, 1fr));
 }
-
-@media print {
-	.month {
-		print-color-adjust: exact;
-	}
-}

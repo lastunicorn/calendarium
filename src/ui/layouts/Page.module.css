@@ -62,6 +62,8 @@
 @media print {
 	.page {
 		box-shadow: none;
+		/* Inherited: every background and color inside prints as drawn (weekend shading, marked days, headings). */
+		print-color-adjust: exact;
 	}
 
 	.overflowBadge {

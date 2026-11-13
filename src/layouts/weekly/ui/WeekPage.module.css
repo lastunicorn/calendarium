@@ -218,9 +218,3 @@
 	white-space: nowrap;
 	color: var(--color-text-muted);
 }
-
-@media print {
-	.week {
-		print-color-adjust: exact;
-	}
-}
