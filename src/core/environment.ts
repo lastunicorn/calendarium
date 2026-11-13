@@ -13,6 +13,6 @@ export interface Environment {
 export function currentEnvironment(): Environment {
 	return {
 		year: new Date().getFullYear(),
-		language: globalThis.navigator?.language
+		language: globalThis.navigator?.language,
 	}
 }

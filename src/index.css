@@ -4,7 +4,7 @@
 	/* App */
 	--color-text: #222;
 	--color-text-muted: #666;
-	--color-text-faint: #888;
+	--color-text-faint: #767676; /* The lightest gray that keeps small text at 4.5 : 1 on white (WCAG AA). */
 	--color-app-background: #e5e5e5;
 	--color-surface: #fff;
 	--color-border: #ccc;
