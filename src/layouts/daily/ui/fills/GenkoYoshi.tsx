@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react'
-import { mmToPx } from '../../../core/paper'
-import type { FillAlignment, GenkoYoshiDirection, GenkoYoshiFurigana } from '../options'
-import type { GenkoYoshiFill } from '../pages'
+import { mmToPx } from '../../../../core/paper'
+import type { FillAlignment, GenkoYoshiDirection, GenkoYoshiFurigana } from '../../options'
+import type { GenkoYoshiFill } from '../../pages'
 import styles from './GenkoYoshi.module.css'
 
 /** The class setting the grid across the page, per alignment. */

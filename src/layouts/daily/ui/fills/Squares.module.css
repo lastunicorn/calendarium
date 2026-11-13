@@ -1,0 +1,67 @@
+/*
+ * Squares of a fixed side (`--square-size`, set inline), or the dots at their corners. The grid is
+ * cut down to the whole squares that fit the area left under the header, leaving the rest blank,
+ * and set across it per alignment: rows drawing the line below, columns the line right of each,
+ * under a top and left line. Like every line in the writing areas, they are borders.
+ */
+.squares {
+	flex: 1;
+	display: flex;
+	min-height: 0;
+}
+
+.alignLeft {
+	justify-content: flex-start;
+}
+
+.alignCenter {
+	justify-content: center;
+}
+
+.alignRight {
+	justify-content: flex-end;
+}
+
+/*
+ * The squares' side times their count, plus the top and left lines, sized from the area's
+ * percentages: container query units would do, but Firefox resolves them against the whole sheet
+ * when printing, running the grid over the margins. It clips the rows that don't
+ * fit under the header, but a little outside itself: the tracks round to the pixel apart from its
+ * own size, so the last column's or row's line may end a fraction of a pixel past its edge.
+ */
+.squareGrid {
+	position: relative;
+	flex-shrink: 0;
+	width: calc(round(down, 100% - var(--rule-light), var(--square-size)) + var(--rule-light));
+	height: calc(round(down, 100% - var(--rule-light), var(--square-size)) + var(--rule-light));
+	overflow: clip;
+	overflow-clip-margin: 0.5mm;
+	border-top: var(--rule-light) solid var(--color-rule-light);
+	border-left: var(--rule-light) solid var(--color-rule-light);
+}
+
+.squareRows,
+.squareColumns {
+	position: absolute;
+	inset: 0;
+	display: grid;
+}
+
+.squareRows {
+	grid-auto-rows: var(--square-size);
+	align-content: start;
+}
+
+.squareColumns {
+	grid-auto-columns: var(--square-size);
+	grid-auto-flow: column;
+	justify-content: start;
+}
+
+.squareRow {
+	border-bottom: var(--rule-light) solid var(--color-rule-light);
+}
+
+.squareColumn {
+	border-right: var(--rule-light) solid var(--color-rule-light);
+}

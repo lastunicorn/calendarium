@@ -1,0 +1,34 @@
+/* One row per hour, sharing the height left under the header. */
+.schedule {
+	flex: 1;
+	display: grid;
+	min-height: 0;
+	border-top: var(--rule-light) solid var(--color-cell-border);
+}
+
+/* The label sits left of a writing area split by a light half-hour line. */
+.hour {
+	position: relative;
+	display: flex;
+	min-height: 0;
+	border-bottom: var(--rule-light) solid var(--color-cell-border);
+}
+
+/* The half-hour line, from the label column to the right edge. */
+.hour::after {
+	content: '';
+	position: absolute;
+	top: 50%;
+	right: 0;
+	left: 16mm;
+	border-top: var(--rule-light) solid var(--color-rule-light);
+}
+
+.hourLabel {
+	width: 16mm;
+	flex-shrink: 0;
+	padding-top: 1mm;
+	font-size: 8pt;
+	color: var(--color-text-muted);
+	border-right: var(--rule-light) solid var(--color-cell-border);
+}

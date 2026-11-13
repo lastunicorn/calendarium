@@ -1,0 +1,19 @@
+/*
+ * Every line in the writing areas is a border, not a background gradient: browsers draw any
+ * non-zero border at least one device pixel wide, while a gradient this thin can vanish
+ * depending on zoom and where it lands on the pixel grid.
+ */
+
+/* Rows of fixed height (set inline), each drawing the line below it, under a top line like theirs. */
+.ruled {
+	flex: 1;
+	display: grid;
+	align-content: start;
+	min-height: 0;
+	overflow: hidden;
+	border-top: var(--rule-light) solid var(--color-rule-light);
+}
+
+.ruledLine {
+	border-bottom: var(--rule-light) solid var(--color-rule-light);
+}

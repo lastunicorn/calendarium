@@ -8,12 +8,12 @@ One sheet per day of the year, or two: a header naming the day, with a corner mi
 
 - **Heading:** the weekday or the date per the header's `heading`, in its `fontSize` pt and in the weekend color on Saturdays and Sundays per its `highlightWeekendDays`; the other one below it, followed on its line by the details line ("Week N · Day N / 365", dot-separated, each part per the header's `showWeek` and `showDayOfYear`, from `DAY_PAGE_MESSAGES`).
 - **Mini month:** per `miniMonth.show`, a corner `MiniMonth` of the day's month marking the day (`markedDay`) and, with `miniMonth.showEvents`, circling the days with an event (`eventDays`, by `monthEventDays`), as the year layout's months do, at `miniMonth.size`.
-- **Fills:** the `fills` of its one or two sheets, the same for every day, per the content's `fill`:
+- **Fills:** the `fills` of its one or two sheets, the same for every day, per the content's `fill`, each kind drawn by its component in `ui/fills/` (looked up by `dayFillComponent`, `DayPage` only placing it):
   - `hours`: an hourly schedule from the content's `schedule.firstHour` to `lastHour`, labeled by `hourNames` in its `hourFormat`. With `twoPages` it is split in half over two sheets, the second, without a header, taking an odd count's extra hour;
   - `ruled`: ruled lines `ruledLineSpacing` mm apart;
   - `squares`: as many whole squares `squareSize` mm a side as fit (the grid is cut down in CSS, the header's height being known only once drawn), set across the page per `fillAlignment`, filling the `contentBox`;
   - `dots`: the dots at those squares' corners, `DOT_SIZE` (0.5 mm) across, cut down in CSS as the squares are, one SVG path a sheet of a round-capped segment of no length per dot (as Chrome prints a pattern as a blurry image);
-  - `genkoYoshi`: columns of genkō yōshi squares, or rows of them per `genkoYoshi.direction`, `genkoYoshi.squareSize` mm a side (`isGenkoYoshiSquareSize`, 10 to 20), a blank `GENKO_YOSHI_COLUMN_GAP_PERCENT` (40 %) of that side between the columns (or rows), as many whole squares as fit, cut down in CSS as the squares are, set across the page per `fillAlignment`, each square with a bordered furigana strip a third of its side (`GENKO_YOSHI_FURIGANA_DIVISOR`) above it or right of it per `genkoYoshi.furigana`, drawn by `ui/GenkoYoshi` in darker lines (the lines across the columns, or rows, cut to them by a `clip-path`), with dotted guides halving each square, not its strip, across and down per `genkoYoshi.guides` (one SVG path a sheet, as Chrome prints a pattern as a blurry image);
+  - `genkoYoshi`: columns of genkō yōshi squares, or rows of them per `genkoYoshi.direction`, `genkoYoshi.squareSize` mm a side (`isGenkoYoshiSquareSize`, 10 to 20), a blank `GENKO_YOSHI_COLUMN_GAP_PERCENT` (40 %) of that side between the columns (or rows), as many whole squares as fit, cut down in CSS as the squares are, set across the page per `fillAlignment`, each square with a bordered furigana strip a third of its side (`GENKO_YOSHI_FURIGANA_DIVISOR`) above it or right of it per `genkoYoshi.furigana`, drawn by `ui/fills/GenkoYoshi` in darker lines (the lines across the columns, or rows, cut to them by a `clip-path`), with dotted guides halving each square, not its strip, across and down per `genkoYoshi.guides` (one SVG path a sheet, as Chrome prints a pattern as a blurry image);
   - `blank`: nothing.
 - **Footer:** with `footer.show`, each sheet, the second one too, keeps an empty bordered footer, `footer.height` whole mm tall (`isFooterHeight`), at its bottom under the fill (`footerHeight`, the same for every day).
 
@@ -47,17 +47,17 @@ It has no title: the heading is always the weekday or the date. `normalize` puts
 
 ## Files
 
-| File                                               | What it holds                                                                                                                 |
-| -------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `index.ts`                                         | The entry point: `DAILY = defineLayout(…)`                                                                                    |
-| `options.ts`                                       | `DailyOptions`, its groups `DailyHeader`, `DailyContent` and `GenkoYoshiOptions`, its value sets and bounds, and `DAILY_SPEC` |
-| `pages.ts`                                         | `planDayPages`, `DayPages`, the fills                                                                                         |
-| `messages.ts`, `migrations.ts`                     | `DAY_PAGE_MESSAGES`, `DAILY_MIGRATIONS`                                                                                       |
-| `ui/index.ts`                                      | The UI's entry point: `DAILY_VIEW`, with its `facingPages`                                                                    |
-| `ui/DailyLayout.tsx`, `ui/DayPage.tsx`             | Draw the plan: the pages, then each sheet                                                                                     |
-| `ui/DailyForm.tsx`                                 | The options form, combining the sections                                                                                      |
-| `ui/GenkoYoshi.tsx`                                | Draws the genkō yōshi fill                                                                                                    |
-| `ui/HeaderSection.tsx`, `ui/DayContentSection.tsx` | The layout's own sections                                                                                                     |
+| File                                               | What it holds                                                                                                                              |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `index.ts`                                         | The entry point: `DAILY = defineLayout(…)`                                                                                                 |
+| `options.ts`                                       | `DailyOptions`, its groups `DailyHeader`, `DailyContent` and `GenkoYoshiOptions`, its value sets and bounds, and `DAILY_SPEC`              |
+| `pages.ts`                                         | `planDayPages`, `DayPages`, the fills                                                                                                      |
+| `messages.ts`, `migrations.ts`                     | `DAY_PAGE_MESSAGES`, `DAILY_MIGRATIONS`                                                                                                    |
+| `ui/index.ts`                                      | The UI's entry point: `DAILY_VIEW`, with its `facingPages`                                                                                 |
+| `ui/DailyLayout.tsx`, `ui/DayPage.tsx`             | Draw the plan: the pages, then each sheet's structure                                                                                      |
+| `ui/DailyForm.tsx`                                 | The options form, combining the sections                                                                                                   |
+| `ui/fills/`                                        | Draw the fills, one component each (`Schedule`, `Ruled`, `Squares`, `Dots`, `GenkoYoshi`), and map each kind to its component (`index.ts`) |
+| `ui/HeaderSection.tsx`, `ui/DayContentSection.tsx` | The layout's own sections                                                                                                                  |
 
 ## Domain language
 

@@ -1,0 +1,18 @@
+/*
+ * The dots' grid: the squares' side times their count, plus one dot (`--dot-size`, set inline) for
+ * the dots on its far edges, sized from the area's percentages like the squares'. The plan's dots
+ * past it are clipped.
+ */
+.dotGrid {
+	display: block;
+	flex-shrink: 0;
+	width: calc(round(down, 100% - var(--dot-size), var(--square-size)) + var(--dot-size));
+	height: calc(round(down, 100% - var(--dot-size), var(--square-size)) + var(--dot-size));
+}
+
+/* Each dot a segment of no length, its round caps drawing a circle `--dot-size` across. */
+.dots {
+	stroke: var(--color-rule);
+	stroke-width: var(--dot-size);
+	stroke-linecap: round;
+}
