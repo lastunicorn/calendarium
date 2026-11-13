@@ -96,6 +96,10 @@ Then open http://localhost:5173.
 | `npm run format`      | Format with Prettier                                                                      |
 | `npm run typecheck`   | Type-check only                                                                           |
 
+#### Documentation
+
+How the code is organized, why, and the rules a change follows are in [`doc/`](doc/): start with [the architecture](doc/architecture.md), and see the [decision records](doc/adr/README.md) for the reasons behind the main choices. Each layout's folder, `src/layouts/<layout>/`, has a `README.md` describing what it prints and its options.
+
 ## License
 
 Calendarium is licensed under the [Apache License 2.0](LICENSE).
