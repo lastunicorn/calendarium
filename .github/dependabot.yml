@@ -1,0 +1,23 @@
+# Weekly pull requests updating the npm packages and the workflows' actions; each runs CI, whose
+# visual comparison shows whether the upgrade changes any printed page. The upgrade notes are in
+# doc/upgrading-dependencies.md.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    # A package goes into the first group it matches, so React's, majors included, comes first.
+    groups:
+      react:
+        patterns: ['react', 'react-dom', '@types/react', '@types/react-dom']
+      dev-minor-and-patch:
+        dependency-type: development
+        update-types: [minor, patch]
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ['*']
