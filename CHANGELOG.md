@@ -28,6 +28,8 @@ The app now keeps a list of projects, each with an id, an optional name, a layou
 - Year and month layouts: a "Title size (pt)" option in the Header section, as the week and day layouts have.
 - Day layout: a Genkō yōshi fill, Japanese manuscript paper: squares 10 to 20 mm a side (12 mm by default), one for each character, in columns with a blank space between them for furigana, or in rows with the space between the rows (Writing direction: Vertical, the default, or Horizontal). Each square can have a strip of its own for furigana, above it or right of it (Furigana: None, Top or Right), and dotted guide lines dividing it in half (Guide lines, off by default). The grid is aligned left, centered (the default) or right on the page, the same alignment as the squares and dots.
 - The project is licensed under the Apache License 2.0, and each release's zip includes the `LICENSE`.
+- The preview says in its bottom left corner how many pages don't fit inside their margins, and screen readers announce it as it changes.
+- The sidebar's section arrows don't animate for viewers whose system asks for reduced motion.
 
 ### Changed
 

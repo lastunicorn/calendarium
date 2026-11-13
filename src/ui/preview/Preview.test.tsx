@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 
 import { defaultLayoutOptions, LAYOUT_IDS, type LayoutId } from '../../layouts'
@@ -6,6 +6,25 @@ import type { Project } from '../../workspace/Project'
 import { Preview } from './Preview'
 
 function noop() {}
+
+/** Shows every page on screen, its content taller than its box, so each reports it doesn't fit. */
+function overflowEveryPage() {
+	class OnScreenObserver {
+		private readonly callback: IntersectionObserverCallback
+		constructor(callback: IntersectionObserverCallback) {
+			this.callback = callback
+		}
+		observe() {
+			this.callback(
+				[{ isIntersecting: true } as IntersectionObserverEntry],
+				this as unknown as IntersectionObserver,
+			)
+		}
+		disconnect() {}
+	}
+	vi.stubGlobal('IntersectionObserver', OnScreenObserver)
+	vi.spyOn(HTMLElement.prototype, 'scrollHeight', 'get').mockReturnValue(10_000)
+}
 
 /** A project of `layout`, with its defaults or `options`. */
 function projectFor(layout: LayoutId, options: object = defaultLayoutOptions(layout)): Project {
@@ -235,6 +254,40 @@ describe('Preview', () => {
 			/>,
 		)
 		expect(screen.queryByRole('toolbar', { name: 'Pages' })).toBeNull()
+	})
+
+	it('announces how many pages don’t fit inside their margins, once they settle', () => {
+		vi.useFakeTimers()
+		overflowEveryPage()
+		try {
+			const { rerender } = render(
+				<Preview
+					project={projectFor('monthly')}
+					onResetOptions={noop}
+					zoom={100}
+					onZoom={noop}
+				/>,
+			)
+			const status = screen.getByRole('status', { name: 'Page fit' })
+			expect(status.textContent).toBe('')
+			act(() => vi.runAllTimers())
+			expect(status.textContent).toBe("12 pages don't fit inside their margins")
+
+			rerender(
+				<Preview
+					project={projectFor('yearly')}
+					onResetOptions={noop}
+					zoom={100}
+					onZoom={noop}
+				/>,
+			)
+			act(() => vi.runAllTimers())
+			expect(status.textContent).toBe("1 page doesn't fit inside its margins")
+		} finally {
+			vi.useRealTimers()
+			vi.unstubAllGlobals()
+			vi.restoreAllMocks()
+		}
 	})
 
 	it('lists an in-between zoom in the menu', () => {

@@ -4,14 +4,17 @@ import { pageSizeCss, PX_PER_MM, sheetDimensions } from '../../core/paper'
 import type { LayoutId, LayoutOptions } from '../../layouts'
 import { zoomScale, type PreviewZoom } from '../../preferences/zoom'
 import type { Project } from '../../workspace/Project'
+import { PageOverflowContext } from '../layouts/pageOverflow'
 import { layoutView } from '../layouts/registry'
 import { Booklet } from './Booklet'
+import floating from './FloatingBar.module.css'
 import { PageIndicator } from './PageIndicator'
 import styles from './Preview.module.css'
 import { PreviewErrorBoundary } from './PreviewErrorBoundary'
 import { spreadDimensions } from './spreadLayout'
 import { Spreads } from './Spreads'
 import { useCurrentPage } from './useCurrentPage'
+import { useOverflowCount } from './useOverflowCount'
 import { useScrollAreaSize } from './useScrollAreaSize'
 import { useZoomGestures, type ScreenPoint } from './useZoomGestures'
 import { ZoomBar } from './ZoomBar'
@@ -52,6 +55,14 @@ function showsSpreads<K extends LayoutId>(layout: K, options: LayoutOptions[K]):
 	return !options.page.booklet && (layoutView(layout).facingPages?.(options) ?? false)
 }
 
+/** What the overflow status says for `count` pages that don't fit, nothing when they all do. */
+function overflowMessage(count: number): string {
+	if (count === 0) return ''
+	return count === 1
+		? "1 page doesn't fit inside its margins"
+		: `${count} pages don't fit inside their margins`
+}
+
 /** Draws `layout` with its own options; generic so the component and its options stay paired. */
 function ActiveLayout<K extends LayoutId>({ layout, options }: ActiveLayoutProps<K>) {
 	const Layout = layoutView(layout).Component
@@ -60,7 +71,8 @@ function ActiveLayout<K extends LayoutId>({ layout, options }: ActiveLayoutProps
 
 /**
  * The scrollable area showing the chosen layout's pages, which is all that gets printed, at the
- * viewer's zoom, with the zoom bar and the page indicator over it. Zooming keeps the middle of
+ * viewer's zoom, with the zoom bar, the page indicator and how many pages don't fit inside their
+ * margins (one status for all of them, announced as it changes) over it. Zooming keeps the middle of
  * the view in place, or with the wheel the point under the pointer. The preview takes the focus, so
  * its zoom shortcuts work once it is clicked.
  */
@@ -72,6 +84,8 @@ export function Preview({ project, onResetOptions, zoom, onZoom }: PreviewProps)
 	const anchor = useRef<ZoomAnchor | null>(null)
 	const { scrollbarWidth, scrollbarHeight, ...room } = useScrollAreaSize(areaRef)
 	const { count, current, goToPage } = useCurrentPage(areaRef, pagesRef)
+	const overflow = useOverflowCount()
+	const overflowText = overflowMessage(overflow.count)
 	const spreads = showsSpreads(layout, options)
 	// What a fit fits: a sheet, or a spread of two pages.
 	const shown = spreads ? spreadDimensions(options.page) : sheetDimensions(options.page)
@@ -143,19 +157,29 @@ export function Preview({ project, onResetOptions, zoom, onZoom }: PreviewProps)
 					className={styles.pages}
 					style={{ '--preview-zoom': scale } as PagesStyle}
 				>
-					<PreviewErrorBoundary
-						layout={layout}
-						options={options}
-						onResetOptions={onResetOptions}
-					>
-						{options.page.booklet ? (
-							<Booklet setup={options.page}>{pages}</Booklet>
-						) : (
-							pages
-						)}
-					</PreviewErrorBoundary>
+					<PageOverflowContext value={overflow.report}>
+						<PreviewErrorBoundary
+							layout={layout}
+							options={options}
+							onResetOptions={onResetOptions}
+						>
+							{options.page.booklet ? (
+								<Booklet setup={options.page}>{pages}</Booklet>
+							) : (
+								pages
+							)}
+						</PreviewErrorBoundary>
+					</PageOverflowContext>
 				</div>
 			</main>
+			{/* Always there, so screen readers announce what appears in it. */}
+			<div className={styles.overflowStatus} role="status" aria-label="Page fit">
+				{overflowText !== '' && (
+					<p className={`${floating.floatingBar} ${styles.overflowCount}`}>
+						{overflowText}
+					</p>
+				)}
+			</div>
 			<ZoomBar zoom={zoom} scale={scale} onZoom={handleZoom} />
 			<PageIndicator
 				current={current}

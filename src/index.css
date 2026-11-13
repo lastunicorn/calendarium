@@ -56,6 +56,16 @@ body {
 	margin: 0;
 }
 
+/* Nothing moves for a viewer who asked for less motion. */
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		transition-duration: 0s !important;
+		animation-duration: 0s !important;
+	}
+}
+
 /* The paper size is set from the active layout's options by a generated `@page` rule (see ui/preview/Preview.tsx). */
 @page {
 	margin: 0;

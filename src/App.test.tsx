@@ -317,7 +317,7 @@ describe('App open project file', () => {
 			expect(projectLabels()).toEqual(['Home — Yearly', 'Work 2030 — Weekly']),
 		)
 		expect(openLabel()).toBe('Work 2030 — Weekly')
-		expect(screen.getByRole('status').textContent).toBe(
+		expect(screen.getByText(/^Opened Work 2030\.json/).textContent).toBe(
 			'Opened Work 2030.json; 1 setting was invalid and kept the default: content.schedule.firstHour.',
 		)
 		openSection('Calendar')
