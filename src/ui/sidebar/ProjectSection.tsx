@@ -25,6 +25,7 @@ import { downloadFile } from '../download'
 import { ReadOnlyField } from '../fields/ReadOnlyField'
 import { TextField } from '../fields/TextField'
 import { LAYOUT_VIEWS } from '../layouts/registry'
+import { projectLabel, shownName } from '../projectLabel'
 import { OpenProjectDialog } from './OpenProjectDialog'
 import styles from './ProjectSection.module.css'
 import { Section } from './Section'
@@ -60,16 +61,6 @@ interface ProjectSectionProps {
 	onDelete: (id: ProjectId) => void
 	/** The Change project button, for the focus to go to once a project is created. */
 	changeProjectRef?: Ref<HTMLButtonElement>
-}
-
-/** A project's name as shown: trimmed, or "Untitled". */
-function shownName({ name }: Project): string {
-	return name.trim() || 'Untitled'
-}
-
-/** A project's label in the Open project dialog: its name and its layout's short name, "Work 2027 — Weekly". */
-function projectLabel(project: Project): string {
-	return `${shownName(project)} — ${LAYOUT_VIEWS[project.layout].name}`
 }
 
 /**
