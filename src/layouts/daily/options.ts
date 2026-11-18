@@ -255,4 +255,6 @@ export const DAILY_SPEC: LayoutSpec<DailyOptions> = {
 	},
 	normalize: (options) => orderContentHours(normalizeCommon(options)),
 	migrations: DAILY_MIGRATIONS,
+	// Two pages per day face each other.
+	facingPages: (options) => options.content.twoPages,
 }

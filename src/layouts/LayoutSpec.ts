@@ -39,6 +39,11 @@ export interface LayoutSpec<O> {
 	normalize: (options: O) => O
 	/** The steps that changed the layout's own options between format versions. */
 	migrations: LayoutMigrations
+	/**
+	 * Whether the pages are read as facing pairs, an even page beside the odd one after it, as the
+	 * bound calendar opens; the preview then shows them as spreads. Never by default.
+	 */
+	facingPages?: (options: O) => boolean
 }
 
 /** A layout as the registry knows it, given its id `Id` and its options type `O`. */

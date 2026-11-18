@@ -26,7 +26,7 @@ A booklet (`PageSetup.booklet`) keeps the paper size and orientation as each pag
 
 ## Spreads
 
-Outside a booklet, a layout whose `LayoutView.facingPages` says its pages face each other (the week and day layouts with two pages per week or day) is shown, on screen only, as spreads by `ui/preview/Spreads`: the first page alone on the far side of the spine, then each even page facing the next odd one, side by side for a `left` spine, one above the other for a `top` one, a ring binding drawn between them (not printed) so they read as separate sheets, unlike a booklet's; the zoom's fits then fit a spread (`spreadDimensions`, in `ui/preview/spreadLayout.ts`).
+Outside a booklet, a layout whose `LayoutSpec.facingPages` says its pages face each other (the week and day layouts with two pages per week or day) is shown, on screen only, as spreads by `ui/preview/Spreads`: the first page alone on the far side of the spine, then each even page facing the next odd one, side by side for a `left` spine, one above the other for a `top` one, a ring binding drawn between them (not printed) so they read as separate sheets, unlike a booklet's; the zoom's fits then fit a spread (`spreadDimensions`, in `ui/preview/spreadLayout.ts`).
 
 ## The print target
 

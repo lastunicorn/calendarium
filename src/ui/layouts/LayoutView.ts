@@ -15,9 +15,4 @@ export interface LayoutView<O> {
 	name: string
 	/** The name with a short description, for the New document dialog and the document section. */
 	label: string
-	/**
-	 * Whether the pages are read as facing pairs, an even page beside the odd one after it, so the
-	 * preview shows them as spreads; never by default.
-	 */
-	facingPages?: (options: O) => boolean
 }

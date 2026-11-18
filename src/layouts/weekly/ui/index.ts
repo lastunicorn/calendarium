@@ -3,15 +3,9 @@ import type { WeeklyOptions } from '../options'
 import { WeeklyForm } from './WeeklyForm'
 import { WeeklyLayout } from './WeeklyLayout'
 
-/** Two pages per week face each other. */
-function hasTwoPages(options: WeeklyOptions): boolean {
-	return options.content.twoPages
-}
-
 export const WEEKLY_VIEW: LayoutView<WeeklyOptions> = {
 	Component: WeeklyLayout,
 	Form: WeeklyForm,
 	name: 'Weekly',
 	label: 'Weekly (one week per page)',
-	facingPages: hasTwoPages,
 }

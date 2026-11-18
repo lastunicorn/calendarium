@@ -1,7 +1,7 @@
 import { useLayoutEffect, useRef, type CSSProperties } from 'react'
 
 import { pageSizeCss, PX_PER_MM, sheetDimensions } from '../../core/paper'
-import type { LayoutId, LayoutOptions } from '../../layouts'
+import { layoutSpec, type LayoutId, type LayoutOptions } from '../../layouts'
 import { zoomScale, type PreviewZoom } from '../../preferences/zoom'
 import type { Project } from '../../workspace/Project'
 import { PageOverflowContext } from '../layouts/pageOverflow'
@@ -52,7 +52,7 @@ function areaMiddle(area: HTMLElement): ScreenPoint {
 
 /** Whether `layout` reads its pages as facing pairs with `options`, shown as spreads outside a booklet. */
 function showsSpreads<K extends LayoutId>(layout: K, options: LayoutOptions[K]): boolean {
-	return !options.page.booklet && (layoutView(layout).facingPages?.(options) ?? false)
+	return !options.page.booklet && (layoutSpec(layout).facingPages?.(options) ?? false)
 }
 
 /** What the overflow status says for `count` pages that don't fit, nothing when they all do. */

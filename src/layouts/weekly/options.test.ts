@@ -101,4 +101,14 @@ describe('weekly options', () => {
 		const defaults = WEEKLY_SPEC.defaults()
 		expect(WEEKLY_SPEC.normalize(defaults)).toBe(defaults)
 	})
+
+	it('faces its pages with two pages per week only', () => {
+		const defaults = WEEKLY_SPEC.defaults()
+		const withTwoPages = (twoPages: boolean) => ({
+			...defaults,
+			content: { ...defaults.content, twoPages },
+		})
+		expect(WEEKLY_SPEC.facingPages?.(withTwoPages(true))).toBe(true)
+		expect(WEEKLY_SPEC.facingPages?.(withTwoPages(false))).toBe(false)
+	})
 })

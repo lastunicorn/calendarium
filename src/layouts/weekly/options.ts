@@ -156,4 +156,6 @@ export const WEEKLY_SPEC: LayoutSpec<WeeklyOptions> = {
 	},
 	normalize: (options) => orderContentHours(normalizeCommon(options)),
 	migrations: WEEKLY_MIGRATIONS,
+	// Two pages per week face each other.
+	facingPages: (options) => options.content.twoPages,
 }

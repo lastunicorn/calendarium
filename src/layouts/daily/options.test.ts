@@ -143,4 +143,14 @@ describe('daily options', () => {
 		const single = withHours(9, 9)
 		expect(DAILY_SPEC.normalize(single)).toBe(single)
 	})
+
+	it('faces its pages with two pages per day only', () => {
+		const defaults = DAILY_SPEC.defaults()
+		const withTwoPages = (twoPages: boolean) => ({
+			...defaults,
+			content: { ...defaults.content, twoPages },
+		})
+		expect(DAILY_SPEC.facingPages?.(withTwoPages(true))).toBe(true)
+		expect(DAILY_SPEC.facingPages?.(withTwoPages(false))).toBe(false)
+	})
 })

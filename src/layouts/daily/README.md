@@ -17,7 +17,7 @@ One sheet per day of the year, or of one month, or two: a header naming the day,
   - `blank`: nothing.
 - **Footer:** with `footer.show`, each sheet, the second one too, keeps an empty bordered footer, `footer.height` whole mm tall (`isFooterHeight`), at its bottom under the fill (`footerHeight`, the same for every day).
 
-With the content's `twoPages`, the view's `facingPages` has the preview show the pages as facing spreads, as the bound calendar opens.
+With the content's `twoPages`, the spec's `facingPages` has the preview show the pages as facing spreads, as the bound calendar opens.
 
 `DayPage` is memoized, so the plan builds its shared label arrays (weekday names, hour labels) once.
 
@@ -48,17 +48,17 @@ It has no title: the heading is always the weekday or the date. `normalize` puts
 
 ## Files
 
-| File                                                                         | What it holds                                                                                                                                         |
-| ---------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `index.ts`                                                                   | The entry point: `DAILY = defineLayout(…)`                                                                                                            |
-| `options.ts`                                                                 | `DailyOptions`, its groups `DailyCalendarOptions`, `DailyHeader`, `DailyContent` and `GenkoYoshiOptions`, its value sets and bounds, and `DAILY_SPEC` |
-| `pages.ts`                                                                   | `planDayPages`, `DayPages`, the fills                                                                                                                 |
-| `messages.ts`, `migrations.ts`                                               | `DAY_PAGE_MESSAGES`, `DAILY_MIGRATIONS`                                                                                                               |
-| `ui/index.ts`                                                                | The UI's entry point: `DAILY_VIEW`, with its `facingPages`                                                                                            |
-| `ui/DailyLayout.tsx`, `ui/DayPage.tsx`                                       | Draw the plan: the pages, then each sheet's structure                                                                                                 |
-| `ui/DailyForm.tsx`                                                           | The options form, combining the sections                                                                                                              |
-| `ui/fills/`                                                                  | Draw the fills, one component each (`Schedule`, `Ruled`, `Squares`, `Dots`, `GenkoYoshi`), and map each kind to its component (`index.ts`)            |
-| `ui/CalendarSection.tsx`, `ui/HeaderSection.tsx`, `ui/DayContentSection.tsx` | The layout's own sections                                                                                                                             |
+| File                                                                         | What it holds                                                                                                                                                                 |
+| ---------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `index.ts`                                                                   | The entry point: `DAILY = defineLayout(…)`                                                                                                                                    |
+| `options.ts`                                                                 | `DailyOptions`, its groups `DailyCalendarOptions`, `DailyHeader`, `DailyContent` and `GenkoYoshiOptions`, its value sets and bounds, and `DAILY_SPEC`, with its `facingPages` |
+| `pages.ts`                                                                   | `planDayPages`, `DayPages`, the fills                                                                                                                                         |
+| `messages.ts`, `migrations.ts`                                               | `DAY_PAGE_MESSAGES`, `DAILY_MIGRATIONS`                                                                                                                                       |
+| `ui/index.ts`                                                                | The UI's entry point: `DAILY_VIEW`                                                                                                                                            |
+| `ui/DailyLayout.tsx`, `ui/DayPage.tsx`                                       | Draw the plan: the pages, then each sheet's structure                                                                                                                         |
+| `ui/DailyForm.tsx`                                                           | The options form, combining the sections                                                                                                                                      |
+| `ui/fills/`                                                                  | Draw the fills, one component each (`Schedule`, `Ruled`, `Squares`, `Dots`, `GenkoYoshi`), and map each kind to its component (`index.ts`)                                    |
+| `ui/CalendarSection.tsx`, `ui/HeaderSection.tsx`, `ui/DayContentSection.tsx` | The layout's own sections                                                                                                                                                     |
 
 ## Domain language
 

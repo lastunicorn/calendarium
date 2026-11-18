@@ -17,7 +17,7 @@ How a layout stays independent of the others is in [architecture.md](architectur
 
 ## A layout's spec
 
-Each layout's knowledge of its options is one `LayoutSpec` in `layouts/<layout-id>/options.ts`, next to its options type: `defaults`, `validators` (extending `COMMON_VALIDATORS`), `normalize` and `migrations` (its own steps between format versions, in `layouts/<layout-id>/migrations.ts`, `{}` when it has none); `parseOptions(spec, data)` (`LayoutSpec.ts`) reads untrusted options by them.
+Each layout's knowledge of its options is one `LayoutSpec` in `layouts/<layout-id>/options.ts`, next to its options type: `defaults`, `validators` (extending `COMMON_VALIDATORS`), `normalize`, `migrations` (its own steps between format versions, in `layouts/<layout-id>/migrations.ts`, `{}` when it has none) and, for a layout whose pages face each other, `facingPages` (the preview then shows spreads, [printing.md](printing.md#spreads)); `parseOptions(spec, data)` (`LayoutSpec.ts`) reads untrusted options by them.
 
 Everything only one layout uses lives in its folders; what several share stays in the host (`common.ts`, `monthGrid.ts`, `schedule.ts`, `heading.ts`, `migrations.ts`). Rules a layout's pages follow sit next to its options, like `weekly/cells.ts` (`weekCells`, `splitWeekCells`).
 
