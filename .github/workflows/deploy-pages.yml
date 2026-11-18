@@ -61,6 +61,8 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
+      # The tagged version's changelog section is written and dated, nothing left unreleased.
+      - run: npm run check:release
       - run: npm ci
       - run: npm test
       - run: npm run build

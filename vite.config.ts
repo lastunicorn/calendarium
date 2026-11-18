@@ -49,9 +49,13 @@ export default defineConfig({
 				'src/preferences/**': { lines: 98, statements: 98, functions: 98, branches: 95 },
 			},
 		},
-		// Plain `.test.ts` files stay DOM-free; component tests (`.test.tsx`) run in jsdom.
+		// Plain `.test.ts` files stay DOM-free; component tests (`.test.tsx`) run in jsdom. The scripts'
+		// own tests are unit tests too, not `scripts/format-fixtures/`, which runs in a release's worktree.
 		projects: [
-			{ extends: true, test: { name: 'unit', include: ['src/**/*.test.ts'] } },
+			{
+				extends: true,
+				test: { name: 'unit', include: ['src/**/*.test.ts', 'scripts/*.test.ts'] },
+			},
 			{
 				extends: true,
 				test: {

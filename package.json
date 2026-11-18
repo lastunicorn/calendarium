@@ -19,7 +19,8 @@
 		"test:visual": "scripts/visual-diff.sh",
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
-		"typecheck": "tsc -b"
+		"typecheck": "tsc -b",
+		"check:release": "node scripts/check-release.ts"
 	},
 	"dependencies": {
 		"react": "^19.2.8",

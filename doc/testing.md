@@ -6,6 +6,8 @@ The commands are listed in `CLAUDE.md` and the README. Single test file: `npx vi
 
 Unit tests are plain `src/**/*.test.ts` files, DOM-free, covering `core/`, `layouts/`, `workspace/` and `preferences/`, and the pure logic of `ui/`, kept out of its hooks and components in `.ts` files next to them so it is tested without a DOM (`preview/zoomGestures.ts`, `preview/currentPage.ts`, `preview/spreadLayout.ts`, `sidebar/projectFileNotices.ts`, `sidebar/localeOptions.ts`, `fields/filter.ts`), the hook or component only wiring it to the DOM.
 
+The scripts' own logic is tested the same way, `scripts/*.test.ts` in the `unit` project (`scripts/check-release.test.ts`), apart from `scripts/format-fixtures/`, whose test runs in a release's worktree.
+
 ### Property tests
 
 The calendar, booklet and patch math (`core/calendar.ts`, `booklet.ts`, `data.ts`) also has property tests, `*.property.test.ts` beside the example tests: rules that hold for every input (every day of a year in its weeks once, every booklet page printed once, a patch applied twice changing nothing), checked by `fast-check` on 200 random inputs each, which it shrinks to the smallest failing one.
@@ -43,4 +45,4 @@ Component tests are `src/**/*.test.tsx` (Vitest `component` project: jsdom + Tes
 
 ## CI
 
-CI (`.github/workflows/build-master.yml`, on pushes to `master` and on pull requests, a pull request's new push cancelling its previous run; Chromium and Firefox cached by Playwright version; an e2e test failing on CI retried twice, its first retry's trace and each try's screenshot uploaded as the `playwright-results` artifact, and the HTML reports, `playwright-report/e2e` and `playwright-report/visual`, as `playwright-report`) runs `format:check`, `lint`, `typecheck`, `test:coverage` (uploading `coverage/` as the `coverage` artifact), `build`, `test:e2e` and the visual comparison, in that order; run the same before considering a change done.
+CI (`.github/workflows/build-master.yml`, on pushes to `master` and on pull requests, a pull request's new push cancelling its previous run; Chromium and Firefox cached by Playwright version; an e2e test failing on CI retried twice, its first retry's trace and each try's screenshot uploaded as the `playwright-results` artifact, and the HTML reports, `playwright-report/e2e` and `playwright-report/visual`, as `playwright-report`) runs `check:release` ([release.md](release.md#the-release-check)), `format:check`, `lint`, `typecheck`, `test:coverage` (uploading `coverage/` as the `coverage` artifact), `build`, `test:e2e` and the visual comparison, in that order; run the same before considering a change done.

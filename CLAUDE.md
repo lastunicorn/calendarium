@@ -8,7 +8,7 @@ Browser app (Vite + React + TypeScript) that generates a calendar to print on pa
 
 ## Commands
 
-- `npm run dev` / `npm run build` / `npm test` / `npm run test:coverage` / `npm run test:e2e` (Playwright) / `npm run test:visual [base]` / `npm run lint` (oxlint) / `npm run format` (`format:check` to verify only) / `npm run typecheck`
+- `npm run dev` / `npm run build` / `npm test` / `npm run test:coverage` / `npm run test:e2e` (Playwright) / `npm run test:visual [base]` / `npm run lint` (oxlint) / `npm run format` (`format:check` to verify only) / `npm run typecheck` / `npm run check:release` (version and changelog against the latest tag)
 - Single test file: `npx vitest run src/core/calendar.test.ts`; single test by name: `npx vitest run -t "leap year"`; one Vitest project: `npx vitest run --project unit` (or `component`)
 - First e2e run needs `npx playwright install chromium firefox`.
 
@@ -45,7 +45,7 @@ Update the file that describes what a change touches, in the same commit.
 
 ## Before considering a change done
 
-1. `npm run format` (also sorts imports), then the CI sequence: `npm run format:check`, `npm run lint` (no errors, no warnings), `npm run typecheck`, `npm run test:coverage` (never lower a threshold to pass), `npm run build`, `npm run test:e2e`.
+1. `npm run format` (also sorts imports), then the CI sequence: `npm run check:release`, `npm run format:check`, `npm run lint` (no errors, no warnings), `npm run typecheck`, `npm run test:coverage` (never lower a threshold to pass), `npm run build`, `npm run test:e2e`.
 2. `npm run test:visual`: a change meant to alter how pages look alters only the pages it means to (look at the diffs); any other alters none.
 3. Tests for the change, where [doc/testing.md](doc/testing.md) puts them; a layout's new look-changing option gets a visual case.
 4. A user-facing change is noted under `## Unreleased` in `CHANGELOG.md`; check the pending version against the latest tag before bumping ([doc/release.md](doc/release.md)).

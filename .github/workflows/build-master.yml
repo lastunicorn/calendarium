@@ -23,12 +23,15 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
-          # The whole history, for the visual comparison's base commit.
+          # The whole history and tags, for the release check and the visual comparison's base commit.
           fetch-depth: 0
       - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: npm
+      # package.json's version and CHANGELOG.md against the latest tag (the history above fetched
+      # the tags): no bump without notes, no notes without a bump, every released section dated.
+      - run: npm run check:release
       - run: npm ci
       - run: npm run format:check
       - run: npm run lint
