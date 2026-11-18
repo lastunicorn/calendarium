@@ -6,13 +6,13 @@ export async function openSection(page: Page, title: string) {
 }
 
 /**
- * Shows `layout` for `year` as a user would: creates a project of it in the New project dialog,
+ * Shows `layout` for `year` as a user would: creates a project of it in the New document dialog,
  * which opens by itself on a fresh page, picking the layout by its label ("Weekly (one week per
  * page)"), then sets the year in the sidebar.
  */
 export async function showLayout(page: Page, layout: string, year: number) {
 	await page.goto('/')
-	const dialog = page.getByRole('dialog', { name: 'New project' })
+	const dialog = page.getByRole('dialog', { name: 'New document' })
 	await dialog.getByRole('radio', { name: new RegExp(`^${layout} `, 'i') }).check()
 	await dialog.getByRole('button', { name: 'Create' }).click()
 	await expect(dialog).toBeHidden()
@@ -56,16 +56,14 @@ export async function clippedPages(page: Page): Promise<number[]> {
 
 /**
  * Opens a project of `layout` with `options` as a user would, from a project file: cancels the
- * New project dialog a fresh page opens with, then picks the file. The file is tagged as written
+ * New document dialog a fresh page opens with, then picks the file. The file is tagged as written
  * by 6.0.0, the first version of the project format, so later versions read it through their
- * migrations; options it leaves out take their defaults.
+ * migrations; options it leaves out take their defaults. The dialog is found by its role alone,
+ * not its title, so the visual comparison can run this against an older build's labels.
  */
 export async function openProjectFile(page: Page, layout: string, options: object) {
 	await page.goto('/')
-	await page
-		.getByRole('dialog', { name: 'New project' })
-		.getByRole('button', { name: 'Cancel' })
-		.click()
+	await page.getByRole('dialog').getByRole('button', { name: 'Cancel' }).click()
 	const project = { format: 'calendarium/project', version: 6, app: '6.0.0', layout, options }
 	await page.locator('input[type="file"]').setInputFiles({
 		name: `${layout}.json`,

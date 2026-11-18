@@ -13,23 +13,23 @@ const ID = '3f0c9a52-7d1e-4b8a-9c61-2e5f4a8b7d10'
 
 /** The always open "Project" section. */
 function projectSection(): HTMLElement {
-	return screen.getByRole('group', { name: 'Project' })
+	return screen.getByRole('group', { name: 'Document' })
 }
 
-/** The Change project button. */
+/** The Change document button. */
 function changeProjectButton(): HTMLButtonElement {
-	return within(projectSection()).getByRole('button', { name: 'Change project…' })
+	return within(projectSection()).getByRole('button', { name: 'Change document…' })
 }
 
-/** The Open project dialog's radios, opened from Change project. */
+/** The Open document dialog's radios, opened from Change document. */
 function openProjectRadios(): HTMLInputElement[] {
 	fireEvent.click(changeProjectButton())
-	return within(dialog('Open project')).getAllByRole<HTMLInputElement>('radio')
+	return within(dialog('Open document')).getAllByRole<HTMLInputElement>('radio')
 }
 
-/** Cancels the Open project dialog. */
+/** Cancels the Open document dialog. */
 function cancelOpenProject() {
-	fireEvent.click(within(dialog('Open project')).getByRole('button', { name: 'Cancel' }))
+	fireEvent.click(within(dialog('Open document')).getByRole('button', { name: 'Cancel' }))
 }
 
 /** A radio's label: "Work 2027 — Weekly". */
@@ -37,24 +37,24 @@ function radioLabel(radio: HTMLInputElement): string {
 	return radio.closest('label')!.textContent
 }
 
-/** The projects the Open project dialog lists, in its order; it is opened and cancelled. */
+/** The projects the Open document dialog lists, in its order; it is opened and cancelled. */
 function projectLabels(): string[] {
 	const labels = openProjectRadios().map(radioLabel)
 	cancelOpenProject()
 	return labels
 }
 
-/** The open project's label, the one the Open project dialog checks; it is opened and cancelled. */
+/** The open project's label, the one the Open document dialog checks; it is opened and cancelled. */
 function openLabel(): string {
 	const label = radioLabel(openProjectRadios().find((radio) => radio.checked)!)
 	cancelOpenProject()
 	return label
 }
 
-/** Opens the project labeled `label` from the Open project dialog. */
+/** Opens the project labeled `label` from the Open document dialog. */
 function pick(label: string) {
 	fireEvent.click(changeProjectButton())
-	const openProject = dialog('Open project')
+	const openProject = dialog('Open document')
 	fireEvent.click(within(openProject).getByRole('radio', { name: label }))
 	fireEvent.click(within(openProject).getByRole('button', { name: 'Open' }))
 }
@@ -74,10 +74,10 @@ function printDisabled(): boolean {
 	return screen.getByRole<HTMLButtonElement>('button', { name: 'Print' }).disabled
 }
 
-/** Creates a project through the New project dialog, opening it first. */
+/** Creates a project through the New document dialog, opening it first. */
 function createProject(name: string, layout: Project['layout']) {
-	clickAction('New project…')
-	const newProject = dialog('New project')
+	clickAction('New document…')
+	const newProject = dialog('New document')
 	fireEvent.change(within(newProject).getByRole('textbox', { name: 'Name' }), {
 		target: { value: name },
 	})
@@ -85,10 +85,10 @@ function createProject(name: string, layout: Project['layout']) {
 	fireEvent.click(within(newProject).getByRole('button', { name: 'Create' }))
 }
 
-/** Renders the app with no project, and cancels the New project dialog it opens. */
+/** Renders the app with no project, and cancels the New document dialog it opens. */
 function renderEmpty() {
 	const rendered = render(<App />)
-	fireEvent.click(within(dialog('New project')).getByRole('button', { name: 'Cancel' }))
+	fireEvent.click(within(dialog('New document')).getByRole('button', { name: 'Cancel' }))
 	return rendered
 }
 
@@ -120,11 +120,11 @@ const THIS_YEAR = String(currentEnvironment().year)
 describe('App without a project', () => {
 	it('asks for a new project on a first launch, the first layout chosen, with nothing to print', () => {
 		render(<App />)
-		const chosen = within(dialog('New project')).getByRole('radio', { checked: true })
+		const chosen = within(dialog('New document')).getByRole('radio', { checked: true })
 		expect(chosen.closest('label')?.textContent).toBe(LAYOUT_VIEWS[LAYOUT_IDS[0]].label)
 		expect(printDisabled()).toBe(true)
 		expect(screen.getByRole('main', { name: 'Preview' }).textContent).toContain(
-			'No project is open.',
+			'No document is open.',
 		)
 	})
 
@@ -132,14 +132,14 @@ describe('App without a project', () => {
 		renderEmpty()
 		expect(screen.queryByRole('dialog')).toBeNull()
 		expect(
-			within(projectSection()).queryByRole('button', { name: 'Change project…' }),
+			within(projectSection()).queryByRole('button', { name: 'Change document…' }),
 		).toBeNull()
 		expect(printDisabled()).toBe(true)
 		expect(Object.keys(localStorage)).toEqual([])
 
 		const preview = screen.getByRole('main', { name: 'Preview' })
-		fireEvent.click(within(preview).getByRole('button', { name: 'New project…' }))
-		expect(dialog('New project')).not.toBeNull()
+		fireEvent.click(within(preview).getByRole('button', { name: 'New document…' }))
+		expect(dialog('New document')).not.toBeNull()
 	})
 })
 
@@ -163,46 +163,46 @@ describe('App new project', () => {
 		expect(nameField.value).toBe('')
 	})
 
-	it('focuses Change project once created from the empty preview', () => {
+	it('focuses Change document once created from the empty preview', () => {
 		renderEmpty()
 		const preview = screen.getByRole('main', { name: 'Preview' })
-		const button = within(preview).getByRole('button', { name: 'New project…' })
+		const button = within(preview).getByRole('button', { name: 'New document…' })
 		// A click focuses the button it lands on.
 		button.focus()
 		fireEvent.click(button)
-		fireEvent.click(within(dialog('New project')).getByRole('button', { name: 'Create' }))
+		fireEvent.click(within(dialog('New document')).getByRole('button', { name: 'Create' }))
 		expect(button.isConnected).toBe(false)
 		expect(document.activeElement).toBe(changeProjectButton())
 	})
 
-	it('focuses Change project once created on a first launch', () => {
+	it('focuses Change document once created on a first launch', () => {
 		render(<App />)
-		fireEvent.click(within(dialog('New project')).getByRole('button', { name: 'Create' }))
+		fireEvent.click(within(dialog('New document')).getByRole('button', { name: 'Create' }))
 		expect(document.activeElement).toBe(changeProjectButton())
 	})
 
-	it('gives the focus back to New project once created from it', () => {
+	it('gives the focus back to New document once created from it', () => {
 		renderEmpty()
 		createProject('Home', 'yearly')
-		const button = within(projectSection()).getByRole('button', { name: 'New project…' })
+		const button = within(projectSection()).getByRole('button', { name: 'New document…' })
 		button.focus()
 		fireEvent.click(button)
-		fireEvent.click(within(dialog('New project')).getByRole('button', { name: 'Create' }))
+		fireEvent.click(within(dialog('New document')).getByRole('button', { name: 'Create' }))
 		expect(document.activeElement).toBe(button)
 	})
 
 	it('creates nothing when cancelled', () => {
 		renderEmpty()
 		createProject('Home', 'yearly')
-		clickAction('New project…')
-		fireEvent.click(within(dialog('New project')).getByRole('button', { name: 'Close' }))
+		clickAction('New document…')
+		fireEvent.click(within(dialog('New document')).getByRole('button', { name: 'Close' }))
 		expect(screen.queryByRole('dialog')).toBeNull()
 		expect(projectLabels()).toEqual(['Home — Yearly'])
 	})
 })
 
 describe('App projects', () => {
-	it('changes the open project from Change project, the form following', () => {
+	it('changes the open project from Change document, the form following', () => {
 		renderEmpty()
 		createProject('Wall', 'yearly')
 		createProject('Desk', 'monthly')
@@ -228,7 +228,7 @@ describe('App projects', () => {
 		createProject('Desk', 'monthly')
 		changeProjectButton().focus()
 		fireEvent.click(changeProjectButton())
-		const openProject = dialog('Open project')
+		const openProject = dialog('Open document')
 		const desk = within(openProject).getByRole<HTMLInputElement>('radio', {
 			name: 'Desk — Monthly',
 		})
@@ -242,7 +242,7 @@ describe('App projects', () => {
 		expect(document.activeElement).toBe(changeProjectButton())
 	})
 
-	it('renames the open project, the Open project dialog following', () => {
+	it('renames the open project, the Open document dialog following', () => {
 		renderEmpty()
 		createProject('b', 'yearly')
 		createProject('c', 'weekly')
@@ -259,16 +259,16 @@ describe('App projects', () => {
 		createProject('c', 'daily')
 		pick('b — Monthly')
 
-		clickAction('Delete project')
-		const question = dialog('Delete project')
+		clickAction('Delete document')
+		const question = dialog('Delete document')
 		expect(question.textContent).toContain(
 			'Delete “b”? It can’t be undone; save it to a file first to keep it.',
 		)
 		fireEvent.click(within(question).getByRole('button', { name: 'Cancel' }))
 		expect(projectLabels()).toEqual(['a — Yearly', 'b — Monthly', 'c — Daily'])
 
-		clickAction('Delete project')
-		fireEvent.click(within(dialog('Delete project')).getByRole('button', { name: 'Delete' }))
+		clickAction('Delete document')
+		fireEvent.click(within(dialog('Delete document')).getByRole('button', { name: 'Delete' }))
 		expect(projectLabels()).toEqual(['a — Yearly', 'c — Daily'])
 		expect(openLabel()).toBe('c — Daily')
 	})
@@ -276,10 +276,10 @@ describe('App projects', () => {
 	it('asks for a new project once the last one is deleted', () => {
 		renderEmpty()
 		createProject('', 'yearly')
-		clickAction('Delete project')
-		expect(dialog('Delete project').textContent).toContain('Delete “Untitled”?')
-		fireEvent.click(within(dialog('Delete project')).getByRole('button', { name: 'Delete' }))
-		expect(dialog('New project')).not.toBeNull()
+		clickAction('Delete document')
+		expect(dialog('Delete document').textContent).toContain('Delete “Untitled”?')
+		fireEvent.click(within(dialog('Delete document')).getByRole('button', { name: 'Delete' }))
+		expect(dialog('New document')).not.toBeNull()
 		expect(within(projectSection()).queryByRole('combobox')).toBeNull()
 		expect(printDisabled()).toBe(true)
 	})
@@ -343,9 +343,9 @@ describe('App open project file', () => {
 		await waitFor(() => expect(projectLabels()).toEqual(['Desk — Monthly']))
 
 		chooseProjectFile(container, monthlyFile(ID, 'Office', 2040))
-		const question = await screen.findByRole('dialog', { name: 'Overwrite project' })
+		const question = await screen.findByRole('dialog', { name: 'Overwrite document' })
 		expect(question.textContent).toContain(
-			'“Desk” is already one of your projects. Overwrite it with the file’s version? Its current settings are lost.',
+			'“Desk” is already one of your documents. Overwrite it with the file’s version? Its current settings are lost.',
 		)
 		fireEvent.click(within(question).getByRole('button', { name: 'Cancel' }))
 		expect(projectLabels()).toEqual(['Desk — Monthly'])
@@ -353,7 +353,7 @@ describe('App open project file', () => {
 		expect(year()).toBe('2030')
 
 		chooseProjectFile(container, monthlyFile(ID, 'Office', 2040))
-		const again = await screen.findByRole('dialog', { name: 'Overwrite project' })
+		const again = await screen.findByRole('dialog', { name: 'Overwrite document' })
 		fireEvent.click(within(again).getByRole('button', { name: 'Overwrite' }))
 		expect(projectLabels()).toEqual(['Office — Monthly'])
 		expect(year()).toBe('2040')
@@ -364,7 +364,7 @@ describe('App open project file', () => {
 		createProject('Home', 'yearly')
 		chooseProjectFile(container, '{"year": 2030}', 'other.json')
 		expect((await screen.findByRole('alert')).textContent).toBe(
-			'other.json is not a calendar project file.',
+			'other.json is not a calendar document file.',
 		)
 		expect(projectLabels()).toEqual(['Home — Yearly'])
 	})

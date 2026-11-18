@@ -28,7 +28,7 @@ Component tests are `src/**/*.test.tsx` (Vitest `component` project: jsdom + Tes
 
 ## End-to-end tests
 
-- `e2e/print.spec.ts` (Playwright, Chromium) builds the app, creates a project of each layout through the New project dialog, prints it to PDF and checks the page count and paper size, and that no page's content is clipped in print media.
+- `e2e/print.spec.ts` (Playwright, Chromium) builds the app, creates a project of each layout through the New document dialog, prints it to PDF and checks the page count and paper size, and that no page's content is clipped in print media.
 - `e2e/projects.spec.ts` saves a project to a file and opens it back.
 - `e2e/screen.spec.ts` checks the preview's screen behavior (zooming with Ctrl and the wheel or the keys, spreads, the language's week start, the squares fill inside the margins in print media, the dark scheme and the theme button leaving the pages white on screen and in print, the chosen theme kept on reload).
 - Those two also run in Firefox (the `firefox` project's `testMatch` in `playwright.config.ts`), for the code's Firefox paths; a test there must not call `page.pdf()`, which only Chromium has.

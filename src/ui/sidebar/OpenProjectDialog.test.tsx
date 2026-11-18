@@ -25,7 +25,7 @@ describe('OpenProjectDialog', () => {
 		])
 		expect(radios.map((radio) => radio.checked)).toEqual([false, true])
 		expect(document.activeElement).toBe(radios[1])
-		expect(screen.getByRole('group', { name: 'Projects' })).not.toBeNull()
+		expect(screen.getByRole('group', { name: 'Documents' })).not.toBeNull()
 	})
 
 	it('opens the chosen project on Open', () => {

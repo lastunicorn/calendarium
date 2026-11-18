@@ -32,11 +32,11 @@ export function describeOpened(fileName: string, { ignored, newer }: OpenedFile)
 export function describeRejected(fileName: string, { reason }: RejectedFile): string {
 	switch (reason) {
 		case 'notProject':
-			return `${fileName} is not a calendar project file.`
+			return `${fileName} is not a calendar document file.`
 		case 'unknownLayout':
 			return `${fileName} was made by a newer version, with a layout this one doesn’t have.`
 		case 'tooLarge':
-			return `${fileName} is too large to be a calendar project file (over 1 MB).`
+			return `${fileName} is too large to be a calendar document file (over 1 MB).`
 	}
 }
 
@@ -46,5 +46,5 @@ export function describeSaveFailure(failure: SaveFailure): string {
 		failure === 'quota'
 			? 'this browser’s storage is full'
 			: 'this browser’s storage is unavailable'
-	return `Changes aren’t being saved: ${why}. Save the project to a file to keep it.`
+	return `Changes aren’t being saved: ${why}. Save the document to a file to keep it.`
 }

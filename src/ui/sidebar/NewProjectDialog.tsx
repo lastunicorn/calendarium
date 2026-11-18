@@ -33,7 +33,7 @@ export function NewProjectDialog({ onCreate, onCancel, returnFocus }: NewProject
 
 	return (
 		<Dialog
-			title="New project"
+			title="New document"
 			submitLabel="Create"
 			onSubmit={handleDialogSubmit}
 			onCancel={onCancel}

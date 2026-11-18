@@ -68,25 +68,25 @@ describe('WorkspaceForm', () => {
 	// Each layout's sections are tested next to its form, in `layouts/<layout-id>/ui/`.
 	it.each(LAYOUT_IDS)('shows the project section above the %s form', (layout) => {
 		const [first, ...rest] = sectionTitles(layout)
-		expect(first).toBe('Project')
+		expect(first).toBe('Document')
 		expect(rest.length).toBeGreaterThan(0)
 	})
 
 	it('keeps the project section open, starts every other section collapsed, and opens one when its title is clicked', () => {
 		const [layoutTitle, ...titles] = sectionTitles('yearly')
-		expect(layoutTitle).toBe('Project')
-		expect(screen.queryByRole('button', { name: 'Project' })).toBeNull()
-		const actions = within(screen.getByRole('group', { name: 'Project' })).getByRole('toolbar')
+		expect(layoutTitle).toBe('Document')
+		expect(screen.queryByRole('button', { name: 'Document' })).toBeNull()
+		const actions = within(screen.getByRole('group', { name: 'Document' })).getByRole('toolbar')
 		expect(
 			within(actions)
 				.getAllByRole('button')
 				.map((button) => button.title),
 		).toEqual([
-			'New project…',
-			'Change project…',
-			'Delete project',
-			'Open a project file',
-			'Save project to a file',
+			'New document…',
+			'Change document…',
+			'Delete document',
+			'Open a document file',
+			'Save document to a file',
 			'Print',
 		])
 		const toggles = screen.getAllByRole('button', { expanded: false })
@@ -112,17 +112,17 @@ describe('WorkspaceForm', () => {
 		expect(page.getAttribute('aria-expanded')).toBe('true')
 		expect(calendar.getAttribute('aria-expanded')).toBe('false')
 		expect(screen.queryByLabelText('Year')).toBeNull()
-		const actions = within(screen.getByRole('group', { name: 'Project' })).getByRole('toolbar')
+		const actions = within(screen.getByRole('group', { name: 'Document' })).getByRole('toolbar')
 		expect(
 			within(actions)
 				.getAllByRole('button')
 				.map((button) => button.title),
 		).toEqual([
-			'New project…',
-			'Change project…',
-			'Delete project',
-			'Open a project file',
-			'Save project to a file',
+			'New document…',
+			'Change document…',
+			'Delete document',
+			'Open a document file',
+			'Save document to a file',
 			'Print',
 		])
 	})
@@ -223,17 +223,17 @@ describe('WorkspaceForm', () => {
 
 	it('shows only New, Open and Print, and no options, without a project', () => {
 		render(<Form workspace={defaultWorkspace()} onUpdate={noop} {...PROJECT_ACTIONS} />)
-		const section = screen.getByRole('group', { name: 'Project' })
+		const section = screen.getByRole('group', { name: 'Document' })
 		expect(
 			within(within(section).getByRole('toolbar'))
 				.getAllByRole('button')
 				.map((button) => button.title),
-		).toEqual(['New project…', 'Open a project file', 'Print'])
+		).toEqual(['New document…', 'Open a document file', 'Print'])
 		expect(within(section).queryByRole('combobox')).toBeNull()
 		expect(within(section).queryByRole('textbox', { name: 'Name' })).toBeNull()
 		expect(
 			screen.getAllByRole('group').map((group) => group.querySelector('legend')!.textContent),
-		).toEqual(['Project'])
+		).toEqual(['Document'])
 	})
 
 	it('lists the projects by name with their layout, the open one chosen, and shows its name and layout', () => {
@@ -256,10 +256,10 @@ describe('WorkspaceForm', () => {
 		}
 		render(<Form workspace={workspace} onUpdate={noop} {...PROJECT_ACTIONS} />)
 		expect(
-			within(screen.getByRole('group', { name: 'Project' })).queryByRole('combobox'),
+			within(screen.getByRole('group', { name: 'Document' })).queryByRole('combobox'),
 		).toBeNull()
-		fireEvent.click(screen.getByRole('button', { name: 'Change project…' }))
-		const openProject = screen.getByRole('dialog', { name: 'Open project' })
+		fireEvent.click(screen.getByRole('button', { name: 'Change document…' }))
+		const openProject = screen.getByRole('dialog', { name: 'Open document' })
 		const radios = within(openProject).getAllByRole<HTMLInputElement>('radio')
 		expect(radios.map((radio) => radio.closest('label')!.textContent)).toEqual([
 			'Home — Yearly',
@@ -276,17 +276,17 @@ describe('WorkspaceForm', () => {
 
 	it('labels the hovered or focused project action under the buttons', () => {
 		render(<Form workspace={workspaceFor()} onUpdate={noop} {...PROJECT_ACTIONS} />)
-		const actions = screen.getByRole('toolbar', { name: 'Project' })
+		const actions = screen.getByRole('toolbar', { name: 'Document' })
 		const hint = actions.nextElementSibling!
 		expect(hint.textContent).toBe('')
 
-		fireEvent.pointerOver(screen.getByRole('button', { name: 'New project…' }))
-		expect(hint.textContent).toBe('New project…')
+		fireEvent.pointerOver(screen.getByRole('button', { name: 'New document…' }))
+		expect(hint.textContent).toBe('New document…')
 		fireEvent.pointerLeave(actions)
 		expect(hint.textContent).toBe('')
 
-		fireEvent.focus(screen.getByRole('button', { name: 'Save project to a file' }))
-		expect(hint.textContent).toBe('Save project to a file')
+		fireEvent.focus(screen.getByRole('button', { name: 'Save document to a file' }))
+		expect(hint.textContent).toBe('Save document to a file')
 	})
 
 	it('asks before resetting a section, and resets only that section’s fields', () => {
@@ -320,7 +320,7 @@ describe('WorkspaceForm', () => {
 		fireEvent.click(reset)
 		fireEvent.pointerDown(screen.getByLabelText('Year'))
 		expect(screen.getByRole('alertdialog')).not.toBeNull()
-		fireEvent.pointerDown(screen.getByRole('group', { name: 'Project' }))
+		fireEvent.pointerDown(screen.getByRole('group', { name: 'Document' }))
 		expect(screen.queryByRole('alertdialog')).toBeNull()
 
 		fireEvent.click(reset)

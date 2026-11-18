@@ -4,10 +4,10 @@ The features each release brought, newest first. Versions follow the app version
 
 ## Unreleased
 
-The app now keeps a list of projects, each with an id, an optional name, a layout chosen when it is created, and that layout's settings. Settings and files from earlier versions are migrated:
+The app now keeps a list of documents, each with an id, an optional name, a layout chosen when it is created, and that layout's settings. Settings and files from earlier versions are migrated:
 
-- the settings saved in the browser become projects the first time 6.0 opens: an unnamed project of each layout whose settings were changed (the year aside, which 5.x saved for every layout), and always of the layout that was shown, which opens. The 5.x settings are left as they are, so going back to 5.x still finds them;
-- project files from 3.x to 5.x open as new projects, named after the file, unless it has the name the app gave it (`calendar-week-per-page-2026.json`);
+- the settings saved in the browser become documents the first time 6.0 opens: an unnamed document of each layout whose settings were changed (the year aside, which 5.x saved for every layout), and always of the layout that was shown, which opens. The 5.x settings are left as they are, so going back to 5.x still finds them;
+- files from 3.x to 5.x open as new documents, named after the file, unless it has the name the app gave it (`calendar-week-per-page-2026.json`);
 - each layout keeps its settings under its new name, grouped as the sidebar groups them:
   - every layout: the year, language and week start under `calendar`, and the events as a list of lines;
   - the year layout: its title, subtitle and title size under `header`, its month size and grid settings under `content`;
@@ -17,13 +17,13 @@ The app now keeps a list of projects, each with an id, an optional name, a layou
 
 ### Added
 
-- A New project dialog asks for the project's name, which it may go without, and its layout. It opens by itself on the first launch, and once the last project is deleted.
-- Projects have names, edited in the Project section and listed by the Open project dialog ("Work 2027 — Weekly", or "Untitled"); a project file is named after its project, `work-2027.json`.
-- Delete project, in the Project section, once confirmed.
-- Opening a file saved from a project already in the list asks whether to overwrite it.
-- Without a project, the preview offers a New project button, and Print is disabled.
-- The Project section says when changes aren’t being saved in the browser, its storage full or unavailable, and suggests saving the project to a file; the notice goes once a save succeeds again, which also saves the changes it missed.
-- When the app fails, it says so instead of showing a blank page, and offers to reload and to save each project to a file.
+- A New document dialog asks for the document's name, which it may go without, and its layout. It opens by itself on the first launch, and once the last document is deleted.
+- Documents have names, edited in the Document section and listed by the Open document dialog ("Work 2027 — Weekly", or "Untitled"); a document file is named after its document, `work-2027.json`.
+- Delete document, in the Document section, once confirmed.
+- Opening a file saved from a document already in the list asks whether to overwrite it.
+- Without a document, the preview offers a New document button, and Print is disabled.
+- The Document section says when changes aren’t being saved in the browser, its storage full or unavailable, and suggests saving the document to a file; the notice goes once a save succeeds again, which also saves the changes it missed.
+- When the app fails, it says so instead of showing a blank page, and offers to reload and to save each document to a file.
 - Week and day layouts: the mini calendars circle the days with an event, as the year layout's months do, unless "Show events" is unchecked in the Mini calendar section.
 - Year and month layouts: a "Title size (pt)" option in the Header section, as the week and day layouts have.
 - Day layout: a Month option in the Calendar section prints the days of one month only; Whole year, the default, prints them all. The day of the year after each heading still counts the whole year ("Day 32 / 366" on 1 February).
@@ -35,12 +35,12 @@ The app now keeps a list of projects, each with an id, an optional name, a layou
 
 ### Changed
 
-- The app keeps a list of projects instead of one set of settings per layout: the Project section's Change project button opens a dialog listing them all to open another, and the section shows the open project's layout, chosen when it is created and kept, under its buttons, the file ones (Open and Save) set apart, then Print, moved there from the top of the sidebar. The Layout picker and the starting over of a layout's settings are gone.
-- The layouts are named Yearly, Monthly, Weekly and Daily, in the New project dialog and in project files (`yearly`, `monthly`, `weekly` and `daily`, for `year-per-page`, `month-per-page`, `week-per-page` and `day-per-page`); an unnamed project's file is named after the new name, `calendar-weekly-2027.json`.
+- The app keeps a list of documents instead of one set of settings per layout: the Document section's Change document button opens a dialog listing them all to open another, and the section shows the open document's layout, chosen when it is created and kept, under its buttons, the file ones (Open and Save) set apart, then Print, moved there from the top of the sidebar. The Layout picker and the starting over of a layout's settings are gone.
+- The layouts are named Yearly, Monthly, Weekly and Daily, in the New document dialog and in document files (`yearly`, `monthly`, `weekly` and `daily`, for `year-per-page`, `month-per-page`, `week-per-page` and `day-per-page`); an unnamed document's file is named after the new name, `calendar-weekly-2027.json`.
 - Year layout: the month size now sizes the months too, not only their text: smaller sizes draw smaller months, centered in their part of the page.
-- Project files have a new format (`calendarium/project`), the same JSON the browser keeps each project in: the project's id, name and layout, then its settings under `options`, grouped as the sidebar's sections do (`calendar`, `events`, `header`, `miniMonth`, `content`, `footer`, `page`), so a file reads like the sidebar and each section's reset restores its own group.
-- Each project is saved in the browser under a key of its own, so two tabs editing different projects no longer overwrite each other.
-- When the calendar can't be drawn, the offered fix is to reset the project's settings, keeping its name.
+- Document files have a new format (`calendarium/project`), the same JSON the browser keeps each document in: the document's id, name and layout, then its settings under `options`, grouped as the sidebar's sections do (`calendar`, `events`, `header`, `miniMonth`, `content`, `footer`, `page`), so a file reads like the sidebar and each section's reset restores its own group.
+- Each document is saved in the browser under a key of its own, so two tabs editing different documents no longer overwrite each other.
+- When the calendar can't be drawn, the offered fix is to reset the document's settings, keeping its name.
 - Week and day layouts: the footer and its height moved from the Content section to a Footer section of their own, with its own reset.
 - Clearer descriptions under several sidebar options (year, language, week start, events, footer, booklet, margins, spine).
 - The supported browsers are the last two major versions of Chrome, Edge, Firefox and Safari (at least Chrome and Edge 125, Firefox 126, Safari 18), as the README says; the app is built for them.
@@ -48,7 +48,7 @@ The app now keeps a list of projects, each with an id, an optional name, a layou
 ### Fixed
 
 - Day layout: the Dots fill prints sharp, round dots, where Chrome printed them as blurry gray squares.
-- Opening a file over 1 MB is refused as too large to be a project file, instead of freezing the tab, and an event list of more than 10,000 lines in a file or stored project is ignored.
+- Opening a file over 1 MB is refused as too large to be a document file, instead of freezing the tab, and an event list of more than 10,000 lines in a file or stored document is ignored.
 - The sidebar's section descriptions and small icon buttons are a darker gray, so the descriptions are readable at the contrast accessibility guidelines ask of small text.
 
 ## 5.0.0 — 2026-10-24

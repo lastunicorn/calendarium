@@ -9,9 +9,9 @@ interface EmptyPreviewProps {
 export function EmptyPreview({ onNewProject }: EmptyPreviewProps) {
 	return (
 		<main className={styles.empty} aria-label="Preview">
-			<p className={styles.message}>No project is open.</p>
+			<p className={styles.message}>No document is open.</p>
 			<button type="button" className={styles.button} onClick={onNewProject}>
-				New project…
+				New document…
 			</button>
 		</main>
 	)

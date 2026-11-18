@@ -15,14 +15,14 @@
 
 `sidebar/` holds the `WorkspaceForm`.
 
-### Project section
+### Document section
 
-The `ProjectSection`:
+The `ProjectSection`, titled Document (the UI's word for a project, [ADR 0012](adr/0012-the-ui-calls-a-project-a-document.md)):
 
-- New project…;
-- Change project… (the `OpenProjectDialog`, the projects one per row, scrolling past about eight, a radio group with its radios hidden, the open one chosen, Open or a double click opening another);
-- and Delete project;
-- then, past a separator, the file actions Open a project file and Save project to a file;
+- New document…;
+- Change document… (the `OpenProjectDialog`, titled Open document, the projects one per row, scrolling past about eight, a radio group with its radios hidden, the open one chosen, Open or a double click opening another);
+- and Delete document;
+- then, past a separator, the file actions Open a document file and Save document to a file;
 - then, past another, Print (disabled without a project);
 - above the open project's name and its layout, shown read only.
 
@@ -40,15 +40,15 @@ Then the open project's form, keyed by its id so half-typed drafts don't carry o
 
 ## Preview
 
-- `preview/Preview` renders the open project's layout with its options, and `preview/EmptyPreview` a New project button when no project is open.
+- `preview/Preview` renders the open project's layout with its options, and `preview/EmptyPreview` a New document… button when no project is open.
 - The `Preview` draws its `ZoomBar` over the pages and keeps the middle of the view in place when zooming (with the wheel, the point under the pointer); `useZoomGestures` zooms it with Ctrl (or ⌘) and +, − or 0 while the focus is in the preview, and with Ctrl (or ⌘) and the wheel, as a trackpad's pinch sends, over it, in place of the browser's zoom.
 - The `Preview` also draws the `PageIndicator`: the page showing the most of itself in the view (`useCurrentPage`), in reading order, with a booklet's sheet side, and the page before, after or typed in.
 
 ## Dialogs
 
-`App` holds whether the `NewProjectDialog` (a name, optional, and the layout) shows: the project section and the empty preview both open it, and it opens by itself on a first launch and once the last project is deleted.
+`App` holds whether the `NewProjectDialog` (titled New document: a name, optional, and the layout) shows: the project section and the empty preview both open it, and it opens by itself on a first launch and once the last project is deleted.
 
-Dialogs are `ui/components/Dialog`: a native `<dialog>` opened with `showModal` while it is mounted, whose primary action submits its form, Escape and its close button cancelling, the focus going to its checked radio, or its first field, or to Cancel, and back once it closes, or to its `returnFocus` when there is nothing to go back to (a project created on a first launch or from the empty preview focuses Change project…) (`src/test/setupDom.ts` gives jsdom `showModal` and `close`); `window.confirm` is not used.
+Dialogs are `ui/components/Dialog`: a native `<dialog>` opened with `showModal` while it is mounted, whose primary action submits its form, Escape and its close button cancelling, the focus going to its checked radio, or its first field, or to Cancel, and back once it closes, or to its `returnFocus` when there is nothing to go back to (a project created on a first launch or from the empty preview focuses Change document…) (`src/test/setupDom.ts` gives jsdom `showModal` and `close`); `window.confirm` is not used.
 
 ## A layout's UI
 

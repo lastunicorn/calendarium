@@ -8,11 +8,11 @@ function noop() {}
 describe('Dialog', () => {
 	it('opens as a modal dialog named by its title, with Cancel and its action', () => {
 		render(
-			<Dialog title="Delete project" submitLabel="Delete" onSubmit={noop} onCancel={noop}>
+			<Dialog title="Delete document" submitLabel="Delete" onSubmit={noop} onCancel={noop}>
 				<p>Sure?</p>
 			</Dialog>,
 		)
-		const dialog = screen.getByRole<HTMLDialogElement>('dialog', { name: 'Delete project' })
+		const dialog = screen.getByRole<HTMLDialogElement>('dialog', { name: 'Delete document' })
 		expect(dialog.open).toBe(true)
 		expect(screen.getByText('Sure?')).not.toBeNull()
 		expect(screen.getAllByRole('button').map((button) => button.textContent)).toEqual([
@@ -81,8 +81,8 @@ describe('Dialog', () => {
 	})
 
 	it('gives the focus back to what had it once closed', () => {
-		render(<button type="button">Delete project</button>)
-		const opener = screen.getByRole('button', { name: 'Delete project' })
+		render(<button type="button">Delete document</button>)
+		const opener = screen.getByRole('button', { name: 'Delete document' })
 		opener.focus()
 		const { unmount } = render(
 			<Dialog title="Delete" submitLabel="Delete" onSubmit={noop} onCancel={noop}>
@@ -143,8 +143,8 @@ describe('Dialog', () => {
 	})
 
 	it('still gives the focus back to what had it when it is there', () => {
-		render(<button type="button">New project</button>)
-		const opener = screen.getByRole('button', { name: 'New project' })
+		render(<button type="button">New document</button>)
+		const opener = screen.getByRole('button', { name: 'New document' })
 		opener.focus()
 		const { unmount } = render(
 			<Dialog

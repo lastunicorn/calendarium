@@ -42,13 +42,13 @@ export function OpenProjectDialog({ projects, openId, onOpen, onCancel }: OpenPr
 
 	return (
 		<Dialog
-			title="Open project"
+			title="Open document"
 			submitLabel="Open"
 			onSubmit={handleDialogSubmit}
 			onCancel={onCancel}
 		>
 			<fieldset className={styles.field}>
-				<legend className={styles.legend}>Projects</legend>
+				<legend className={styles.legend}>Documents</legend>
 				<div className={styles.list}>
 					{projects.map((project, index) => (
 						// oxlint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- a shortcut for Open

@@ -63,7 +63,7 @@ interface ProjectSectionProps {
 	onImport: (project: Project<ProjectId | null>) => void
 	/** Deletes a project, once confirmed. */
 	onDelete: (id: ProjectId) => void
-	/** The Change project button, for the focus to go to once a project is created. */
+	/** The Change document button, for the focus to go to once a project is created. */
 	changeProjectRef?: Ref<HTMLButtonElement>
 }
 
@@ -74,7 +74,7 @@ function actionLabel(target: EventTarget): string {
 
 /**
  * The project being made: the starting of a new project, the changing of the open one for another
- * of the projects kept in this browser, chosen in the Open project dialog, and its deleting, then,
+ * of the projects kept in this browser, chosen in the Open document dialog, and its deleting, then,
  * apart, the opening of a project file and the saving of the open project to one, and, apart
  * again, its printing, above the open project's name and its layout, which it keeps. Opening a
  * file of a project already kept, or deleting one, asks first. While changes can't be saved in
@@ -199,28 +199,28 @@ export function ProjectSection({
 	}
 
 	return (
-		<Section title="Project" icon={<LayoutIcon />} collapsible={false}>
+		<Section title="Document" icon={<LayoutIcon />} collapsible={false}>
 			<div className={styles.actionsGroup}>
 				<div
 					className={styles.actions}
 					role="toolbar"
-					aria-label="Project"
+					aria-label="Document"
 					onPointerOver={handleActionsPointerOver}
 					onPointerLeave={handleActionsLeave}
 					onFocus={handleActionsFocus}
 					onBlur={handleActionsLeave}
 				>
-					<IconButton label="New project…" icon={<NewIcon />} onClick={handleNewClick} />
+					<IconButton label="New document…" icon={<NewIcon />} onClick={handleNewClick} />
 					{project !== null && (
 						<>
 							<IconButton
-								label="Change project…"
+								label="Change document…"
 								icon={<SwitchIcon />}
 								onClick={handleChangeClick}
 								ref={changeProjectRef}
 							/>
 							<IconButton
-								label="Delete project"
+								label="Delete document"
 								icon={<TrashIcon />}
 								onClick={handleDeleteClick}
 							/>
@@ -233,13 +233,13 @@ export function ProjectSection({
 						aria-orientation="vertical"
 					/>
 					<IconButton
-						label="Open a project file"
+						label="Open a document file"
 						icon={<OpenIcon />}
 						onClick={handleOpenClick}
 					/>
 					{project !== null && (
 						<IconButton
-							label="Save project to a file"
+							label="Save document to a file"
 							icon={<SaveIcon />}
 							onClick={handleSaveClick}
 						/>
@@ -308,20 +308,20 @@ export function ProjectSection({
 			)}
 			{pendingOverwrite !== null && (
 				<Dialog
-					title="Overwrite project"
+					title="Overwrite document"
 					submitLabel="Overwrite"
 					onSubmit={handleOverwriteConfirm}
 					onCancel={handleOverwriteCancel}
 				>
 					<p>
-						“{shownName(pendingOverwrite.existing)}” is already one of your projects.
+						“{shownName(pendingOverwrite.existing)}” is already one of your documents.
 						Overwrite it with the file’s version? Its current settings are lost.
 					</p>
 				</Dialog>
 			)}
 			{confirmingDelete && project !== null && (
 				<Dialog
-					title="Delete project"
+					title="Delete document"
 					submitLabel="Delete"
 					onSubmit={handleDeleteConfirm}
 					onCancel={handleDeleteCancel}

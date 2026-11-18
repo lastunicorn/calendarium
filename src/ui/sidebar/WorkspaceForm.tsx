@@ -28,7 +28,7 @@ interface WorkspaceFormProps {
 	/** The title of the open section, from the viewer's preferences; `null` when all are closed. */
 	openSection: string | null
 	onToggleSection: (title: string) => void
-	/** The Change project button, for the focus to go to once a project is created. */
+	/** The Change document button, for the focus to go to once a project is created. */
 	changeProjectRef?: Ref<HTMLButtonElement>
 }
 

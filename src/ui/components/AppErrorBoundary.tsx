@@ -83,7 +83,7 @@ export class AppErrorBoundary extends Component<AppErrorBoundaryProps, AppErrorB
 					{projects.length > 0 ? (
 						<>
 							<p className={styles.text}>
-								Your projects are kept in this browser. If reloading doesn’t help,
+								Your documents are kept in this browser. If reloading doesn’t help,
 								save them to files, to open them again later:
 							</p>
 							<ul className={styles.projects}>

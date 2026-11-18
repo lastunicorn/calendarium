@@ -1,6 +1,6 @@
 # Glossary
 
-Use these words in code, comments and docs, each for one thing. The terms only one layout uses are in its `README.md`. Persisted field names can't be renamed without a major release, so where the sidebar's label differs, the table gives both.
+Use these words in code, comments and docs, each for one thing. The terms only one layout uses are in its `README.md`. Persisted field names can't be renamed without a major release, so where the sidebar's label differs, the table gives both, as for a project, a document in the sidebar ([ADR 0012](adr/0012-the-ui-calls-a-project-a-document.md)).
 
 | Term                | Meaning                                                                                                        | In code                                                          | Sidebar label          |
 | ------------------- | -------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- | ---------------------- |
@@ -13,10 +13,10 @@ Use these words in code, comments and docs, each for one thing. The terms only o
 | Page plan           | What each sheet of a layout holds, before it is drawn                                                          | `planWeekPages`, `WeekPages`, … (`layouts/<layout-id>/pages.ts`) | —                      |
 | Layout              | One way of spreading a year over sheets                                                                        | `LayoutId`, `LayoutSpec`, `LayoutView`                           | Layout                 |
 | Workspace           | The projects kept in this browser, and the open one                                                            | `Workspace`, `openProject`, `projectList`                        | —                      |
-| Project             | One calendar being made: its id, name, layout and options, as a file holds it                                  | `Project`, `openProject`                                         | Project                |
+| Project             | One calendar being made: its id, name, layout and options, as a file holds it                                  | `Project`, `openProject`                                         | Document               |
 | Project id          | A project's identity, a UUID, kept whatever its name; a file carries it, so opening it finds the project again | `ProjectId`, `newProjectId`, `isProjectId`                       | —                      |
 | Project name        | What the user calls a project: optional, kept as typed, never printed                                          | `Project.name`                                                   | Name                   |
-| Serialized project  | One project as JSON, a file's or a stored project's                                                            | `serializeProject`, `parseProjectDocument`, `PROJECT_FORMAT`     | project file           |
+| Serialized project  | One project as JSON, a file's or a stored project's                                                            | `serializeProject`, `parseProjectDocument`, `PROJECT_FORMAT`     | document file          |
 | Preferences         | How the app looks and behaves for the viewer, apart from any calendar                                          | `Preferences`, `usePreferences`                                  | —                      |
 | Theme               | The app's colors, never the pages': the system's light or dark scheme, or the one the viewer chose             | `Theme`, `Preferences.theme`, `ThemeButton`                      | Theme                  |
 | Zoom                | How large the preview draws the pages on screen: a level, or a fit following the preview's size                | `PreviewZoom`, `zoomScale`, `ZoomBar`                            | Zoom                   |

@@ -6,7 +6,7 @@ test('a project saved to a file opens back with its name, layout and settings', 
 	page,
 }) => {
 	await page.goto('/')
-	const newProject = page.getByRole('dialog', { name: 'New project' })
+	const newProject = page.getByRole('dialog', { name: 'New document' })
 	await newProject.getByRole('textbox', { name: 'Name' }).fill('Desk 2031')
 	await newProject.getByRole('radio', { name: /^Monthly / }).check()
 	await newProject.getByRole('button', { name: 'Create' }).click()
@@ -14,19 +14,19 @@ test('a project saved to a file opens back with its name, layout and settings', 
 	await page.getByRole('button', { name: 'Calendar', exact: true }).click()
 	await page.getByRole('spinbutton', { name: 'Year' }).fill('2031')
 
-	const project = page.getByRole('group', { name: 'Project' })
+	const project = page.getByRole('group', { name: 'Document' })
 	const downloading = page.waitForEvent('download')
-	await project.getByRole('button', { name: 'Save project to a file' }).click()
+	await project.getByRole('button', { name: 'Save document to a file' }).click()
 	const download = await downloading
 	expect(download.suggestedFilename()).toBe('desk-2031.json')
 	const file = await download.path()
 
-	await project.getByRole('button', { name: 'Delete project' }).click()
-	const question = page.getByRole('dialog', { name: 'Delete project' })
+	await project.getByRole('button', { name: 'Delete document' }).click()
+	const question = page.getByRole('dialog', { name: 'Delete document' })
 	await question.getByRole('button', { name: 'Delete' }).click()
 	// The last project gone, the app asks for a new one.
 	await newProject.getByRole('button', { name: 'Cancel' }).click()
-	await expect(project.getByRole('button', { name: 'Change project…' })).toHaveCount(0)
+	await expect(project.getByRole('button', { name: 'Change document…' })).toHaveCount(0)
 
 	await page.locator('input[type="file"]').setInputFiles(file)
 	await expect(project.getByRole('textbox', { name: 'Name' })).toHaveValue('Desk 2031')

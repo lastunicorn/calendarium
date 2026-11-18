@@ -17,23 +17,23 @@ What each release changed is in the [changelog](CHANGELOG.md).
 1. **Open the app in your browser:**
    - <https://lastunicorn.github.io/calendarium/>
 2. **Configure calendar** in the left panel
-3. **Print** with the Print button in the Project section (see [Printing](#printing)).
+3. **Print** with the Print button in the Document section (see [Printing](#printing)).
 
 ## Configuration
 
-Each calendar you make is a project, with a name (optional) and a layout, chosen when you create it: yearly, monthly, weekly or daily. Projects are kept in your browser and saved automatically as you edit them, so they are still there the next time you open the app.
+Each calendar you make is a document, with a name (optional) and a layout, chosen when you create it: yearly, monthly, weekly or daily. Documents are kept in your browser and saved automatically as you edit them, so they are still there the next time you open the app.
 
-The Project section at the top of the sidebar lets you:
+The Document section at the top of the sidebar lets you:
 
-- **New project…**: create one, naming it and choosing its layout. The app asks for one on its first launch.
-- **Change project…**: pick another of your projects to work on.
-- **Delete project**: remove it from your browser, once you confirm; save it to a file first to keep it.
-- **Open a project file**: add the project the file holds. If it was saved from a project you already have, the app asks whether to overwrite it.
-- **Save project to a file**: the open project, to a JSON file named after it, to keep or share it.
-- **Print** the open project's calendar (see [Printing](#printing)).
-- **Rename** the open project, in the Name field under the buttons.
+- **New document…**: create one, naming it and choosing its layout. The app asks for one on its first launch.
+- **Change document…**: pick another of your documents to work on.
+- **Delete document**: remove it from your browser, once you confirm; save it to a file first to keep it.
+- **Open a document file**: add the document the file holds. If it was saved from a document you already have, the app asks whether to overwrite it.
+- **Save document to a file**: the open document, to a JSON file named after it, to keep or share it.
+- **Print** the open document's calendar (see [Printing](#printing)).
+- **Rename** the open document, in the Name field under the buttons.
 
-Project files from earlier versions open as new projects, named after the file. The first time 6.0 opens, the settings an earlier version saved in your browser become projects: one for each layout whose settings you changed, and one for the layout that was shown.
+Files saved by earlier versions open as new documents, named after the file. The first time 6.0 opens, the settings an earlier version saved in your browser become documents: one for each layout whose settings you changed, and one for the layout that was shown.
 
 ## Printing
 
@@ -62,7 +62,7 @@ Each [release](https://github.com/lastunicorn/calendarium/releases) has the buil
 
 3. Open http://localhost:8080 (or the address the server prints).
 
-Opening `index.html` directly from the disk doesn't work: browsers don't load the app's scripts from a `file://` page. Settings are saved per address, so the local app starts from the defaults; save a project from the online app and open it locally to carry it over.
+Opening `index.html` directly from the disk doesn't work: browsers don't load the app's scripts from a `file://` page. Settings are saved per address, so the local app starts from the defaults; save a document from the online app and open it locally to carry it over.
 
 ### From source
 

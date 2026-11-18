@@ -56,13 +56,13 @@ describe('describeOpened', () => {
 describe('describeRejected', () => {
 	it('says why each file could not be opened', () => {
 		expect(describeRejected('notes.txt', { ok: false, reason: 'notProject' })).toBe(
-			'notes.txt is not a calendar project file.',
+			'notes.txt is not a calendar document file.',
 		)
 		expect(describeRejected('work.json', { ok: false, reason: 'unknownLayout' })).toBe(
 			'work.json was made by a newer version, with a layout this one doesn’t have.',
 		)
 		expect(describeRejected('video.json', { ok: false, reason: 'tooLarge' })).toBe(
-			'video.json is too large to be a calendar project file (over 1 MB).',
+			'video.json is too large to be a calendar document file (over 1 MB).',
 		)
 	})
 })
@@ -70,10 +70,10 @@ describe('describeRejected', () => {
 describe('describeSaveFailure', () => {
 	it('says why changes aren’t saved, and how to keep them', () => {
 		expect(describeSaveFailure('quota')).toBe(
-			'Changes aren’t being saved: this browser’s storage is full. Save the project to a file to keep it.',
+			'Changes aren’t being saved: this browser’s storage is full. Save the document to a file to keep it.',
 		)
 		expect(describeSaveFailure('unavailable')).toBe(
-			'Changes aren’t being saved: this browser’s storage is unavailable. Save the project to a file to keep it.',
+			'Changes aren’t being saved: this browser’s storage is unavailable. Save the document to a file to keep it.',
 		)
 	})
 })

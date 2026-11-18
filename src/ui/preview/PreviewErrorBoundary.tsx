@@ -61,11 +61,11 @@ export class PreviewErrorBoundary extends Component<
 				<h2 className={styles.title}>The calendar can't be drawn with these settings</h2>
 				<p className={styles.message}>{error.message}</p>
 				<p className={styles.hint}>
-					Change the settings in the sidebar, or put this project's settings back to its
+					Change the settings in the sidebar, or put this document's settings back to its
 					layout's defaults, keeping its name.
 				</p>
 				<button type="button" onClick={this.handleResetClick}>
-					Reset this project's settings
+					Reset this document's settings
 				</button>
 			</div>
 		)

@@ -13,7 +13,7 @@ import { YEARLY } from './yearly'
 // weekend highlights in `core/weekend.ts`. Sets only one layout uses live in its folder here.
 
 /**
- * The layouts, in the New project dialog's order; the first is preselected there. Each is a folder here, named
+ * The layouts, in the New document dialog's order; the first is preselected there. Each is a folder here, named
  * after its id, holding all it has (options, defaults, validators, rules, migrations, printed
  * text, and its UI in `ui/`: component, form, labels), and gives its id and spec through its entry
  * point, the folder's `index.ts`. The ids, the options types and the specs all derive from this
@@ -25,7 +25,7 @@ type Layout = (typeof LAYOUTS)[number]
 
 export type LayoutId = Layout['id']
 
-/** The ids of the layouts, in the New project dialog's order. */
+/** The ids of the layouts, in the New document dialog's order. */
 export const LAYOUT_IDS: readonly LayoutId[] = LAYOUTS.map((layout) => layout.id)
 
 /** Whether untrusted `value` names a layout. */
