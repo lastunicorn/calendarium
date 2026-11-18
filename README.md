@@ -43,7 +43,7 @@ For a booklet, choose a paper size twice the page's (A3 for A4 pages) and print 
 
 ## Browser support
 
-The app works in the current versions of Chrome, Edge, Firefox and Safari. Printing to the exact paper size is tested in Chrome and Chromium-based browsers only: in Firefox and Safari the preview works, but the printed pages may not match it.
+The app works in the last two major versions of Chrome, Edge, Firefox and Safari (at least Chrome and Edge 125, Firefox 126, Safari 18; older versions may draw some pages wrongly). Printing to the exact paper size is tested in Chrome and Chromium-based browsers only: in Firefox and Safari the preview works, but the printed pages may not match it. Why, and the features behind each version, is in [doc/browser-support.md](doc/browser-support.md).
 
 ## Running locally
 

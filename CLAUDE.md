@@ -21,6 +21,7 @@ Browser app (Vite + React + TypeScript) that generates a calendar to print on pa
 | [doc/persistence.md](doc/persistence.md)                                                                                     | Projects, the workspace, storage keys, the serialized project, files, versions, migrations     |
 | [doc/ui.md](doc/ui.md)                                                                                                       | Preferences, the sidebar and its sections, the preview, dialogs, a layout's UI                 |
 | [doc/printing.md](doc/printing.md)                                                                                           | Paper sizes, zoom, overflow, booklets, spreads, the print target                               |
+| [doc/browser-support.md](doc/browser-support.md)                                                                             | The supported browsers, the floor the features in use set, the build target                    |
 | [doc/testing.md](doc/testing.md)                                                                                             | Unit, property, component and e2e tests, coverage, the visual comparison, CI                   |
 | [doc/style.md](doc/style.md)                                                                                                 | Formatting, lint, CSS rules, event handlers                                                    |
 | [doc/glossary.md](doc/glossary.md)                                                                                           | The domain language: one word per concept, with its name in code and its sidebar label         |
@@ -58,6 +59,7 @@ Update the file that describes what a change touches, in the same commit.
 @doc/persistence.md
 @doc/ui.md
 @doc/printing.md
+@doc/browser-support.md
 @doc/testing.md
 @doc/style.md
 @doc/glossary.md

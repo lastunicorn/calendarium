@@ -42,6 +42,7 @@ The app now keeps a list of projects, each with an id, an optional name, a layou
 - When the calendar can't be drawn, the offered fix is to reset the project's settings, keeping its name.
 - Week and day layouts: the footer and its height moved from the Content section to a Footer section of their own, with its own reset.
 - Clearer descriptions under several sidebar options (year, language, week start, events, footer, booklet, margins, spine).
+- The supported browsers are the last two major versions of Chrome, Edge, Firefox and Safari (at least Chrome and Edge 125, Firefox 126, Safari 18), as the README says; the app is built for them.
 
 ### Fixed
 

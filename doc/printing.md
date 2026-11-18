@@ -26,4 +26,4 @@ Outside a booklet, a layout whose `LayoutView.facingPages` says its pages face e
 
 ## The print target
 
-Printing targets Chrome/Chromium: Save as PDF, paper size matching the selection (twice it for a booklet, printed double-sided flipping on the short edge), Margins: None, Scale: 100%. See [ADR 0008](adr/0008-chromium-is-the-print-target.md).
+Printing targets Chrome/Chromium: Save as PDF, paper size matching the selection (twice it for a booklet, printed double-sided flipping on the short edge), Margins: None, Scale: 100%. See [ADR 0008](adr/0008-chromium-is-the-print-target.md); which browsers the app supports otherwise is in [browser-support.md](browser-support.md).

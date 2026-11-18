@@ -16,11 +16,19 @@ const freshGlobs: Plugin = {
 	},
 }
 
+/**
+ * The oldest browsers the app supports (`doc/browser-support.md`): the floor the features in use set,
+ * so the build lowers no syntax these versions read as written. It adds no polyfills.
+ */
+const BROWSER_TARGETS = ['chrome125', 'edge125', 'firefox126', 'safari18', 'ios18']
+
 // https://vite.dev/config/
 export default defineConfig({
 	plugins: [react(), freshGlobs],
 	// Relative asset URLs, so the build works under any path (e.g. GitHub Pages' /calendarium/).
 	base: './',
+	// The CSS follows it too (`build.cssTarget` defaults to it).
+	build: { target: BROWSER_TARGETS },
 	// Lets tooling (e.g. the Claude preview) pick the port; Vite's default is used otherwise.
 	server: { port: Number(process.env.PORT) || undefined },
 	test: {
