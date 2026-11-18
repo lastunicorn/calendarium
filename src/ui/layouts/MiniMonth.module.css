@@ -66,8 +66,8 @@
 .day.marked,
 .day.markedWeek {
 	font-weight: 700;
-	color: var(--color-surface);
-	background: var(--color-text);
+	color: var(--color-paper);
+	background: var(--color-ink);
 }
 
 /* A day with an event: its number circled, as large as the cell's height allows. */

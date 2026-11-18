@@ -29,6 +29,6 @@
 	flex-shrink: 0;
 	padding-top: 1mm;
 	font-size: 8pt;
-	color: var(--color-text-muted);
+	color: var(--color-ink-muted);
 	border-right: var(--rule-light) solid var(--color-cell-border);
 }

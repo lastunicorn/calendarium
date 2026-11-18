@@ -12,7 +12,7 @@
 .subtitle {
 	margin: 0;
 	line-height: 1.2;
-	color: var(--color-text-muted);
+	color: var(--color-ink-muted);
 }
 
 .large {

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import {
 	defaultPreferences,
+	nextTheme,
 	parsePreferences,
 	SIDEBAR_MIN_WIDTH,
 	withSectionToggled,
@@ -13,6 +14,7 @@ describe('preferences', () => {
 			sidebarWidth: SIDEBAR_MIN_WIDTH,
 			openSection: null,
 			previewZoom: 100,
+			theme: 'system',
 		})
 	})
 
@@ -23,8 +25,14 @@ describe('preferences', () => {
 				openSection: 'Page',
 				previewZoom: 'fit-page',
 				theme: 'dark',
+				language: 'fr',
 			}),
-		).toEqual({ sidebarWidth: 480, openSection: 'Page', previewZoom: 'fit-page' })
+		).toEqual({
+			sidebarWidth: 480,
+			openSection: 'Page',
+			previewZoom: 'fit-page',
+			theme: 'dark',
+		})
 	})
 
 	it('fall back to the defaults for invalid values, one field at a time', () => {
@@ -34,11 +42,23 @@ describe('preferences', () => {
 			sidebarWidth: SIDEBAR_MIN_WIDTH,
 			openSection: 'Page',
 			previewZoom: 50,
+			theme: 'system',
 		})
 		expect(
-			parsePreferences({ sidebarWidth: 400.5, openSection: 3, previewZoom: 60.5 }),
+			parsePreferences({
+				sidebarWidth: 400.5,
+				openSection: 3,
+				previewZoom: 60.5,
+				theme: 'sepia',
+			}),
 		).toEqual(defaultPreferences())
 		expect(parsePreferences('wide')).toEqual(defaultPreferences())
+	})
+
+	it('step through the themes, back to the system after dark', () => {
+		expect(nextTheme('system')).toBe('light')
+		expect(nextTheme('light')).toBe('dark')
+		expect(nextTheme('dark')).toBe('system')
 	})
 
 	it('open one section at a time, closing the open one when toggled again', () => {

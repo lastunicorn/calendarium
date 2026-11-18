@@ -142,7 +142,7 @@
 	line-height: 1.15;
 	text-overflow: ellipsis;
 	white-space: nowrap;
-	color: var(--color-text);
+	color: var(--color-ink);
 }
 
 .weekend {
@@ -216,5 +216,5 @@
 	font-size: 6.5pt;
 	line-height: 1.1;
 	white-space: nowrap;
-	color: var(--color-text-muted);
+	color: var(--color-ink-muted);
 }

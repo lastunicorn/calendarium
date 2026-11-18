@@ -6,6 +6,8 @@ The commands are listed in `CLAUDE.md` and the README. Single test file: `npx vi
 
 Unit tests are plain `src/**/*.test.ts` files, DOM-free, covering `core/`, `layouts/`, `workspace/` and `preferences/`, and the pure logic of `ui/`, kept out of its hooks and components in `.ts` files next to them so it is tested without a DOM (`preview/zoomGestures.ts`, `preview/currentPage.ts`, `preview/spreadLayout.ts`, `sidebar/projectFileNotices.ts`, `sidebar/localeOptions.ts`, `fields/filter.ts`), the hook or component only wiring it to the DOM.
 
+Like `src/layers.test.ts` for imports, `ui/printedColors.test.ts` reads the stylesheets as text (the `unit` project sets `css: true`, Vitest otherwise emptying them) and fails on a printed page's stylesheet using a color with a dark value (`light-dark()`).
+
 The scripts' own logic is tested the same way, `scripts/*.test.ts` in the `unit` project (`scripts/check-release.test.ts`), apart from `scripts/format-fixtures/`, whose test runs in a release's worktree.
 
 ### Property tests
@@ -28,7 +30,7 @@ Component tests are `src/**/*.test.tsx` (Vitest `component` project: jsdom + Tes
 
 - `e2e/print.spec.ts` (Playwright, Chromium) builds the app, creates a project of each layout through the New project dialog, prints it to PDF and checks the page count and paper size, and that no page's content is clipped in print media.
 - `e2e/projects.spec.ts` saves a project to a file and opens it back.
-- `e2e/screen.spec.ts` checks the preview's screen behavior (zooming with Ctrl and the wheel or the keys, spreads, the language's week start, the squares fill inside the margins in print media).
+- `e2e/screen.spec.ts` checks the preview's screen behavior (zooming with Ctrl and the wheel or the keys, spreads, the language's week start, the squares fill inside the margins in print media, the dark scheme and the theme button leaving the pages white on screen and in print, the chosen theme kept on reload).
 - Those two also run in Firefox (the `firefox` project's `testMatch` in `playwright.config.ts`), for the code's Firefox paths; a test there must not call `page.pdf()`, which only Chromium has.
 - First run needs `npx playwright install chromium firefox`.
 - The e2e helpers (`showLayout`, `openSection`, `openProjectFile`, `pdfPageSizes`, `clippedPages`) are in `e2e/helpers.ts`.

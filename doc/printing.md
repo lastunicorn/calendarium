@@ -6,6 +6,10 @@ The preview is drawn as it prints: each layout renders `Page`s, one paper sheet 
 
 Paper sizes are defined once in `src/core/paper.ts` (`PAPERS`: CSS name and mm dimensions). `Page` sizes its box in mm from it (`contentBox` gives the area inside the margins, for layouts that size content from the page), so the screen preview matches print, and `Preview` renders a `<style>` with the matching `@page { size }` rule. A new paper size is one entry there plus its label in `PageSection`.
 
+## Themes
+
+The app's chrome follows the viewer's theme ([ui.md](ui.md#preferences)), their system's light or dark scheme or the one they chose, the pages never: they keep the paper's white and the printed colors, `Page` setting `color-scheme: light` and the ink color on itself, and printing is light whatever the theme ([style.md](style.md#styles)).
+
 ## Zoom
 
 The preview's zoom scales the pages with the CSS `zoom` property on screen only (`Preview.module.css`), so printing always keeps the paper size. See [ADR 0009](adr/0009-css-zoom-for-the-preview.md).

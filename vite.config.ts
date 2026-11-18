@@ -62,7 +62,12 @@ export default defineConfig({
 		projects: [
 			{
 				extends: true,
-				test: { name: 'unit', include: ['src/**/*.test.ts', 'scripts/*.test.ts'] },
+				test: {
+					name: 'unit',
+					include: ['src/**/*.test.ts', 'scripts/*.test.ts'],
+					// Stylesheets read as text (`?raw`, `ui/printedColors.test.ts`), which Vitest otherwise empties.
+					css: true,
+				},
 			},
 			{
 				extends: true,

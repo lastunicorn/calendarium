@@ -1,4 +1,4 @@
-import { asObject, copyValid, isString, type Validators } from '../core/validation'
+import { asObject, copyValid, isString, oneOf, type Validators } from '../core/validation'
 import { DEFAULT_ZOOM, isPreviewZoom, type PreviewZoom } from './zoom'
 
 /**
@@ -15,6 +15,17 @@ export interface Preferences {
 	openSection: string | null
 	/** How large the preview draws the pages: a percent, or a fit following the preview's size. */
 	previewZoom: PreviewZoom
+	/** The app's colors: the system's light or dark scheme, or one of them whatever the system's. */
+	theme: Theme
+}
+
+/** The themes, in the order the sidebar's theme button steps through them. */
+export const THEMES = ['system', 'light', 'dark'] as const
+export type Theme = (typeof THEMES)[number]
+
+/** The theme after `theme`, back to the first after the last. */
+export function nextTheme(theme: Theme): Theme {
+	return THEMES[(THEMES.indexOf(theme) + 1) % THEMES.length]
 }
 
 /** The sidebar's default width, and the narrowest it can be, in px. */
@@ -22,7 +33,12 @@ export const SIDEBAR_MIN_WIDTH = 320
 
 /** The preferences of a viewer who has changed none. */
 export function defaultPreferences(): Preferences {
-	return { sidebarWidth: SIDEBAR_MIN_WIDTH, openSection: null, previewZoom: DEFAULT_ZOOM }
+	return {
+		sidebarWidth: SIDEBAR_MIN_WIDTH,
+		openSection: null,
+		previewZoom: DEFAULT_ZOOM,
+		theme: 'system',
+	}
 }
 
 function isSidebarWidth(value: unknown): value is number {
@@ -38,6 +54,7 @@ export const PREFERENCE_VALIDATORS: Validators<Preferences> = {
 	sidebarWidth: isSidebarWidth,
 	openSection: isOpenSection,
 	previewZoom: isPreviewZoom,
+	theme: oneOf(THEMES),
 }
 
 /**

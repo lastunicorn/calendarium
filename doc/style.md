@@ -18,6 +18,7 @@
 - Size anything inside a printed page in `mm`/`pt`, never `px`.
 - Draw thin lines as borders, never as background gradients: a sub-pixel gradient line can vanish depending on zoom and pixel position (Firefox especially), while a non-zero border always gets at least one device pixel.
 - Use the color variables from `:root` in `index.css` (`var(--color-weekend)`), never literal colors in a module; add a variable when a new color is needed.
+- The app's colors (`--color-text`, `--color-surface`, …) are each a light and a dark value, `light-dark(…)`, which the root's `color-scheme` picks: the system's, or the theme set by `data-theme` (`ui/useTheme`), and light in print. The printed calendar's (`--color-paper`, `--color-ink`, `--color-ink-muted`, `--color-rule`, …) have one value, since the preview is drawn as it prints. A printed page's stylesheets (a layout's `ui/`, `ui/layouts/`) use only the latter, which `ui/printedColors.test.ts` checks; a new app color is a `light-dark()` pair like the others.
 - Space the app's chrome with the `--space-*` scale in `index.css`; the sidebar's padding (`--sidebar-padding`, which the section bands and the form reach across) and the space between pages on screen (`--page-gap`) have their own tokens. Printed rules are `--rule-light` or `--rule-heavy`.
 
 ## Event handlers

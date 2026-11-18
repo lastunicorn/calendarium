@@ -22,6 +22,7 @@ describe('preferences storage', () => {
 			sidebarWidth: 512,
 			openSection: 'Events',
 			previewZoom: 'fit-width' as const,
+			theme: 'dark' as const,
 		}
 		savePreferences(preferences)
 		expect(loadPreferences()).toEqual(preferences)
@@ -50,13 +51,14 @@ describe('preferences storage', () => {
 	})
 
 	it('keeps the fields a later version stored when saving', () => {
-		localStorage.setItem('calendarium-preferences', '{"theme":"dark","sidebarWidth":400}')
+		localStorage.setItem('calendarium-preferences', '{"language":"fr","sidebarWidth":400}')
 		savePreferences({ ...defaultPreferences(), sidebarWidth: 420 })
 		expect(JSON.parse(localStorage.getItem('calendarium-preferences')!)).toEqual({
-			theme: 'dark',
+			language: 'fr',
 			sidebarWidth: 420,
 			openSection: null,
 			previewZoom: 100,
+			theme: 'system',
 		})
 	})
 

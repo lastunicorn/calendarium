@@ -15,6 +15,14 @@ function zoomLevel(page: Page): Locator {
 	return page.getByRole('combobox', { name: 'Zoom level' })
 }
 
+/** The app's background, behind the sidebar and the pages, in each theme (`index.css`). */
+const LIGHT_BACKGROUND = 'rgb(229, 229, 229)'
+const DARK_BACKGROUND = 'rgb(24, 24, 24)'
+
+function appBackground(page: Page): Promise<string> {
+	return page.evaluate(() => getComputedStyle(document.documentElement).backgroundColor)
+}
+
 /** The layout box of `locator`, which must be on the page. */
 async function box(locator: Locator) {
 	const found = await locator.boundingBox()
@@ -114,4 +122,45 @@ test('the grid of squares stays inside the margins in print', async ({ page }) =
 	expect(gridBox.y + gridBox.height).toBeLessThanOrEqual(
 		sheetBox.y + sheetBox.height - margins.bottom + 0.5,
 	)
+})
+
+test('the dark scheme darkens the app, not the pages, and prints light', async ({ page }) => {
+	await page.emulateMedia({ colorScheme: 'dark' })
+	await showLayout(page, 'monthly', YEAR)
+	const sheet = page.locator('main section').first()
+
+	expect(await appBackground(page)).toBe(DARK_BACKGROUND)
+	await expect(sheet).toHaveCSS('background-color', 'rgb(255, 255, 255)')
+	await expect(sheet).toHaveCSS('color', 'rgb(34, 34, 34)')
+
+	await page.emulateMedia({ colorScheme: 'dark', media: 'print' })
+	expect(await appBackground(page)).toBe('rgb(255, 255, 255)')
+	await expect(sheet).toHaveCSS('background-color', 'rgb(255, 255, 255)')
+})
+
+test('the theme button picks light or dark whatever the system, and keeps it', async ({ page }) => {
+	await page.emulateMedia({ colorScheme: 'dark' })
+	await showLayout(page, 'monthly', YEAR)
+
+	await page.getByRole('button', { name: 'Theme: System (switch to Light)' }).click()
+	expect(await appBackground(page)).toBe(LIGHT_BACKGROUND)
+
+	await page.emulateMedia({ colorScheme: 'light' })
+	await page.getByRole('button', { name: 'Theme: Light (switch to Dark)' }).click()
+	expect(await appBackground(page)).toBe(DARK_BACKGROUND)
+
+	await page.reload()
+	await expect(page.getByRole('button', { name: 'Theme: Dark (switch to System)' })).toBeVisible()
+	expect(await appBackground(page)).toBe(DARK_BACKGROUND)
+	await expect(page.locator('main section').first()).toHaveCSS(
+		'background-color',
+		'rgb(255, 255, 255)',
+	)
+
+	await page.emulateMedia({ colorScheme: 'light', media: 'print' })
+	expect(await appBackground(page)).toBe('rgb(255, 255, 255)')
+
+	await page.emulateMedia({ colorScheme: 'light', media: 'screen' })
+	await page.getByRole('button', { name: 'Theme: Dark (switch to System)' }).click()
+	expect(await appBackground(page)).toBe(LIGHT_BACKGROUND)
 })

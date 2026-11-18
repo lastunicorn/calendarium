@@ -1,8 +1,9 @@
 import type { KeyboardEvent, PointerEvent, ReactNode } from 'react'
 
-import { SIDEBAR_MIN_WIDTH } from '../../preferences/Preferences'
+import { SIDEBAR_MIN_WIDTH, type Theme } from '../../preferences/Preferences'
 import { APP_VERSION } from '../../workspace/version'
 import styles from './Sidebar.module.css'
+import { ThemeButton } from './ThemeButton'
 
 /** How far one arrow key press moves the sidebar's edge, in px. */
 const KEYBOARD_STEP = 16
@@ -11,6 +12,9 @@ interface SidebarProps {
 	/** The width the viewer last dragged it to, in px, from their preferences. */
 	width: number
 	onResize: (width: number) => void
+	/** The app's theme, from the viewer's preferences, changed by the button beside the heading. */
+	theme: Theme
+	onThemeChange: (theme: Theme) => void
 	children: ReactNode
 }
 
@@ -31,10 +35,16 @@ function handleHandlePointerDown(event: PointerEvent<HTMLDivElement>) {
 }
 
 /**
- * The left-hand panel with the app heading, resizable from its right edge, kept between
+ * The left-hand panel with the app heading and the theme button, resizable from its right edge, kept between
  * `SIDEBAR_MIN_WIDTH` and half the window; hidden when printing.
  */
-export function Sidebar({ width: preferredWidth, onResize, children }: SidebarProps) {
+export function Sidebar({
+	width: preferredWidth,
+	onResize,
+	theme,
+	onThemeChange,
+	children,
+}: SidebarProps) {
 	const width = clampWidth(preferredWidth)
 
 	function handleHandlePointerMove(event: PointerEvent<HTMLDivElement>) {
@@ -52,9 +62,12 @@ export function Sidebar({ width: preferredWidth, onResize, children }: SidebarPr
 
 	return (
 		<aside className={styles.sidebar} style={{ width, minWidth: SIDEBAR_MIN_WIDTH }}>
-			<h1 className={styles.heading}>
-				Calendarium <span className={styles.version}>v{APP_VERSION}</span>
-			</h1>
+			<div className={styles.titleRow}>
+				<h1 className={styles.heading}>
+					Calendarium <span className={styles.version}>v{APP_VERSION}</span>
+				</h1>
+				<ThemeButton theme={theme} onChange={onThemeChange} />
+			</div>
 			{children}
 			<div
 				className={styles.resizeHandle}

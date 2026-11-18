@@ -31,6 +31,7 @@ The app now keeps a list of projects, each with an id, an optional name, a layou
 - The project is licensed under the Apache License 2.0, and each release's zip includes the `LICENSE`.
 - The preview says in its bottom left corner how many pages don't fit inside their margins, and screen readers announce it as it changes.
 - The sidebar's section arrows don't animate for viewers whose system asks for reduced motion.
+- A dark theme: the sidebar, the dialogs and the preview around the pages turn dark, while the pages stay white, as they print. The app follows the system's light or dark mode, or the theme picked by the button beside its name (System, Light, Dark), kept for next time.
 
 ### Changed
 

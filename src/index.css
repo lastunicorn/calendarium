@@ -1,22 +1,32 @@
 /* Global styles only. Component styles live in co-located *.module.css files. */
 
 :root {
-	/* App */
-	--color-text: #222;
-	--color-text-muted: #666;
-	--color-text-faint: #767676; /* The lightest gray that keeps small text at 4.5 : 1 on white (WCAG AA). */
-	--color-app-background: #e5e5e5;
-	--color-surface: #fff;
-	--color-border: #ccc;
-	--color-section-title-background: #ececec;
-	--color-error: #b00020;
+	/*
+	 * The viewer's theme (`Preferences.theme`): their system's light or dark scheme, or one of them
+	 * when `App` sets `data-theme` (below). Native controls, scrollbars and dialogs follow it.
+	 */
+	color-scheme: light dark;
+
+	/* App: each color light, then dark, as `color-scheme` picks; never used inside a printed page. */
+	--color-text: light-dark(#222, #e8e8e8);
+	--color-text-muted: light-dark(#666, #b3b3b3);
+	/* The lightest grays that keep small text at 4.5 : 1 on the surface and the section titles (WCAG AA). */
+	--color-text-faint: light-dark(#767676, #9a9a9a);
+	--color-app-background: light-dark(#e5e5e5, #181818);
+	--color-surface: light-dark(#fff, #262626);
+	--color-border: light-dark(#ccc, #4a4a4a);
+	--color-section-title-background: light-dark(#ececec, #303030);
+	--color-error: light-dark(#b00020, #ff6e7f);
 	--color-page-shadow: rgb(0 0 0 / 0.2);
-	--color-veil: rgb(255 255 255);
-	--color-backdrop: rgb(0 0 0 / 0.3);
+	--color-veil: light-dark(rgb(255 255 255), rgb(38 38 38));
+	--color-backdrop: light-dark(rgb(0 0 0 / 0.3), rgb(0 0 0 / 0.5));
 	--color-selection: #1a73e8;
 	--color-selection-text: #fff;
 
-	/* Printed calendar */
+	/* Printed calendar: the same in either scheme, since the preview is drawn as it prints. */
+	--color-paper: #fff;
+	--color-ink: #222;
+	--color-ink-muted: #666;
 	--color-rule: #999;
 	--color-rule-light: #ccc;
 	--color-week-number: #888;
@@ -27,6 +37,7 @@
 
 	/* Preview */
 	--color-binding: #777;
+	--color-overflow: #b00020;
 
 	/* App spacing scale */
 	--space-1: 4px;
@@ -46,6 +57,15 @@
 	font-family: system-ui, sans-serif;
 	color: var(--color-text);
 	background: var(--color-app-background);
+}
+
+/* A theme the viewer chose, whatever their system's. */
+:root[data-theme='light'] {
+	color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+	color-scheme: dark;
 }
 
 * {
@@ -71,8 +91,11 @@ body {
 	margin: 0;
 }
 
+/* Printing is light whatever the theme; `[data-theme]` outweighs the chosen theme's rule above. */
 @media print {
-	:root {
-		background: var(--color-surface);
+	:root,
+	:root[data-theme] {
+		color-scheme: light;
+		background: var(--color-paper);
 	}
 }

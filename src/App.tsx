@@ -8,6 +8,7 @@ import { NewProjectDialog } from './ui/sidebar/NewProjectDialog'
 import { Sidebar } from './ui/sidebar/Sidebar'
 import { WorkspaceForm } from './ui/sidebar/WorkspaceForm'
 import { usePreferences } from './ui/usePreferences'
+import { useTheme } from './ui/useTheme'
 import { useWorkspace } from './ui/useWorkspace'
 import type { ProjectId } from './workspace/Project'
 import { openProject } from './workspace/Workspace'
@@ -24,7 +25,8 @@ export default function App() {
 		deleteProject,
 		importProject,
 	} = useWorkspace()
-	const { preferences, resizeSidebar, toggleSection, zoomPreview } = usePreferences()
+	const { preferences, resizeSidebar, toggleSection, zoomPreview, changeTheme } = usePreferences()
+	useTheme(preferences.theme)
 	const project = openProject(workspace)
 	// Held here, since the project section and the empty preview both open it. It opens by itself
 	// on a first launch, with no project.
@@ -58,7 +60,12 @@ export default function App() {
 
 	return (
 		<div className={styles.app}>
-			<Sidebar width={preferences.sidebarWidth} onResize={resizeSidebar}>
+			<Sidebar
+				width={preferences.sidebarWidth}
+				onResize={resizeSidebar}
+				theme={preferences.theme}
+				onThemeChange={changeTheme}
+			>
 				<WorkspaceForm
 					workspace={workspace}
 					saveFailure={saveFailure}
