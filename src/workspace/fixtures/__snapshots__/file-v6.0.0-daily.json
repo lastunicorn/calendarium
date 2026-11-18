@@ -7,7 +7,7 @@
 		"options": {
 			"calendar": {
 				"year": 2031,
-				"month": "all",
+				"month": 1,
 				"locale": "fr-FR",
 				"weekStart": 0
 			},
