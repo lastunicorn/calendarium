@@ -7,10 +7,12 @@ import { DailyLayout } from './DailyLayout'
 
 /** The default options for 2025, with `changes` on top. */
 function optionsWith(changes: Patch<DailyOptions> = {}): DailyOptions {
-	return applyPatch(DAILY_SPEC.defaults(), {
-		calendar: { year: 2025, locale: 'en-GB', weekStart: 'auto' },
-		...changes,
-	})
+	return applyPatch(
+		applyPatch(DAILY_SPEC.defaults(), {
+			calendar: { year: 2025, locale: 'en-GB', weekStart: 'auto' },
+		}),
+		changes,
+	)
 }
 
 /** The sheets of paper the layout draws (each `Page` is a `<section>`). */
@@ -24,6 +26,11 @@ function pagesOf(options: DailyOptions) {
 describe('DailyLayout', () => {
 	it('draws a page per day', () => {
 		expect(pagesOf(optionsWith({ content: { fill: 'blank' } }))).toHaveLength(365)
+	})
+
+	it('draws a page per day of the chosen month only', () => {
+		const february = optionsWith({ calendar: { month: 2 }, content: { fill: 'blank' } })
+		expect(pagesOf(february)).toHaveLength(28)
 	})
 
 	it('draws a day’s second page with the rest of its hours and no header', () => {

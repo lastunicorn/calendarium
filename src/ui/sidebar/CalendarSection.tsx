@@ -4,22 +4,10 @@ import type { CalendarOptions } from '../../layouts/common'
 import { CalendarIcon } from '../components/icons'
 import { ComboboxField } from '../fields/ComboboxField'
 import { NumberField } from '../fields/NumberField'
-import type { Option } from '../fields/options'
 import { SelectField } from '../fields/SelectField'
+import { WEEK_START_OPTIONS } from './fieldOptions'
 import { LOCALE_OPTIONS } from './localeOptions'
 import { Section, type OptionsSectionProps } from './Section'
-
-/** Week start options in panel order: the language's own day, then Monday to Sunday. */
-const WEEK_START_OPTIONS: Option<WeekStartSetting>[] = [
-	{ value: 'auto', label: 'Language default' },
-	{ value: 1, label: 'Monday' },
-	{ value: 2, label: 'Tuesday' },
-	{ value: 3, label: 'Wednesday' },
-	{ value: 4, label: 'Thursday' },
-	{ value: 5, label: 'Friday' },
-	{ value: 6, label: 'Saturday' },
-	{ value: 0, label: 'Sunday' },
-]
 
 /** Which year the calendar shows, in which language, and the day its weeks start on. */
 export function CalendarSection({

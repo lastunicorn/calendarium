@@ -56,6 +56,14 @@ test('daily prints two pages per day when asked', async ({ page }) => {
 	expect(sizes).toHaveLength(2 * 366)
 })
 
+test('daily prints the days of one month when asked', async ({ page }) => {
+	await showLayout(page, 'daily', YEAR)
+	await page.getByRole('combobox', { name: 'Month' }).selectOption({ label: 'February' })
+
+	const sizes = pdfPageSizes(await page.pdf({ preferCSSPageSize: true, printBackground: true }))
+	expect(sizes).toHaveLength(29)
+})
+
 test('weekly prints two pages per week when asked', async ({ page }) => {
 	await showLayout(page, 'weekly', YEAR)
 	await openSection(page, 'Content')

@@ -1,12 +1,12 @@
 # Daily layout (`daily`)
 
-One sheet per day of the year, or two: a header naming the day, with a corner mini month, above a fill to write on, an hourly schedule, ruled lines, squares, dots, genkō yōshi or nothing. Portrait by default.
+One sheet per day of the year, or of one month, or two: a header naming the day, with a corner mini month, above a fill to write on, an hourly schedule, ruled lines, squares, dots, genkō yōshi or nothing. Portrait by default.
 
 ## Pages
 
-`planDayPages` (`pages.ts`) plans a `DayPages` for each day from `daysOfYear`:
+`planDayPages` (`pages.ts`) plans a `DayPages` for each day from `daysOfYear`, only those of the month `calendar.month` names unless it is `all` (it counts from 1, a day's `month` from 0):
 
-- **Heading:** the weekday or the date per the header's `heading`, in its `fontSize` pt and in the weekend color on Saturdays and Sundays per its `highlightWeekendDays`; the other one below it, followed on its line by the details line ("Week N · Day N / 365", dot-separated, each part per the header's `showWeek` and `showDayOfYear`, from `DAY_PAGE_MESSAGES`).
+- **Heading:** the weekday or the date per the header's `heading`, in its `fontSize` pt and in the weekend color on Saturdays and Sundays per its `highlightWeekendDays`; the other one below it, followed on its line by the details line ("Week N · Day N / 365", dot-separated, each part per the header's `showWeek` and `showDayOfYear`, from `DAY_PAGE_MESSAGES`; the day of the year counts the whole year even when one month is printed).
 - **Mini month:** per `miniMonth.show`, a corner `MiniMonth` of the day's month marking the day (`markedDay`) and, with `miniMonth.showEvents`, circling the days with an event (`eventDays`, by `monthEventDays`), as the year layout's months do, at `miniMonth.size`.
 - **Fills:** the `fills` of its one or two sheets, the same for every day, per the content's `fill`, each kind drawn by its component in `ui/fills/` (looked up by `dayFillComponent`, `DayPage` only placing it):
   - `hours`: an hourly schedule from the content's `schedule.firstHour` to `lastHour`, labeled by `hourNames` in its `hourFormat`. With `twoPages` it is split in half over two sheets, the second, without a header, taking an odd count's extra hour;
@@ -23,14 +23,15 @@ With the content's `twoPages`, the view's `facingPages` has the preview show the
 
 ## Options
 
-`DailyOptions` (`options.ts`): `CommonOptions` (`calendar`, `events`, `page`), the mini month (`miniMonth`, the shared `MiniMonthOptions`), the footer (`footer`, a `PageFooter`, shared with the week layout through `layouts/footer.ts` and `ui/sidebar/FooterSection`), and two groups of its own, one per sidebar section, each reset whole:
+`DailyOptions` (`options.ts`): `CommonOptions` (`calendar`, `events`, `page`), its `calendar` extended to a `DailyCalendarOptions`, the mini month (`miniMonth`, the shared `MiniMonthOptions`), the footer (`footer`, a `PageFooter`, shared with the week layout through `layouts/footer.ts` and `ui/sidebar/FooterSection`), and two groups of its own, one per sidebar section, each reset whole:
 
-| Sidebar section | Group                         | Fields                                                                                                                                                                                                                                                                                                              |
-| --------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Header          | `header: DailyHeader`         | `heading` (`DAY_PAGE_HEADINGS`), `fontSize` (`isHeadingFontSize`, the shared `HeadingFontSizeField`), `showWeek`, `showDayOfYear`, `highlightWeekendDays`, which colors the heading (`ui/HeaderSection`)                                                                                                            |
-| Mini calendar   | `miniMonth: MiniMonthOptions` | `show`, `showEvents` (labeled "Show events"), then the mini month's look (`MiniMonthStyle`) (the shared `MiniMonthSection`)                                                                                                                                                                                         |
-| Content         | `content: DailyContent`       | `twoPages`, `fill` (`DAY_PAGE_FILLS`), `ruledLineSpacing`, `squareSize`, `fillAlignment`, `genkoYoshi` (`GenkoYoshiOptions`: `squareSize`, `direction`, `furigana`, `guides`), `schedule` (`HourSchedule`, shared with the week layout through `layouts/schedule.ts` and `ScheduleFields`) (`ui/DayContentSection`) |
-| Footer          | `footer: PageFooter`          | `show`, `height` (the shared `FooterSection`)                                                                                                                                                                                                                                                                       |
+| Sidebar section | Group                            | Fields                                                                                                                                                                                                                                                                                                              |
+| --------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Calendar        | `calendar: DailyCalendarOptions` | `year`, `month` (`DAY_PAGE_MONTHS`: `all`, the default, or `1` = January to `12`), `locale`, `weekStart` (`ui/CalendarSection`, the layout's own copy of the shared section, with Month after Year)                                                                                                                 |
+| Header          | `header: DailyHeader`            | `heading` (`DAY_PAGE_HEADINGS`), `fontSize` (`isHeadingFontSize`, the shared `HeadingFontSizeField`), `showWeek`, `showDayOfYear`, `highlightWeekendDays`, which colors the heading (`ui/HeaderSection`)                                                                                                            |
+| Mini calendar   | `miniMonth: MiniMonthOptions`    | `show`, `showEvents` (labeled "Show events"), then the mini month's look (`MiniMonthStyle`) (the shared `MiniMonthSection`)                                                                                                                                                                                         |
+| Content         | `content: DailyContent`          | `twoPages`, `fill` (`DAY_PAGE_FILLS`), `ruledLineSpacing`, `squareSize`, `fillAlignment`, `genkoYoshi` (`GenkoYoshiOptions`: `squareSize`, `direction`, `furigana`, `guides`), `schedule` (`HourSchedule`, shared with the week layout through `layouts/schedule.ts` and `ScheduleFields`) (`ui/DayContentSection`) |
+| Footer          | `footer: PageFooter`             | `show`, `height` (the shared `FooterSection`)                                                                                                                                                                                                                                                                       |
 
 It has no title: the heading is always the weekday or the date. `normalize` puts a reversed `content.schedule` in order (`orderContentHours`).
 
@@ -47,17 +48,17 @@ It has no title: the heading is always the weekday or the date. `normalize` puts
 
 ## Files
 
-| File                                               | What it holds                                                                                                                              |
-| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `index.ts`                                         | The entry point: `DAILY = defineLayout(…)`                                                                                                 |
-| `options.ts`                                       | `DailyOptions`, its groups `DailyHeader`, `DailyContent` and `GenkoYoshiOptions`, its value sets and bounds, and `DAILY_SPEC`              |
-| `pages.ts`                                         | `planDayPages`, `DayPages`, the fills                                                                                                      |
-| `messages.ts`, `migrations.ts`                     | `DAY_PAGE_MESSAGES`, `DAILY_MIGRATIONS`                                                                                                    |
-| `ui/index.ts`                                      | The UI's entry point: `DAILY_VIEW`, with its `facingPages`                                                                                 |
-| `ui/DailyLayout.tsx`, `ui/DayPage.tsx`             | Draw the plan: the pages, then each sheet's structure                                                                                      |
-| `ui/DailyForm.tsx`                                 | The options form, combining the sections                                                                                                   |
-| `ui/fills/`                                        | Draw the fills, one component each (`Schedule`, `Ruled`, `Squares`, `Dots`, `GenkoYoshi`), and map each kind to its component (`index.ts`) |
-| `ui/HeaderSection.tsx`, `ui/DayContentSection.tsx` | The layout's own sections                                                                                                                  |
+| File                                                                         | What it holds                                                                                                                                         |
+| ---------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `index.ts`                                                                   | The entry point: `DAILY = defineLayout(…)`                                                                                                            |
+| `options.ts`                                                                 | `DailyOptions`, its groups `DailyCalendarOptions`, `DailyHeader`, `DailyContent` and `GenkoYoshiOptions`, its value sets and bounds, and `DAILY_SPEC` |
+| `pages.ts`                                                                   | `planDayPages`, `DayPages`, the fills                                                                                                                 |
+| `messages.ts`, `migrations.ts`                                               | `DAY_PAGE_MESSAGES`, `DAILY_MIGRATIONS`                                                                                                               |
+| `ui/index.ts`                                                                | The UI's entry point: `DAILY_VIEW`, with its `facingPages`                                                                                            |
+| `ui/DailyLayout.tsx`, `ui/DayPage.tsx`                                       | Draw the plan: the pages, then each sheet's structure                                                                                                 |
+| `ui/DailyForm.tsx`                                                           | The options form, combining the sections                                                                                                              |
+| `ui/fills/`                                                                  | Draw the fills, one component each (`Schedule`, `Ruled`, `Squares`, `Dots`, `GenkoYoshi`), and map each kind to its component (`index.ts`)            |
+| `ui/CalendarSection.tsx`, `ui/HeaderSection.tsx`, `ui/DayContentSection.tsx` | The layout's own sections                                                                                                                             |
 
 ## Domain language
 

@@ -65,12 +65,9 @@ describe.each(LAYOUT_IDS)('the %s spec', (layout) => {
 	it('tells its defaults from options with a field changed, nested ones included', () => {
 		const defaults = spec.defaults()
 		expect(hasDefaultOptions(layout, defaults)).toBe(true)
-		expect(
-			hasDefaultOptions(layout, {
-				...defaults,
-				calendar: { ...defaults.calendar, year: defaults.calendar.year + 1 },
-			}),
-		).toBe(false)
+		const nextYear = structuredClone(defaults)
+		nextYear.calendar.year += 1
+		expect(hasDefaultOptions(layout, nextYear)).toBe(false)
 		const margins = { ...defaults.page.margins, top: defaults.page.margins.top + 1 }
 		expect(
 			hasDefaultOptions(layout, { ...defaults, page: { ...defaults.page, margins } }),

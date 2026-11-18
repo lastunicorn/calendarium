@@ -1,7 +1,7 @@
-import { WEEKDAY_FORMATS } from '../../core/locale'
+import { WEEKDAY_FORMATS, type WeekStartSetting } from '../../core/locale'
 import { HEADING_ALIGNMENTS, HEADING_ALIGNS } from '../../layouts/heading'
 import { MINI_MONTH_SIZES, MONTH_GRID_WEEKDAY_FORMATS } from '../../layouts/monthGrid'
-import { optionsFrom } from '../fields/options'
+import { optionsFrom, type Option } from '../fields/options'
 
 const WEEKDAY_FORMAT_LABELS = {
 	full: 'Full (MONDAY)',
@@ -38,3 +38,15 @@ export const MINI_MONTH_SIZE_OPTIONS = optionsFrom(MINI_MONTH_SIZES, {
 	large: 'Large',
 	extraLarge: 'Extra large',
 })
+
+/** Week start options in panel order: the language's own day, then Monday to Sunday. */
+export const WEEK_START_OPTIONS: Option<WeekStartSetting>[] = [
+	{ value: 'auto', label: 'Language default' },
+	{ value: 1, label: 'Monday' },
+	{ value: 2, label: 'Tuesday' },
+	{ value: 3, label: 'Wednesday' },
+	{ value: 4, label: 'Thursday' },
+	{ value: 5, label: 'Friday' },
+	{ value: 6, label: 'Saturday' },
+	{ value: 0, label: 'Sunday' },
+]

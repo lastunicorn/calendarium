@@ -8,10 +8,12 @@ import { planDayPages, type DayPages } from './pages'
 
 /** The plan of the default day layout for `year`, in British English with Monday weeks, changed by `changes`. */
 function plan(year: number, changes: Patch<DailyOptions> = {}): DayPages[] {
-	const options = applyPatch(defaultLayoutOptions('daily'), {
-		calendar: { year, locale: 'en-GB', weekStart: 1 },
-		...changes,
-	})
+	const options = applyPatch(
+		applyPatch(defaultLayoutOptions('daily'), {
+			calendar: { year, locale: 'en-GB', weekStart: 1 },
+		}),
+		changes,
+	)
 	return planDayPages(options, calendarModel(options))
 }
 
@@ -26,6 +28,20 @@ describe('planDayPages', () => {
 		const leap = plan(2024)
 		expect(leap).toHaveLength(366)
 		expect(leap[59].day.key).toBe('2024-02-29')
+	})
+
+	it('plans only the days of the chosen month, counted from 1, still numbered in the year', () => {
+		const february = plan(2028, { calendar: { month: 2 } })
+		expect(february.map((page) => page.day.key)).toEqual(
+			Array.from({ length: 29 }, (_, i) => `2028-02-${String(i + 1).padStart(2, '0')}`),
+		)
+		expect(february[0].subheading).toContain('Day 32 / 366')
+		expect(plan(2028, { calendar: { month: 1 } })).toHaveLength(31)
+		const december = plan(2028, { calendar: { month: 12 } })
+		expect([december.length, december[30].day.key]).toEqual([31, '2028-12-31'])
+		expect(plan(2028, { calendar: { month: 'all' } })).toHaveLength(366)
+		const twoPages = plan(2028, { calendar: { month: 2 }, content: { twoPages: true } })
+		expect(twoPages.every((page) => page.fills.length === 2)).toBe(true)
 	})
 
 	it('heads a day with its weekday or its date, the other one below', () => {

@@ -179,7 +179,10 @@ function planFills(options: DailyOptions): DayFill[] {
 			]
 }
 
-/** A page, or two, for every day of the year. */
+/**
+ * A page, or two, for every day of the year, or of the month `calendar.month` names; the details
+ * line counts the days of the whole year either way.
+ */
 export function planDayPages(options: DailyOptions, model: CalendarModel): DayPages[] {
 	const { locale } = options.calendar
 	const { header, miniMonth } = options
@@ -192,7 +195,11 @@ export function planDayPages(options: DailyOptions, model: CalendarModel): DayPa
 		miniMonth.showEvents ? monthEventDays(model.events, month) : [],
 	)
 
-	return days.map((day) => {
+	const { month } = options.calendar
+	// `month` counts from 1, a day's month from 0.
+	const printed = month === 'all' ? days : days.filter((day) => day.month === month - 1)
+
+	return printed.map((day) => {
 		const weekday = weekdayName(locale, day)
 		const date = fullDateName(locale, day)
 		const subheading = [

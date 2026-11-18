@@ -32,7 +32,7 @@ Opening a file of a project already kept, or deleting one, asks first.
 
 Then the open project's form, keyed by its id so half-typed drafts don't carry over, which combines the sections:
 
-- the shared `CalendarSection`, `EventsSection`, `MiniMonthSection`, `FooterSection`, `PageSection` in `sidebar/`, and sections only one layout uses, like `HeaderSection` or `YearContentSection`, in that layout's `ui/` folder;
+- the shared `CalendarSection` (for a layout whose `calendar` is `CalendarOptions` alone; a layout extending that group, like the daily one, has its own copy, its week start choices, `WEEK_START_OPTIONS`, shared in `sidebar/fieldOptions.ts`), `EventsSection`, `MiniMonthSection`, `FooterSection`, `PageSection` in `sidebar/`, and sections only one layout uses, like `HeaderSection` or `YearContentSection`, in that layout's `ui/` folder;
 - each typed `OptionsSectionProps<C>` for the options it edits, or for the one group it edits (`CalendarSection` on `CalendarOptions`, `PageSection` on `PageSetup`, `FooterSection` on `PageFooter`), the form then giving it `optionsGroup(props, key)`, whose update patches the group inside the options;
 - with their `defaults`, which its `Section`'s `onReset` button restores once confirmed on the veil it lays over the fields, passing its group's defaults whole (`onUpdate(defaults)`), and a nested group inside it patched by a named handler (`{ schedule: patch }`);
 - `MonthGridFields`, `MiniMonthFields` and `ScheduleFields` take `OptionsFieldsProps<C>`, without defaults;

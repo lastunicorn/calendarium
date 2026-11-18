@@ -11,8 +11,10 @@ describe('daily options', () => {
 	})
 
 	it('keeps valid fields', () => {
+		const defaults = DAILY_SPEC.defaults()
 		const options = {
-			...DAILY_SPEC.defaults(),
+			...defaults,
+			calendar: { ...defaults.calendar, month: 2 },
 			header: {
 				heading: 'weekday',
 				fontSize: 18,
@@ -52,6 +54,7 @@ describe('daily options', () => {
 	it('drops invalid fields', () => {
 		const ignored: string[] = []
 		const options = {
+			calendar: { month: 13 },
 			header: {
 				heading: 'month',
 				fontSize: 2,
@@ -78,6 +81,7 @@ describe('daily options', () => {
 		}
 		expect(parseOptions(DAILY_SPEC, options, ignored)).toEqual(DAILY_SPEC.defaults())
 		expect(ignored).toEqual([
+			'calendar.month',
 			'header.heading',
 			'header.fontSize',
 			'header.showWeek',
@@ -101,6 +105,21 @@ describe('daily options', () => {
 			'footer.show',
 			'footer.height',
 		])
+	})
+
+	it('prints the whole year by default, or one month counted from 1', () => {
+		expect(DAILY_SPEC.defaults().calendar.month).toBe('all')
+		const month = (value: unknown, ignored: string[] = []) =>
+			parseOptions(DAILY_SPEC, { calendar: { month: value } }, ignored).calendar.month
+		expect(month(1)).toBe(1)
+		expect(month(12)).toBe(12)
+		expect(month('all')).toBe('all')
+		for (const invalid of [0, 13, '2', 1.5, null]) {
+			const ignored: string[] = []
+			expect(month(invalid, ignored)).toBe('all')
+			expect(ignored).toEqual(['calendar.month'])
+		}
+		expect(parseOptions(DAILY_SPEC, { calendar: { year: 2030 } }).calendar.month).toBe('all')
 	})
 
 	it('keeps the mini month to abbreviated weekday names', () => {

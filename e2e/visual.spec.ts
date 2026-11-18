@@ -106,6 +106,11 @@ const CASES: VisualCase[] = [
 	},
 	{ name: 'daily-default', layout: 'daily', options: { calendar: CALENDAR, events: EVENTS } },
 	{
+		name: 'daily-one-month',
+		layout: 'daily',
+		options: { calendar: { ...CALENDAR, month: 2 }, events: EVENTS },
+	},
+	{
 		name: 'daily-ruled',
 		layout: 'daily',
 		options: { calendar: CALENDAR, content: { fill: 'ruled' }, footer: { show: true } },

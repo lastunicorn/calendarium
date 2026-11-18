@@ -1,5 +1,11 @@
 import { isBoolean, oneOf, type Validators } from '../../core/validation'
-import { COMMON_VALIDATORS, commonDefaults, normalizeCommon, type CommonOptions } from '../common'
+import {
+	COMMON_VALIDATORS,
+	commonDefaults,
+	normalizeCommon,
+	type CalendarOptions,
+	type CommonOptions,
+} from '../common'
 import { FOOTER_VALIDATORS, footerDefaults, type PageFooter } from '../footer'
 import { isHeadingFontSize } from '../heading'
 import type { LayoutSpec } from '../LayoutSpec'
@@ -19,6 +25,10 @@ import { DAILY_MIGRATIONS } from './migrations'
  */
 export const DAY_PAGE_FILLS = ['hours', 'ruled', 'squares', 'dots', 'genkoYoshi', 'blank'] as const
 export type DayPageFill = (typeof DAY_PAGE_FILLS)[number]
+
+/** Which days the `daily` layout prints: the whole year's, or one month's (1 = January … 12). */
+export const DAY_PAGE_MONTHS = ['all', 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] as const
+export type DayPageMonth = (typeof DAY_PAGE_MONTHS)[number]
 
 /** What a `daily` page's heading shows; the other one goes in the subheading. */
 export const DAY_PAGE_HEADINGS = ['weekday', 'date'] as const
@@ -99,6 +109,15 @@ export type GenkoYoshiDirection = (typeof GENKO_YOSHI_DIRECTIONS)[number]
 export const FILL_ALIGNMENTS = ['left', 'center', 'right'] as const
 export type FillAlignment = (typeof FILL_ALIGNMENTS)[number]
 
+/** The calendar options every layout has, and the month whose days are printed. */
+export interface DailyCalendarOptions extends CalendarOptions {
+	/**
+	 * The one month whose days get pages, counted from 1 (January) as a file reads it, or `all`
+	 * for every day of the year.
+	 */
+	month: DayPageMonth
+}
+
 /** A day's header: its heading, the details after its subheading, and its weekend color. */
 export interface DailyHeader {
 	/** Whether the heading is the weekday ("Thursday") or the date ("1 January 2026"). */
@@ -153,6 +172,7 @@ export interface DailyContent {
 }
 
 export interface DailyOptions extends CommonOptions {
+	calendar: DailyCalendarOptions
 	header: DailyHeader
 	/** The day's month, drawn small in the top right corner with the day marked. */
 	miniMonth: MiniMonthOptions
@@ -187,9 +207,15 @@ const CONTENT_VALIDATORS: Validators<DailyContent> = {
 export const DAILY_SPEC: LayoutSpec<DailyOptions> = {
 	// A tall schedule fits portrait.
 	defaults: (env) => {
-		const { page, ...common } = commonDefaults(env)
+		const { calendar, page, ...common } = commonDefaults(env)
 		// The groups in sidebar order, which files keep: the page last.
 		return {
+			calendar: {
+				year: calendar.year,
+				month: 'all',
+				locale: calendar.locale,
+				weekStart: calendar.weekStart,
+			},
 			...common,
 			header: {
 				heading: 'date',
@@ -221,6 +247,7 @@ export const DAILY_SPEC: LayoutSpec<DailyOptions> = {
 	},
 	validators: {
 		...COMMON_VALIDATORS,
+		calendar: { ...COMMON_VALIDATORS.calendar, month: oneOf(DAY_PAGE_MONTHS) },
 		header: HEADER_VALIDATORS,
 		miniMonth: MINI_MONTH_VALIDATORS,
 		content: CONTENT_VALIDATORS,
