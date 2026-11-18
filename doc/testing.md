@@ -32,6 +32,7 @@ Component tests are `src/**/*.test.tsx` (Vitest `component` project: jsdom + Tes
 - `e2e/projects.spec.ts` saves a project to a file and opens it back.
 - `e2e/screen.spec.ts` checks the preview's screen behavior (zooming with Ctrl and the wheel or the keys, spreads, the language's week start, the squares fill inside the margins in print media, the dark scheme and the theme button leaving the pages white on screen and in print, the chosen theme kept on reload).
 - Those two also run in Firefox (the `firefox` project's `testMatch` in `playwright.config.ts`), for the code's Firefox paths; a test there must not call `page.pdf()`, which only Chromium has.
+- `e2e/a11y.spec.ts` runs axe (`@axe-core/playwright`, the WCAG 2.x A and AA rules) on the app's own interface in the light and dark themes: the empty preview, each layout's sidebar with each section open in turn, a section's reset veil, and each dialog (New, Open, Delete and Overwrite document) alone, failing on any `serious` or `critical` violation. The printed pages (`main section`) are left out: they are drawn as paper, an `h1` on each and the other months' days light gray on purpose. A new dialog or section state gets a case there.
 - First run needs `npx playwright install chromium firefox`.
 - The e2e helpers (`showLayout`, `openSection`, `openProjectFile`, `pdfPageSizes`, `clippedPages`) are in `e2e/helpers.ts`.
 
