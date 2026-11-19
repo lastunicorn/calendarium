@@ -1,17 +1,17 @@
 import {
-	buildMonth,
 	weekdayColumn,
 	weekMonth,
 	weekNumber,
 	weeksOfYear,
+	type CalendarMonth,
 	type WeekDay,
 } from '../../core/calendar'
 import { eventNames } from '../../core/events'
-import { dateRangeName, hourNames, monthYearName, weekdayNames } from '../../core/locale'
+import { dateRangeName, hourNames, weekdayNames } from '../../core/locale'
 import { isHighlightedWeekDay } from '../../core/weekend'
 import type { CalendarModel } from '../common'
 import type { HeadingAlign } from '../heading'
-import { monthEventDays, type MiniMonthPlan } from '../monthGrid'
+import { miniMonthPlanner, monthAt, monthEventDays, type MiniMonthPlan } from '../monthGrid'
 import { splitWeekCells, weekCells, type WeekCell } from './cells'
 import { WEEK_PAGE_MESSAGES } from './messages'
 import type { WeeklyOptions } from './options'
@@ -107,9 +107,9 @@ export function headingAlign({ header, miniMonth, content }: WeeklyOptions): Hea
 export function planWeekPages(options: WeeklyOptions, model: CalendarModel): WeekPlan {
 	const { year, locale } = options.calendar
 	const { header, miniMonth, content } = options
-	const { weekStart, months, monthNames } = model
+	const { weekStart, months } = model
 	const weekdays = weekdayNames(locale, weekStart, content.weekdayFormat)
-	const miniWeekdays = weekdayNames(locale, weekStart, miniMonth.weekdayFormat)
+	const planMiniMonth = miniMonthPlanner(miniMonth, locale, model)
 	const withSchedule = content.fill === 'hours'
 	const stacked = content.dayDirection === 'horizontal'
 
@@ -134,27 +134,19 @@ export function planWeekPages(options: WeeklyOptions, model: CalendarModel): Wee
 	}
 
 	/**
-	 * The month `offset` (0 or 1) months after the week's `month`, maybe in the next year, named
-	 * with its year per `showYear`, the week holding `firstDay` marked and, with `showEvents`, the days
-	 * with an event circled.
+	 * The month `offset` (0 or 1) months after the week's `month`, maybe in the next year, the week
+	 * holding `firstDay` marked and, with `showEvents`, the days with an event circled.
 	 */
-	function planMiniMonth(month: number, offset: number, firstDay: WeekDay): MiniMonthPlan {
-		const otherYear = year + Math.floor((month + offset) / 12)
-		const otherMonth = (month + offset) % 12
-		const shown =
-			otherYear === year ? months[otherMonth] : buildMonth(otherYear, otherMonth, weekStart)
-		return {
-			month: shown,
-			name: miniMonth.showYear
-				? monthYearName(locale, otherYear, otherMonth)
-				: monthNames[otherMonth],
-			weekdays: miniWeekdays,
-			highlightWeekends: miniMonth.highlightWeekends,
-			showWeekNumbers: miniMonth.showWeekNumbers,
-			size: miniMonth.size,
+	function planWeekMiniMonth(
+		month: CalendarMonth,
+		offset: number,
+		firstDay: WeekDay,
+	): MiniMonthPlan {
+		const shown = monthAt(model, month, offset)
+		return planMiniMonth(shown, {
 			markedWeek: firstDay.key,
 			eventDays: miniMonth.showEvents ? monthEventDays(model.events, shown) : [],
-		}
+		})
 	}
 
 	/** A sheet of `cells`, a cell of one day keeping `singleLines` event lines. */
@@ -174,7 +166,7 @@ export function planWeekPages(options: WeeklyOptions, model: CalendarModel): Wee
 
 	function planWeek(cells: WeekCell[]): WeekPages {
 		const days = cells.flat()
-		const month = weekMonth(days)
+		const month = months[weekMonth(days)]
 		const [firstCells, secondCells] = splitWeekCells(cells)
 		const singleLines = mostEvents(cells.filter((cell) => cell.length === 1).flat())
 		return {
@@ -185,8 +177,8 @@ export function planWeekPages(options: WeeklyOptions, model: CalendarModel): Wee
 			headingAlign: headingAlign(options),
 			headingFontSize: header.fontSize,
 			miniMonths: [
-				...(miniMonth.showCurrentMonth ? [planMiniMonth(month, 0, days[0])] : []),
-				...(miniMonth.showNextMonth ? [planMiniMonth(month, 1, days[0])] : []),
+				...(miniMonth.showCurrentMonth ? [planWeekMiniMonth(month, 0, days[0])] : []),
+				...(miniMonth.showNextMonth ? [planWeekMiniMonth(month, 1, days[0])] : []),
 			],
 			stacked,
 			sheets: content.twoPages

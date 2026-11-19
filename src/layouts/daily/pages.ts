@@ -1,15 +1,9 @@
 import { dayOfYear, daysOfYear, isoWeek, type CalendarDay } from '../../core/calendar'
 import { eventNames } from '../../core/events'
-import {
-	fullDateName,
-	hourNames,
-	monthYearName,
-	weekdayName,
-	weekdayNames,
-} from '../../core/locale'
+import { fullDateName, hourNames, weekdayName } from '../../core/locale'
 import { contentBox } from '../../core/paper'
 import type { CalendarModel } from '../common'
-import { monthEventDays, type MiniMonthPlan } from '../monthGrid'
+import { miniMonthPlanner, monthEventDays, type MiniMonthPlan } from '../monthGrid'
 import { DAY_PAGE_MESSAGES } from './messages'
 import {
 	GENKO_YOSHI_COLUMN_GAP_PERCENT,
@@ -187,7 +181,7 @@ export function planDayPages(options: DailyOptions, model: CalendarModel): DayPa
 	const { locale } = options.calendar
 	const { header, miniMonth } = options
 	const messages = DAY_PAGE_MESSAGES[locale]
-	const miniWeekdays = weekdayNames(locale, model.weekStart, miniMonth.weekdayFormat)
+	const planMiniMonth = miniMonthPlanner(miniMonth, locale, model)
 	const fills = planFills(options)
 	const footerHeight = options.footer.show ? options.footer.height : undefined
 	const days = daysOfYear(model.months)
@@ -217,18 +211,10 @@ export function planDayPages(options: DailyOptions, model: CalendarModel): DayPa
 			events: eventNames(model.events, day),
 			weekend: header.highlightWeekendDays && day.isWeekend,
 			miniMonth: miniMonth.show
-				? {
-						month: model.months[day.month],
-						name: miniMonth.showYear
-							? monthYearName(locale, day.year, day.month)
-							: model.monthNames[day.month],
-						weekdays: miniWeekdays,
-						highlightWeekends: miniMonth.highlightWeekends,
-						showWeekNumbers: miniMonth.showWeekNumbers,
-						size: miniMonth.size,
+				? planMiniMonth(model.months[day.month], {
 						markedDay: day.day,
 						eventDays: eventDays[day.month],
-					}
+					})
 				: undefined,
 			fills,
 			footerHeight,

@@ -1,8 +1,9 @@
-import type { CalendarMonth } from '../core/calendar'
+import { buildMonth, type CalendarMonth } from '../core/calendar'
 import { eventNames, type CalendarEvent } from '../core/events'
-import type { WeekdayFormat } from '../core/locale'
+import { monthYearName, weekdayNames, type WeekdayFormat } from '../core/locale'
 import { isBoolean, oneOf, type Validators } from '../core/validation'
 import { WEEKEND_HIGHLIGHTS, type WeekendHighlight } from '../core/weekend'
+import type { CalendarModel } from './common'
 
 /**
  * The weekday formats a month grid's columns have room for: not `full`, except on a page of its
@@ -110,4 +111,43 @@ export function monthEventDays(events: readonly CalendarEvent[], month: Calendar
 		.flat()
 		.filter((day) => day.inMonth && eventNames(events, day).length > 0)
 		.map((day) => day.day)
+}
+
+/** What a mini month marks for the page it is on: its day, its week, the days with an event. */
+export type MiniMonthMarks = Pick<MiniMonthPlan, 'markedDay' | 'markedWeek' | 'eventDays'>
+
+/**
+ * Plans the mini months of a layout's pages in `style`: each a month given, titled with its name,
+ * followed by its year with `showYear`, with the marks given. The weekday labels are built once,
+ * every mini month sharing them.
+ */
+export function miniMonthPlanner(
+	style: MiniMonthStyle,
+	locale: string,
+	model: CalendarModel,
+): (month: CalendarMonth, marks?: MiniMonthMarks) => MiniMonthPlan {
+	const weekdays = weekdayNames(locale, model.weekStart, style.weekdayFormat)
+	return (month, marks = {}) => ({
+		month,
+		name: style.showYear
+			? monthYearName(locale, month.year, month.month)
+			: model.monthNames[month.month],
+		weekdays,
+		highlightWeekends: style.highlightWeekends,
+		showWeekNumbers: style.showWeekNumbers,
+		size: style.size,
+		...marks,
+	})
+}
+
+/**
+ * The month `offset` months from `month`, maybe in another year: the model's own when it is of the
+ * model's year, so a month the year already holds isn't built again.
+ */
+export function monthAt(model: CalendarModel, month: CalendarMonth, offset: number): CalendarMonth {
+	const months = month.month + offset
+	const year = month.year + Math.floor(months / 12)
+	const index = ((months % 12) + 12) % 12
+	const ofModel = model.months[index]
+	return ofModel.year === year ? ofModel : buildMonth(year, index, model.weekStart)
 }

@@ -1,10 +1,10 @@
-import { buildMonth, visibleWeeks, type CalendarDay } from '../../core/calendar'
+import { visibleWeeks, type CalendarDay } from '../../core/calendar'
 import { eventNames } from '../../core/events'
 import { monthYearName, weekdayNames } from '../../core/locale'
 import type { WeekendHighlight } from '../../core/weekend'
 import type { CalendarModel } from '../common'
 import type { HeadingAlign } from '../heading'
-import type { MiniMonthPlan } from '../monthGrid'
+import { miniMonthPlanner, monthAt, type MiniMonthPlan } from '../monthGrid'
 import type { DayNumber, MonthlyOptions } from './options'
 
 /** A day's cell in a month grid. */
@@ -58,24 +58,8 @@ export function planMonthPages(options: MonthlyOptions, model: CalendarModel): M
 	const { year, locale } = options.calendar
 	const { header, miniMonth, content } = options
 	const weekdays = weekdayNames(locale, model.weekStart, content.weekdayFormat)
-	const miniWeekdays = weekdayNames(locale, model.weekStart, miniMonth.weekdayFormat)
+	const planMiniMonth = miniMonthPlanner(miniMonth, locale, model)
 	const title = header.title.trim()
-
-	/** The month `offset` (±1) months from `month` of the year, named with its year per `showYear`. */
-	function planMiniMonth(month: number, offset: number): MiniMonthPlan {
-		const otherYear = year + Math.floor((month + offset) / 12)
-		const otherMonth = (month + offset + 12) % 12
-		return {
-			month: buildMonth(otherYear, otherMonth, model.weekStart),
-			name: miniMonth.showYear
-				? monthYearName(locale, otherYear, otherMonth)
-				: model.monthNames[otherMonth],
-			weekdays: miniWeekdays,
-			highlightWeekends: miniMonth.highlightWeekends,
-			showWeekNumbers: miniMonth.showWeekNumbers,
-			size: miniMonth.size,
-		}
-	}
 
 	return model.months.map((month) => {
 		const monthYear = monthYearName(locale, year, month.month)
@@ -100,8 +84,12 @@ export function planMonthPages(options: MonthlyOptions, model: CalendarModel): M
 				weekdayFontSize: content.weekdayFontSize,
 				dayNumber: content.dayNumber,
 			},
-			previousMonth: miniMonth.showPreviousMonth ? planMiniMonth(month.month, -1) : undefined,
-			nextMonth: miniMonth.showNextMonth ? planMiniMonth(month.month, 1) : undefined,
+			previousMonth: miniMonth.showPreviousMonth
+				? planMiniMonth(monthAt(model, month, -1))
+				: undefined,
+			nextMonth: miniMonth.showNextMonth
+				? planMiniMonth(monthAt(model, month, 1))
+				: undefined,
 		}
 	})
 }
