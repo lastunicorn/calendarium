@@ -1,6 +1,56 @@
 import { describe, expect, it, vi } from 'vitest'
 
-import { isProjectId, newProjectId } from './Project'
+import { defaultLayoutOptions } from '../layouts'
+import { isProjectId, newProjectId, projectOf, withOptions, type Project } from './Project'
+
+const ID = '3f0c9a52-7d1e-4b8a-9c61-2e5f4a8b7d10'
+
+describe('projectOf', () => {
+	it('builds a project of a layout with its options', () => {
+		const options = defaultLayoutOptions('weekly')
+		expect(projectOf({ id: ID, name: 'Work', layout: 'weekly', options })).toEqual({
+			id: ID,
+			name: 'Work',
+			layout: 'weekly',
+			options,
+		})
+	})
+
+	it('takes a layout’s own options only, and a null id for a project read from a file', () => {
+		const project: Project<null> = projectOf({
+			id: null,
+			name: '',
+			layout: 'weekly',
+			// @ts-expect-error: the daily layout's options are not the weekly layout's
+			options: defaultLayoutOptions('daily'),
+		})
+		expect(project.id).toBeNull()
+	})
+})
+
+describe('withOptions', () => {
+	it('changes the options only', () => {
+		const project = projectOf({
+			id: ID,
+			name: 'Work',
+			layout: 'weekly',
+			options: defaultLayoutOptions('weekly'),
+		})
+		const options = { ...project.options, events: ['2030-01-01 New year'] }
+		expect(withOptions(project, options)).toEqual({ ...project, options })
+	})
+
+	it('takes options of the project’s own layout only', () => {
+		const weekly: Extract<Project, { layout: 'weekly' }> = {
+			id: ID,
+			name: '',
+			layout: 'weekly',
+			options: defaultLayoutOptions('weekly'),
+		}
+		// @ts-expect-error: the daily layout's options are not the weekly layout's
+		expect(withOptions(weekly, defaultLayoutOptions('daily')).layout).toBe('weekly')
+	})
+})
 
 describe('isProjectId', () => {
 	it('accepts a lowercase v4 UUID', () => {

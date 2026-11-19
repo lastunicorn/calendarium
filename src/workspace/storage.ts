@@ -10,7 +10,7 @@ import {
 import { parseOptions } from '../layouts/LayoutSpec'
 import { legacyWorkspace } from './legacy'
 import { isFromLaterVersion } from './migrations'
-import { isProjectId, newProjectId, type Project, type ProjectId } from './Project'
+import { isProjectId, newProjectId, projectOf, type Project, type ProjectId } from './Project'
 import { parseProjectDocument, serializeProject } from './projectDocument'
 import { APP_VERSION, FORMAT_VERSION } from './version'
 import { defaultWorkspace, projectList, type Workspace } from './Workspace'
@@ -70,7 +70,7 @@ function storedProjects(): Project[] {
 		const id = key.slice(PROJECT_KEY_PREFIX.length)
 		if (!isProjectId(id)) continue
 		const parsed = parseProjectDocument(storedJson(key))
-		if (parsed.ok) projects.push({ ...parsed.project, id } as Project)
+		if (parsed.ok) projects.push({ ...parsed.project, id })
 	}
 	return projects
 }
@@ -124,7 +124,7 @@ function migrateLegacy(): Workspace | null {
 		if (!shown && !Object.hasOwn(legacy.layouts, layout)) continue
 		const options = parseOptions(layoutSpec(layout), legacy.layouts[layout], [], env)
 		if (!shown && hasDefaultsBesidesYear(layout, options, env)) continue
-		const project = { id: newProjectId(), name: '', layout, options } as Project
+		const project = projectOf({ id: newProjectId(), name: '', layout, options })
 		projects.push(project)
 		if (shown) open = project.id
 	}

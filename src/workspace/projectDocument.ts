@@ -2,7 +2,7 @@ import { asObject, type UntrustedObject } from '../core/validation'
 import { isLayoutId, layoutSpec } from '../layouts'
 import { parseOptions } from '../layouts/LayoutSpec'
 import { isFromLaterVersion, upgradeProject } from './migrations'
-import { isProjectId, type Project, type ProjectId } from './Project'
+import { isProjectId, projectOf, type Project, type ProjectId } from './Project'
 import { APP_VERSION, FORMAT_VERSION } from './version'
 
 // The serialized project: one JSON shape for a project file and a project in storage,
@@ -55,12 +55,12 @@ export function parseProjectFields(fields: UntrustedObject, newer: boolean): Par
 	if (!isLayoutId(layout)) return { ok: false, reason: 'unknownLayout' }
 	const ignored: string[] = []
 	if (fields.options !== undefined && asObject(fields.options) === null) ignored.push('options')
-	const project = {
+	const project = projectOf({
 		id: isProjectId(fields.id) ? fields.id : null,
 		name: typeof fields.name === 'string' ? fields.name : '',
 		layout,
 		options: parseOptions(layoutSpec(layout), fields.options, ignored),
-	} as Project<ProjectId | null>
+	})
 	return { ok: true, project, ignored, newer }
 }
 

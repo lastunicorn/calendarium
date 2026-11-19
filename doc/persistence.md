@@ -13,6 +13,8 @@ A `Project` (`Project.ts`) is one calendar being made:
 
 `Project<ProjectId | null>` is one read from a file that has no id yet.
 
+`Project` has one variant per layout, and TypeScript can't follow a layout's pairing with its options through that union, so a project is built from a layout and its options by `projectOf`, and given other options by `withOptions`, never by a cast elsewhere: a layout given as itself takes only its own options.
+
 ## Workspace
 
 The `Workspace` (`Workspace.ts`; `defaultWorkspace` is empty) holds every project kept in this browser, by id, and the `open` one, `null` when there is none: `openProject(workspace)` gives it, and `projectList` orders the projects as the Open project dialog lists them (by trimmed name, the unnamed ones last, then by id).

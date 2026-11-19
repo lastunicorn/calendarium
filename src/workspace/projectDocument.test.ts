@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import { applyPatch } from '../core/data'
 import { defaultLayoutOptions, LAYOUT_IDS } from '../layouts'
-import type { Project } from './Project'
+import { projectOf, type Project } from './Project'
 import { parseProjectDocument, PROJECT_FORMAT, serializeProject } from './projectDocument'
 import { APP_VERSION, FORMAT_VERSION } from './version'
 
@@ -119,12 +119,12 @@ describe('serializeProject', () => {
 describe('parseProjectDocument', () => {
 	it('round-trips each layout’s defaults', () => {
 		for (const layout of LAYOUT_IDS) {
-			const project = {
+			const project = projectOf({
 				id: ID,
 				name: '',
 				layout,
 				options: defaultLayoutOptions(layout),
-			} as Project
+			})
 			for (const pretty of [true, false]) {
 				const text = serializeProject(project, { pretty })
 				expect(parseProjectDocument(JSON.parse(text))).toEqual({

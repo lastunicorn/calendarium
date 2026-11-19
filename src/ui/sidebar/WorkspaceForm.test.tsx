@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { margins } from '../../core/paper'
 import { defaultLayoutOptions, LAYOUT_IDS, type LayoutId } from '../../layouts'
 import { defaultPreferences, withSectionToggled } from '../../preferences/Preferences'
-import type { Project } from '../../workspace/Project'
+import { projectOf, type Project } from '../../workspace/Project'
 import { defaultWorkspace, type Workspace } from '../../workspace/Workspace'
 import { WorkspaceForm } from './WorkspaceForm'
 
@@ -237,19 +237,19 @@ describe('WorkspaceForm', () => {
 	})
 
 	it('lists the projects by name with their layout, the open one chosen, and shows its name and layout', () => {
-		const work = { ...workspaceFor('weekly').projects[ID], name: 'Work 2027' } as Project
-		const untitled = {
+		const work = { ...workspaceFor('weekly').projects[ID], name: 'Work 2027' }
+		const untitled = projectOf({
 			id: '00000000-0000-4000-8000-000000000002',
 			name: ' ',
 			layout: 'daily',
 			options: defaultLayoutOptions('daily'),
-		} as Project
-		const home = {
+		})
+		const home = projectOf({
 			id: '00000000-0000-4000-8000-000000000003',
 			name: 'Home',
 			layout: 'yearly',
 			options: defaultLayoutOptions('yearly'),
-		} as Project
+		})
 		const workspace = {
 			projects: { [work.id]: work, [untitled.id]: untitled, [home.id]: home },
 			open: work.id,

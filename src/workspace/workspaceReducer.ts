@@ -6,7 +6,7 @@ import {
 	type LayoutId,
 	type LayoutOptions,
 } from '../layouts'
-import type { Project, ProjectId } from './Project'
+import { projectOf, withOptions, type Project, type ProjectId } from './Project'
 import { openProject, projectList, type Workspace } from './Workspace'
 
 /**
@@ -41,8 +41,7 @@ export type WorkspaceAction =
 /** `project` with its layout's rules applied to its options; the same object when it follows them. */
 function normalizeProject(project: Project): Project {
 	const options = normalizeLayout(project.layout, project.options)
-	// `options` has `project.layout`'s type, which TypeScript can't follow through the union.
-	return options === project.options ? project : ({ ...project, options } as Project)
+	return options === project.options ? project : withOptions(project, options)
 }
 
 /** `workspace` with `project` added or replaced, after applying its layout's rules. */
@@ -66,12 +65,12 @@ export function workspaceReducer(workspace: Workspace, action: WorkspaceAction):
 		case 'createProject': {
 			if (Object.hasOwn(workspace.projects, action.id)) return workspace
 			const { id, name, layout, env } = action
-			const project = {
+			const project = projectOf({
 				id,
 				name,
 				layout,
 				options: defaultLayoutOptions(layout, env),
-			} as Project
+			})
 			return { ...withProject(workspace, project), open: id }
 		}
 		case 'openProject':
@@ -93,13 +92,13 @@ export function workspaceReducer(workspace: Workspace, action: WorkspaceAction):
 			)
 			return options === project.options
 				? workspace
-				: withProject(workspace, { ...project, options } as Project)
+				: withProject(workspace, withOptions(project, options))
 		}
 		case 'resetOptions': {
 			const project = openProject(workspace)
 			if (project === null) return workspace
 			const options = defaultLayoutOptions(project.layout, action.env)
-			return withProject(workspace, { ...project, options } as Project)
+			return withProject(workspace, withOptions(project, options))
 		}
 		case 'deleteProject': {
 			const { id } = action

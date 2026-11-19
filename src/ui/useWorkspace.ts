@@ -68,7 +68,7 @@ export function useWorkspace() {
 	/** Adds an opened file's project, or replaces the one with its id, and opens it. */
 	function importProject(project: Project<ProjectId | null>) {
 		const id = project.id ?? newProjectId()
-		dispatch({ type: 'importProject', project: { ...project, id } as Project })
+		dispatch({ type: 'importProject', project: { ...project, id } })
 	}
 
 	return {

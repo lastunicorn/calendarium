@@ -18,6 +18,31 @@ export type Project<Id extends ProjectId | null = ProjectId> = {
 	}
 }[LayoutId]
 
+/**
+ * A project of `layout`, with `options` of that layout's type. TypeScript can't follow that
+ * pairing through the union when `layout` may be any layout, so this and `withOptions` are the
+ * one place it is asserted rather than checked; a layout given as itself (`'weekly'`) takes only
+ * its own options.
+ */
+export function projectOf<K extends LayoutId, Id extends ProjectId | null = ProjectId>(fields: {
+	id: Id
+	name: string
+	layout: K
+	options: LayoutOptions[K]
+}): Project<Id> {
+	const { id, name, layout, options } = fields
+	return { id, name, layout, options } as Project<Id>
+}
+
+/**
+ * `project` with other options of its own layout. A project that may be of any layout takes any
+ * layout's options, so the caller pairs them, as for `projectOf`: options built from
+ * `project.layout` or `project.options`.
+ */
+export function withOptions<P extends Project>(project: P, options: P['options']): P {
+	return { ...project, options }
+}
+
 const PROJECT_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
 
 /** Whether `value` is a project id: a v4 UUID, in lowercase. */
