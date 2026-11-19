@@ -17,7 +17,7 @@
 
 ### Document section
 
-The `ProjectSection`, titled Document (the UI's word for a project, [ADR 0012](adr/0012-the-ui-calls-a-project-a-document.md)):
+The `ProjectSection`, titled Document (the UI's word for a project, [ADR 0012](adr/0012-the-ui-calls-a-project-a-document.md)), its actions in the `ProjectToolbar`, the hovered or focused one's label under them:
 
 - New document…;
 - Change document… (the `OpenProjectDialog`, titled Open document, the projects one per row, scrolling past about eight, a radio group with its radios hidden, the open one chosen, Open or a double click opening another);
@@ -26,7 +26,7 @@ The `ProjectSection`, titled Document (the UI's word for a project, [ADR 0012](a
 - then, past another, Print (disabled without a project);
 - above the open project's name and its layout, shown read only.
 
-Opening a file of a project already kept, or deleting one, asks first.
+Opening a file of a project already kept, or deleting one, asks first (`OverwriteProjectDialog`, `DeleteProjectDialog`). `useProjectFileOpener` reads the file chosen, waits for that answer, imports it and holds what to tell about it, an error or a notice (`projectFileNotices.ts`), which the section shows under the toolbar, after why changes aren't being saved, if they aren't. The `ProjectSection` composes these parts and keeps the open project's name and layout.
 
 ### The open project's form
 

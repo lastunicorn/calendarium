@@ -14,7 +14,7 @@ The features below bound it: Chrome and Edge 125, Firefox 126, Safari 18. `vite.
 | `popover` attribute, `popoverTarget`                           | `ui/fields/Info.tsx`                                        | 114    | 125     | 17     | The options' descriptions don't open                |
 | `:has()`                                                       | `OpenProjectDialog.module.css`                              | 105    | 121     | 15.4   | The chosen project's row isn't marked               |
 | CSS `light-dark()`                                             | `index.css`                                                 | 123    | 120     | 17.5   | The app's chrome loses its colors                   |
-| `lh` unit                                                      | `ProjectSection.module.css`                                 | 109    | 120     | 16.4   | The sections jump as a button's hint comes and goes |
+| `lh` unit                                                      | `ProjectToolbar.module.css`                                 | 109    | 120     | 16.4   | The sections jump as a button's hint comes and goes |
 | `Array.prototype.toSorted`                                     | several                                                     | 110    | 115     | 16     | The app fails                                       |
 | `inert`                                                        | `ui/sidebar/Section.tsx`                                    | 102    | 112     | 15.5   | A section's fields stay usable under its veil       |
 | `<dialog>`, `showModal`                                        | `ui/components/Dialog.tsx`                                  | 37     | 98      | 15.4   | No dialog opens                                     |

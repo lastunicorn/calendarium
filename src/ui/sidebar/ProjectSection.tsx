@@ -1,53 +1,23 @@
-import {
-	useRef,
-	useState,
-	type ChangeEvent,
-	type FocusEvent,
-	type PointerEvent,
-	type Ref,
-} from 'react'
+import { useState, type Ref } from 'react'
 
 import type { Project, ProjectId } from '../../workspace/Project'
-import { projectFile, readProjectFile } from '../../workspace/projectFile'
+import { projectFile } from '../../workspace/projectFile'
 import type { SaveFailure } from '../../workspace/storage'
 import { openProject, projectList, type Workspace } from '../../workspace/Workspace'
-import { Dialog } from '../components/Dialog'
-import { IconButton } from '../components/IconButton'
-import {
-	LayoutIcon,
-	NewIcon,
-	OpenIcon,
-	PrintIcon,
-	SaveIcon,
-	SwitchIcon,
-	TrashIcon,
-} from '../components/icons'
+import { LayoutIcon } from '../components/icons'
 import { downloadFile } from '../download'
 import { ReadOnlyField } from '../fields/ReadOnlyField'
 import { TextField } from '../fields/TextField'
 import { LAYOUT_VIEWS } from '../layouts/registry'
-import { projectLabel, shownName } from '../projectLabel'
+import { projectLabel } from '../projectLabel'
+import { DeleteProjectDialog } from './DeleteProjectDialog'
 import { OpenProjectDialog } from './OpenProjectDialog'
-import {
-	describeOpened,
-	describeRejected,
-	describeSaveFailure,
-	type OpenedFile,
-} from './projectFileNotices'
+import { OverwriteProjectDialog } from './OverwriteProjectDialog'
+import { describeSaveFailure } from './projectFileNotices'
 import styles from './ProjectSection.module.css'
+import { ProjectToolbar } from './ProjectToolbar'
 import { Section } from './Section'
-
-function handlePrintClick() {
-	window.print()
-}
-
-/** A file waiting for the user to say whether it overwrites the project with its id. */
-interface PendingOverwrite {
-	fileName: string
-	opened: OpenedFile
-	/** The project it would overwrite. */
-	existing: Project
-}
+import { useProjectFileOpener } from './useProjectFileOpener'
 
 interface ProjectSectionProps {
 	workspace: Workspace
@@ -67,19 +37,12 @@ interface ProjectSectionProps {
 	changeProjectRef?: Ref<HTMLButtonElement>
 }
 
-/** The label of the action button `target` is in, or empty outside a button. */
-function actionLabel(target: EventTarget): string {
-	return (target instanceof Element && target.closest('button')?.title) || ''
-}
-
 /**
- * The project being made: the starting of a new project, the changing of the open one for another
- * of the projects kept in this browser, chosen in the Open document dialog, and its deleting, then,
- * apart, the opening of a project file and the saving of the open project to one, and, apart
- * again, its printing, above the open project's name and its layout, which it keeps. Opening a
- * file of a project already kept, or deleting one, asks first. While changes can't be saved in
- * this browser, it says so. Without a project, only New, Open and Print, disabled, show. Always
- * open.
+ * The project being made: the `ProjectToolbar`'s actions on it, starting a new project, changing
+ * the open one for another of the projects kept in this browser, chosen in the Open document
+ * dialog, deleting it, opening a project file, saving it to one and printing it, above the open
+ * project's name and its layout, which it keeps. Opening a file of a project already kept, or
+ * deleting one, asks first. While changes can't be saved in this browser, it says so. Always open.
  */
 export function ProjectSection({
 	workspace,
@@ -92,12 +55,7 @@ export function ProjectSection({
 	changeProjectRef,
 }: ProjectSectionProps) {
 	const project = openProject(workspace)
-
-	const fileInput = useRef<HTMLInputElement>(null)
-	const [openError, setOpenError] = useState('')
-	const [openNotice, setOpenNotice] = useState('')
-	const [hint, setHint] = useState('')
-	const [pendingOverwrite, setPendingOverwrite] = useState<PendingOverwrite | null>(null)
+	const fileOpener = useProjectFileOpener(workspace.projects, onImport)
 	const [confirmingDelete, setConfirmingDelete] = useState(false)
 	const [choosingProject, setChoosingProject] = useState(false)
 
@@ -106,7 +64,12 @@ export function ProjectSection({
 		label: projectLabel(listed),
 	}))
 
-	function handleChangeClick() {
+	function handleToolbarNew() {
+		fileOpener.dismiss()
+		onNew()
+	}
+
+	function handleToolbarChange() {
 		setChoosingProject(true)
 	}
 
@@ -119,35 +82,13 @@ export function ProjectSection({
 		setChoosingProject(false)
 	}
 
-	function handleActionsPointerOver(event: PointerEvent<HTMLDivElement>) {
-		setHint(actionLabel(event.target))
-	}
-
-	function handleActionsFocus(event: FocusEvent<HTMLDivElement>) {
-		setHint(actionLabel(event.target))
-	}
-
-	function handleActionsLeave() {
-		setHint('')
-	}
-
-	function handleNewClick() {
-		setOpenError('')
-		setOpenNotice('')
-		onNew()
-	}
-
-	function handleOpenClick() {
-		fileInput.current?.click()
-	}
-
-	function handleSaveClick() {
+	function handleToolbarSave() {
 		if (project === null) return
 		const file = projectFile(project)
 		downloadFile(file.fileName, file.text, 'application/json')
 	}
 
-	function handleDeleteClick() {
+	function handleToolbarDelete() {
 		setConfirmingDelete(true)
 	}
 
@@ -160,114 +101,17 @@ export function ProjectSection({
 		setConfirmingDelete(false)
 	}
 
-	/** Adds or overwrites the project a file holds, and tells what there is to tell about it. */
-	function importOpened(fileName: string, opened: OpenedFile) {
-		setOpenNotice(describeOpened(fileName, opened))
-		onImport(opened.project)
-	}
-
-	async function handleOpenFileChange(event: ChangeEvent<HTMLInputElement>) {
-		const input = event.currentTarget
-		const file = input.files?.[0]
-		// Reset so choosing the same file again still fires `change`.
-		input.value = ''
-		if (!file) return
-
-		const opened = await readProjectFile(file)
-		setOpenError('')
-		setOpenNotice('')
-		if (!opened.ok) {
-			setOpenError(describeRejected(file.name, opened))
-			return
-		}
-		const { id } = opened.project
-		if (id !== null && Object.hasOwn(workspace.projects, id)) {
-			setPendingOverwrite({ fileName: file.name, opened, existing: workspace.projects[id] })
-			return
-		}
-		importOpened(file.name, opened)
-	}
-
-	function handleOverwriteConfirm() {
-		if (pendingOverwrite === null) return
-		setPendingOverwrite(null)
-		importOpened(pendingOverwrite.fileName, pendingOverwrite.opened)
-	}
-
-	function handleOverwriteCancel() {
-		setPendingOverwrite(null)
-	}
-
 	return (
 		<Section title="Document" icon={<LayoutIcon />} collapsible={false}>
-			<div className={styles.actionsGroup}>
-				<div
-					className={styles.actions}
-					role="toolbar"
-					aria-label="Document"
-					onPointerOver={handleActionsPointerOver}
-					onPointerLeave={handleActionsLeave}
-					onFocus={handleActionsFocus}
-					onBlur={handleActionsLeave}
-				>
-					<IconButton label="New document…" icon={<NewIcon />} onClick={handleNewClick} />
-					{project !== null && (
-						<>
-							<IconButton
-								label="Change document…"
-								icon={<SwitchIcon />}
-								onClick={handleChangeClick}
-								ref={changeProjectRef}
-							/>
-							<IconButton
-								label="Delete document"
-								icon={<TrashIcon />}
-								onClick={handleDeleteClick}
-							/>
-						</>
-					)}
-					{/* The file actions, importing and exporting a project, apart from the others. */}
-					<div
-						className={styles.separator}
-						role="separator"
-						aria-orientation="vertical"
-					/>
-					<IconButton
-						label="Open a document file"
-						icon={<OpenIcon />}
-						onClick={handleOpenClick}
-					/>
-					{project !== null && (
-						<IconButton
-							label="Save document to a file"
-							icon={<SaveIcon />}
-							onClick={handleSaveClick}
-						/>
-					)}
-					<div
-						className={styles.separator}
-						role="separator"
-						aria-orientation="vertical"
-					/>
-					<IconButton
-						label="Print"
-						icon={<PrintIcon />}
-						disabled={project === null}
-						onClick={handlePrintClick}
-					/>
-					<input
-						ref={fileInput}
-						type="file"
-						accept=".json,application/json"
-						hidden
-						onChange={handleOpenFileChange}
-					/>
-				</div>
-				{/* The buttons are already named by their labels; this repeats one for the eye. */}
-				<p className={styles.hint} aria-hidden="true">
-					{hint}
-				</p>
-			</div>
+			<ProjectToolbar
+				hasProject={project !== null}
+				onNew={handleToolbarNew}
+				onChange={handleToolbarChange}
+				onDelete={handleToolbarDelete}
+				onOpenFile={fileOpener.open}
+				onSave={handleToolbarSave}
+				changeProjectRef={changeProjectRef}
+			/>
 
 			{/* Shown until a save is written again, since every change until then is lost on reload. */}
 			{saveFailure !== null && (
@@ -275,14 +119,14 @@ export function ProjectSection({
 					{describeSaveFailure(saveFailure)}
 				</p>
 			)}
-			{openError && (
+			{fileOpener.error && (
 				<p className={styles.error} role="alert">
-					{openError}
+					{fileOpener.error}
 				</p>
 			)}
-			{openNotice && (
+			{fileOpener.notice && (
 				<p className={styles.notice} role="status">
-					{openNotice}
+					{fileOpener.notice}
 				</p>
 			)}
 
@@ -306,31 +150,19 @@ export function ProjectSection({
 					onCancel={handleOpenProjectCancel}
 				/>
 			)}
-			{pendingOverwrite !== null && (
-				<Dialog
-					title="Overwrite document"
-					submitLabel="Overwrite"
-					onSubmit={handleOverwriteConfirm}
-					onCancel={handleOverwriteCancel}
-				>
-					<p>
-						“{shownName(pendingOverwrite.existing)}” is already one of your documents.
-						Overwrite it with the file’s version? Its current settings are lost.
-					</p>
-				</Dialog>
+			{fileOpener.overwriting !== null && (
+				<OverwriteProjectDialog
+					existing={fileOpener.overwriting}
+					onConfirm={fileOpener.confirmOverwrite}
+					onCancel={fileOpener.cancelOverwrite}
+				/>
 			)}
 			{confirmingDelete && project !== null && (
-				<Dialog
-					title="Delete document"
-					submitLabel="Delete"
-					onSubmit={handleDeleteConfirm}
+				<DeleteProjectDialog
+					project={project}
+					onConfirm={handleDeleteConfirm}
 					onCancel={handleDeleteCancel}
-				>
-					<p>
-						Delete “{shownName(project)}”? It can’t be undone; save it to a file first
-						to keep it.
-					</p>
-				</Dialog>
+				/>
 			)}
 		</Section>
 	)
