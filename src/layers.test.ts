@@ -64,10 +64,18 @@ interface Import {
 	target: string | null
 }
 
+/** An import's specifier, in `from '…'` (an import or an export), `import '…'` or `import('…')`. */
+const IMPORT = /\b(?:from|import\(?)\s*'([^']+)'/g
+
+/** The specifiers `source` imports, in order. */
+function specifiers(source: string): string[] {
+	return [...source.matchAll(IMPORT)].map(([, specifier]) => specifier)
+}
+
 /** Every import of every file under `src/`. */
 function imports(): Import[] {
 	return FILES.flatMap((file) =>
-		[...SOURCES[`./${file}`].matchAll(/from '([^']+)'/g)].map(([, specifier]) => ({
+		specifiers(SOURCES[`./${file}`]).map((specifier) => ({
 			file,
 			specifier,
 			target: resolve(file, specifier),
@@ -87,6 +95,16 @@ describe('layers', () => {
 		expect(FILES).toContain('core/calendar.ts')
 	})
 
+	it('reads every kind of import', () => {
+		const source = [
+			"import a, { type A } from './a'",
+			"export { b } from './b'",
+			"import './c.css'",
+			"const d = await import(\n\t'./d'\n)",
+		].join('\n')
+		expect(specifiers(source)).toEqual(['./a', './b', './c.css', './d'])
+	})
+
 	it('never imports a folder above its own, and uses React only in ui/', () => {
 		const rule = ({ file, specifier, target }: Import) => {
 			const layer = layerOf(file)
@@ -100,24 +118,49 @@ describe('layers', () => {
 })
 
 // What the app reads from where it runs is read in one place each, so the domain stays
-// deterministic: the clock and the browser's language by `core/environment.ts`, and a `Date`
-// built only there and by `utcDate`. Tests are exempt.
+// deterministic and DOM-free: the clock and the browser's language by `core/environment.ts` (a
+// `Date` built only there and by `utcDate`), storage by its two repositories, and the page
+// (`window`, `document`) by `ui/` and the files above the layers (`main.tsx`). Tests, and their
+// helpers in `test/`, are exempt.
 
-/** Each environment read, with the only files allowed to make it. */
-const ENVIRONMENT_READS: { pattern: RegExp; allowed: string[] }[] = [
-	{ pattern: /\bnew Date\(/, allowed: ['core/calendar.ts', 'core/environment.ts'] },
-	{ pattern: /\bnavigator\b/, allowed: ['core/environment.ts'] },
+/** Each environment read, and the paths from `src/` allowed to make it. */
+const ENVIRONMENT_READS: { read: RegExp; allowed: RegExp }[] = [
+	{ read: /\bnew Date\(/, allowed: /^core\/(calendar|environment)\.ts$/ },
+	{ read: /\bnavigator\b/, allowed: /^core\/environment\.ts$/ },
+	{ read: /\b(local|session)Storage\b/, allowed: /^(workspace|preferences)\/storage\.ts$/ },
+	{ read: /\b(window|document)\./, allowed: /^((ui|layouts\/[^/]+\/ui)\/|[^/]+$)/ },
 ]
 
+/** A comment, or a quoted string on one line, matched in one pass so neither hides the other. */
+const COMMENT_OR_STRING = /\/\*[\s\S]*?\*\/|\/\/.*|'(?:[^'\\\n]|\\.)*'|"(?:[^"\\\n]|\\.)*"/g
+
+/**
+ * `source`'s code: its comments taken out and its quoted strings emptied, so a word in either
+ * (`the window`, `'calendarium-document:'`) isn't taken for a read. Template literals stay, as
+ * they hold code too.
+ */
+function codeOf(source: string): string {
+	return source.replaceAll(COMMENT_OR_STRING, (match) => (match.startsWith('/') ? '' : "''"))
+}
+
+/** Whether a path from `src/` is a test or one of their helpers. */
+function isTest(file: string): boolean {
+	return /\.test\.tsx?$/.test(file) || file.startsWith('test/')
+}
+
 describe('environment', () => {
+	it('is looked for in code, not in comments or strings', () => {
+		const source =
+			"// the window.\nconst key = 'document.' /* localStorage */ + `${window.name}`"
+		expect(codeOf(source)).toBe("\nconst key = ''  + `${window.name}`")
+	})
+
 	it('is read only by the files allowed to', () => {
-		const offending = ENVIRONMENT_READS.flatMap(({ pattern, allowed }) =>
+		const offending = ENVIRONMENT_READS.flatMap(({ read, allowed }) =>
 			FILES.filter(
 				(file) =>
-					!/\.test\.tsx?$/.test(file) &&
-					!allowed.includes(file) &&
-					pattern.test(SOURCES[`./${file}`]),
-			).map((file) => `${file}: ${pattern.source}`),
+					!isTest(file) && !allowed.test(file) && read.test(codeOf(SOURCES[`./${file}`])),
+			).map((file) => `${file}: ${read.source}`),
 		)
 		expect(offending).toEqual([])
 	})

@@ -22,7 +22,18 @@ Each layout is one unit, like a plugin of the host (everything outside the layou
 
 ## The layers test
 
-`src/layers.test.ts` fails on any import that breaks these rules, and on a layout folder not named after an id in `LAYOUT_IDS`. It lists the files with `import.meta.glob`, so `vite.config.ts` keeps Vitest from caching such a module (`freshGlobs`), which would otherwise miss files added since.
+`src/layers.test.ts` fails on any import that breaks these rules (`from '…'`, as an import or an export, `import '…'` or `import('…')`), and on a layout folder not named after an id in `LAYOUT_IDS`. It lists the files with `import.meta.glob`, so `vite.config.ts` keeps Vitest from caching such a module (`freshGlobs`), which would otherwise miss files added since.
+
+It also fails on a read of the environment outside the files allowed to make it, looked for in code, not in comments or strings, tests and their helpers in `src/test/` exempt:
+
+| Read                              | Only in                                                                     |
+| --------------------------------- | --------------------------------------------------------------------------- |
+| `new Date(`                       | `core/calendar.ts` (`utcDate`), `core/environment.ts`                       |
+| `navigator`                       | `core/environment.ts`                                                       |
+| `localStorage`, `sessionStorage`  | `workspace/storage.ts`, `preferences/storage.ts`                            |
+| `window.`, `document.` (the page) | `ui/`, a layout's `ui/` folder, and the files above the layers (`main.tsx`) |
+
+Import cycles are left to lint: oxlint's `import/no-cycle` (`npm run lint`) fails on a cycle of value imports of any length, inside a folder too; a cycle of type imports alone is erased by the build and allowed.
 
 ## `src/core/`
 
@@ -36,7 +47,7 @@ The generic subdomains: calendar, languages and paper, knowing nothing of layout
 
 ### Environment
 
-What the app reads from where it runs, today's year and the browser's language, is an `Environment` (`environment.ts`), read only by `currentEnvironment` (the other `Date`) and passed down: `commonDefaults(env)`, each spec's `defaults(env)`, `defaultLayoutOptions`, `hasDefaultOptions` and `parseOptions` take it, the current one when not given, so tests pass a fixed one; `src/layers.test.ts` fails on a `new Date(` or `navigator` read anywhere else outside tests.
+What the app reads from where it runs, today's year and the browser's language, is an `Environment` (`environment.ts`), read only by `currentEnvironment` (the other `Date`) and passed down: `commonDefaults(env)`, each spec's `defaults(env)`, `defaultLayoutOptions`, `hasDefaultOptions` and `parseOptions` take it, the current one when not given, so tests pass a fixed one; `src/layers.test.ts` fails on a `new Date(` or `navigator` read anywhere else outside tests ([the layers test](#the-layers-test)).
 
 ### Languages
 

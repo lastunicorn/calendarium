@@ -34,7 +34,7 @@ Update the file that describes what a change touches, in the same commit.
 
 ## Rules that always hold
 
-- **Layers.** `core` ← `layouts` ← `workspace` ← `preferences` ← `ui`: each folder imports only the ones below it, and only `ui/` (and a layout's `ui/` folder) uses React. A layout imports only its own files and the host's, never another layout's; the host reaches it only through `layouts/<layout-id>/index.ts` and `layouts/<layout-id>/ui/index.ts`, from the registries. `src/layers.test.ts` enforces both.
+- **Layers.** `core` ← `layouts` ← `workspace` ← `preferences` ← `ui`: each folder imports only the ones below it, and only `ui/` (and a layout's `ui/` folder) uses React or the page (`window`, `document`); only the two `storage.ts` (`workspace/`, `preferences/`) touch `localStorage`. A layout imports only its own files and the host's, never another layout's; the host reaches it only through `layouts/<layout-id>/index.ts` and `layouts/<layout-id>/ui/index.ts`, from the registries. `src/layers.test.ts` enforces these; import cycles fail lint (`import/no-cycle`).
 - **Dates.** A date is a `PlainDate`, never a `Date`; `utcDate` is the only place a `Date` is built, and the `Environment` (`currentEnvironment`) the only place today's date or the browser's language is read.
 - **Printed text.** Anything printed that `Intl` doesn't give comes from the layout's own messages table, never a literal; the app's own UI stays English.
 - **Rules in the domain.** A rule on stored values goes in the layout's `normalize`, a rule on derived values in its page plan (`pages.ts`); components only draw the plan. Workspace changes go through `workspaceReducer`'s commands.
