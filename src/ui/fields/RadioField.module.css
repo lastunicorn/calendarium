@@ -1,7 +1,6 @@
 .field {
 	display: flex;
 	flex-direction: column;
-	gap: 6px;
 	min-width: 0;
 	margin: 0 0 8px 0;
 	padding: 0;
@@ -18,9 +17,12 @@
 	font-weight: 600;
 }
 
+/* Each option a row 24px high, so the radios are 24px apart whatever the font's line height: the
+   target size WCAG 2.2 asks for (2.5.8), which `e2e/a11y.spec.ts` checks. */
 .option {
 	display: flex;
 	align-items: center;
 	gap: 8px;
+	min-height: var(--space-6);
 	font-size: 0.875rem;
 }

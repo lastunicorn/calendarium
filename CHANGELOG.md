@@ -50,6 +50,7 @@ The app now keeps a list of documents, each with an id, an optional name, a layo
 - Day layout: the Dots fill prints sharp, round dots, where Chrome printed them as blurry gray squares.
 - Opening a file over 1 MB is refused as too large to be a document file, instead of freezing the tab, and an event list of more than 10,000 lines in a file or stored document is ignored.
 - The sidebar's section descriptions and small icon buttons are a darker gray, so the descriptions are readable at the contrast accessibility guidelines ask of small text.
+- The radio buttons in the sidebar and the New document dialog are 24px apart, the target size accessibility guidelines ask for, where a system font with short lines drew them closer.
 
 ## 5.0.0 — 2026-10-24
 
