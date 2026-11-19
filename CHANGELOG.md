@@ -4,6 +4,8 @@ The features each release brought, newest first. Versions follow the app version
 
 ## Unreleased
 
+## 6.0.0 — 2026-11-19
+
 The app now keeps a list of documents, each with an id, an optional name, a layout chosen when it is created, and that layout's settings. Settings and files from earlier versions are migrated:
 
 - the settings saved in the browser become documents the first time 6.0 opens: an unnamed document of each layout whose settings were changed (the year aside, which 5.x saved for every layout), and always of the layout that was shown, which opens. The 5.x settings are left as they are, so going back to 5.x still finds them;
@@ -17,11 +19,10 @@ The app now keeps a list of documents, each with an id, an optional name, a layo
 
 ### Added
 
-- A New document dialog asks for the document's name, which it may go without, and its layout. It opens only when asked: on the first launch, or once the last document is deleted, the preview says no document is open and offers New document, the sidebar Open a document file.
+- A New document dialog asks for the document's name, which it may go without, and its layout. It opens only when asked: on the first launch, or once the last document is deleted, the preview says no document is open and offers New document, the sidebar Open a document file, and Print is disabled.
 - Documents have names, edited in the Document section and listed by the Open document dialog ("Work 2027 — Weekly", or "Untitled"); a document file is named after its document, `work-2027.json`.
 - Delete document, in the Document section, once confirmed.
 - Opening a file saved from a document already in the list asks whether to overwrite it.
-- Without a document, the preview offers a New document button, and Print is disabled.
 - The Document section says when changes aren’t being saved in the browser, its storage full or unavailable, and suggests saving the document to a file; the notice goes once a save succeeds again, which also saves the changes it missed.
 - When the app fails, it says so instead of showing a blank page, and offers to reload and to save each document to a file.
 - Week and day layouts: the mini calendars circle the days with an event, as the year layout's months do, unless "Show events" is unchecked in the Mini calendar section.
