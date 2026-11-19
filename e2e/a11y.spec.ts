@@ -1,7 +1,7 @@
 import { AxeBuilder } from '@axe-core/playwright'
 import { expect, test, type Page } from '@playwright/test'
 
-import { openSection, showLayout } from './helpers.ts'
+import { openNewProjectDialog, openSection, showLayout } from './helpers.ts'
 
 // The app's own interface checked by axe (WCAG 2.x A and AA rules) in both themes, so a color too
 // faint, a button without a name or a broken ARIA reference fails the tests. The printed pages,
@@ -44,13 +44,12 @@ for (const colorScheme of THEMES) {
 
 		test('the New document dialog and the empty preview', async ({ page }) => {
 			await page.goto('/')
-			const dialog = page.getByRole('dialog', { name: 'New document' })
-			await expect(dialog).toBeVisible()
-			expect(await violations(page, OPEN_DIALOG)).toEqual([])
-
-			await dialog.getByRole('button', { name: 'Cancel' }).click()
 			await expect(page.getByRole('main', { name: 'Preview' })).toBeVisible()
 			expect(await violations(page)).toEqual([])
+
+			const dialog = await openNewProjectDialog(page)
+			await expect(dialog).toBeVisible()
+			expect(await violations(page, OPEN_DIALOG)).toEqual([])
 		})
 
 		for (const layout of LAYOUTS) {

@@ -85,11 +85,9 @@ function createProject(name: string, layout: Project['layout']) {
 	fireEvent.click(within(newProject).getByRole('button', { name: 'Create' }))
 }
 
-/** Renders the app with no project, and cancels the New document dialog it opens. */
+/** Renders the app with no project. */
 function renderEmpty() {
-	const rendered = render(<App />)
-	fireEvent.click(within(dialog('New document')).getByRole('button', { name: 'Cancel' }))
-	return rendered
+	return render(<App />)
 }
 
 /** Chooses a file in the project section's hidden file input, as the open button's dialog would. */
@@ -118,28 +116,28 @@ function monthlyFile(id: string, name: string, year: number): string {
 const THIS_YEAR = String(currentEnvironment().year)
 
 describe('App without a project', () => {
-	it('asks for a new project on a first launch, the first layout chosen, with nothing to print', () => {
-		render(<App />)
-		const chosen = within(dialog('New document')).getByRole('radio', { checked: true })
-		expect(chosen.closest('label')?.textContent).toBe(LAYOUT_VIEWS[LAYOUT_IDS[0]].label)
-		expect(printDisabled()).toBe(true)
-		expect(screen.getByRole('main', { name: 'Preview' }).textContent).toContain(
-			'No document is open.',
-		)
-	})
-
-	it('creates nothing when the dialog is cancelled, and opens it again from the preview', () => {
+	it('opens no dialog on a first launch, with nothing to print', () => {
 		renderEmpty()
 		expect(screen.queryByRole('dialog')).toBeNull()
 		expect(
 			within(projectSection()).queryByRole('button', { name: 'Change document…' }),
 		).toBeNull()
 		expect(printDisabled()).toBe(true)
+		expect(screen.getByRole('main', { name: 'Preview' }).textContent).toContain(
+			'No document is open.',
+		)
 		expect(Object.keys(localStorage)).toEqual([])
+	})
 
+	it('asks for a new project from the preview, the first layout chosen, and creates nothing when cancelled', () => {
+		renderEmpty()
 		const preview = screen.getByRole('main', { name: 'Preview' })
 		fireEvent.click(within(preview).getByRole('button', { name: 'New document…' }))
-		expect(dialog('New document')).not.toBeNull()
+		const chosen = within(dialog('New document')).getByRole('radio', { checked: true })
+		expect(chosen.closest('label')?.textContent).toBe(LAYOUT_VIEWS[LAYOUT_IDS[0]].label)
+		fireEvent.click(within(dialog('New document')).getByRole('button', { name: 'Cancel' }))
+		expect(screen.queryByRole('dialog')).toBeNull()
+		expect(Object.keys(localStorage)).toEqual([])
 	})
 })
 
@@ -172,12 +170,6 @@ describe('App new project', () => {
 		fireEvent.click(button)
 		fireEvent.click(within(dialog('New document')).getByRole('button', { name: 'Create' }))
 		expect(button.isConnected).toBe(false)
-		expect(document.activeElement).toBe(changeProjectButton())
-	})
-
-	it('focuses Change document once created on a first launch', () => {
-		render(<App />)
-		fireEvent.click(within(dialog('New document')).getByRole('button', { name: 'Create' }))
 		expect(document.activeElement).toBe(changeProjectButton())
 	})
 
@@ -273,13 +265,16 @@ describe('App projects', () => {
 		expect(openLabel()).toBe('c — Daily')
 	})
 
-	it('asks for a new project once the last one is deleted', () => {
+	it('opens no dialog once the last project is deleted', () => {
 		renderEmpty()
 		createProject('', 'yearly')
 		clickAction('Delete document')
 		expect(dialog('Delete document').textContent).toContain('Delete “Untitled”?')
 		fireEvent.click(within(dialog('Delete document')).getByRole('button', { name: 'Delete' }))
-		expect(dialog('New document')).not.toBeNull()
+		expect(screen.queryByRole('dialog')).toBeNull()
+		expect(screen.getByRole('main', { name: 'Preview' }).textContent).toContain(
+			'No document is open.',
+		)
 		expect(within(projectSection()).queryByRole('combobox')).toBeNull()
 		expect(printDisabled()).toBe(true)
 	})

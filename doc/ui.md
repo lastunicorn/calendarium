@@ -46,9 +46,9 @@ Then the open project's form, keyed by its id so half-typed drafts don't carry o
 
 ## Dialogs
 
-`App` holds whether the `NewProjectDialog` (titled New document: a name, optional, and the layout) shows: the project section and the empty preview both open it, and it opens by itself on a first launch and once the last project is deleted.
+`App` holds whether the `NewProjectDialog` (titled New document: a name, optional, and the layout) shows: the project section and the empty preview both open it, and it never opens by itself: on a first launch, or once the last project is deleted, the empty preview shows, leaving the user to create a project or open a file.
 
-Dialogs are `ui/components/Dialog`: a native `<dialog>` opened with `showModal` while it is mounted, whose primary action submits its form, Escape and its close button cancelling, the focus going to its checked radio, or its first field, or to Cancel, and back once it closes, or to its `returnFocus` when there is nothing to go back to (a project created on a first launch or from the empty preview focuses Change document…) (`src/test/setupDom.ts` gives jsdom `showModal` and `close`); `window.confirm` is not used.
+Dialogs are `ui/components/Dialog`: a native `<dialog>` opened with `showModal` while it is mounted, whose primary action submits its form, Escape and its close button cancelling, the focus going to its checked radio, or its first field, or to Cancel, and back once it closes, or to its `returnFocus` when there is nothing to go back to (a project created from the empty preview focuses Change document…) (`src/test/setupDom.ts` gives jsdom `showModal` and `close`); `window.confirm` is not used.
 
 ## A layout's UI
 

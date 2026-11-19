@@ -1,12 +1,14 @@
 import { expect, test } from '@playwright/test'
 
+import { openNewProjectDialog } from './helpers.ts'
+
 // What a project file carries across: saved from the app as the browser downloads it, then opened
 // back through the file input once the project is gone.
 test('a project saved to a file opens back with its name, layout and settings', async ({
 	page,
 }) => {
 	await page.goto('/')
-	const newProject = page.getByRole('dialog', { name: 'New document' })
+	const newProject = await openNewProjectDialog(page)
 	await newProject.getByRole('textbox', { name: 'Name' }).fill('Desk 2031')
 	await newProject.getByRole('radio', { name: /^Monthly / }).check()
 	await newProject.getByRole('button', { name: 'Create' }).click()
@@ -24,8 +26,8 @@ test('a project saved to a file opens back with its name, layout and settings', 
 	await project.getByRole('button', { name: 'Delete document' }).click()
 	const question = page.getByRole('dialog', { name: 'Delete document' })
 	await question.getByRole('button', { name: 'Delete' }).click()
-	// The last project gone, the app asks for a new one.
-	await newProject.getByRole('button', { name: 'Cancel' }).click()
+	// The last project gone, nothing opens by itself.
+	await expect(page.getByRole('dialog')).toHaveCount(0)
 	await expect(project.getByRole('button', { name: 'Change document…' })).toHaveCount(0)
 
 	await page.locator('input[type="file"]').setInputFiles(file)

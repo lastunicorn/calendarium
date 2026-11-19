@@ -10,7 +10,6 @@ import { WorkspaceForm } from './ui/sidebar/WorkspaceForm'
 import { usePreferences } from './ui/usePreferences'
 import { useTheme } from './ui/useTheme'
 import { useWorkspace } from './ui/useWorkspace'
-import type { ProjectId } from './workspace/Project'
 import { openProject } from './workspace/Workspace'
 
 export default function App() {
@@ -28,11 +27,11 @@ export default function App() {
 	const { preferences, resizeSidebar, toggleSection, zoomPreview, changeTheme } = usePreferences()
 	useTheme(preferences.theme)
 	const project = openProject(workspace)
-	// Held here, since the project section and the empty preview both open it. It opens by itself
-	// on a first launch, with no project.
-	const [creatingProject, setCreatingProject] = useState(project === null)
-	// Where the focus goes once a project is created with nothing to go back to: on a first
-	// launch, or from the empty preview, whose button the new project replaces.
+	// Held here, since the project section and the empty preview both open it. It opens only when
+	// asked: with no project, the empty preview offers it, beside the sidebar's other actions.
+	const [creatingProject, setCreatingProject] = useState(false)
+	// Where the focus goes once a project is created with nothing to go back to: from the empty
+	// preview, whose button the new project replaces.
 	const changeProject = useRef<HTMLButtonElement>(null)
 
 	// Stable, since the dialog's opening effect depends on it.
@@ -51,13 +50,6 @@ export default function App() {
 		setCreatingProject(false)
 	}
 
-	// Deleting the last project asks for a new one, as a first launch does.
-	function handleProjectDelete(id: ProjectId) {
-		const projectIds = Object.keys(workspace.projects)
-		deleteProject(id)
-		if (projectIds.length === 1 && projectIds[0] === id) setCreatingProject(true)
-	}
-
 	return (
 		<div className={styles.app}>
 			<Sidebar
@@ -74,7 +66,7 @@ export default function App() {
 					onUpdate={updateOptions}
 					onNewProject={handleNewProject}
 					onImportProject={importProject}
-					onDeleteProject={handleProjectDelete}
+					onDeleteProject={deleteProject}
 					openSection={preferences.openSection}
 					onToggleSection={toggleSection}
 					changeProjectRef={changeProject}

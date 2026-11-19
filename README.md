@@ -25,7 +25,7 @@ Each calendar you make is a document, with a name (optional) and a layout, chose
 
 The Document section at the top of the sidebar lets you:
 
-- **New document…**: create one, naming it and choosing its layout. The app asks for one on its first launch.
+- **New document…**: create one, naming it and choosing its layout; with no document open, the preview offers it too.
 - **Change document…**: pick another of your documents to work on.
 - **Delete document**: remove it from your browser, once you confirm; save it to a file first to keep it.
 - **Open a document file**: add the document the file holds. If it was saved from a document you already have, the app asks whether to overwrite it.

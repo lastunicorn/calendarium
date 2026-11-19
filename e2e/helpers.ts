@@ -5,14 +5,23 @@ export async function openSection(page: Page, title: string) {
 	await page.getByRole('button', { name: title, exact: true }).click()
 }
 
+/** Opens the New document dialog from the empty preview a fresh page shows. */
+export async function openNewProjectDialog(page: Page) {
+	await page
+		.getByRole('main', { name: 'Preview' })
+		.getByRole('button', { name: 'New document…' })
+		.click()
+	return page.getByRole('dialog', { name: 'New document' })
+}
+
 /**
  * Shows `layout` for `year` as a user would: creates a project of it in the New document dialog,
- * which opens by itself on a fresh page, picking the layout by its label ("Weekly (one week per
- * page)"), then sets the year in the sidebar.
+ * opened from the empty preview a fresh page shows, picking the layout by its label ("Weekly (one
+ * week per page)"), then sets the year in the sidebar.
  */
 export async function showLayout(page: Page, layout: string, year: number) {
 	await page.goto('/')
-	const dialog = page.getByRole('dialog', { name: 'New document' })
+	const dialog = await openNewProjectDialog(page)
 	await dialog.getByRole('radio', { name: new RegExp(`^${layout} `, 'i') }).check()
 	await dialog.getByRole('button', { name: 'Create' }).click()
 	await expect(dialog).toBeHidden()
@@ -55,15 +64,17 @@ export async function clippedPages(page: Page): Promise<number[]> {
 }
 
 /**
- * Opens a project of `layout` with `options` as a user would, from a project file: cancels the
- * New document dialog a fresh page opens with, then picks the file. The file is tagged as written
+ * Opens a project of `layout` with `options` as a user would, from a project file picked on a
+ * fresh page, cancelling the New document dialog builds before 6.0.0's release opened by itself. The file is tagged as written
  * by 6.0.0, the first version of the project format, so later versions read it through their
  * migrations; options it leaves out take their defaults. The dialog is found by its role alone,
  * not its title, so the visual comparison can run this against an older build's labels.
  */
 export async function openProjectFile(page: Page, layout: string, options: object) {
 	await page.goto('/')
-	await page.getByRole('dialog').getByRole('button', { name: 'Cancel' }).click()
+	await expect(page.getByRole('main', { name: 'Preview' })).toBeVisible()
+	const dialog = page.getByRole('dialog')
+	if (await dialog.isVisible()) await dialog.getByRole('button', { name: 'Cancel' }).click()
 	const project = { format: 'calendarium/document', version: 6, app: '6.0.0', layout, options }
 	await page.locator('input[type="file"]').setInputFiles({
 		name: `${layout}.json`,

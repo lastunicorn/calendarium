@@ -17,7 +17,7 @@ The app now keeps a list of documents, each with an id, an optional name, a layo
 
 ### Added
 
-- A New document dialog asks for the document's name, which it may go without, and its layout. It opens by itself on the first launch, and once the last document is deleted.
+- A New document dialog asks for the document's name, which it may go without, and its layout. It opens only when asked: on the first launch, or once the last document is deleted, the preview says no document is open and offers New document, the sidebar Open a document file.
 - Documents have names, edited in the Document section and listed by the Open document dialog ("Work 2027 — Weekly", or "Untitled"); a document file is named after its document, `work-2027.json`.
 - Delete document, in the Document section, once confirmed.
 - Opening a file saved from a document already in the list asks whether to overwrite it.
