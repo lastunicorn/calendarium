@@ -400,7 +400,7 @@ describe('App preferences', () => {
 		localStorage.clear()
 		openSection('Page')
 		expect(JSON.parse(localStorage.getItem('calendarium-preferences')!)).toMatchObject({
-			openSection: 'Page',
+			openSection: 'page',
 		})
 		expect(Object.keys(localStorage)).toEqual(['calendarium-preferences'])
 	})

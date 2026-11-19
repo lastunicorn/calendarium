@@ -1,9 +1,11 @@
 import { createContext, useContext } from 'react'
 
-/** Which sidebar section is open, by title, and a way to open or close one. */
+import type { SectionId } from '../../preferences/Preferences'
+
+/** Which sidebar section is open, by id, and a way to open or close one. */
 export interface OpenSections {
-	isOpen: (title: string) => boolean
-	toggle: (title: string) => void
+	isOpen: (id: SectionId) => boolean
+	toggle: (id: SectionId) => void
 }
 
 /**

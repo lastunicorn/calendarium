@@ -106,7 +106,7 @@ export function DayContentSection({
 	}
 
 	return (
-		<Section title="Content" icon={<ContentIcon />} onReset={handleReset}>
+		<Section id="content" title="Content" icon={<ContentIcon />} onReset={handleReset}>
 			<CheckboxField
 				label="Two pages per day"
 				description={[

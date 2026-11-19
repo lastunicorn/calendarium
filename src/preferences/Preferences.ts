@@ -1,4 +1,4 @@
-import { asObject, copyValid, isString, oneOf, type Validators } from '../core/validation'
+import { asObject, copyValid, oneOf, type Validators } from '../core/validation'
 import { DEFAULT_ZOOM, isPreviewZoom, type PreviewZoom } from './zoom'
 
 /**
@@ -9,15 +9,31 @@ export interface Preferences {
 	/** The sidebar's width in px, as last dragged; the sidebar keeps it within the window. */
 	sidebarWidth: number
 	/**
-	 * The title of the open sidebar section, `null` when all are closed. Layouts share titles, so a
-	 * section open on one layout, like "Calendar", is open on the others too.
+	 * The open sidebar section, `null` when all are closed. Layouts share the ids, so a section open
+	 * on one layout, like the calendar's, is open on the others too.
 	 */
-	openSection: string | null
+	openSection: SectionId | null
 	/** How large the preview draws the pages: a percent, or a fit following the preview's size. */
 	previewZoom: PreviewZoom
 	/** The app's colors: the system's light or dark scheme, or one of them whatever the system's. */
 	theme: Theme
 }
+
+/**
+ * The sidebar's sections, in its order: the project's, then one per option group, named after it.
+ * A section is known by its id, never by its title, so a title can change without closing it.
+ */
+export const SECTION_IDS = [
+	'project',
+	'calendar',
+	'events',
+	'header',
+	'miniMonth',
+	'content',
+	'footer',
+	'page',
+] as const
+export type SectionId = (typeof SECTION_IDS)[number]
 
 /** The themes, in the order the sidebar's theme button steps through them. */
 export const THEMES = ['system', 'light', 'dark'] as const
@@ -45,8 +61,10 @@ function isSidebarWidth(value: unknown): value is number {
 	return typeof value === 'number' && Number.isInteger(value) && value >= SIDEBAR_MIN_WIDTH
 }
 
-function isOpenSection(value: unknown): value is string | null {
-	return value === null || isString(value)
+const isSectionId = oneOf(SECTION_IDS)
+
+function isOpenSection(value: unknown): value is SectionId | null {
+	return value === null || isSectionId(value)
 }
 
 /** One check per preference, applied field by field when parsing. */
@@ -69,9 +87,9 @@ export function parsePreferences(data: unknown): Preferences {
 }
 
 /**
- * `preferences` with the section titled `title` opened, closing the one open before, so the
- * sidebar shows one group of fields at a time; or closed, when it was the open one.
+ * `preferences` with the section `id` opened, closing the one open before, so the sidebar shows
+ * one group of fields at a time; or closed, when it was the open one.
  */
-export function withSectionToggled(preferences: Preferences, title: string): Preferences {
-	return { ...preferences, openSection: preferences.openSection === title ? null : title }
+export function withSectionToggled(preferences: Preferences, id: SectionId): Preferences {
+	return { ...preferences, openSection: preferences.openSection === id ? null : id }
 }

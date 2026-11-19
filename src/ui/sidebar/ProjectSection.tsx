@@ -102,7 +102,7 @@ export function ProjectSection({
 	}
 
 	return (
-		<Section title="Document" icon={<LayoutIcon />} collapsible={false}>
+		<Section id="project" title="Document" icon={<LayoutIcon />} collapsible={false}>
 			<ProjectToolbar
 				hasProject={project !== null}
 				onNew={handleToolbarNew}

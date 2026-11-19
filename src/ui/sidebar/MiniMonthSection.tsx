@@ -23,7 +23,7 @@ export function MiniMonthSection({
 	}
 
 	return (
-		<Section title="Mini calendar" icon={<CalendarIcon />} onReset={handleReset}>
+		<Section id="miniMonth" title="Mini calendar" icon={<CalendarIcon />} onReset={handleReset}>
 			<CheckboxField
 				label="Show mini calendar"
 				checked={options.show}

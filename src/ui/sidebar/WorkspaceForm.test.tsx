@@ -4,7 +4,11 @@ import { describe, expect, it, vi } from 'vitest'
 
 import { margins } from '../../core/paper'
 import { defaultLayoutOptions, LAYOUT_IDS, type LayoutId } from '../../layouts'
-import { defaultPreferences, withSectionToggled } from '../../preferences/Preferences'
+import {
+	defaultPreferences,
+	withSectionToggled,
+	type SectionId,
+} from '../../preferences/Preferences'
 import { projectOf, type Project } from '../../workspace/Project'
 import { defaultWorkspace, type Workspace } from '../../workspace/Workspace'
 import { WorkspaceForm } from './WorkspaceForm'
@@ -39,8 +43,8 @@ type FormProps = Omit<ComponentProps<typeof WorkspaceForm>, 'openSection' | 'onT
 function Form(props: FormProps) {
 	const [preferences, setPreferences] = useState(defaultPreferences)
 
-	function handleToggleSection(title: string) {
-		setPreferences((current) => withSectionToggled(current, title))
+	function handleToggleSection(id: SectionId) {
+		setPreferences((current) => withSectionToggled(current, id))
 	}
 
 	return (

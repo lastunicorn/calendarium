@@ -30,7 +30,7 @@ export function HeaderSection({ options, defaults, calendar, onUpdate }: HeaderS
 	}
 
 	return (
-		<Section title="Header" icon={<HeaderIcon />} onReset={handleReset}>
+		<Section id="header" title="Header" icon={<HeaderIcon />} onReset={handleReset}>
 			<TextField
 				label="Title"
 				value={options.title}

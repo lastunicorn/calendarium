@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 
-import { withSectionToggled, type Theme } from '../preferences/Preferences'
+import { withSectionToggled, type SectionId, type Theme } from '../preferences/Preferences'
 import { loadPreferences, savePreferences } from '../preferences/storage'
 import type { PreviewZoom } from '../preferences/zoom'
 
@@ -20,8 +20,8 @@ export function usePreferences() {
 		setPreferences((current) => ({ ...current, sidebarWidth }))
 	}
 
-	function toggleSection(title: string) {
-		setPreferences((current) => withSectionToggled(current, title))
+	function toggleSection(id: SectionId) {
+		setPreferences((current) => withSectionToggled(current, id))
 	}
 
 	function zoomPreview(previewZoom: PreviewZoom) {

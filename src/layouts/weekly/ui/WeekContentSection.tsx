@@ -98,7 +98,7 @@ export function WeekContentSection({
 	}
 
 	return (
-		<Section title="Content" icon={<ContentIcon />} onReset={handleReset}>
+		<Section id="content" title="Content" icon={<ContentIcon />} onReset={handleReset}>
 			<CheckboxField
 				label="Two pages per week"
 				description="The first three days go on the first page, under the title; the rest on the second, under the mini calendar if shown."

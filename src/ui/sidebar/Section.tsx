@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
 
 import type { Patch } from '../../core/data'
+import type { SectionId } from '../../preferences/Preferences'
 import { ChevronIcon, CloseIcon, ResetIcon } from '../components/icons'
 import { useOpenSectionsContext } from './openSections'
 import styles from './Section.module.css'
@@ -21,6 +22,8 @@ export interface OptionsSectionProps<O> extends OptionsFieldsProps<O> {
 }
 
 interface SectionProps {
+	/** Which section this is, for the sidebar to remember it open whatever its title. */
+	id: SectionId
 	title: string
 	/** A small decorative icon shown before the title. */
 	icon: ReactNode
@@ -37,12 +40,13 @@ interface SectionProps {
  * A titled group of related fields, its title on a tinted band after an icon, optionally with a
  * short description under the title. A collapsible section starts collapsed: clicking the title
  * shows or hides the fields, closing any other open section, and the `WorkspaceForm` remembers which
- * one is open, by title. With `onReset`, an open section ends with a small reset button on the
+ * one is open, by id. With `onReset`, an open section ends with a small reset button on the
  * right, styled like a field's info button. It covers the fields with a veil asking to confirm,
  * which keeps them out of reach; its close button, a click outside the section, Escape or
  * collapsing the section cancels.
  */
 export function Section({
+	id,
 	title,
 	icon,
 	description,
@@ -55,7 +59,7 @@ export function Section({
 	const section = useRef<HTMLFieldSetElement>(null)
 	const [confirmingReset, setConfirmingReset] = useState(false)
 	const openSections = useOpenSectionsContext()
-	const expanded = !collapsible || openSections.isOpen(title)
+	const expanded = !collapsible || openSections.isOpen(id)
 
 	// Collapsing the section, e.g. by opening another one, cancels its reset.
 	if (confirmingReset && !expanded) setConfirmingReset(false)
@@ -77,7 +81,7 @@ export function Section({
 	}, [confirmingReset])
 
 	function handleTitleClick() {
-		openSections.toggle(title)
+		openSections.toggle(id)
 	}
 
 	function handleResetClick() {

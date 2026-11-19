@@ -27,7 +27,7 @@ export function HeaderSection({ options, defaults, onUpdate }: OptionsSectionPro
 	}
 
 	return (
-		<Section title="Header" icon={<HeaderIcon />} onReset={handleReset}>
+		<Section id="header" title="Header" icon={<HeaderIcon />} onReset={handleReset}>
 			<RadioField
 				label="Title alignment"
 				description={

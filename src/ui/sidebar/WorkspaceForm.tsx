@@ -2,6 +2,7 @@ import { useMemo, type Ref } from 'react'
 
 import type { Patch } from '../../core/data'
 import { defaultLayoutOptions, type LayoutId, type LayoutOptions } from '../../layouts'
+import type { SectionId } from '../../preferences/Preferences'
 import type { Project, ProjectId } from '../../workspace/Project'
 import type { SaveFailure } from '../../workspace/storage'
 import { openProject, type Workspace } from '../../workspace/Workspace'
@@ -25,9 +26,9 @@ interface WorkspaceFormProps {
 	/** Adds an opened file's project, or replaces the one with its id, and opens it. */
 	onImportProject: (project: Project<ProjectId | null>) => void
 	onDeleteProject: (id: ProjectId) => void
-	/** The title of the open section, from the viewer's preferences; `null` when all are closed. */
-	openSection: string | null
-	onToggleSection: (title: string) => void
+	/** The open section, from the viewer's preferences; `null` when all are closed. */
+	openSection: SectionId | null
+	onToggleSection: (id: SectionId) => void
 	/** The Change document button, for the focus to go to once a project is created. */
 	changeProjectRef?: Ref<HTMLButtonElement>
 }
@@ -74,8 +75,8 @@ export function WorkspaceForm({
 }: WorkspaceFormProps) {
 	const project = openProject(workspace)
 
-	function isOpen(title: string) {
-		return title === openSection
+	function isOpen(id: SectionId) {
+		return id === openSection
 	}
 
 	const openSections: OpenSections = { isOpen, toggle: onToggleSection }

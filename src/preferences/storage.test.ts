@@ -20,7 +20,7 @@ describe('preferences storage', () => {
 	it('round-trips the preferences', () => {
 		const preferences = {
 			sidebarWidth: 512,
-			openSection: 'Events',
+			openSection: 'events' as const,
 			previewZoom: 'fit-width' as const,
 			theme: 'dark' as const,
 		}
@@ -35,13 +35,22 @@ describe('preferences storage', () => {
 		expect(preferences).toEqual({
 			...defaultPreferences(),
 			sidebarWidth: 400,
-			openSection: 'Calendar',
+			openSection: 'calendar',
 		})
 
 		savePreferences(preferences)
 		expect(localStorage.getItem('calendarium-sidebar-width')).toBeNull()
 		expect(localStorage.getItem('calendarium-open-sections')).toBeNull()
 		expect(loadPreferences()).toEqual(preferences)
+	})
+
+	it('reads the open section by its id where earlier builds stored its title', () => {
+		localStorage.setItem('calendarium-preferences', '{"openSection":"Mini calendar"}')
+		expect(loadPreferences().openSection).toBe('miniMonth')
+		localStorage.setItem('calendarium-preferences', '{"openSection":"Appearance"}')
+		expect(loadPreferences().openSection).toBeNull()
+		localStorage.setItem('calendarium-preferences', '{"openSection":"constructor"}')
+		expect(loadPreferences().openSection).toBeNull()
 	})
 
 	it('ignores the earlier builds’ keys once the preferences were saved', () => {

@@ -24,7 +24,7 @@ export function FooterSection({ options, defaults, onUpdate }: OptionsSectionPro
 	}
 
 	return (
-		<Section title="Footer" icon={<FooterIcon />} onReset={handleReset}>
+		<Section id="footer" title="Footer" icon={<FooterIcon />} onReset={handleReset}>
 			<CheckboxField
 				label="Show footer"
 				description={'Displays an empty space at the bottom of the page under the content.'}

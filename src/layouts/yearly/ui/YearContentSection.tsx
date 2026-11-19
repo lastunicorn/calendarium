@@ -20,7 +20,7 @@ export function YearContentSection({
 	}
 
 	return (
-		<Section title="Content" icon={<ContentIcon />} onReset={handleReset}>
+		<Section id="content" title="Content" icon={<ContentIcon />} onReset={handleReset}>
 			<RadioField
 				label="Month size"
 				value={options.monthSize}

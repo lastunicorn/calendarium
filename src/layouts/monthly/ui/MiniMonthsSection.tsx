@@ -23,7 +23,7 @@ export function MiniMonthsSection({
 	}
 
 	return (
-		<Section title="Mini calendar" icon={<CalendarIcon />} onReset={handleReset}>
+		<Section id="miniMonth" title="Mini calendar" icon={<CalendarIcon />} onReset={handleReset}>
 			<CheckboxField
 				label="Show previous month"
 				checked={options.showPreviousMonth}

@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest'
 
+import { defaultLayoutOptions, LAYOUT_IDS } from '../layouts'
 import {
 	defaultPreferences,
 	nextTheme,
 	parsePreferences,
+	SECTION_IDS,
 	SIDEBAR_MIN_WIDTH,
 	withSectionToggled,
 } from './Preferences'
@@ -22,14 +24,14 @@ describe('preferences', () => {
 		expect(
 			parsePreferences({
 				sidebarWidth: 480,
-				openSection: 'Page',
+				openSection: 'page',
 				previewZoom: 'fit-page',
 				theme: 'dark',
 				language: 'fr',
 			}),
 		).toEqual({
 			sidebarWidth: 480,
-			openSection: 'Page',
+			openSection: 'page',
 			previewZoom: 'fit-page',
 			theme: 'dark',
 		})
@@ -37,10 +39,10 @@ describe('preferences', () => {
 
 	it('fall back to the defaults for invalid values, one field at a time', () => {
 		expect(
-			parsePreferences({ sidebarWidth: 100, openSection: 'Page', previewZoom: 50 }),
+			parsePreferences({ sidebarWidth: 100, openSection: 'page', previewZoom: 50 }),
 		).toEqual({
 			sidebarWidth: SIDEBAR_MIN_WIDTH,
-			openSection: 'Page',
+			openSection: 'page',
 			previewZoom: 50,
 			theme: 'system',
 		})
@@ -55,6 +57,17 @@ describe('preferences', () => {
 		expect(parsePreferences('wide')).toEqual(defaultPreferences())
 	})
 
+	it('know a section only by one of its ids', () => {
+		expect(parsePreferences({ openSection: 'miniMonth' }).openSection).toBe('miniMonth')
+		expect(parsePreferences({ openSection: 'Mini calendar' }).openSection).toBeNull()
+		expect(parsePreferences({ openSection: 'toString' }).openSection).toBeNull()
+	})
+
+	it('name a section after each option group of every layout', () => {
+		const groups = new Set(LAYOUT_IDS.flatMap((id) => Object.keys(defaultLayoutOptions(id))))
+		expect(new Set(SECTION_IDS)).toEqual(new Set(['project', ...groups]))
+	})
+
 	it('step through the themes, back to the system after dark', () => {
 		expect(nextTheme('system')).toBe('light')
 		expect(nextTheme('light')).toBe('dark')
@@ -62,9 +75,9 @@ describe('preferences', () => {
 	})
 
 	it('open one section at a time, closing the open one when toggled again', () => {
-		const calendar = withSectionToggled(defaultPreferences(), 'Calendar')
-		expect(calendar.openSection).toBe('Calendar')
-		expect(withSectionToggled(calendar, 'Page').openSection).toBe('Page')
-		expect(withSectionToggled(calendar, 'Calendar').openSection).toBeNull()
+		const calendar = withSectionToggled(defaultPreferences(), 'calendar')
+		expect(calendar.openSection).toBe('calendar')
+		expect(withSectionToggled(calendar, 'page').openSection).toBe('page')
+		expect(withSectionToggled(calendar, 'calendar').openSection).toBeNull()
 	})
 })

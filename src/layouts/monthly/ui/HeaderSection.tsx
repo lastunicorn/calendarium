@@ -31,7 +31,7 @@ export function HeaderSection({ options, defaults, onUpdate }: OptionsSectionPro
 	}
 
 	return (
-		<Section title="Header" icon={<HeaderIcon />} onReset={handleReset}>
+		<Section id="header" title="Header" icon={<HeaderIcon />} onReset={handleReset}>
 			<TextField
 				label="Title"
 				description={TITLE_DESCRIPTION}

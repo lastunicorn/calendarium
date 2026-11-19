@@ -73,7 +73,7 @@ export function PageSection({ options: page, defaults, onUpdate }: OptionsSectio
 	}
 
 	return (
-		<Section title="Page" icon={<PageIcon />} onReset={handleReset}>
+		<Section id="page" title="Page" icon={<PageIcon />} onReset={handleReset}>
 			<SelectField
 				label="Paper size"
 				value={page.paperSize}

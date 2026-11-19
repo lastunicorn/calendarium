@@ -32,7 +32,7 @@ export function CalendarSection({
 	}
 
 	return (
-		<Section title="Calendar" icon={<CalendarIcon />} onReset={handleReset}>
+		<Section id="calendar" title="Calendar" icon={<CalendarIcon />} onReset={handleReset}>
 			<NumberField
 				label="Year"
 				description={[

@@ -23,7 +23,7 @@ export function EventsSection({ options, defaults, onUpdate }: OptionsSectionPro
 	}
 
 	return (
-		<Section title="Events" icon={<EventsIcon />} onReset={handleReset}>
+		<Section id="events" title="Events" icon={<EventsIcon />} onReset={handleReset}>
 			<TextAreaField
 				label="Events"
 				description={[

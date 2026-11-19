@@ -51,7 +51,7 @@ What several layouts share stays in the host:
 
 ### Groups
 
-Every option belongs to one layout's set, and every option is in a group: one per drawn element, which is one per sidebar section, so a section edits one group and resets it whole.
+Every option belongs to one layout's set, and every option is in a group: one per drawn element, which is one per sidebar section, so a section edits one group and resets it whole; the section's `id` is the group's key, one of `SECTION_IDS` (`preferences/Preferences.ts`, where the open one is remembered), which a test keeps naming every layout's groups.
 
 - `CommonOptions` holds only what every layout uses with the same meaning: the `calendar` group (`CalendarOptions`: `year`, `locale`, `weekStart`; a layout may extend it with fields of its own, its type narrowing `CommonOptions.calendar` and its own section editing it, as the daily layout's `DailyCalendarOptions` adds `month`), the `events` (a list of lines, at most `MAX_EVENT_LINES` when read) and `page`.
 - Each layout has its own `header`, `miniMonth` and `content` types (`YearlyHeader`, `WeeklyContent`, …, in `layouts/<layout-id>/options.ts`, in sidebar order: calendar, events, header, miniMonth, content, footer, page), built from the groups several layouts share, each defined once with its type, defaults, validators and fields component: `PageFooter` (`footer`), `HourSchedule` (`content.schedule`), `MonthGridOptions`, `MiniMonthStyle` and `MiniMonthOptions`.
