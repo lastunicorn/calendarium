@@ -20,8 +20,8 @@ import { defaultWorkspace, projectList, type Workspace } from './Workspace'
 //
 // - `calendarium-workspace`: `{ version, app, open }`, the open project's id, and the marker that
 //   the 5.x data was migrated;
-// - `calendarium-project:<id>`: one serialized project (`serializeProject`, compact);
-// - `calendarium-project-backup:<id>`: that project as a later version wrote it, kept before this
+// - `calendarium-document:<id>`: one serialized project (`serializeProject`, compact);
+// - `calendarium-document-backup:<id>`: that project as a later version wrote it, kept before this
 //   one overwrites it;
 // - `calendarium-config` (and `calendarium-config-backup`): the data of 3 to 5, read once, then
 //   left as they are, so a rollback to 5 still finds it.
@@ -29,8 +29,8 @@ import { defaultWorkspace, projectList, type Workspace } from './Workspace'
 // The prefixes matter: the GitHub Pages origin is shared with the user's other project pages.
 
 const WORKSPACE_KEY = 'calendarium-workspace'
-const PROJECT_KEY_PREFIX = 'calendarium-project:'
-const PROJECT_BACKUP_KEY_PREFIX = 'calendarium-project-backup:'
+const PROJECT_KEY_PREFIX = 'calendarium-document:'
+const PROJECT_BACKUP_KEY_PREFIX = 'calendarium-document-backup:'
 const LEGACY_KEY = 'calendarium-config'
 
 function projectKey(id: ProjectId): string {

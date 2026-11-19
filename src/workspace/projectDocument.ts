@@ -10,7 +10,7 @@ import { APP_VERSION, FORMAT_VERSION } from './version'
 // can collide with one. A file is pretty-printed, a storage record compact.
 
 /** Marks a JSON object as one of this app's serialized projects, from 6 on. */
-export const PROJECT_FORMAT = 'calendarium/project'
+export const PROJECT_FORMAT = 'calendarium/document'
 
 /** `project` as its serialized object: the tags, then the project. */
 export function projectDocument({ id, name, layout, options }: Project) {

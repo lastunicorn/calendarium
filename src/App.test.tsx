@@ -330,7 +330,7 @@ describe('App open project file', () => {
 		await waitFor(() => expect(projectLabels()).toEqual(['Desk — Monthly']))
 		// Kept under the file's id.
 		await waitFor(() =>
-			expect(localStorage.getItem(`calendarium-project:${ID}`)).not.toBeNull(),
+			expect(localStorage.getItem(`calendarium-document:${ID}`)).not.toBeNull(),
 		)
 		expect(container.querySelectorAll('main section')).toHaveLength(12)
 		expect(screen.queryByRole('alert')).toBeNull()

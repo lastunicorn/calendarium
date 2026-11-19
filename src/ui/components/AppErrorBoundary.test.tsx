@@ -21,7 +21,7 @@ const HOME: Project = {
 
 function store(project: Project) {
 	localStorage.setItem(
-		`calendarium-project:${project.id}`,
+		`calendarium-document:${project.id}`,
 		serializeProject(project, { pretty: false }),
 	)
 }

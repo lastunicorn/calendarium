@@ -64,7 +64,7 @@ export async function clippedPages(page: Page): Promise<number[]> {
 export async function openProjectFile(page: Page, layout: string, options: object) {
 	await page.goto('/')
 	await page.getByRole('dialog').getByRole('button', { name: 'Cancel' }).click()
-	const project = { format: 'calendarium/project', version: 6, app: '6.0.0', layout, options }
+	const project = { format: 'calendarium/document', version: 6, app: '6.0.0', layout, options }
 	await page.locator('input[type="file"]').setInputFiles({
 		name: `${layout}.json`,
 		mimeType: 'application/json',

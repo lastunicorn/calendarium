@@ -16,6 +16,7 @@ Each record says why one lasting decision was made, so it isn't undone by someon
 | [0010](0010-no-classes-no-di.md)                            | Plain records and functions: no classes, no DI           | Accepted |
 | [0011](0011-current-browsers-only.md)                       | Only current browsers are supported                      | Accepted |
 | [0012](0012-the-ui-calls-a-project-a-document.md)           | The UI calls a project a document                        | Accepted |
+| [0013](0013-the-stored-data-says-document.md)               | The stored data says document                            | Accepted |
 
 ## Writing one
 

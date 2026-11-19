@@ -58,11 +58,11 @@ describe('saveWorkspace and loadWorkspace', () => {
 		const workspace = workspaceOf([monthly(1, 'Home'), monthly(2, 'Work')], id(2))
 		saveWorkspace(defaultWorkspace(), workspace)
 		expect(Object.keys(stored()).toSorted()).toEqual([
-			`calendarium-project:${id(1)}`,
-			`calendarium-project:${id(2)}`,
+			`calendarium-document:${id(1)}`,
+			`calendarium-document:${id(2)}`,
 			'calendarium-workspace',
 		])
-		expect(localStorage.getItem(`calendarium-project:${id(2)}`)).toBe(
+		expect(localStorage.getItem(`calendarium-document:${id(2)}`)).toBe(
 			serializeProject(workspace.projects[id(2)], { pretty: false }),
 		)
 		expect(JSON.parse(localStorage.getItem('calendarium-workspace')!)).toEqual({
@@ -82,7 +82,7 @@ describe('saveWorkspace and loadWorkspace', () => {
 		const [setItem] = spyOnWrites()
 		const renamed = { ...work, name: 'Office' }
 		saveWorkspace(before, workspaceOf([home, renamed], id(1)))
-		expect(setItem.mock.calls.map(([key]) => key)).toEqual([`calendarium-project:${id(2)}`])
+		expect(setItem.mock.calls.map(([key]) => key)).toEqual([`calendarium-document:${id(2)}`])
 
 		setItem.mockClear()
 		saveWorkspace(workspaceOf([home, renamed], id(1)), workspaceOf([home, renamed], id(2)))
@@ -94,7 +94,7 @@ describe('saveWorkspace and loadWorkspace', () => {
 		const before = workspaceOf([monthly(1, 'Home'), monthly(2, 'Work')], id(1))
 		saveWorkspace(defaultWorkspace(), before)
 		saveWorkspace(before, workspaceOf([monthly(1, 'Home')], id(1)))
-		expect(localStorage.getItem(`calendarium-project:${id(2)}`)).toBeNull()
+		expect(localStorage.getItem(`calendarium-document:${id(2)}`)).toBeNull()
 		expect(projectList(loadWorkspace()).map((p) => p.id)).toEqual([id(1)])
 	})
 
@@ -108,11 +108,11 @@ describe('saveWorkspace and loadWorkspace', () => {
 		]
 		for (const record of later) {
 			const text = JSON.stringify(record)
-			localStorage.setItem(`calendarium-project:${id(1)}`, text)
+			localStorage.setItem(`calendarium-document:${id(1)}`, text)
 			const project = monthly(1, 'Home', 2040)
 			saveWorkspace(defaultWorkspace(), workspaceOf([project], id(1)))
-			expect(localStorage.getItem(`calendarium-project-backup:${id(1)}`)).toBe(text)
-			expect(localStorage.getItem(`calendarium-project:${id(1)}`)).toBe(
+			expect(localStorage.getItem(`calendarium-document-backup:${id(1)}`)).toBe(text)
+			expect(localStorage.getItem(`calendarium-document:${id(1)}`)).toBe(
 				serializeProject(project, { pretty: false }),
 			)
 		}
@@ -122,7 +122,7 @@ describe('saveWorkspace and loadWorkspace', () => {
 		const workspace = workspaceOf([monthly(1, 'Home')], id(1))
 		saveWorkspace(defaultWorkspace(), workspace)
 		saveWorkspace(workspaceOf([], null), workspace)
-		expect(localStorage.getItem(`calendarium-project-backup:${id(1)}`)).toBeNull()
+		expect(localStorage.getItem(`calendarium-document-backup:${id(1)}`)).toBeNull()
 	})
 })
 
@@ -174,21 +174,21 @@ describe('loadWorkspace', () => {
 	it('skips the records it can’t read, leaving them as they are, and other apps’ keys', () => {
 		saveWorkspace(defaultWorkspace(), workspaceOf([monthly(1, 'Home')], id(1)))
 		const others = {
-			[`calendarium-project:${id(2)}`]: '{broken',
-			[`calendarium-project:${id(3)}`]: JSON.stringify({
-				format: 'calendarium/project',
+			[`calendarium-document:${id(2)}`]: '{broken',
+			[`calendarium-document:${id(3)}`]: JSON.stringify({
+				format: 'calendarium/document',
 				version: FORMAT_VERSION + 1,
 				id: id(3),
 				layout: 'quarterly',
 				options: {},
 			}),
-			'calendarium-project:not-an-id': serializeProject(monthly(4, 'Lost'), {
+			'calendarium-document:not-an-id': serializeProject(monthly(4, 'Lost'), {
 				pretty: false,
 			}),
 			[`other-app-project:${id(5)}`]: serializeProject(monthly(5, 'Theirs'), {
 				pretty: false,
 			}),
-			[`calendarium-project-backup:${id(6)}`]: serializeProject(monthly(6, 'Old'), {
+			[`calendarium-document-backup:${id(6)}`]: serializeProject(monthly(6, 'Old'), {
 				pretty: false,
 			}),
 		}
@@ -202,8 +202,8 @@ describe('loadWorkspace', () => {
 
 	it('takes a project’s id from its key, whatever the record says', () => {
 		const text = serializeProject(monthly(9, 'Home'), { pretty: false })
-		localStorage.setItem(`calendarium-project:${id(1)}`, text)
-		localStorage.setItem(`calendarium-project:${id(2)}`, text.replace(`"${id(9)}"`, 'null'))
+		localStorage.setItem(`calendarium-document:${id(1)}`, text)
+		localStorage.setItem(`calendarium-document:${id(2)}`, text.replace(`"${id(9)}"`, 'null'))
 		expect(projectList(loadWorkspace()).map((p) => p.id)).toEqual([id(1), id(2)])
 	})
 
@@ -270,7 +270,7 @@ describe('loadWorkspace of 5.x data', () => {
 			open: workspace.open,
 		})
 		for (const project of Object.values(workspace.projects)) {
-			expect(localStorage.getItem(`calendarium-project:${project.id}`)).toBe(
+			expect(localStorage.getItem(`calendarium-document:${project.id}`)).toBe(
 				serializeProject(project, { pretty: false }),
 			)
 		}

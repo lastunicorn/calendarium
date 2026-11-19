@@ -35,11 +35,11 @@ Ids, and the `Environment` `createProject` and `resetOptions` take the defaults 
 
 Storage keeps one key per project, so two tabs editing different projects don't overwrite each other (see [ADR 0002](adr/0002-one-storage-key-per-project.md)):
 
-| Key                               | Holds                                                                                                                      |
-| --------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `calendarium-project:<id>`        | One serialized project, compact; the key's id is authoritative, and records it can't read are skipped and left as they are |
-| `calendarium-project-backup:<id>` | A record a later version wrote, kept before this one overwrites it                                                         |
-| `calendarium-workspace`           | `{ version, app, open }`, also the marker that the 5.x data was migrated                                                   |
+| Key                                | Holds                                                                                                                      |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `calendarium-document:<id>`        | One serialized project, compact; the key's id is authoritative, and records it can't read are skipped and left as they are |
+| `calendarium-document-backup:<id>` | A record a later version wrote, kept before this one overwrites it                                                         |
+| `calendarium-workspace`            | `{ version, app, open }`, also the marker that the 5.x data was migrated                                                   |
 
 The prefixes matter, the GitHub Pages origin being shared with the user's other project pages.
 
@@ -88,5 +88,5 @@ Every released format is also tested against files that release wrote itself, `s
 Data from a later version (a later major, or a later `app` of the same major) is read best-effort:
 
 - a project is written only once it changes (`saveWorkspace` writes only what changed, and loading writes nothing but the one 5.x migration);
-- a later version's record is backed up under `calendarium-project-backup:<id>` before being overwritten;
+- a later version's record is backed up under `calendarium-document-backup:<id>` before being overwritten;
 - and an opened file shows a notice.

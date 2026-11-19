@@ -9,7 +9,7 @@
 
 ## Decision
 
-Each project is stored under its own key, `calendarium-project:<id>`, as one serialized project, the same JSON as a project file; the key's id is authoritative. A separate `calendarium-workspace` record holds only `{ version, app, open }`. `saveWorkspace(previous, next)` writes only what changed. A record a later version wrote is copied to `calendarium-project-backup:<id>` before this version overwrites it, and records it can't read are skipped and left as they are. Every key starts with `calendarium-`.
+Each project is stored under its own key, `calendarium-document:<id>`, as one serialized project, the same JSON as a project file; the key's id is authoritative. A separate `calendarium-workspace` record holds only `{ version, app, open }`. `saveWorkspace(previous, next)` writes only what changed. A record a later version wrote is copied to `calendarium-document-backup:<id>` before this version overwrites it, and records it can't read are skipped and left as they are. Every key starts with `calendarium-`.
 
 ## Consequences
 
