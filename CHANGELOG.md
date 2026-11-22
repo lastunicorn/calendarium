@@ -10,6 +10,10 @@ The features each release brought, newest first. Versions follow the app version
 - Delete, beside the chosen document's details, deletes it once confirmed, whether or not it is the current document, and chooses the next one in the list; Delete document leaves the sidebar.
 - While the list shows, the sidebar hides the current document's settings and Save, and Print waits for the preview.
 
+### Fixed
+
+- The New document dialog starts on its Name field, ready to type, rather than on its layout.
+
 ## 6.0.0 — 2026-11-19
 
 The app now keeps a list of documents, each with an id, an optional name, a layout chosen when it is created, and that layout's settings. Settings and files from earlier versions are migrated:

@@ -31,8 +31,8 @@ interface DialogProps {
  * A modal dialog over the whole app, shown while it is mounted: a native `<dialog>` opened with
  * `showModal`, so the rest of the page is out of reach. A title with a close button, its body,
  * then Cancel and the primary action, which submits its form, so Enter in a field acts too.
- * Escape and the close button cancel. Focus moves to the body's checked radio, or its first field,
- * or to Cancel when it has none (a question), and goes back where it was once the dialog closes,
+ * Escape and the close button cancel. Focus moves to the body's first field, a radio group's
+ * checked radio, or to Cancel when it has none (a question), and goes back where it was once the dialog closes,
  * or to `returnFocus` when that is gone. Never printed.
  */
 export function Dialog({

@@ -190,6 +190,10 @@ describe('App without a project', () => {
 	it('asks for a new project from Documents, the first layout chosen, and creates nothing when cancelled', () => {
 		renderEmpty()
 		fireEvent.click(within(documents()).getByRole('button', { name: 'New document…' }))
+		// Starting on the name, the first field, ready to type.
+		expect(document.activeElement).toBe(
+			within(dialog('New document')).getByRole('textbox', { name: 'Name' }),
+		)
 		const chosen = within(dialog('New document')).getByRole('radio', { checked: true })
 		expect(chosen.closest('label')?.textContent).toBe(LAYOUT_VIEWS[LAYOUT_IDS[0]].label)
 		fireEvent.click(within(dialog('New document')).getByRole('button', { name: 'Cancel' }))

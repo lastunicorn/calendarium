@@ -1,13 +1,16 @@
 /**
- * Where the focus starts in `container`: its checked radio, so a list of choices starts on the
- * chosen one, else its first field; `null` when it has neither.
+ * Where the focus starts in `container`: its first field, a radio group being its checked radio,
+ * so a list of choices starts on the chosen one, as the keyboard reaches a group; `null` when it
+ * has no field.
  */
 export function firstField(container: HTMLElement | null): HTMLElement | null {
-	return (
-		container?.querySelector<HTMLElement>('input:checked') ??
-		container?.querySelector<HTMLElement>('input, select, textarea') ??
-		null
-	)
+	if (container === null) return null
+	const first = container.querySelector<HTMLElement>('input, select, textarea')
+	if (!(first instanceof HTMLInputElement) || first.type !== 'radio' || first.name === '') {
+		return first
+	}
+	const checked = container.querySelectorAll<HTMLInputElement>('input[type="radio"]:checked')
+	return [...checked].find((radio) => radio.name === first.name) ?? first
 }
 
 /**

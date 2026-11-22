@@ -39,14 +39,35 @@ describe('Dialog', () => {
 		expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Cancel' }))
 	})
 
-	it('focuses the checked radio before the first field', () => {
+	it('focuses a radio group first by its checked radio', () => {
 		render(
 			<Dialog title="Open" submitLabel="Open" onSubmit={noop} onCancel={noop}>
 				<input type="radio" name="project" aria-label="Home" readOnly />
 				<input type="radio" name="project" aria-label="Work" checked readOnly />
+				<input type="radio" name="other" aria-label="Other" checked readOnly />
 			</Dialog>,
 		)
 		expect(document.activeElement).toBe(screen.getByRole('radio', { name: 'Work' }))
+	})
+
+	it('focuses the first field before a radio group after it, as New document has its name', () => {
+		render(
+			<Dialog title="New" submitLabel="Create" onSubmit={noop} onCancel={noop}>
+				<input aria-label="Name" />
+				<input type="radio" name="layout" aria-label="Yearly" checked readOnly />
+			</Dialog>,
+		)
+		expect(document.activeElement).toBe(screen.getByLabelText('Name'))
+	})
+
+	it('focuses the first radio of a group none of whose radios is checked', () => {
+		render(
+			<Dialog title="Open" submitLabel="Open" onSubmit={noop} onCancel={noop}>
+				<input type="radio" name="project" aria-label="Home" readOnly />
+				<input type="radio" name="project" aria-label="Work" readOnly />
+			</Dialog>,
+		)
+		expect(document.activeElement).toBe(screen.getByRole('radio', { name: 'Home' }))
 	})
 
 	it('acts on its action or Enter in a field', () => {
