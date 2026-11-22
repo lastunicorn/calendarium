@@ -2,18 +2,13 @@ import { useCallback, useRef, useState } from 'react'
 
 import styles from './App.module.css'
 import type { LayoutId } from './layouts'
-import { EmptyPreview } from './ui/preview/EmptyPreview'
-import { Preview } from './ui/preview/Preview'
-import { projectLabel } from './ui/projectLabel'
-import { NewProjectDialog } from './ui/sidebar/NewProjectDialog'
-import { OpenProjectDialog } from './ui/sidebar/OpenProjectDialog'
+import { Main } from './ui/main/Main'
 import { Sidebar } from './ui/sidebar/Sidebar'
 import { WorkspaceForm } from './ui/sidebar/WorkspaceForm'
 import { usePreferences } from './ui/usePreferences'
 import { useTheme } from './ui/useTheme'
 import { useWorkspace } from './ui/useWorkspace'
 import type { ProjectId } from './workspace/Project'
-import { openProject, projectList } from './workspace/Workspace'
 
 export default function App() {
 	const {
@@ -29,12 +24,6 @@ export default function App() {
 	} = useWorkspace()
 	const { preferences, resizeSidebar, toggleSection, zoomPreview, changeTheme } = usePreferences()
 	useTheme(preferences.theme)
-	const project = openProject(workspace)
-	// The Open document dialog's rows, in the order it lists them.
-	const projectOptions = projectList(workspace).map((listed) => ({
-		value: listed.id,
-		label: projectLabel(listed),
-	}))
 	// Held here, since the project section and the empty preview both open it. It opens only when
 	// asked: with no project, the empty preview offers it, beside the sidebar's other actions.
 	const [creatingProject, setCreatingProject] = useState(false)
@@ -95,31 +84,20 @@ export default function App() {
 					changeProjectRef={changeProject}
 				/>
 			</Sidebar>
-			{project === null ? (
-				<EmptyPreview onNewProject={handleNewProject} />
-			) : (
-				<Preview
-					project={project}
-					onResetOptions={resetOptions}
-					zoom={preferences.previewZoom}
-					onZoom={zoomPreview}
-				/>
-			)}
-			{creatingProject && (
-				<NewProjectDialog
-					onCreate={handleNewProjectCreate}
-					onCancel={handleNewProjectCancel}
-					returnFocus={changeProjectElement}
-				/>
-			)}
-			{choosingProject && project !== null && (
-				<OpenProjectDialog
-					projects={projectOptions}
-					openId={project.id}
-					onOpen={handleOpenProjectSubmit}
-					onCancel={handleOpenProjectCancel}
-				/>
-			)}
+			<Main
+				workspace={workspace}
+				onNewProject={handleNewProject}
+				creatingProject={creatingProject}
+				onCreateProject={handleNewProjectCreate}
+				onCancelNewProject={handleNewProjectCancel}
+				choosingProject={choosingProject}
+				onOpenProject={handleOpenProjectSubmit}
+				onCancelOpenProject={handleOpenProjectCancel}
+				onResetOptions={resetOptions}
+				zoom={preferences.previewZoom}
+				onZoom={zoomPreview}
+				returnFocus={changeProjectElement}
+			/>
 		</div>
 	)
 }

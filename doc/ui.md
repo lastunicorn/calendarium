@@ -40,13 +40,13 @@ Then the open project's form, keyed by its id so half-typed drafts don't carry o
 
 ## Preview
 
-- `preview/Preview` renders the open project's layout with its options, and `preview/EmptyPreview` a New document… button when no project is open.
+- `main/Main`, the main area right of the sidebar, draws `preview/Preview`, the open project's layout with its options, or `preview/EmptyPreview`, a New document… button, when no project is open.
 - The `Preview` draws its `ZoomBar` over the pages and keeps the middle of the view in place when zooming (with the wheel, the point under the pointer); `useZoomGestures` zooms it with Ctrl (or ⌘) and +, − or 0 while the focus is in the preview, and with Ctrl (or ⌘) and the wheel, as a trackpad's pinch sends, over it, in place of the browser's zoom.
 - The `Preview` also draws the `PageIndicator`: the page showing the most of itself in the view (`useCurrentPage`), in reading order, with a booklet's sheet side, and the page before, after or typed in.
 
 ## Dialogs
 
-`App` holds whether the `NewProjectDialog` (titled New document: a name, optional, and the layout) shows: the project section and the empty preview both open it, and it never opens by itself: on a first launch, or once the last project is deleted, the empty preview shows, leaving the user to create a project or open a file. It also holds whether the `OpenProjectDialog` shows, which the project section's Change document… asks for, and opens the project chosen there.
+`App` holds whether the `NewProjectDialog` (titled New document: a name, optional, and the layout) shows: the project section and the empty preview both open it, and it never opens by itself: on a first launch, or once the last project is deleted, the empty preview shows, leaving the user to create a project or open a file. It also holds whether the `OpenProjectDialog` shows, which the project section's Change document… asks for, and opens the project chosen there. `Main` draws both, from `main/`, over the preview.
 
 Dialogs are `ui/components/Dialog`: a native `<dialog>` opened with `showModal` while it is mounted, whose primary action submits its form, Escape and its close button cancelling, the focus going to its checked radio, or its first field, or to Cancel, and back once it closes, or to its `returnFocus` when there is nothing to go back to (a project created from the empty preview focuses Change document…) (`src/test/setupDom.ts` gives jsdom `showModal` and `close`); `window.confirm` is not used.
 
