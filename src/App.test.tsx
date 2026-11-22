@@ -91,6 +91,16 @@ function choose(label: string) {
 	fireEvent.click(within(documents()).getByRole('radio', { name: label }))
 }
 
+/** Asks to delete the project chosen in Documents, from the details panel; Documents must show. */
+function clickDelete() {
+	fireEvent.click(within(documents()).getByRole('button', { name: 'Delete' }))
+}
+
+/** Confirms the open Delete document dialog. */
+function confirmDelete() {
+	fireEvent.click(within(dialog('Delete document')).getByRole('button', { name: 'Delete' }))
+}
+
 /** Makes the project labeled `label` current from Documents, choosing it, then Open. */
 function pick(label: string) {
 	showDocuments()
@@ -376,35 +386,59 @@ describe('App projects', () => {
 		expect(currentLabel()).toBe('a — Weekly')
 	})
 
-	it('asks before deleting a project, keeps it on Cancel, and opens its neighbor on Delete', () => {
+	it('asks before deleting the project chosen in Documents, keeps it on Cancel, and deletes it on Delete', () => {
 		renderEmpty()
 		createProject('a', 'yearly')
 		createProject('b', 'monthly')
 		createProject('c', 'daily')
 		pick('b — Monthly')
 
-		clickAction('Delete document')
+		showDocuments()
+		choose('a — Yearly')
+		clickDelete()
 		const question = dialog('Delete document')
 		expect(question.textContent).toContain(
-			'Delete “b”? It can’t be undone; save it to a file first to keep it.',
+			'Delete “a”? It can’t be undone; open it and save it to a file first to keep it.',
 		)
 		fireEvent.click(within(question).getByRole('button', { name: 'Cancel' }))
 		expect(projectLabels()).toEqual(['a — Yearly', 'b — Monthly', 'c — Daily'])
 
-		clickAction('Delete document')
-		fireEvent.click(within(dialog('Delete document')).getByRole('button', { name: 'Delete' }))
-		expect(projectLabels()).toEqual(['a — Yearly', 'c — Daily'])
-		expect(currentLabel()).toBe('c — Daily')
+		clickDelete()
+		confirmDelete()
+		expect(projectLabels()).toEqual(['b — Monthly', 'c — Daily'])
+		// The one in its place chosen, the open one still open, Documents still shown.
+		expect(chosenLabel()).toBe('b — Monthly')
+		expect(currentLabel()).toBe('b — Monthly')
 	})
 
-	it('shows Documents once the last project is deleted, and opens no dialog', () => {
+	it('opens the deleted open project’s neighbor, Documents staying shown', () => {
+		renderEmpty()
+		createProject('a', 'yearly')
+		createProject('b', 'monthly')
+		createProject('c', 'daily')
+		pick('b — Monthly')
+
+		showDocuments()
+		clickDelete()
+		expect(dialog('Delete document').textContent).toContain(
+			'Delete “b”? It can’t be undone; save it to a file first to keep it.',
+		)
+		confirmDelete()
+		expect(projectLabels()).toEqual(['a — Yearly', 'c — Daily'])
+		expect(currentLabel()).toBe('c — Daily')
+		expect(chosenLabel()).toBe('c — Daily')
+	})
+
+	it('shows the empty list once the last project is deleted, and opens no dialog', () => {
 		renderEmpty()
 		createProject('', 'yearly')
-		clickAction('Delete document')
+		showDocuments()
+		clickDelete()
 		expect(dialog('Delete document').textContent).toContain('Delete “Untitled”?')
-		fireEvent.click(within(dialog('Delete document')).getByRole('button', { name: 'Delete' }))
+		confirmDelete()
 		expect(screen.queryByRole('dialog')).toBeNull()
 		expect(within(documents()).getByText('No documents yet.')).not.toBeNull()
+		expect(within(documents()).queryByRole('button', { name: 'Close' })).toBeNull()
 		expect(within(projectSection()).queryByRole('textbox', { name: 'Name' })).toBeNull()
 		expect(printDisabled()).toBe(true)
 	})

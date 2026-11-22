@@ -8,14 +8,7 @@ import {
 } from 'react'
 
 import { IconButton } from '../components/IconButton'
-import {
-	DocumentsIcon,
-	NewIcon,
-	OpenIcon,
-	PrintIcon,
-	SaveIcon,
-	TrashIcon,
-} from '../components/icons'
+import { DocumentsIcon, NewIcon, OpenIcon, PrintIcon, SaveIcon } from '../components/icons'
 import styles from './ProjectToolbar.module.css'
 
 function handlePrintClick() {
@@ -36,8 +29,6 @@ interface ProjectToolbarProps {
 	onNew: () => void
 	/** Shows Documents, or the preview again while Documents shows. */
 	onManage: () => void
-	/** Asks before deleting the open project. */
-	onDelete: () => void
 	/** Opens the project file the user chose. */
 	onOpenFile: (file: File) => void
 	/** Saves the open project to a file. */
@@ -47,18 +38,16 @@ interface ProjectToolbarProps {
 }
 
 /**
- * The project section's buttons, labeled by their icons alone: New document, Manage documents,
- * pressed while Documents shows, and Delete document, then, apart, Open a document file, through a
- * hidden file input, and Save document to a file, and, apart again, Print. The hovered or focused
- * button's label shows under them. Without the open project's preview, Delete and Save hide and
- * Print is disabled.
+ * The project section's buttons, labeled by their icons alone: New document and Manage documents,
+ * pressed while Documents shows, then, apart, Open a document file, through a hidden file input,
+ * and Save document to a file, and, apart again, Print. The hovered or focused button's label shows
+ * under them. Without the open project's preview, Save hides and Print is disabled.
  */
 export function ProjectToolbar({
 	showsProject,
 	managing,
 	onNew,
 	onManage,
-	onDelete,
 	onOpenFile,
 	onSave,
 	manageRef,
@@ -109,9 +98,6 @@ export function ProjectToolbar({
 					onClick={onManage}
 					ref={manageRef}
 				/>
-				{showsProject && (
-					<IconButton label="Delete document" icon={<TrashIcon />} onClick={onDelete} />
-				)}
 				{/* The file actions, importing and exporting a project, apart from the others. */}
 				<div className={styles.separator} role="separator" aria-orientation="vertical" />
 				<IconButton

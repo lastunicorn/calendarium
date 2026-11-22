@@ -35,7 +35,6 @@ const PROJECT_ACTIONS = {
 	onNewProject: noop,
 	onManageProjects: noop,
 	onImportProject: noop,
-	onDeleteProject: noop,
 }
 
 type FormProps = Omit<ComponentProps<typeof WorkspaceForm>, 'openSection' | 'onToggleSection'>
@@ -89,7 +88,6 @@ describe('WorkspaceForm', () => {
 		).toEqual([
 			'New document…',
 			'Manage documents',
-			'Delete document',
 			'Open a document file',
 			'Save document to a file',
 			'Print',
@@ -125,7 +123,6 @@ describe('WorkspaceForm', () => {
 		).toEqual([
 			'New document…',
 			'Manage documents',
-			'Delete document',
 			'Open a document file',
 			'Save document to a file',
 			'Print',

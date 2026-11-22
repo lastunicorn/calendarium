@@ -23,11 +23,13 @@ test('a project saved to a file opens back with its name, layout and settings', 
 	expect(download.suggestedFilename()).toBe('desk-2031.json')
 	const file = await download.path()
 
-	await project.getByRole('button', { name: 'Delete document' }).click()
+	await project.getByRole('button', { name: 'Manage documents' }).click()
+	const documents = page.getByRole('main', { name: 'Documents' })
+	await documents.getByRole('button', { name: 'Delete', exact: true }).click()
 	const question = page.getByRole('dialog', { name: 'Delete document' })
 	await question.getByRole('button', { name: 'Delete' }).click()
-	// The last project gone, Documents shows, and no dialog opens by itself.
-	await expect(page.getByRole('main', { name: 'Documents' })).toBeVisible()
+	// The last project gone, Documents still shows, and no dialog opens by itself.
+	await expect(documents.getByText('No documents yet.')).toBeVisible()
 	await expect(page.getByRole('dialog')).toHaveCount(0)
 
 	await page.locator('input[type="file"]').setInputFiles(file)

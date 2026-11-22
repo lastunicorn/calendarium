@@ -42,3 +42,13 @@ function compareProjects(a: Project, b: Project): number {
 export function projectList({ projects }: Workspace): Project[] {
 	return Object.values(projects).toSorted(compareProjects)
 }
+
+/**
+ * The project that takes `id`'s place in `projectList` once it is deleted: the next one, or the
+ * previous when it is the last; `null` when it is the only one. Deleting the open project opens it.
+ */
+export function neighborOf(workspace: Workspace, id: ProjectId): ProjectId | null {
+	const list = projectList(workspace)
+	const index = list.findIndex((project) => project.id === id)
+	return (list[index + 1] ?? list[index - 1] ?? null)?.id ?? null
+}

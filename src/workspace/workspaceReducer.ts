@@ -7,7 +7,7 @@ import {
 	type LayoutOptions,
 } from '../layouts'
 import { projectOf, withOptions, type Project, type ProjectId } from './Project'
-import { openProject, projectList, type Workspace } from './Workspace'
+import { neighborOf, openProject, type Workspace } from './Workspace'
 
 /**
  * The commands that change the `Workspace` aggregate, the only way it changes. Ids, and the
@@ -60,13 +60,6 @@ function withProject(workspace: Workspace, project: Project): Workspace {
 		...workspace,
 		projects: { ...workspace.projects, [project.id]: normalizeProject(project) },
 	}
-}
-
-/** The project opened once `id` is deleted from `workspace`, where it is open. */
-function neighborOf(workspace: Workspace, id: ProjectId): ProjectId | null {
-	const list = projectList(workspace)
-	const index = list.findIndex((project) => project.id === id)
-	return (list[index + 1] ?? list[index - 1] ?? null)?.id ?? null
 }
 
 /** `workspace` after `action`, each changed project's options passed through its layout's `normalize`. */

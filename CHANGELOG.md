@@ -7,7 +7,8 @@ The features each release brought, newest first. Versions follow the app version
 ### Changed
 
 - Manage documents, in the Document section, replaces Change document… and its dialog: it shows your documents in place of the preview, the one chosen in the list described beside it, by its name and layout; Open, or a double click, makes it the current document. New document… there adds a document to the list without leaving it, or opening it unless no document is open. With no document, the list shows by itself, in place of the empty preview.
-- While the list shows, the sidebar hides the current document's settings, Save and Delete, and Print waits for the preview.
+- Delete, beside the chosen document's details, deletes it once confirmed, whether or not it is the current document, and chooses the next one in the list; Delete document leaves the sidebar.
+- While the list shows, the sidebar hides the current document's settings and Save, and Print waits for the preview.
 
 ## 6.0.0 — 2026-11-19
 

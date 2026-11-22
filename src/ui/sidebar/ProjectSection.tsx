@@ -1,4 +1,4 @@
-import { useState, type Ref } from 'react'
+import type { Ref } from 'react'
 
 import type { Project, ProjectId } from '../../workspace/Project'
 import { projectFile } from '../../workspace/projectFile'
@@ -10,7 +10,6 @@ import { ReadOnlyField } from '../fields/ReadOnlyField'
 import { TextField } from '../fields/TextField'
 import { LAYOUT_VIEWS } from '../layouts/registry'
 import type { MainContent } from '../main/mainContent'
-import { DeleteProjectDialog } from './DeleteProjectDialog'
 import { OverwriteProjectDialog } from './OverwriteProjectDialog'
 import { describeSaveFailure } from './projectFileNotices'
 import styles from './ProjectSection.module.css'
@@ -32,19 +31,17 @@ interface ProjectSectionProps {
 	onManage: () => void
 	/** Adds an opened file's project, or replaces the one with its id, and opens it. */
 	onImport: (project: Project<ProjectId | null>) => void
-	/** Deletes a project, once confirmed. */
-	onDelete: (id: ProjectId) => void
 	/** The Manage documents button, for the focus to go to once Documents is gone. */
 	manageRef?: Ref<HTMLButtonElement>
 }
 
 /**
  * The project being made: the `ProjectToolbar`'s actions on it, starting a new project, showing
- * Documents, the projects kept in this browser, deleting it, opening a project file, saving it to
- * one and printing it, above the open project's name and its layout, which it keeps. While the
- * main area shows Documents, the actions on the open project and its name and layout hide, as it
- * isn't in view. Opening a file of a project already kept, or
- * deleting one, asks first. While changes can't be saved in this browser, it says so. Always open.
+ * Documents, the projects kept in this browser, where they are opened and deleted, opening a
+ * project file, saving it to one and printing it, above the open project's name and its layout,
+ * which it keeps. While the main area shows Documents, the actions on the open project and its
+ * name and layout hide, as it isn't in view. Opening a file of a project already kept asks first.
+ * While changes can't be saved in this browser, it says so. Always open.
  */
 export function ProjectSection({
 	workspace,
@@ -54,13 +51,11 @@ export function ProjectSection({
 	onNew,
 	onManage,
 	onImport,
-	onDelete,
 	manageRef,
 }: ProjectSectionProps) {
 	const project = openProject(workspace)
 	const shown = content === 'preview' ? project : null
 	const fileOpener = useProjectFileOpener(workspace.projects, onImport)
-	const [confirmingDelete, setConfirmingDelete] = useState(false)
 
 	function handleToolbarNew() {
 		fileOpener.dismiss()
@@ -73,19 +68,6 @@ export function ProjectSection({
 		downloadFile(file.fileName, file.text, 'application/json')
 	}
 
-	function handleToolbarDelete() {
-		setConfirmingDelete(true)
-	}
-
-	function handleDeleteConfirm() {
-		setConfirmingDelete(false)
-		if (project !== null) onDelete(project.id)
-	}
-
-	function handleDeleteCancel() {
-		setConfirmingDelete(false)
-	}
-
 	return (
 		<Section id="project" title="Document" icon={<LayoutIcon />} collapsible={false}>
 			<ProjectToolbar
@@ -93,7 +75,6 @@ export function ProjectSection({
 				managing={content === 'projects'}
 				onNew={handleToolbarNew}
 				onManage={onManage}
-				onDelete={handleToolbarDelete}
 				onOpenFile={fileOpener.open}
 				onSave={handleToolbarSave}
 				manageRef={manageRef}
@@ -133,13 +114,6 @@ export function ProjectSection({
 					existing={fileOpener.overwriting}
 					onConfirm={fileOpener.confirmOverwrite}
 					onCancel={fileOpener.cancelOverwrite}
-				/>
-			)}
-			{confirmingDelete && project !== null && (
-				<DeleteProjectDialog
-					project={project}
-					onConfirm={handleDeleteConfirm}
-					onCancel={handleDeleteCancel}
 				/>
 			)}
 		</Section>

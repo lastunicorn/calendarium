@@ -15,6 +15,8 @@ interface MainProps {
 	onAddProject: (name: string, layout: LayoutId) => ProjectId
 	/** Makes a project current from Documents, and shows its preview. */
 	onOpenProject: (id: ProjectId) => void
+	/** Deletes a project from Documents, once confirmed; if it is the open one, its neighbor opens. */
+	onDeleteProject: (id: ProjectId) => void
 	/** Goes back from Documents to the preview. */
 	onCloseProjects: () => void
 	/** Whether the sidebar's New document dialog shows. */
@@ -40,6 +42,7 @@ export function Main({
 	content,
 	onAddProject,
 	onOpenProject,
+	onDeleteProject,
 	onCloseProjects,
 	creatingProject,
 	onCreateProject,
@@ -65,6 +68,7 @@ export function Main({
 					workspace={workspace}
 					onCreate={onAddProject}
 					onOpen={onOpenProject}
+					onDelete={onDeleteProject}
 					onClose={project !== null ? onCloseProjects : undefined}
 					returnFocus={returnFocus}
 				/>

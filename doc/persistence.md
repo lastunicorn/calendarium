@@ -26,7 +26,7 @@ The `Workspace` (`Workspace.ts`; `defaultWorkspace` is empty) holds every projec
 - `renameProject`;
 - `updateOptions` by a `Patch`, a deep partial that reaches a nested object's field alone, `applyPatch` in `core/data.ts`, ignored for another layout than the open project's;
 - `resetOptions`, which keeps the id and name;
-- `deleteProject`, which opens the deleted open project's neighbor in `projectList`;
+- `deleteProject`, which opens the deleted open project's neighbor in `projectList` (`neighborOf`, in `Workspace.ts`);
 - and `importProject`, which adds a project or replaces the one with its id.
 
 Ids, and the `Environment` `createProject` and `resetOptions` take the defaults in, come in the commands, made by `ui/useWorkspace`, so the reducer stays pure.

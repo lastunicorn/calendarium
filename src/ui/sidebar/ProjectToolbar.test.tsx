@@ -13,7 +13,6 @@ function renderToolbar(onOpenFile: (file: File) => void) {
 			managing={false}
 			onNew={noop}
 			onManage={noop}
-			onDelete={noop}
 			onOpenFile={onOpenFile}
 			onSave={noop}
 		/>,

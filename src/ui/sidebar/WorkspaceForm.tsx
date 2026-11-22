@@ -28,7 +28,6 @@ interface WorkspaceFormProps {
 	onManageProjects: () => void
 	/** Adds an opened file's project, or replaces the one with its id, and opens it. */
 	onImportProject: (project: Project<ProjectId | null>) => void
-	onDeleteProject: (id: ProjectId) => void
 	/** The open section, from the viewer's preferences; `null` when all are closed. */
 	openSection: SectionId | null
 	onToggleSection: (id: SectionId) => void
@@ -72,7 +71,6 @@ export function WorkspaceForm({
 	onNewProject,
 	onManageProjects,
 	onImportProject,
-	onDeleteProject,
 	openSection,
 	onToggleSection,
 	manageProjectsRef,
@@ -95,7 +93,6 @@ export function WorkspaceForm({
 					onNew={onNewProject}
 					onManage={onManageProjects}
 					onImport={onImportProject}
-					onDelete={onDeleteProject}
 					manageRef={manageProjectsRef}
 				/>
 				{/* Keyed so half-typed field drafts don't carry over to another project. */}

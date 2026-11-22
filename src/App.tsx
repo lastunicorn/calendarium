@@ -93,7 +93,6 @@ export default function App() {
 					onNewProject={handleNewProject}
 					onManageProjects={handleManageProjects}
 					onImportProject={handleImportProject}
-					onDeleteProject={deleteProject}
 					openSection={preferences.openSection}
 					onToggleSection={toggleSection}
 					manageProjectsRef={manageProjects}
@@ -104,6 +103,7 @@ export default function App() {
 				content={content}
 				onAddProject={handleProjectsAdd}
 				onOpenProject={handleProjectsOpen}
+				onDeleteProject={deleteProject}
 				onCloseProjects={handleProjectsClose}
 				creatingProject={creatingProject}
 				onCreateProject={handleNewProjectCreate}

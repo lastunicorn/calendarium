@@ -9,11 +9,11 @@ Switching documents took the Open document dialog: a modal over the whole app, i
 
 ## Decision
 
-The main area shows one content at a time (`MainContent`): the open project's preview, or Documents, which lists the projects kept in this browser with the chosen one's details beside the list, makes one current (Open, or a double click), and adds one through the New document dialog without opening it or leaving the list. Documents shows by itself while no project is open. Dialogs only ask: New, Delete and Overwrite document. Which content shows is the UI's state, never stored.
+The main area shows one content at a time (`MainContent`): the open project's preview, or Documents, which lists the projects kept in this browser with the chosen one's details beside the list, makes one current (Open, or a double click), deletes one once confirmed, and adds one through the New document dialog without opening it or leaving the list. Documents shows by itself while no project is open. Dialogs only ask: New, Delete and Overwrite document. Which content shows is the UI's state, never stored.
 
 ## Consequences
 
-- The open project's options and the actions on it (Save, Delete, Print) show only beside its preview; Documents prints nothing.
+- The open project's options and the actions on it (Save, Print) show only beside its preview, and projects are deleted only in Documents; Documents prints nothing.
 - Each content is its own `<main>`, and tests find one by its name; the printed pages stay the only `<section>`s in the main area.
 - Another content is one entry in `MAIN_CONTENTS`; more about a document is one more term and value in the details panel.
 - A project created from Documents isn't opened (`createProject` with `open: false`), unless none is open, so a workspace with projects always has one open.

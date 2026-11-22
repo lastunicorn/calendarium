@@ -103,7 +103,11 @@ for (const colorScheme of THEMES) {
 		test('the Delete document dialog', async ({ page }) => {
 			await showLayout(page, 'monthly', YEAR)
 
-			await page.getByRole('button', { name: 'Delete document' }).click()
+			await page.getByRole('button', { name: 'Manage documents' }).click()
+			await page
+				.getByRole('main', { name: 'Documents' })
+				.getByRole('button', { name: 'Delete', exact: true })
+				.click()
 			const remove = page.getByRole('dialog', { name: 'Delete document' })
 			await expect(remove).toBeVisible()
 			expect(await violations(page, OPEN_DIALOG)).toEqual([])

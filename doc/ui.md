@@ -20,15 +20,14 @@
 The `ProjectSection`, titled Document (the UI's word for a project, [ADR 0012](adr/0012-the-ui-calls-a-project-a-document.md)), its actions in the `ProjectToolbar`, the hovered or focused one's label under them:
 
 - New document…, which opens the project it creates in the preview;
-- Manage documents, which shows [Documents](#documents) in the main area, pressed while it shows, and the preview again;
-- and Delete document;
+- and Manage documents, which shows [Documents](#documents) in the main area, where projects are opened and deleted, pressed while it shows, and the preview again;
 - then, past a separator, the file actions Open a document file, whose project opens in the preview, and Save document to a file;
 - then, past another, Print;
 - above the open project's name and its layout, shown read only.
 
-They act on the open project only beside its preview: while the main area shows Documents, Delete and Save hide, Print is disabled, and neither the name and layout nor the project's form shows, their open section kept for when the preview shows again.
+They act on the open project only beside its preview: while the main area shows Documents, Save hides, Print is disabled, and neither the name and layout nor the project's form shows, their open section kept for when the preview shows again.
 
-Opening a file of a project already kept, or deleting one, asks first (`OverwriteProjectDialog`, `DeleteProjectDialog`). `useProjectFileOpener` reads the file chosen, waits for that answer, imports it and holds what to tell about it, an error or a notice (`projectFileNotices.ts`), which the section shows under the toolbar, after why changes aren't being saved, if they aren't. The `ProjectSection` composes these parts and keeps the open project's name and layout.
+Opening a file of a project already kept asks first (`OverwriteProjectDialog`). `useProjectFileOpener` reads the file chosen, waits for that answer, imports it and holds what to tell about it, an error or a notice (`projectFileNotices.ts`), which the section shows under the toolbar, after why changes aren't being saved, if they aren't. The `ProjectSection` composes these parts and keeps the open project's name and layout.
 
 ### The open project's form
 
@@ -49,9 +48,10 @@ Then the open project's form, keyed by its id so half-typed drafts don't carry o
 `main/Projects`, titled Documents, lists the projects kept in this browser and never prints:
 
 - on the left, the document list (`ProjectList`): Your documents with its New document… button, then the projects in `projectList` order, one row each, a radio group with its radios hidden, the open project tagged Current (its radio's description, not its name), a click or the arrows choosing one; or "No documents yet.";
-- on the right, the details panel (`ProjectDetails`): the chosen project's name and layout, one term and value each in a `<dl>`, so more is one more pair, then Open; below the list when the main area is too narrow for both;
+- on the right, the details panel (`ProjectDetails`, keyed by the project, so another project's Delete is another button): the chosen project's name and layout, one term and value each in a `<dl>`, so more is one more pair, then Delete and Open; below the list when the main area is too narrow for both;
 - the chosen project starts as the open one (`chosenProject`, `main/projectChoice.ts`, falling back to it when the chosen one is gone);
 - Open, Enter in the list (both submit the form around them) or a double click on a row makes the chosen project current and shows its preview;
+- Delete asks first (`DeleteProjectDialog`, saying to open the project to save it when it isn't the open one), then deletes the chosen project and chooses the one taking its place in the list (`neighborOf`, the one the workspace opens when the open project is deleted), its row focused, or New document… once none is left, Documents staying shown;
 - its New document… opens the `NewProjectDialog`, whose project is added without being opened (`createProject` with `open: false`, unless no project is open) and chosen, Documents staying shown;
 - Close (×) or Escape (`useEscapeKey`, ignoring an Escape in a dialog over it) shows the preview again, both absent without a project;
 - the focus starts on the chosen row, or on New document… without a project, and goes back where it was once Documents is gone, or to Manage documents.

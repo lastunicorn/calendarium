@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import { defaultLayoutOptions } from '../layouts'
 import type { Project } from './Project'
-import { defaultWorkspace, openProject, projectList, type Workspace } from './Workspace'
+import { defaultWorkspace, neighborOf, openProject, projectList, type Workspace } from './Workspace'
 
 /** The `n`th test id, a valid project id that sorts by `n`. */
 function id(n: number): string {
@@ -62,5 +62,23 @@ describe('projectList', () => {
 
 	it('is empty without projects', () => {
 		expect(projectList(defaultWorkspace())).toEqual([])
+	})
+})
+
+describe('neighborOf', () => {
+	// Listed by name: a (1), b (2), c (3).
+	const workspace = workspaceOf([project(1, 'a'), project(2, 'b'), project(3, 'c')])
+
+	it('gives the next project in the list', () => {
+		expect(neighborOf(workspace, id(1))).toBe(id(2))
+		expect(neighborOf(workspace, id(2))).toBe(id(3))
+	})
+
+	it('gives the previous one for the last', () => {
+		expect(neighborOf(workspace, id(3))).toBe(id(2))
+	})
+
+	it('gives none for the only project', () => {
+		expect(neighborOf(workspaceOf([project(1, 'a')]), id(1))).toBeNull()
 	})
 })

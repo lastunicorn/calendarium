@@ -26,8 +26,7 @@ Each calendar you make is a document, with a name (optional) and a layout, chose
 The Document section at the top of the sidebar lets you:
 
 - **New document…**: create one, naming it and choosing its layout, and open it.
-- **Manage documents**: see your documents in place of the preview, each one's name and layout beside the list, and open one (Open, or a double click) to work on it; **New document…** there adds one to the list without leaving it. With no document, the list shows by itself.
-- **Delete document**: remove it from your browser, once you confirm; save it to a file first to keep it.
+- **Manage documents**: see your documents in place of the preview, each one's name and layout beside the list, and open one (Open, or a double click) to work on it; **New document…** there adds one to the list without leaving it, and **Delete** removes the chosen one from your browser, once you confirm (save it to a file first to keep it). With no document, the list shows by itself.
 - **Open a document file**: add the document the file holds. If it was saved from a document you already have, the app asks whether to overwrite it.
 - **Save document to a file**: the open document, to a JSON file named after it, to keep or share it.
 - **Print** the open document's calendar (see [Printing](#printing)).
