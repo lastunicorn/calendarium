@@ -9,6 +9,7 @@ import { downloadFile } from '../download'
 import { ReadOnlyField } from '../fields/ReadOnlyField'
 import { TextField } from '../fields/TextField'
 import { LAYOUT_VIEWS } from '../layouts/registry'
+import type { MainContent } from '../main/mainContent'
 import { DeleteProjectDialog } from './DeleteProjectDialog'
 import { OverwriteProjectDialog } from './OverwriteProjectDialog'
 import { describeSaveFailure } from './projectFileNotices'
@@ -19,40 +20,45 @@ import { useProjectFileOpener } from './useProjectFileOpener'
 
 interface ProjectSectionProps {
 	workspace: Workspace
+	/** What the main area shows: the actions on the open project only show beside its preview. */
+	content: MainContent
 	/** Why the workspace's last change wasn't saved in this browser; `null` when it was. */
 	saveFailure: SaveFailure | null
 	/** Renames the open project. */
 	onRename: (name: string) => void
 	/** Asks for a new project's name and layout. */
 	onNew: () => void
-	/** Asks which project to open instead. */
-	onChange: () => void
+	/** Shows Documents, or the preview again while Documents shows. */
+	onManage: () => void
 	/** Adds an opened file's project, or replaces the one with its id, and opens it. */
 	onImport: (project: Project<ProjectId | null>) => void
 	/** Deletes a project, once confirmed. */
 	onDelete: (id: ProjectId) => void
-	/** The Change document button, for the focus to go to once a project is created. */
-	changeProjectRef?: Ref<HTMLButtonElement>
+	/** The Manage documents button, for the focus to go to once Documents is gone. */
+	manageRef?: Ref<HTMLButtonElement>
 }
 
 /**
- * The project being made: the `ProjectToolbar`'s actions on it, starting a new project, asking to
- * change the open one for another of the projects kept in this browser, deleting it, opening a
- * project file, saving it to one and printing it, above the open project's name and its layout,
- * which it keeps. Opening a file of a project already kept, or
+ * The project being made: the `ProjectToolbar`'s actions on it, starting a new project, showing
+ * Documents, the projects kept in this browser, deleting it, opening a project file, saving it to
+ * one and printing it, above the open project's name and its layout, which it keeps. While the
+ * main area shows Documents, the actions on the open project and its name and layout hide, as it
+ * isn't in view. Opening a file of a project already kept, or
  * deleting one, asks first. While changes can't be saved in this browser, it says so. Always open.
  */
 export function ProjectSection({
 	workspace,
+	content,
 	saveFailure,
 	onRename,
 	onNew,
-	onChange,
+	onManage,
 	onImport,
 	onDelete,
-	changeProjectRef,
+	manageRef,
 }: ProjectSectionProps) {
 	const project = openProject(workspace)
+	const shown = content === 'preview' ? project : null
 	const fileOpener = useProjectFileOpener(workspace.projects, onImport)
 	const [confirmingDelete, setConfirmingDelete] = useState(false)
 
@@ -83,13 +89,14 @@ export function ProjectSection({
 	return (
 		<Section id="project" title="Document" icon={<LayoutIcon />} collapsible={false}>
 			<ProjectToolbar
-				hasProject={project !== null}
+				showsProject={shown !== null}
+				managing={content === 'projects'}
 				onNew={handleToolbarNew}
-				onChange={onChange}
+				onManage={onManage}
 				onDelete={handleToolbarDelete}
 				onOpenFile={fileOpener.open}
 				onSave={handleToolbarSave}
-				changeProjectRef={changeProjectRef}
+				manageRef={manageRef}
 			/>
 
 			{/* Shown until a save is written again, since every change until then is lost on reload. */}
@@ -109,15 +116,15 @@ export function ProjectSection({
 				</p>
 			)}
 
-			{project !== null && (
+			{shown !== null && (
 				<>
 					<TextField
 						label="Name"
-						value={project.name}
+						value={shown.name}
 						placeholder="Untitled"
 						onChange={onRename}
 					/>
-					<ReadOnlyField label="Layout" value={LAYOUT_VIEWS[project.layout].label} />
+					<ReadOnlyField label="Layout" value={LAYOUT_VIEWS[shown.layout].label} />
 				</>
 			)}
 

@@ -27,12 +27,13 @@ function workspaceFor(
 	return { projects: { [id]: project }, open: id }
 }
 
-/** The project section's actions, doing nothing, every save written. */
+/** The project section's actions, doing nothing, every save written, the preview shown. */
 const PROJECT_ACTIONS = {
+	content: 'preview' as const,
 	saveFailure: null,
 	onRenameProject: noop,
 	onNewProject: noop,
-	onChangeProject: noop,
+	onManageProjects: noop,
 	onImportProject: noop,
 	onDeleteProject: noop,
 }
@@ -87,7 +88,7 @@ describe('WorkspaceForm', () => {
 				.map((button) => button.title),
 		).toEqual([
 			'New document…',
-			'Change document…',
+			'Manage documents',
 			'Delete document',
 			'Open a document file',
 			'Save document to a file',
@@ -123,7 +124,7 @@ describe('WorkspaceForm', () => {
 				.map((button) => button.title),
 		).toEqual([
 			'New document…',
-			'Change document…',
+			'Manage documents',
 			'Delete document',
 			'Open a document file',
 			'Save document to a file',
@@ -225,43 +226,68 @@ describe('WorkspaceForm', () => {
 		})
 	})
 
-	it('shows only New, Open and Print, and no options, without a project', () => {
-		render(<Form workspace={defaultWorkspace()} onUpdate={noop} {...PROJECT_ACTIONS} />)
-		const section = screen.getByRole('group', { name: 'Document' })
-		expect(
-			within(within(section).getByRole('toolbar'))
-				.getAllByRole('button')
-				.map((button) => button.title),
-		).toEqual(['New document…', 'Open a document file', 'Print'])
-		expect(within(section).queryByRole('combobox')).toBeNull()
-		expect(within(section).queryByRole('textbox', { name: 'Name' })).toBeNull()
-		expect(
-			screen.getAllByRole('group').map((group) => group.querySelector('legend')!.textContent),
-		).toEqual(['Document'])
+	it('shows only New, Manage, Open and Print, and no options, beside Documents', () => {
+		// Documents, the only content without a project, or beside one.
+		for (const workspace of [defaultWorkspace(), workspaceFor()]) {
+			const { unmount } = render(
+				<Form
+					workspace={workspace}
+					onUpdate={noop}
+					{...PROJECT_ACTIONS}
+					content="projects"
+				/>,
+			)
+			const section = screen.getByRole('group', { name: 'Document' })
+			expect(
+				within(within(section).getByRole('toolbar'))
+					.getAllByRole('button')
+					.map((button) => button.title),
+			).toEqual(['New document…', 'Manage documents', 'Open a document file', 'Print'])
+			expect(screen.getByRole<HTMLButtonElement>('button', { name: 'Print' }).disabled).toBe(
+				true,
+			)
+			expect(within(section).queryByRole('textbox', { name: 'Name' })).toBeNull()
+			expect(
+				screen
+					.getAllByRole('group')
+					.map((group) => group.querySelector('legend')!.textContent),
+			).toEqual(['Document'])
+			unmount()
+		}
 	})
 
-	it('asks for another project from Change document, and shows the open one’s name and layout', () => {
+	it('shows Documents from Manage documents, pressed while it shows, and the open project’s name and layout beside its preview', () => {
 		const work = { ...workspaceFor('weekly').projects[ID], name: 'Work 2027' }
-		const onChangeProject = vi.fn()
-		render(
+		const workspace = { projects: { [work.id]: work }, open: work.id }
+		const onManageProjects = vi.fn()
+		const { rerender } = render(
 			<Form
-				workspace={{ projects: { [work.id]: work }, open: work.id }}
+				workspace={workspace}
 				onUpdate={noop}
 				{...PROJECT_ACTIONS}
-				onChangeProject={onChangeProject}
+				onManageProjects={onManageProjects}
 			/>,
 		)
-		expect(
-			within(screen.getByRole('group', { name: 'Document' })).queryByRole('combobox'),
-		).toBeNull()
-		fireEvent.click(screen.getByRole('button', { name: 'Change document…' }))
-		expect(onChangeProject).toHaveBeenCalledOnce()
-		// The app holds the Open document dialog, not the form.
-		expect(screen.queryByRole('dialog')).toBeNull()
+		const manage = screen.getByRole('button', { name: 'Manage documents' })
+		expect(manage.getAttribute('aria-pressed')).toBe('false')
+		fireEvent.click(manage)
+		expect(onManageProjects).toHaveBeenCalledOnce()
 		const name = screen.getByRole<HTMLInputElement>('textbox', { name: 'Name' })
 		expect(name.value).toBe('Work 2027')
 		expect(name.placeholder).toBe('Untitled')
 		expect(screen.getByLabelText('Layout').textContent).toBe('Weekly (one week per page)')
+
+		rerender(
+			<Form
+				workspace={workspace}
+				onUpdate={noop}
+				{...PROJECT_ACTIONS}
+				content="projects"
+				onManageProjects={onManageProjects}
+			/>,
+		)
+		expect(manage.getAttribute('aria-pressed')).toBe('true')
+		expect(screen.queryByRole('textbox', { name: 'Name' })).toBeNull()
 	})
 
 	it('labels the hovered or focused project action under the buttons', () => {

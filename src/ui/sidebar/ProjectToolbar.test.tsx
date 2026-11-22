@@ -9,9 +9,10 @@ function noop() {}
 function renderToolbar(onOpenFile: (file: File) => void) {
 	const { container } = render(
 		<ProjectToolbar
-			hasProject
+			showsProject
+			managing={false}
 			onNew={noop}
-			onChange={noop}
+			onManage={noop}
 			onDelete={noop}
 			onOpenFile={onOpenFile}
 			onSave={noop}

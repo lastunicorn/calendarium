@@ -12,3 +12,10 @@
 	cursor: default;
 	opacity: 0.8;
 }
+
+/* While what it shows is shown, in the list's chosen-row colors. */
+.iconButton[aria-pressed='true'] {
+	color: var(--color-selection-text);
+	background: var(--color-selection);
+	border-color: var(--color-selection);
+}

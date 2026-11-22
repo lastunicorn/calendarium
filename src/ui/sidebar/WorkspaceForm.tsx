@@ -7,6 +7,7 @@ import type { Project, ProjectId } from '../../workspace/Project'
 import type { SaveFailure } from '../../workspace/storage'
 import { openProject, type Workspace } from '../../workspace/Workspace'
 import { layoutView } from '../layouts/registry'
+import type { MainContent } from '../main/mainContent'
 import type { UpdateLayoutOptions } from '../useWorkspace'
 import { OpenSectionsContext, type OpenSections } from './openSections'
 import { ProjectSection } from './ProjectSection'
@@ -14,6 +15,8 @@ import styles from './WorkspaceForm.module.css'
 
 interface WorkspaceFormProps {
 	workspace: Workspace
+	/** What the main area shows: the options only show beside their preview. */
+	content: MainContent
 	/** Why the workspace's last change wasn't saved in this browser; `null` when it was. */
 	saveFailure: SaveFailure | null
 	/** Renames the open project. */
@@ -21,16 +24,16 @@ interface WorkspaceFormProps {
 	onUpdate: UpdateLayoutOptions
 	/** Asks for a new project's name and layout. */
 	onNewProject: () => void
-	/** Asks which project to open instead. */
-	onChangeProject: () => void
+	/** Shows Documents, or the preview again while Documents shows. */
+	onManageProjects: () => void
 	/** Adds an opened file's project, or replaces the one with its id, and opens it. */
 	onImportProject: (project: Project<ProjectId | null>) => void
 	onDeleteProject: (id: ProjectId) => void
 	/** The open section, from the viewer's preferences; `null` when all are closed. */
 	openSection: SectionId | null
 	onToggleSection: (id: SectionId) => void
-	/** The Change document button, for the focus to go to once a project is created. */
-	changeProjectRef?: Ref<HTMLButtonElement>
+	/** The Manage documents button, for the focus to go to once Documents is gone. */
+	manageProjectsRef?: Ref<HTMLButtonElement>
 }
 
 interface LayoutFormProps<K extends LayoutId> {
@@ -57,21 +60,22 @@ function LayoutForm<K extends LayoutId>({ layout, options, onUpdate }: LayoutFor
 
 /**
  * The project section, then the open project's options, grouped by what they affect, in sections
- * of which one at a time is open, staying open across projects. Without a project, the project
- * section alone.
+ * of which one at a time is open, staying open across projects. While the main area shows
+ * Documents, or without a project, the project section alone.
  */
 export function WorkspaceForm({
 	workspace,
+	content,
 	saveFailure,
 	onRenameProject,
 	onUpdate,
 	onNewProject,
-	onChangeProject,
+	onManageProjects,
 	onImportProject,
 	onDeleteProject,
 	openSection,
 	onToggleSection,
-	changeProjectRef,
+	manageProjectsRef,
 }: WorkspaceFormProps) {
 	const project = openProject(workspace)
 
@@ -85,16 +89,17 @@ export function WorkspaceForm({
 			<div className={styles.form}>
 				<ProjectSection
 					workspace={workspace}
+					content={content}
 					saveFailure={saveFailure}
 					onRename={onRenameProject}
 					onNew={onNewProject}
-					onChange={onChangeProject}
+					onManage={onManageProjects}
 					onImport={onImportProject}
 					onDelete={onDeleteProject}
-					changeProjectRef={changeProjectRef}
+					manageRef={manageProjectsRef}
 				/>
 				{/* Keyed so half-typed field drafts don't carry over to another project. */}
-				{project !== null && (
+				{content === 'preview' && project !== null && (
 					<LayoutForm
 						key={project.id}
 						layout={project.layout}

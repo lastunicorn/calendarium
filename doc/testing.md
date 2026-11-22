@@ -4,7 +4,7 @@ The commands are listed in `CLAUDE.md` and the README. Single test file: `npx vi
 
 ## Unit tests
 
-Unit tests are plain `src/**/*.test.ts` files, DOM-free, covering `core/`, `layouts/`, `workspace/` and `preferences/`, and the pure logic of `ui/`, kept out of its hooks and components in `.ts` files next to them so it is tested without a DOM (`preview/zoomGestures.ts`, `preview/currentPage.ts`, `preview/spreadLayout.ts`, `sidebar/projectFileNotices.ts`, `sidebar/localeOptions.ts`, `fields/filter.ts`), the hook or component only wiring it to the DOM.
+Unit tests are plain `src/**/*.test.ts` files, DOM-free, covering `core/`, `layouts/`, `workspace/` and `preferences/`, and the pure logic of `ui/`, kept out of its hooks and components in `.ts` files next to them so it is tested without a DOM (`main/mainContent.ts`, `main/projectChoice.ts`, `preview/zoomGestures.ts`, `preview/currentPage.ts`, `preview/spreadLayout.ts`, `sidebar/projectFileNotices.ts`, `sidebar/localeOptions.ts`, `fields/filter.ts`), the hook or component only wiring it to the DOM.
 
 Like `src/layers.test.ts` for imports, `ui/printedColors.test.ts` reads the stylesheets as text (the `unit` project sets `css: true`, Vitest otherwise emptying them) and fails on a printed page's stylesheet using a color with a dark value (`light-dark()`).
 
@@ -28,11 +28,11 @@ Component tests are `src/**/*.test.tsx` (Vitest `component` project: jsdom + Tes
 
 ## End-to-end tests
 
-- `e2e/print.spec.ts` (Playwright, Chromium) builds the app, creates a project of each layout through the New document dialog, prints it to PDF and checks the page count and paper size, and that no page's content is clipped in print media.
+- `e2e/print.spec.ts` (Playwright, Chromium) builds the app, creates a project of each layout through the sidebar's New document dialog, prints it to PDF and checks the page count and paper size, and that no page's content is clipped in print media.
 - `e2e/projects.spec.ts` saves a project to a file and opens it back.
 - `e2e/screen.spec.ts` checks the preview's screen behavior (zooming with Ctrl and the wheel or the keys, spreads, the language's week start, the squares fill inside the margins in print media, the dark scheme and the theme button leaving the pages white on screen and in print, the chosen theme kept on reload).
 - Those two also run in Firefox (the `firefox` project's `testMatch` in `playwright.config.ts`), for the code's Firefox paths; a test there must not call `page.pdf()`, which only Chromium has.
-- `e2e/a11y.spec.ts` runs axe (`@axe-core/playwright`, the WCAG 2.x A and AA rules) on the app's own interface in the light and dark themes: the empty preview, each layout's sidebar with each section open in turn, a section's reset veil, and each dialog (New, Open, Delete and Overwrite document) alone, failing on any `serious` or `critical` violation. The printed pages (`main section`) are left out: they are drawn as paper, an `h1` on each and the other months' days light gray on purpose. A new dialog or section state gets a case there.
+- `e2e/a11y.spec.ts` runs axe (`@axe-core/playwright`, the WCAG 2.x A and AA rules) on the app's own interface in the light and dark themes: Documents on a first launch and with documents, another one than the current chosen, each layout's sidebar with each section open in turn, a section's reset veil, and each dialog (New, Delete and Overwrite document) alone, failing on any `serious` or `critical` violation. The printed pages (`main section`) are left out: they are drawn as paper, an `h1` on each and the other months' days light gray on purpose. A new dialog, content or section state gets a case there.
 - First run needs `npx playwright install chromium firefox`.
 - The e2e helpers (`showLayout`, `openSection`, `openProjectFile`, `pdfPageSizes`, `clippedPages`) are in `e2e/helpers.ts`.
 

@@ -17,6 +17,7 @@ Each record says why one lasting decision was made, so it isn't undone by someon
 | [0011](0011-current-browsers-only.md)                       | Only current browsers are supported                      | Accepted |
 | [0012](0012-the-ui-calls-a-project-a-document.md)           | The UI calls a project a document                        | Accepted |
 | [0013](0013-the-stored-data-says-document.md)               | The stored data says document                            | Accepted |
+| [0014](0014-documents-are-managed-in-the-main-area.md)      | Documents are managed in the main area                   | Accepted |
 
 ## Writing one
 

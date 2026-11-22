@@ -5,10 +5,10 @@ export async function openSection(page: Page, title: string) {
 	await page.getByRole('button', { name: title, exact: true }).click()
 }
 
-/** Opens the New document dialog from the empty preview a fresh page shows. */
+/** Opens the New document dialog from the sidebar's toolbar, whose project opens in the preview. */
 export async function openNewProjectDialog(page: Page) {
 	await page
-		.getByRole('main', { name: 'Preview' })
+		.getByRole('toolbar', { name: 'Document' })
 		.getByRole('button', { name: 'New document…' })
 		.click()
 	return page.getByRole('dialog', { name: 'New document' })
@@ -16,8 +16,8 @@ export async function openNewProjectDialog(page: Page) {
 
 /**
  * Shows `layout` for `year` as a user would: creates a project of it in the New document dialog,
- * opened from the empty preview a fresh page shows, picking the layout by its label ("Weekly (one
- * week per page)"), then sets the year in the sidebar.
+ * opened from the sidebar on a fresh page, picking the layout by its label ("Weekly (one week per
+ * page)"), then sets the year in the sidebar.
  */
 export async function showLayout(page: Page, layout: string, year: number) {
 	await page.goto('/')
@@ -25,6 +25,7 @@ export async function showLayout(page: Page, layout: string, year: number) {
 	await dialog.getByRole('radio', { name: new RegExp(`^${layout} `, 'i') }).check()
 	await dialog.getByRole('button', { name: 'Create' }).click()
 	await expect(dialog).toBeHidden()
+	await expect(page.getByRole('main', { name: 'Preview' })).toBeVisible()
 	await openSection(page, 'Calendar')
 	const yearField = page.getByRole('spinbutton', { name: 'Year' })
 	await yearField.fill(String(year))
@@ -67,12 +68,13 @@ export async function clippedPages(page: Page): Promise<number[]> {
  * Opens a project of `layout` with `options` as a user would, from a project file picked on a
  * fresh page, cancelling the New document dialog builds before 6.0.0's release opened by itself. The file is tagged as written
  * by 6.0.0, the first version of the project format, so later versions read it through their
- * migrations; options it leaves out take their defaults. The dialog is found by its role alone,
- * not its title, so the visual comparison can run this against an older build's labels.
+ * migrations; options it leaves out take their defaults. The main area and the dialog are found by
+ * their role alone, not their names, so the visual comparison can run this against an older
+ * build's labels (the empty preview a fresh page showed before Documents).
  */
 export async function openProjectFile(page: Page, layout: string, options: object) {
 	await page.goto('/')
-	await expect(page.getByRole('main', { name: 'Preview' })).toBeVisible()
+	await expect(page.getByRole('main')).toBeVisible()
 	const dialog = page.getByRole('dialog')
 	if (await dialog.isVisible()) await dialog.getByRole('button', { name: 'Cancel' }).click()
 	const project = { format: 'calendarium/document', version: 6, app: '6.0.0', layout, options }

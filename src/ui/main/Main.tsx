@@ -1,72 +1,72 @@
 import type { LayoutId } from '../../layouts'
 import type { PreviewZoom } from '../../preferences/zoom'
 import type { ProjectId } from '../../workspace/Project'
-import { openProject, projectList, type Workspace } from '../../workspace/Workspace'
-import { EmptyPreview } from '../preview/EmptyPreview'
+import { openProject, type Workspace } from '../../workspace/Workspace'
 import { Preview } from '../preview/Preview'
-import { projectLabel } from '../projectLabel'
+import type { MainContent } from './mainContent'
 import { NewProjectDialog } from './NewProjectDialog'
-import { OpenProjectDialog } from './OpenProjectDialog'
+import { Projects } from './Projects'
 
 interface MainProps {
 	workspace: Workspace
-	/** Asks for a new project's name and layout, from the empty preview. */
-	onNewProject: () => void
-	/** Whether the New document dialog shows. */
+	/** What the main area shows, as `shownContent` resolves it. */
+	content: MainContent
+	/** Adds a project from Documents, opening it only when none is open, and gives its id. */
+	onAddProject: (name: string, layout: LayoutId) => ProjectId
+	/** Makes a project current from Documents, and shows its preview. */
+	onOpenProject: (id: ProjectId) => void
+	/** Goes back from Documents to the preview. */
+	onCloseProjects: () => void
+	/** Whether the sidebar's New document dialog shows. */
 	creatingProject: boolean
-	/** Creates the project the New document dialog describes, and opens it. */
+	/** Creates the project the sidebar's New document dialog describes, opens it and shows its preview. */
 	onCreateProject: (name: string, layout: LayoutId) => void
 	onCancelNewProject: () => void
-	/** Whether the Open document dialog shows; it never does without an open project. */
-	choosingProject: boolean
-	/** Opens the project chosen in the Open document dialog. */
-	onOpenProject: (id: ProjectId) => void
-	onCancelOpenProject: () => void
 	/** Puts the open project's options back to its layout's defaults, offered when its pages fail to render. */
 	onResetOptions: () => void
 	/** How large the pages are drawn on screen, from the viewer's preferences. */
 	zoom: PreviewZoom
 	onZoom: (zoom: PreviewZoom) => void
-	/** Where the focus goes once a project is created with nothing to go back to. */
+	/** Where the focus goes once Documents or the dialog is gone, when there is nothing to go back to. */
 	returnFocus: () => HTMLElement | null
 }
 
 /**
- * The main area, right of the sidebar: the open project's preview, or the empty preview without
- * one, and the New and Open document dialogs over it, which the app holds since the sidebar asks
- * for them too.
+ * The main area, right of the sidebar: the open project's preview, or Documents, and the
+ * sidebar's New document dialog, which the app holds since the sidebar asks for it.
  */
 export function Main({
 	workspace,
-	onNewProject,
+	content,
+	onAddProject,
+	onOpenProject,
+	onCloseProjects,
 	creatingProject,
 	onCreateProject,
 	onCancelNewProject,
-	choosingProject,
-	onOpenProject,
-	onCancelOpenProject,
 	onResetOptions,
 	zoom,
 	onZoom,
 	returnFocus,
 }: MainProps) {
 	const project = openProject(workspace)
-	// The Open document dialog's rows, in the order it lists them.
-	const projectOptions = projectList(workspace).map((listed) => ({
-		value: listed.id,
-		label: projectLabel(listed),
-	}))
 
 	return (
 		<>
-			{project === null ? (
-				<EmptyPreview onNewProject={onNewProject} />
-			) : (
+			{content === 'preview' && project !== null ? (
 				<Preview
 					project={project}
 					onResetOptions={onResetOptions}
 					zoom={zoom}
 					onZoom={onZoom}
+				/>
+			) : (
+				<Projects
+					workspace={workspace}
+					onCreate={onAddProject}
+					onOpen={onOpenProject}
+					onClose={project !== null ? onCloseProjects : undefined}
+					returnFocus={returnFocus}
 				/>
 			)}
 			{creatingProject && (
@@ -74,14 +74,6 @@ export function Main({
 					onCreate={onCreateProject}
 					onCancel={onCancelNewProject}
 					returnFocus={returnFocus}
-				/>
-			)}
-			{choosingProject && project !== null && (
-				<OpenProjectDialog
-					projects={projectOptions}
-					openId={project.id}
-					onOpen={onOpenProject}
-					onCancel={onCancelOpenProject}
 				/>
 			)}
 		</>

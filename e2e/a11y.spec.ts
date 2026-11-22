@@ -1,7 +1,7 @@
 import { AxeBuilder } from '@axe-core/playwright'
 import { expect, test, type Page } from '@playwright/test'
 
-import { openNewProjectDialog, openSection, showLayout } from './helpers.ts'
+import { openSection, showLayout } from './helpers.ts'
 
 // The app's own interface checked by axe (WCAG 2.x A and AA rules) in both themes, so a color too
 // faint, a button without a name or a broken ARIA reference fails the tests. The printed pages,
@@ -42,14 +42,31 @@ for (const colorScheme of THEMES) {
 	test.describe(`in the ${colorScheme} theme`, () => {
 		test.use({ colorScheme })
 
-		test('the New document dialog and the empty preview', async ({ page }) => {
+		test('Documents on a first launch, and the New document dialog', async ({ page }) => {
 			await page.goto('/')
-			await expect(page.getByRole('main', { name: 'Preview' })).toBeVisible()
+			const documents = page.getByRole('main', { name: 'Documents' })
+			await expect(documents).toBeVisible()
 			expect(await violations(page)).toEqual([])
 
-			const dialog = await openNewProjectDialog(page)
+			await documents.getByRole('button', { name: 'New document…' }).click()
+			const dialog = page.getByRole('dialog', { name: 'New document' })
 			await expect(dialog).toBeVisible()
 			expect(await violations(page, OPEN_DIALOG)).toEqual([])
+		})
+
+		test('Documents with documents, another one than the current chosen', async ({ page }) => {
+			await showLayout(page, 'monthly', YEAR)
+			await page.getByRole('button', { name: 'Manage documents' }).click()
+			const documents = page.getByRole('main', { name: 'Documents' })
+			await expect(documents).toBeVisible()
+			// Added from Documents, so chosen there, the current one tagged on its own row.
+			await documents.getByRole('button', { name: 'New document…' }).click()
+			await page
+				.getByRole('dialog', { name: 'New document' })
+				.getByRole('button', { name: 'Create' })
+				.click()
+			await expect(documents.getByRole('radio', { description: 'Current' })).not.toBeChecked()
+			expect(await violations(page)).toEqual([])
 		})
 
 		for (const layout of LAYOUTS) {
@@ -83,15 +100,8 @@ for (const colorScheme of THEMES) {
 			expect(await violations(page)).toEqual([])
 		})
 
-		test('the Open and Delete document dialogs', async ({ page }) => {
+		test('the Delete document dialog', async ({ page }) => {
 			await showLayout(page, 'monthly', YEAR)
-
-			await page.getByRole('button', { name: 'Change document…' }).click()
-			const open = page.getByRole('dialog', { name: 'Open document' })
-			await expect(open).toBeVisible()
-			expect(await violations(page, OPEN_DIALOG)).toEqual([])
-			await open.getByRole('button', { name: 'Cancel' }).click()
-			await expect(open).toBeHidden()
 
 			await page.getByRole('button', { name: 'Delete document' }).click()
 			const remove = page.getByRole('dialog', { name: 'Delete document' })

@@ -8,10 +8,19 @@ interface IconButtonProps {
 	icon: ReactNode
 	onClick: MouseEventHandler<HTMLButtonElement>
 	disabled?: boolean
+	/** Whether what it shows is shown, for a button that shows something and hides it again. */
+	pressed?: boolean
 	ref?: Ref<HTMLButtonElement>
 }
 
-export function IconButton({ label, icon, onClick, disabled = false, ref }: IconButtonProps) {
+export function IconButton({
+	label,
+	icon,
+	onClick,
+	disabled = false,
+	pressed,
+	ref,
+}: IconButtonProps) {
 	return (
 		<button
 			ref={ref}
@@ -20,6 +29,7 @@ export function IconButton({ label, icon, onClick, disabled = false, ref }: Icon
 			title={label}
 			aria-label={label}
 			disabled={disabled}
+			aria-pressed={pressed}
 			onClick={onClick}
 		>
 			{icon}

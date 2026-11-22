@@ -8,7 +8,7 @@ Calendarium is a browser app (Vite + React + TypeScript) that generates a calend
 | `src/layouts/`     | What each layout is and prints (core)       | [layouts.md](layouts.md)                   |
 | `src/workspace/`   | The saved projects, storage, files, formats | [persistence.md](persistence.md)           |
 | `src/preferences/` | The viewer's own settings                   | [ui.md](ui.md#preferences)                 |
-| `src/ui/`          | React: sidebar, preview, dialogs            | [ui.md](ui.md), [printing.md](printing.md) |
+| `src/ui/`          | React: sidebar, main area, dialogs          | [ui.md](ui.md), [printing.md](printing.md) |
 
 The words used for each concept are in the [glossary](glossary.md); why the main decisions were made is in the [decision records](adr/README.md).
 

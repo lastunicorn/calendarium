@@ -19,12 +19,14 @@
 
 The `ProjectSection`, titled Document (the UI's word for a project, [ADR 0012](adr/0012-the-ui-calls-a-project-a-document.md)), its actions in the `ProjectToolbar`, the hovered or focused one's label under them:
 
-- New document…;
-- Change document… (the `OpenProjectDialog`, titled Open document, the projects one per row, scrolling past about eight, a radio group with its radios hidden, the open one chosen, Open or a double click opening another);
+- New document…, which opens the project it creates in the preview;
+- Manage documents, which shows [Documents](#documents) in the main area, pressed while it shows, and the preview again;
 - and Delete document;
-- then, past a separator, the file actions Open a document file and Save document to a file;
-- then, past another, Print (disabled without a project);
+- then, past a separator, the file actions Open a document file, whose project opens in the preview, and Save document to a file;
+- then, past another, Print;
 - above the open project's name and its layout, shown read only.
+
+They act on the open project only beside its preview: while the main area shows Documents, Delete and Save hide, Print is disabled, and neither the name and layout nor the project's form shows, their open section kept for when the preview shows again.
 
 Opening a file of a project already kept, or deleting one, asks first (`OverwriteProjectDialog`, `DeleteProjectDialog`). `useProjectFileOpener` reads the file chosen, waits for that answer, imports it and holds what to tell about it, an error or a notice (`projectFileNotices.ts`), which the section shows under the toolbar, after why changes aren't being saved, if they aren't. The `ProjectSection` composes these parts and keeps the open project's name and layout.
 
@@ -38,17 +40,33 @@ Then the open project's form, keyed by its id so half-typed drafts don't carry o
 - `MonthGridFields`, `MiniMonthFields` and `ScheduleFields` take `OptionsFieldsProps<C>`, without defaults;
 - built on the typed controls in `fields/` (`SelectField`, `NumberField`, …).
 
+## Main area
+
+`main/Main`, the main area right of the sidebar, draws one content at a time (`MainContent`, `main/mainContent.ts`): the open project's preview, or Documents. `App` holds the one asked for, never stored, so a reload shows the preview, and `shownContent` gives Documents while no project is open; Manage documents asks for Documents, and creating a project from the sidebar, opening one from Documents or opening a file asks for the preview. Each content is its own `<main>`, named "Preview" or by Documents' heading, and holds no `<section>` but the printed pages. Why the main area does this, rather than dialogs: [ADR 0014](adr/0014-documents-are-managed-in-the-main-area.md).
+
+### Documents
+
+`main/Projects`, titled Documents, lists the projects kept in this browser and never prints:
+
+- on the left, the document list (`ProjectList`): Your documents with its New document… button, then the projects in `projectList` order, one row each, a radio group with its radios hidden, the open project tagged Current (its radio's description, not its name), a click or the arrows choosing one; or "No documents yet.";
+- on the right, the details panel (`ProjectDetails`): the chosen project's name and layout, one term and value each in a `<dl>`, so more is one more pair, then Open; below the list when the main area is too narrow for both;
+- the chosen project starts as the open one (`chosenProject`, `main/projectChoice.ts`, falling back to it when the chosen one is gone);
+- Open, Enter in the list (both submit the form around them) or a double click on a row makes the chosen project current and shows its preview;
+- its New document… opens the `NewProjectDialog`, whose project is added without being opened (`createProject` with `open: false`, unless no project is open) and chosen, Documents staying shown;
+- Close (×) or Escape (`useEscapeKey`, ignoring an Escape in a dialog over it) shows the preview again, both absent without a project;
+- the focus starts on the chosen row, or on New document… without a project, and goes back where it was once Documents is gone, or to Manage documents.
+
 ## Preview
 
-- `main/Main`, the main area right of the sidebar, draws `preview/Preview`, the open project's layout with its options, or `preview/EmptyPreview`, a New document… button, when no project is open.
+- `preview/Preview` draws the open project's layout with its options.
 - The `Preview` draws its `ZoomBar` over the pages and keeps the middle of the view in place when zooming (with the wheel, the point under the pointer); `useZoomGestures` zooms it with Ctrl (or ⌘) and +, − or 0 while the focus is in the preview, and with Ctrl (or ⌘) and the wheel, as a trackpad's pinch sends, over it, in place of the browser's zoom.
 - The `Preview` also draws the `PageIndicator`: the page showing the most of itself in the view (`useCurrentPage`), in reading order, with a booklet's sheet side, and the page before, after or typed in.
 
 ## Dialogs
 
-`App` holds whether the `NewProjectDialog` (titled New document: a name, optional, and the layout) shows: the project section and the empty preview both open it, and it never opens by itself: on a first launch, or once the last project is deleted, the empty preview shows, leaving the user to create a project or open a file. It also holds whether the `OpenProjectDialog` shows, which the project section's Change document… asks for, and opens the project chosen there. `Main` draws both, from `main/`, over the preview.
+The `NewProjectDialog` (titled New document: a name, optional, and the layout) opens from the project section's New document…, `App` holding whether it shows and `Main` drawing it, and from Documents' New document…, which holds its own. It never opens by itself: on a first launch, or once the last project is deleted, Documents shows, leaving the user to create a project or open a file. A dialog only asks: New, Delete and Overwrite document.
 
-Dialogs are `ui/components/Dialog`: a native `<dialog>` opened with `showModal` while it is mounted, whose primary action submits its form, Escape and its close button cancelling, the focus going to its checked radio, or its first field, or to Cancel, and back once it closes, or to its `returnFocus` when there is nothing to go back to (a project created from the empty preview focuses Change document…), through `ui/components/focus.ts` (`firstField`, where the focus starts, and `takeFocus`, which gives it back). `src/test/setupDom.ts` gives jsdom `showModal` and `close`; `window.confirm` is not used.
+Dialogs are `ui/components/Dialog`: a native `<dialog>` opened with `showModal` while it is mounted, whose primary action submits its form, Escape and its close button cancelling, the focus going to its checked radio, or its first field, or to Cancel, and back once it closes, or to its `returnFocus` when there is nothing to go back to (the sidebar's New document dialog focuses Manage documents), through `ui/components/focus.ts` (`firstField`, where the focus starts, and `takeFocus`, which gives it back). `src/test/setupDom.ts` gives jsdom `showModal` and `close`; `window.confirm` is not used.
 
 ## A layout's UI
 

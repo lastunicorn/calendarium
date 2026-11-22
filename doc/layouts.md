@@ -13,7 +13,7 @@ How a layout stays independent of the others is in [architecture.md](architectur
 
 - `index.ts` lists the layouts once, in `LAYOUTS` (the picker's order), each the `defineLayout(id, spec)` its folder's `index.ts` exports, and derives the rest from it: `LayoutId`, `LAYOUT_IDS`, each layout's options (`LayoutOptions`: `YearlyOptions`, `MonthlyOptions`, `WeeklyOptions`, `DailyOptions`, each extending `CommonOptions` from `common.ts`, which `defineLayout` requires) and the specs.
 - The id is stored in settings and files, so it never changes once released, except in a major release, whose migration steps map the old id to the new one (`LEGACY_LAYOUT_IDS` in `workspace/legacy.ts`, as 6.0.0 maps `year-per-page` to `yearly`).
-- `index.ts` collects the specs in `LAYOUT_SPECS` and exposes `layoutSpec(id)`, `defaultLayoutOptions`, `normalizeLayout`, `migrateLayoutOptions` and `mapLayouts`; the first of the `LAYOUT_IDS` is the one the New project dialog preselects.
+- `index.ts` collects the specs in `LAYOUT_SPECS` and exposes `layoutSpec(id)`, `defaultLayoutOptions`, `normalizeLayout`, `migrateLayoutOptions` and `mapLayouts`; the first of the `LAYOUT_IDS` is the one the New document dialog preselects.
 
 ## A layout's spec
 

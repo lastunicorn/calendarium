@@ -26,9 +26,9 @@ test('a project saved to a file opens back with its name, layout and settings', 
 	await project.getByRole('button', { name: 'Delete document' }).click()
 	const question = page.getByRole('dialog', { name: 'Delete document' })
 	await question.getByRole('button', { name: 'Delete' }).click()
-	// The last project gone, nothing opens by itself.
+	// The last project gone, Documents shows, and no dialog opens by itself.
+	await expect(page.getByRole('main', { name: 'Documents' })).toBeVisible()
 	await expect(page.getByRole('dialog')).toHaveCount(0)
-	await expect(project.getByRole('button', { name: 'Change document…' })).toHaveCount(0)
 
 	await page.locator('input[type="file"]').setInputFiles(file)
 	await expect(project.getByRole('textbox', { name: 'Name' })).toHaveValue('Desk 2031')

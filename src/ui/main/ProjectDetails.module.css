@@ -1,0 +1,54 @@
+/* Beside the list, taking the rest of the width; below it when the main area is narrow. */
+.details {
+	flex: 1 1 20rem;
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-3);
+	min-width: 0;
+	padding: var(--space-4);
+	background: var(--color-surface);
+	border: 1px solid var(--color-border);
+	border-radius: 6px;
+}
+
+.title {
+	margin: 0;
+	font-size: 0.875rem;
+	font-weight: 600;
+}
+
+/* Each term beside its value; more information later is one more pair. */
+.facts {
+	display: grid;
+	grid-template-columns: auto minmax(0, 1fr);
+	gap: var(--space-2) var(--space-4);
+	margin: 0;
+	font-size: 0.875rem;
+}
+
+.term {
+	color: var(--color-text-muted);
+}
+
+.value {
+	margin: 0;
+	overflow-wrap: anywhere;
+}
+
+.actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: var(--space-2);
+}
+
+/* Like a dialog's actions. */
+.action {
+	padding: 4px 16px;
+	font-size: 0.875rem;
+}
+
+.empty {
+	margin: 0;
+	font-size: 0.875rem;
+	color: var(--color-text-muted);
+}

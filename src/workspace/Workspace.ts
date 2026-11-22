@@ -28,8 +28,8 @@ function shownName(project: Project): string {
 }
 
 /**
- * Orders projects as the Open document dialog lists them: by name, the unnamed ones last, then by id so the
- * order is stable.
+ * Orders projects as Documents lists them: by name, the unnamed ones last, then by id so the order
+ * is stable.
  */
 function compareProjects(a: Project, b: Project): number {
 	const nameA = shownName(a)
@@ -38,7 +38,7 @@ function compareProjects(a: Project, b: Project): number {
 	return nameA.localeCompare(nameB) || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0)
 }
 
-/** Every project, in the order the Open document dialog lists them (see `compareProjects`). */
+/** Every project, in the order Documents lists them (see `compareProjects`). */
 export function projectList({ projects }: Workspace): Project[] {
 	return Object.values(projects).toSorted(compareProjects)
 }

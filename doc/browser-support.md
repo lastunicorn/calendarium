@@ -12,7 +12,7 @@ The features below bound it: Chrome and Edge 125, Firefox 126, Safari 18. `vite.
 | CSS `zoom` (standard)                                          | `Preview.module.css`                                        | 1      | 126     | 3.1    | The preview doesn't zoom                            |
 | `content-visibility: auto`                                     | `Page.module.css`                                           | 85     | 125     | 18     | A year of pages is slow to scroll                   |
 | `popover` attribute, `popoverTarget`                           | `ui/fields/Info.tsx`                                        | 114    | 125     | 17     | The options' descriptions don't open                |
-| `:has()`                                                       | `OpenProjectDialog.module.css`                              | 105    | 121     | 15.4   | The chosen project's row isn't marked               |
+| `:has()`                                                       | `ProjectList.module.css`                                    | 105    | 121     | 15.4   | The chosen project's row isn't marked               |
 | CSS `light-dark()`                                             | `index.css`                                                 | 123    | 120     | 17.5   | The app's chrome loses its colors                   |
 | `lh` unit                                                      | `ProjectToolbar.module.css`                                 | 109    | 120     | 16.4   | The sections jump as a button's hint comes and goes |
 | `Array.prototype.toSorted`                                     | several                                                     | 110    | 115     | 16     | The app fails                                       |

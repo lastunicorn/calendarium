@@ -20,7 +20,7 @@ interface DialogProps {
 	onCancel: () => void
 	/**
 	 * Where the focus goes once the dialog closes when there is nothing to go back to: nothing had
-	 * it, or what had it is gone, like the empty preview's button the created project replaces.
+	 * it, or what had it is gone, like a row of Documents once the created project's preview shows.
 	 */
 	returnFocus?: () => HTMLElement | null
 	/** The question or the fields, above the actions. */

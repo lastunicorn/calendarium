@@ -3,19 +3,20 @@ import { useCallback, useRef, useState } from 'react'
 import styles from './App.module.css'
 import type { LayoutId } from './layouts'
 import { Main } from './ui/main/Main'
+import { shownContent, type MainContent } from './ui/main/mainContent'
 import { Sidebar } from './ui/sidebar/Sidebar'
 import { WorkspaceForm } from './ui/sidebar/WorkspaceForm'
 import { usePreferences } from './ui/usePreferences'
 import { useTheme } from './ui/useTheme'
 import { useWorkspace } from './ui/useWorkspace'
-import type { ProjectId } from './workspace/Project'
+import type { Project, ProjectId } from './workspace/Project'
 
 export default function App() {
 	const {
 		workspace,
 		saveFailure,
 		createProject,
-		openProject: openProjectById,
+		openProject,
 		renameProject,
 		updateOptions,
 		resetOptions,
@@ -24,17 +25,18 @@ export default function App() {
 	} = useWorkspace()
 	const { preferences, resizeSidebar, toggleSection, zoomPreview, changeTheme } = usePreferences()
 	useTheme(preferences.theme)
-	// Held here, since the project section and the empty preview both open it. It opens only when
-	// asked: with no project, the empty preview offers it, beside the sidebar's other actions.
+	// What the main area is asked to show, held here since the sidebar's Manage documents asks too;
+	// never stored, so a reload shows the preview. Documents shows anyway while no project is open.
+	const [requested, setRequested] = useState<MainContent>('preview')
+	const content = shownContent(requested, workspace)
+	// The sidebar's New document dialog, held here since it opens from the sidebar over the main area.
 	const [creatingProject, setCreatingProject] = useState(false)
-	// Held here too, as the project section's Change document asks for it.
-	const [choosingProject, setChoosingProject] = useState(false)
-	// Where the focus goes once a project is created with nothing to go back to: from the empty
-	// preview, whose button the new project replaces.
-	const changeProject = useRef<HTMLButtonElement>(null)
+	// Where the focus goes once Documents or the New document dialog is gone, when there is nothing
+	// to go back to.
+	const manageProjects = useRef<HTMLButtonElement>(null)
 
-	// Stable, since the dialog's opening effect depends on it.
-	const changeProjectElement = useCallback(() => changeProject.current, [])
+	// Stable, since the opening effects of Documents and the dialog depend on it.
+	const manageProjectsElement = useCallback(() => manageProjects.current, [])
 
 	function handleNewProject() {
 		setCreatingProject(true)
@@ -43,23 +45,35 @@ export default function App() {
 	function handleNewProjectCreate(name: string, layout: LayoutId) {
 		setCreatingProject(false)
 		createProject(name, layout)
+		setRequested('preview')
 	}
 
 	function handleNewProjectCancel() {
 		setCreatingProject(false)
 	}
 
-	function handleChangeProject() {
-		setChoosingProject(true)
+	function handleManageProjects() {
+		setRequested(content === 'projects' ? 'preview' : 'projects')
 	}
 
-	function handleOpenProjectSubmit(id: ProjectId) {
-		setChoosingProject(false)
-		openProjectById(id)
+	// Asked for too, as Documents may show only for want of a project, which this one may become.
+	function handleProjectsAdd(name: string, layout: LayoutId): ProjectId {
+		setRequested('projects')
+		return createProject(name, layout, false)
 	}
 
-	function handleOpenProjectCancel() {
-		setChoosingProject(false)
+	function handleProjectsOpen(id: ProjectId) {
+		openProject(id)
+		setRequested('preview')
+	}
+
+	function handleProjectsClose() {
+		setRequested('preview')
+	}
+
+	function handleImportProject(project: Project<ProjectId | null>) {
+		importProject(project)
+		setRequested('preview')
 	}
 
 	return (
@@ -72,31 +86,32 @@ export default function App() {
 			>
 				<WorkspaceForm
 					workspace={workspace}
+					content={content}
 					saveFailure={saveFailure}
 					onRenameProject={renameProject}
 					onUpdate={updateOptions}
 					onNewProject={handleNewProject}
-					onChangeProject={handleChangeProject}
-					onImportProject={importProject}
+					onManageProjects={handleManageProjects}
+					onImportProject={handleImportProject}
 					onDeleteProject={deleteProject}
 					openSection={preferences.openSection}
 					onToggleSection={toggleSection}
-					changeProjectRef={changeProject}
+					manageProjectsRef={manageProjects}
 				/>
 			</Sidebar>
 			<Main
 				workspace={workspace}
-				onNewProject={handleNewProject}
+				content={content}
+				onAddProject={handleProjectsAdd}
+				onOpenProject={handleProjectsOpen}
+				onCloseProjects={handleProjectsClose}
 				creatingProject={creatingProject}
 				onCreateProject={handleNewProjectCreate}
 				onCancelNewProject={handleNewProjectCancel}
-				choosingProject={choosingProject}
-				onOpenProject={handleOpenProjectSubmit}
-				onCancelOpenProject={handleOpenProjectCancel}
 				onResetOptions={resetOptions}
 				zoom={preferences.previewZoom}
 				onZoom={zoomPreview}
-				returnFocus={changeProjectElement}
+				returnFocus={manageProjectsElement}
 			/>
 		</div>
 	)

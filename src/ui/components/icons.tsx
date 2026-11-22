@@ -60,14 +60,16 @@ export function NewIcon() {
 	)
 }
 
-/** Two arrows passing each other: changes the open project for another one. */
-export function SwitchIcon() {
+/** A bulleted list: shows Documents, the projects kept in this browser. */
+export function DocumentsIcon() {
 	return (
 		<Icon>
-			<path d="M8 3L4 7l4 4" />
-			<path d="M4 7h16" />
-			<path d="M16 21l4-4-4-4" />
-			<path d="M20 17H4" />
+			<path d="M9 6h12" />
+			<path d="M9 12h12" />
+			<path d="M9 18h12" />
+			<path d="M4 6h.01" />
+			<path d="M4 12h.01" />
+			<path d="M4 18h.01" />
 		</Icon>
 	)
 }

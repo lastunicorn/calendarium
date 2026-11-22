@@ -17,7 +17,7 @@ A `Project` (`Project.ts`) is one calendar being made:
 
 ## Workspace
 
-The `Workspace` (`Workspace.ts`; `defaultWorkspace` is empty) holds every project kept in this browser, by id, and the `open` one, `null` when there is none: `openProject(workspace)` gives it, and `projectList` orders the projects as the Open project dialog lists them (by trimmed name, the unnamed ones last, then by id).
+The `Workspace` (`Workspace.ts`; `defaultWorkspace` is empty) holds every project kept in this browser, by id, and the `open` one, `null` when there is none: `openProject(workspace)` gives it, and `projectList` orders the projects as Documents lists them (by trimmed name, the unnamed ones last, then by id).
 
 `Workspace` is the aggregate root: it changes only through the commands of the pure `workspaceReducer`, each changed project passing through its layout's `normalize`, so what a command means is decided there, not in the UI:
 
