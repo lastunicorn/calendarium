@@ -32,15 +32,14 @@ export function useWorkspace() {
 		setSaveFailure(outcome.saved ? null : outcome.reason)
 	}, [workspace])
 
-	/** Adds a project with its layout's defaults, and opens it. */
-	function createProject(name: string, layout: LayoutId) {
-		dispatch({
-			type: 'createProject',
-			id: newProjectId(),
-			name,
-			layout,
-			env: currentEnvironment(),
-		})
+	/**
+	 * Adds a project with its layout's defaults, and opens it unless `open` is false while another
+	 * one is open; gives its id.
+	 */
+	function createProject(name: string, layout: LayoutId, open = true): ProjectId {
+		const id = newProjectId()
+		dispatch({ type: 'createProject', id, name, layout, env: currentEnvironment(), open })
+		return id
 	}
 
 	function openProject(id: ProjectId) {

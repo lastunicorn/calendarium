@@ -21,7 +21,7 @@ The `Workspace` (`Workspace.ts`; `defaultWorkspace` is empty) holds every projec
 
 `Workspace` is the aggregate root: it changes only through the commands of the pure `workspaceReducer`, each changed project passing through its layout's `normalize`, so what a command means is decided there, not in the UI:
 
-- `createProject`;
+- `createProject`, which opens the new project unless told not to (`open: false`) while another one is open, so a workspace with projects always has one open;
 - `openProject`;
 - `renameProject`;
 - `updateOptions` by a `Patch`, a deep partial that reaches a nested object's field alone, `applyPatch` in `core/data.ts`, ignored for another layout than the open project's;

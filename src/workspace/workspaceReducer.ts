@@ -15,8 +15,18 @@ import { openProject, projectList, type Workspace } from './Workspace'
  * none is open.
  */
 export type WorkspaceAction =
-	/** Adds a project of `layout` with its defaults in `env`, and opens it. */
-	| { type: 'createProject'; id: ProjectId; name: string; layout: LayoutId; env: Environment }
+	/**
+	 * Adds a project of `layout` with its defaults in `env`, and opens it when `open`, or when none
+	 * is open, so a workspace with projects always has one open. An id already taken changes nothing.
+	 */
+	| {
+			type: 'createProject'
+			id: ProjectId
+			name: string
+			layout: LayoutId
+			env: Environment
+			open: boolean
+	  }
 	/** Opens another project; an unknown id changes nothing. */
 	| { type: 'openProject'; id: ProjectId }
 	/** Renames the open project. */
@@ -71,7 +81,8 @@ export function workspaceReducer(workspace: Workspace, action: WorkspaceAction):
 				layout,
 				options: defaultLayoutOptions(layout, env),
 			})
-			return { ...withProject(workspace, project), open: id }
+			const open = action.open || openProject(workspace) === null ? id : workspace.open
+			return { ...withProject(workspace, project), open }
 		}
 		case 'openProject':
 			return action.id === workspace.open || !Object.hasOwn(workspace.projects, action.id)

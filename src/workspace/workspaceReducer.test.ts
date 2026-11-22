@@ -24,6 +24,7 @@ function created(names: string[], layout: Project['layout'] = 'yearly'): Workspa
 				name,
 				layout,
 				env: ENV,
+				open: true,
 			}),
 		defaultWorkspace(),
 	)
@@ -37,6 +38,7 @@ describe('createProject', () => {
 			name: 'Work',
 			layout: 'weekly',
 			env: ENV,
+			open: true,
 		})
 		expect(workspace.open).toBe(id(9))
 		expect(workspace.projects[id(9)]).toEqual({
@@ -57,8 +59,36 @@ describe('createProject', () => {
 				name: 'Work',
 				layout: 'daily',
 				env: ENV,
+				open: true,
 			}),
 		).toBe(workspace)
+	})
+
+	it('adds a project without opening it, the open one staying open', () => {
+		const home = created(['Home'])
+		const workspace = workspaceReducer(home, {
+			type: 'createProject',
+			id: id(9),
+			name: 'Work',
+			layout: 'weekly',
+			env: ENV,
+			open: false,
+		})
+		expect(workspace.open).toBe(id(1))
+		expect(workspace.projects[id(9)]?.name).toBe('Work')
+		expect(workspace.projects[id(1)]).toBe(home.projects[id(1)])
+	})
+
+	it('opens the project added without opening when none is open', () => {
+		const workspace = workspaceReducer(defaultWorkspace(), {
+			type: 'createProject',
+			id: id(9),
+			name: 'Work',
+			layout: 'weekly',
+			env: ENV,
+			open: false,
+		})
+		expect(workspace.open).toBe(id(9))
 	})
 })
 
