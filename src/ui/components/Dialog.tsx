@@ -8,6 +8,7 @@ import {
 } from 'react'
 
 import styles from './Dialog.module.css'
+import { firstField, takeFocus } from './focus'
 import { CloseIcon } from './icons'
 
 interface DialogProps {
@@ -50,19 +51,12 @@ export function Dialog({
 	useEffect(() => {
 		const element = dialog.current
 		if (element === null) return
-		// The page itself has the focus when nothing does.
-		const opener = document.activeElement === document.body ? null : document.activeElement
+		const restoreFocus = takeFocus()
 		element.showModal()
-		// A checked radio before the first field, so a list of choices starts on the chosen one.
-		const field =
-			body.current?.querySelector<HTMLElement>('input:checked') ??
-			body.current?.querySelector<HTMLElement>('input, select, textarea')
-		;(field ?? cancel.current)?.focus()
+		;(firstField(body.current) ?? cancel.current)?.focus()
 		return () => {
 			element.close()
-			const back = opener instanceof HTMLElement && opener.isConnected ? opener : null
-			// Asked once closed: the element may have appeared with the dialog's closing.
-			;(back ?? returnFocus?.())?.focus()
+			restoreFocus(returnFocus)
 		}
 	}, [returnFocus])
 
