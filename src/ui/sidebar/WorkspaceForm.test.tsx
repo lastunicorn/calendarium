@@ -9,7 +9,7 @@ import {
 	withSectionToggled,
 	type SectionId,
 } from '../../preferences/Preferences'
-import { projectOf, type Project } from '../../workspace/Project'
+import type { Project } from '../../workspace/Project'
 import { defaultWorkspace, type Workspace } from '../../workspace/Workspace'
 import { WorkspaceForm } from './WorkspaceForm'
 
@@ -30,9 +30,9 @@ function workspaceFor(
 /** The project section's actions, doing nothing, every save written. */
 const PROJECT_ACTIONS = {
 	saveFailure: null,
-	onOpenProject: noop,
 	onRenameProject: noop,
 	onNewProject: noop,
+	onChangeProject: noop,
 	onImportProject: noop,
 	onDeleteProject: noop,
 }
@@ -240,38 +240,24 @@ describe('WorkspaceForm', () => {
 		).toEqual(['Document'])
 	})
 
-	it('lists the projects by name with their layout, the open one chosen, and shows its name and layout', () => {
+	it('asks for another project from Change document, and shows the open one’s name and layout', () => {
 		const work = { ...workspaceFor('weekly').projects[ID], name: 'Work 2027' }
-		const untitled = projectOf({
-			id: '00000000-0000-4000-8000-000000000002',
-			name: ' ',
-			layout: 'daily',
-			options: defaultLayoutOptions('daily'),
-		})
-		const home = projectOf({
-			id: '00000000-0000-4000-8000-000000000003',
-			name: 'Home',
-			layout: 'yearly',
-			options: defaultLayoutOptions('yearly'),
-		})
-		const workspace = {
-			projects: { [work.id]: work, [untitled.id]: untitled, [home.id]: home },
-			open: work.id,
-		}
-		render(<Form workspace={workspace} onUpdate={noop} {...PROJECT_ACTIONS} />)
+		const onChangeProject = vi.fn()
+		render(
+			<Form
+				workspace={{ projects: { [work.id]: work }, open: work.id }}
+				onUpdate={noop}
+				{...PROJECT_ACTIONS}
+				onChangeProject={onChangeProject}
+			/>,
+		)
 		expect(
 			within(screen.getByRole('group', { name: 'Document' })).queryByRole('combobox'),
 		).toBeNull()
 		fireEvent.click(screen.getByRole('button', { name: 'Change document…' }))
-		const openProject = screen.getByRole('dialog', { name: 'Open document' })
-		const radios = within(openProject).getAllByRole<HTMLInputElement>('radio')
-		expect(radios.map((radio) => radio.closest('label')!.textContent)).toEqual([
-			'Home — Yearly',
-			'Work 2027 — Weekly',
-			'Untitled — Daily',
-		])
-		expect(radios.map((radio) => radio.checked)).toEqual([false, true, false])
-		fireEvent.click(within(openProject).getByRole('button', { name: 'Cancel' }))
+		expect(onChangeProject).toHaveBeenCalledOnce()
+		// The app holds the Open document dialog, not the form.
+		expect(screen.queryByRole('dialog')).toBeNull()
 		const name = screen.getByRole<HTMLInputElement>('textbox', { name: 'Name' })
 		expect(name.value).toBe('Work 2027')
 		expect(name.placeholder).toBe('Untitled')

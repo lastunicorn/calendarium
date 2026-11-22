@@ -3,15 +3,13 @@ import { useState, type Ref } from 'react'
 import type { Project, ProjectId } from '../../workspace/Project'
 import { projectFile } from '../../workspace/projectFile'
 import type { SaveFailure } from '../../workspace/storage'
-import { openProject, projectList, type Workspace } from '../../workspace/Workspace'
+import { openProject, type Workspace } from '../../workspace/Workspace'
 import { LayoutIcon } from '../components/icons'
 import { downloadFile } from '../download'
 import { ReadOnlyField } from '../fields/ReadOnlyField'
 import { TextField } from '../fields/TextField'
 import { LAYOUT_VIEWS } from '../layouts/registry'
-import { projectLabel } from '../projectLabel'
 import { DeleteProjectDialog } from './DeleteProjectDialog'
-import { OpenProjectDialog } from './OpenProjectDialog'
 import { OverwriteProjectDialog } from './OverwriteProjectDialog'
 import { describeSaveFailure } from './projectFileNotices'
 import styles from './ProjectSection.module.css'
@@ -23,12 +21,12 @@ interface ProjectSectionProps {
 	workspace: Workspace
 	/** Why the workspace's last change wasn't saved in this browser; `null` when it was. */
 	saveFailure: SaveFailure | null
-	/** Opens another project. */
-	onOpen: (id: ProjectId) => void
 	/** Renames the open project. */
 	onRename: (name: string) => void
 	/** Asks for a new project's name and layout. */
 	onNew: () => void
+	/** Asks which project to open instead. */
+	onChange: () => void
 	/** Adds an opened file's project, or replaces the one with its id, and opens it. */
 	onImport: (project: Project<ProjectId | null>) => void
 	/** Deletes a project, once confirmed. */
@@ -38,18 +36,18 @@ interface ProjectSectionProps {
 }
 
 /**
- * The project being made: the `ProjectToolbar`'s actions on it, starting a new project, changing
- * the open one for another of the projects kept in this browser, chosen in the Open document
- * dialog, deleting it, opening a project file, saving it to one and printing it, above the open
- * project's name and its layout, which it keeps. Opening a file of a project already kept, or
+ * The project being made: the `ProjectToolbar`'s actions on it, starting a new project, asking to
+ * change the open one for another of the projects kept in this browser, deleting it, opening a
+ * project file, saving it to one and printing it, above the open project's name and its layout,
+ * which it keeps. Opening a file of a project already kept, or
  * deleting one, asks first. While changes can't be saved in this browser, it says so. Always open.
  */
 export function ProjectSection({
 	workspace,
 	saveFailure,
-	onOpen,
 	onRename,
 	onNew,
+	onChange,
 	onImport,
 	onDelete,
 	changeProjectRef,
@@ -57,29 +55,10 @@ export function ProjectSection({
 	const project = openProject(workspace)
 	const fileOpener = useProjectFileOpener(workspace.projects, onImport)
 	const [confirmingDelete, setConfirmingDelete] = useState(false)
-	const [choosingProject, setChoosingProject] = useState(false)
-
-	const projectOptions = projectList(workspace).map((listed) => ({
-		value: listed.id,
-		label: projectLabel(listed),
-	}))
 
 	function handleToolbarNew() {
 		fileOpener.dismiss()
 		onNew()
-	}
-
-	function handleToolbarChange() {
-		setChoosingProject(true)
-	}
-
-	function handleOpenProjectSubmit(id: ProjectId) {
-		setChoosingProject(false)
-		onOpen(id)
-	}
-
-	function handleOpenProjectCancel() {
-		setChoosingProject(false)
 	}
 
 	function handleToolbarSave() {
@@ -106,7 +85,7 @@ export function ProjectSection({
 			<ProjectToolbar
 				hasProject={project !== null}
 				onNew={handleToolbarNew}
-				onChange={handleToolbarChange}
+				onChange={onChange}
 				onDelete={handleToolbarDelete}
 				onOpenFile={fileOpener.open}
 				onSave={handleToolbarSave}
@@ -142,14 +121,6 @@ export function ProjectSection({
 				</>
 			)}
 
-			{choosingProject && project !== null && (
-				<OpenProjectDialog
-					projects={projectOptions}
-					openId={project.id}
-					onOpen={handleOpenProjectSubmit}
-					onCancel={handleOpenProjectCancel}
-				/>
-			)}
 			{fileOpener.overwriting !== null && (
 				<OverwriteProjectDialog
 					existing={fileOpener.overwriting}

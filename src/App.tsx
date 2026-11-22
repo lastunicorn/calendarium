@@ -4,13 +4,16 @@ import styles from './App.module.css'
 import type { LayoutId } from './layouts'
 import { EmptyPreview } from './ui/preview/EmptyPreview'
 import { Preview } from './ui/preview/Preview'
+import { projectLabel } from './ui/projectLabel'
 import { NewProjectDialog } from './ui/sidebar/NewProjectDialog'
+import { OpenProjectDialog } from './ui/sidebar/OpenProjectDialog'
 import { Sidebar } from './ui/sidebar/Sidebar'
 import { WorkspaceForm } from './ui/sidebar/WorkspaceForm'
 import { usePreferences } from './ui/usePreferences'
 import { useTheme } from './ui/useTheme'
 import { useWorkspace } from './ui/useWorkspace'
-import { openProject } from './workspace/Workspace'
+import type { ProjectId } from './workspace/Project'
+import { openProject, projectList } from './workspace/Workspace'
 
 export default function App() {
 	const {
@@ -27,9 +30,16 @@ export default function App() {
 	const { preferences, resizeSidebar, toggleSection, zoomPreview, changeTheme } = usePreferences()
 	useTheme(preferences.theme)
 	const project = openProject(workspace)
+	// The Open document dialog's rows, in the order it lists them.
+	const projectOptions = projectList(workspace).map((listed) => ({
+		value: listed.id,
+		label: projectLabel(listed),
+	}))
 	// Held here, since the project section and the empty preview both open it. It opens only when
 	// asked: with no project, the empty preview offers it, beside the sidebar's other actions.
 	const [creatingProject, setCreatingProject] = useState(false)
+	// Held here too, as the project section's Change document asks for it.
+	const [choosingProject, setChoosingProject] = useState(false)
 	// Where the focus goes once a project is created with nothing to go back to: from the empty
 	// preview, whose button the new project replaces.
 	const changeProject = useRef<HTMLButtonElement>(null)
@@ -50,6 +60,19 @@ export default function App() {
 		setCreatingProject(false)
 	}
 
+	function handleChangeProject() {
+		setChoosingProject(true)
+	}
+
+	function handleOpenProjectSubmit(id: ProjectId) {
+		setChoosingProject(false)
+		openProjectById(id)
+	}
+
+	function handleOpenProjectCancel() {
+		setChoosingProject(false)
+	}
+
 	return (
 		<div className={styles.app}>
 			<Sidebar
@@ -61,10 +84,10 @@ export default function App() {
 				<WorkspaceForm
 					workspace={workspace}
 					saveFailure={saveFailure}
-					onOpenProject={openProjectById}
 					onRenameProject={renameProject}
 					onUpdate={updateOptions}
 					onNewProject={handleNewProject}
+					onChangeProject={handleChangeProject}
 					onImportProject={importProject}
 					onDeleteProject={deleteProject}
 					openSection={preferences.openSection}
@@ -87,6 +110,14 @@ export default function App() {
 					onCreate={handleNewProjectCreate}
 					onCancel={handleNewProjectCancel}
 					returnFocus={changeProjectElement}
+				/>
+			)}
+			{choosingProject && project !== null && (
+				<OpenProjectDialog
+					projects={projectOptions}
+					openId={project.id}
+					onOpen={handleOpenProjectSubmit}
+					onCancel={handleOpenProjectCancel}
 				/>
 			)}
 		</div>

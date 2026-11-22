@@ -16,13 +16,13 @@ interface WorkspaceFormProps {
 	workspace: Workspace
 	/** Why the workspace's last change wasn't saved in this browser; `null` when it was. */
 	saveFailure: SaveFailure | null
-	/** Opens another project. */
-	onOpenProject: (id: ProjectId) => void
 	/** Renames the open project. */
 	onRenameProject: (name: string) => void
 	onUpdate: UpdateLayoutOptions
 	/** Asks for a new project's name and layout. */
 	onNewProject: () => void
+	/** Asks which project to open instead. */
+	onChangeProject: () => void
 	/** Adds an opened file's project, or replaces the one with its id, and opens it. */
 	onImportProject: (project: Project<ProjectId | null>) => void
 	onDeleteProject: (id: ProjectId) => void
@@ -63,10 +63,10 @@ function LayoutForm<K extends LayoutId>({ layout, options, onUpdate }: LayoutFor
 export function WorkspaceForm({
 	workspace,
 	saveFailure,
-	onOpenProject,
 	onRenameProject,
 	onUpdate,
 	onNewProject,
+	onChangeProject,
 	onImportProject,
 	onDeleteProject,
 	openSection,
@@ -86,9 +86,9 @@ export function WorkspaceForm({
 				<ProjectSection
 					workspace={workspace}
 					saveFailure={saveFailure}
-					onOpen={onOpenProject}
 					onRename={onRenameProject}
 					onNew={onNewProject}
+					onChange={onChangeProject}
 					onImport={onImportProject}
 					onDelete={onDeleteProject}
 					changeProjectRef={changeProjectRef}

@@ -234,6 +234,16 @@ describe('App projects', () => {
 		expect(document.activeElement).toBe(changeProjectButton())
 	})
 
+	it('lists the projects by name with their layout, the unnamed ones last', () => {
+		renderEmpty()
+		createProject('Work 2027', 'weekly')
+		createProject(' ', 'daily')
+		createProject('Home', 'yearly')
+		pick('Work 2027 — Weekly')
+		expect(projectLabels()).toEqual(['Home — Yearly', 'Work 2027 — Weekly', 'Untitled — Daily'])
+		expect(openLabel()).toBe('Work 2027 — Weekly')
+	})
+
 	it('renames the open project, the Open document dialog following', () => {
 		renderEmpty()
 		createProject('b', 'yearly')
