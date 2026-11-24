@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import { defaultLayoutOptions } from '../layouts'
+import { TEST_ENV } from '../test/environment'
 import type { Project } from './Project'
 import { defaultWorkspace, neighborOf, openProject, projectList, type Workspace } from './Workspace'
 
@@ -11,7 +12,7 @@ function id(n: number): string {
 
 /** A yearly project named `name`, with the `n`th test id. */
 function project(n: number, name: string): Project {
-	return { id: id(n), name, layout: 'yearly', options: defaultLayoutOptions('yearly') }
+	return { id: id(n), name, layout: 'yearly', options: defaultLayoutOptions('yearly', TEST_ENV) }
 }
 
 /** A workspace of `projects`, `open` open. */

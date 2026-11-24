@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
+import { TEST_ENV } from '../../test/environment'
 import { parseOptions } from '../LayoutSpec'
 import { DAILY_MIGRATIONS } from './migrations'
 import { DAILY_SPEC } from './options'
@@ -33,11 +34,12 @@ describe('daily migrations', () => {
 		const parsed = parseOptions(
 			DAILY_SPEC,
 			from5(from3({ highlightWeekends: 'columns', showMiniMonth: false })),
+			TEST_ENV,
 		)
 		expect(parsed).toMatchObject({
 			header: { highlightWeekendDays: true },
 			miniMonth: {
-				...DAILY_SPEC.defaults().miniMonth,
+				...DAILY_SPEC.defaults(TEST_ENV).miniMonth,
 				highlightWeekends: 'columns',
 				show: false,
 			},
@@ -122,7 +124,7 @@ describe('daily migrations from 5, the groups', () => {
 	})
 
 	it('give options that parse, keeping every value', () => {
-		expect(parseOptions(DAILY_SPEC, from5(options))).toMatchObject(grouped)
+		expect(parseOptions(DAILY_SPEC, from5(options), TEST_ENV)).toMatchObject(grouped)
 	})
 
 	it('leave out a group none of the fields fill', () => {

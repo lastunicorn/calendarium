@@ -2,6 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 
 import { defaultLayoutOptions } from '../../layouts'
+import { TEST_ENV } from '../../test/environment'
 import { projectOf } from '../../workspace/Project'
 import { ProjectDetails } from './ProjectDetails'
 
@@ -18,7 +19,7 @@ describe('ProjectDetails', () => {
 			id: '00000000-0000-4000-8000-000000000001',
 			name: ' ',
 			layout: 'weekly',
-			options: defaultLayoutOptions('weekly'),
+			options: defaultLayoutOptions('weekly', TEST_ENV),
 		})
 		const onDelete = vi.fn()
 		render(<ProjectDetails project={project} onDelete={onDelete} />)

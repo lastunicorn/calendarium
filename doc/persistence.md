@@ -29,7 +29,7 @@ The `Workspace` (`Workspace.ts`; `defaultWorkspace` is empty) holds every projec
 - `deleteProject`, which opens the deleted open project's neighbor in `projectList` (`neighborOf`, in `Workspace.ts`);
 - and `importProject`, which adds a project or replaces the one with its id.
 
-Ids, and the `Environment` `createProject` and `resetOptions` take the defaults in, come in the commands, made by `ui/useWorkspace`, so the reducer stays pure.
+Ids, and the `Environment` `createProject` and `resetOptions` take the defaults in, come in the commands, made by `ui/useWorkspace` from the ports, so the reducer stays pure.
 
 ## Storage
 
@@ -51,7 +51,7 @@ The 5.x data (`calendarium-config`) is migrated on the first load without a work
 
 ## The serialized project
 
-A file and a stored project are the same JSON, the serialized project (`projectDocument.ts`, its only reader and writer: `PROJECT_FORMAT`, `serializeProject(project, { pretty })`, `parseProjectDocument`): `{ format, version, app, id, name, layout, options }`, the tags beside the options so no option can collide with one, the options' groups in sidebar order (the key order of each layout's `defaults()`), every value written, defaults included, so a change of default never changes how an old calendar prints.
+A file and a stored project are the same JSON, the serialized project (`projectDocument.ts`, its only reader and writer: `PROJECT_FORMAT`, `serializeProject(project, { pretty })`, `parseProjectDocument`): `{ format, version, app, id, name, layout, options }`, the tags beside the options so no option can collide with one, the options' groups in sidebar order (the key order of each layout's `defaults`), every value written, defaults included, so a change of default never changes how an old calendar prints.
 
 Reading one:
 

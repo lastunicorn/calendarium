@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import { defaultLayoutOptions } from '../../layouts'
+import { TEST_ENV } from '../../test/environment'
 import {
 	describeOpened,
 	describeRejected,
@@ -15,7 +16,7 @@ function opened(ignored: string[], newer: boolean): OpenedFile {
 			id: null,
 			name: '',
 			layout: 'monthly',
-			options: defaultLayoutOptions('monthly'),
+			options: defaultLayoutOptions('monthly', TEST_ENV),
 		},
 		ignored,
 		newer,

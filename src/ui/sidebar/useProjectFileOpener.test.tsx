@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import { describe, expect, it, vi } from 'vitest'
 
 import { defaultLayoutOptions } from '../../layouts'
+import { TEST_ENV } from '../../test/environment'
 import { testPorts } from '../../test/ports'
 import { projectOf, type Project } from '../../workspace/Project'
 import { serializeProject } from '../../workspace/projectDocument'
@@ -14,7 +15,12 @@ const ID = '00000000-0000-4000-8000-000000000001'
 
 /** A monthly project named `name`, with the id `ID`. */
 function monthly(name: string): Project {
-	return projectOf({ id: ID, name, layout: 'monthly', options: defaultLayoutOptions('monthly') })
+	return projectOf({
+		id: ID,
+		name,
+		layout: 'monthly',
+		options: defaultLayoutOptions('monthly', TEST_ENV),
+	})
 }
 
 /** A file named `fileName` holding `project`. */

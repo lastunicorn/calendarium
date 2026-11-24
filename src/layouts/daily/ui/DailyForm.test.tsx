@@ -1,12 +1,13 @@
 import { fireEvent, screen, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 
+import { TEST_ENV } from '../../../test/environment'
 import { formSectionTitles, renderWithSectionsOpen } from '../../../test/formSections'
 import { DAILY_SPEC, type DailyCalendarOptions } from '../options'
 import { CalendarSection } from './CalendarSection'
 import { DailyForm } from './DailyForm'
 
-const CALENDAR_DEFAULTS = DAILY_SPEC.defaults().calendar
+const CALENDAR_DEFAULTS = DAILY_SPEC.defaults(TEST_ENV).calendar
 
 /** The daily Calendar section showing `options`, and its update. */
 function renderCalendarSection(options: DailyCalendarOptions = CALENDAR_DEFAULTS) {
@@ -19,7 +20,7 @@ function renderCalendarSection(options: DailyCalendarOptions = CALENDAR_DEFAULTS
 
 describe('DailyForm', () => {
 	it('shows the header, mini calendar and content options, without a title', () => {
-		expect(formSectionTitles(DailyForm, DAILY_SPEC.defaults())).toEqual([
+		expect(formSectionTitles(DailyForm, DAILY_SPEC.defaults(TEST_ENV))).toEqual([
 			'Calendar',
 			'Events',
 			'Header',

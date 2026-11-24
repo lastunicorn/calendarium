@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import { applyPatch, type Patch } from '../../core/data'
+import { TEST_ENV } from '../../test/environment'
 import { calendarModel } from '../common'
 import { defaultLayoutOptions } from '../index'
 import type { WeeklyOptions } from './options'
@@ -8,7 +9,7 @@ import { planWeekPages, type WeekPageDay, type WeekPages } from './pages'
 
 /** The plan of the default week layout for `year`, in British English with Monday weeks, changed by `changes`. */
 function plan(year: number, changes: Patch<WeeklyOptions> = {}) {
-	const options = applyPatch(defaultLayoutOptions('weekly'), {
+	const options = applyPatch(defaultLayoutOptions('weekly', TEST_ENV), {
 		calendar: { year, locale: 'en-GB', weekStart: 1 },
 		...changes,
 	})
@@ -248,7 +249,7 @@ describe('planWeekPages', () => {
 
 	it('stacks the days only when horizontal, whatever the page', () => {
 		const portrait = {
-			...defaultLayoutOptions('weekly').page,
+			...defaultLayoutOptions('weekly', TEST_ENV).page,
 			orientation: 'portrait' as const,
 		}
 		expect(plan(2026).weeks[0].stacked).toBe(false)

@@ -1,7 +1,15 @@
+import type { Environment } from '../core/environment'
 import type { Ports } from '../ports'
+import type { EnvironmentAccess } from '../ports/EnvironmentAccess'
 import type { IdAccess } from '../ports/IdAccess'
 import type { PrinterAccess } from '../ports/PrinterAccess'
 import { BROWSER_PROJECT_FILES, type ProjectFileAccess } from '../ports/ProjectFileAccess'
+import { TEST_ENV } from './environment'
+
+/** An environment that stays `env`, `TEST_ENV` unless given. */
+export function fixedEnvironment(env: Environment = TEST_ENV): EnvironmentAccess {
+	return { current: () => env }
+}
 
 /**
  * Ids counting up from 1, each a lowercase v4 UUID (`00000000-0000-4000-8000-000000000001`, …), so
@@ -61,6 +69,7 @@ function countingPrinter(): CountingPrinter {
 
 /** The ports a test runs on: each records what it is asked, and reaches nothing outside the test. */
 export interface TestPorts extends Ports {
+	environment: EnvironmentAccess
 	ids: IdAccess
 	projectFiles: RecordingProjectFiles
 	printer: CountingPrinter
@@ -69,6 +78,7 @@ export interface TestPorts extends Ports {
 /** Fresh test ports, for a test to give the app (`PortsContext`) and read back. */
 export function testPorts(): TestPorts {
 	return {
+		environment: fixedEnvironment(),
 		ids: sequentialIds(),
 		projectFiles: recordingProjectFiles(),
 		printer: countingPrinter(),

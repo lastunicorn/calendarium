@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
+import { TEST_ENV } from '../../test/environment'
 import { calendarModel } from '../common'
 import { defaultLayoutOptions } from '../index'
 import type { YearlyHeader, YearlyOptions } from './options'
@@ -8,7 +9,7 @@ import { planYearPage } from './pages'
 /** The plan of the default year layout for 2026, in British English with Monday weeks. */
 function plan(changes: Partial<YearlyOptions> = {}) {
 	const options: YearlyOptions = {
-		...defaultLayoutOptions('yearly'),
+		...defaultLayoutOptions('yearly', TEST_ENV),
 		calendar: { year: 2026, locale: 'en-GB', weekStart: 1 },
 		...changes,
 	}
@@ -17,7 +18,7 @@ function plan(changes: Partial<YearlyOptions> = {}) {
 
 /** The default header with `changes`. */
 function header(changes: Partial<YearlyHeader>): YearlyHeader {
-	return { ...defaultLayoutOptions('yearly').header, ...changes }
+	return { ...defaultLayoutOptions('yearly', TEST_ENV).header, ...changes }
 }
 
 describe('planYearPage', () => {

@@ -1,11 +1,12 @@
 import { describe, expect, it } from 'vitest'
 
+import { TEST_ENV } from '../../test/environment'
 import { parseOptions } from '../LayoutSpec'
 import { YEARLY_SPEC } from './options'
 
 describe('yearly options', () => {
 	it('start portrait, with one-letter weekdays, the months medium', () => {
-		const defaults = YEARLY_SPEC.defaults()
+		const defaults = YEARLY_SPEC.defaults(TEST_ENV)
 		expect(defaults.page.orientation).toBe('portrait')
 		expect(defaults.content.weekdayFormat).toBe('narrow')
 		expect(defaults.content.monthSize).toBe('medium')
@@ -13,7 +14,7 @@ describe('yearly options', () => {
 
 	it('keeps valid fields', () => {
 		const options = {
-			...YEARLY_SPEC.defaults(),
+			...YEARLY_SPEC.defaults(TEST_ENV),
 			header: { title: 'Family', subtitle: 'Birthdays', fontSize: 40 },
 			content: {
 				monthSize: 'large',
@@ -23,7 +24,7 @@ describe('yearly options', () => {
 			},
 		}
 		const ignored: string[] = []
-		expect(parseOptions(YEARLY_SPEC, options, ignored)).toEqual(options)
+		expect(parseOptions(YEARLY_SPEC, options, TEST_ENV, ignored)).toEqual(options)
 		expect(ignored).toEqual([])
 	})
 
@@ -38,7 +39,9 @@ describe('yearly options', () => {
 				showWeekNumbers: 'yes',
 			},
 		}
-		expect(parseOptions(YEARLY_SPEC, options, ignored)).toEqual(YEARLY_SPEC.defaults())
+		expect(parseOptions(YEARLY_SPEC, options, TEST_ENV, ignored)).toEqual(
+			YEARLY_SPEC.defaults(TEST_ENV),
+		)
 		expect(ignored).toEqual([
 			'header.title',
 			'header.subtitle',
@@ -51,7 +54,9 @@ describe('yearly options', () => {
 	})
 
 	it('keeps the small month grids to abbreviated weekday names', () => {
-		const parsed = parseOptions(YEARLY_SPEC, { content: { weekdayFormat: 'full' } })
-		expect(parsed.content.weekdayFormat).toBe(YEARLY_SPEC.defaults().content.weekdayFormat)
+		const parsed = parseOptions(YEARLY_SPEC, { content: { weekdayFormat: 'full' } }, TEST_ENV)
+		expect(parsed.content.weekdayFormat).toBe(
+			YEARLY_SPEC.defaults(TEST_ENV).content.weekdayFormat,
+		)
 	})
 })

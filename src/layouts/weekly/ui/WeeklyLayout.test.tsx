@@ -2,12 +2,13 @@ import { render } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 
 import { applyPatch, type Patch } from '../../../core/data'
+import { TEST_ENV } from '../../../test/environment'
 import { WEEKLY_SPEC, type WeeklyOptions } from '../options'
 import { WeeklyLayout } from './WeeklyLayout'
 
 /** The default options for 2025 in Monday weeks, with `changes` on top. */
 function optionsWith(changes: Patch<WeeklyOptions> = {}): WeeklyOptions {
-	return applyPatch(WEEKLY_SPEC.defaults(), {
+	return applyPatch(WEEKLY_SPEC.defaults(TEST_ENV), {
 		calendar: { year: 2025, locale: 'en-GB', weekStart: 1 },
 		...changes,
 	})

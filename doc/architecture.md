@@ -29,8 +29,8 @@ It also fails on a read of the environment outside the files allowed to make it,
 
 | Read                                                     | Only in                                                                                                                         |
 | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `new Date(`                                              | `core/calendar.ts` (`utcDate`), `core/environment.ts`                                                                           |
-| `navigator`                                              | `core/environment.ts`                                                                                                           |
+| `new Date(`                                              | `core/calendar.ts` (`utcDate`), `ports/EnvironmentAccess.ts`                                                                    |
+| `navigator`                                              | `ports/EnvironmentAccess.ts`                                                                                                    |
 | `localStorage`, `sessionStorage`                         | `workspace/storage.ts`, `preferences/storage.ts`                                                                                |
 | `crypto.`                                                | `ports/IdAccess.ts`                                                                                                             |
 | `window.print`, `print()`                                | `ports/PrinterAccess.ts`                                                                                                        |
@@ -46,12 +46,12 @@ The generic subdomains: calendar, languages and paper, knowing nothing of layout
 ### Calendar dates
 
 - `buildMonth` always returns 6 weeks so every month has the same height.
-- A date is a `PlainDate` (`{ year, month, day, weekday, key }`, `key` = `YYYY-MM-DD`, the React key, `weekday` a `Weekday`, 0 = Sunday … 6 as in `Date.getDay()`; a `CalendarDay` extends it, as does a `WeekDay`, seven of which make a `Week`), never a `Date`: `plainDate` builds one, a weekday's column from the week start is `weekdayColumn`, and `utcDate` (UTC midnight, `setUTCFullYear`, so no DST and years below 100 as written) is the only place a `Date` is built, for `Intl` formatting (`dateFormatter` formats in UTC). See [ADR 0001](adr/0001-calendar-dates-as-plain-records.md).
+- A date is a `PlainDate` (`{ year, month, day, weekday, key }`, `key` = `YYYY-MM-DD`, the React key, `weekday` a `Weekday`, 0 = Sunday … 6 as in `Date.getDay()`; a `CalendarDay` extends it, as does a `WeekDay`, seven of which make a `Week`), never a `Date`: `plainDate` builds one, a weekday's column from the week start is `weekdayColumn`, and `utcDate` (UTC midnight, `setUTCFullYear`, so no DST and years below 100 as written) is the only place a `Date` is built for a date, for `Intl` formatting (`dateFormatter` formats in UTC); the other is the clock's read, in `EnvironmentAccess`. See [ADR 0001](adr/0001-calendar-dates-as-plain-records.md).
 - The Gregorian range (`MIN_YEAR`, `isYear`) is in `calendar.ts`.
 
 ### Environment
 
-What the app reads from where it runs, today's year and the browser's language, is an `Environment` (`environment.ts`), read only by `currentEnvironment` (the other `Date`) and passed down: `commonDefaults(env)`, each spec's `defaults(env)`, `defaultLayoutOptions`, `hasDefaultOptions` and `parseOptions` take it, the current one when not given, so tests pass a fixed one; `src/layers.test.ts` fails on a `new Date(` or `navigator` read anywhere else outside tests ([the layers test](#the-layers-test)).
+What the app reads from where it runs, today's year and the browser's language, is an `Environment` (`environment.ts`), a value the composition root takes from the environment port (`EnvironmentAccess`, [below](#srcports)) and passes down: `commonDefaults(env)`, each spec's `defaults(env)`, `defaultLayoutOptions`, `hasDefaultOptions`, `parseOptions`, the parsing of a serialized project or a project file, and `loadWorkspace` require it, so nothing in the domain reads the clock, and tests pass a fixed one (`TEST_ENV`, `src/test/environment.ts`); `src/layers.test.ts` fails on a `new Date(` or `navigator` read anywhere but the port, outside tests ([the layers test](#the-layers-test)).
 
 ### Languages
 
@@ -79,6 +79,7 @@ What the app needs from outside it: each external resource it reaches, behind a 
 
 | Port                | The need                                                                 | Browser adapter                                               |
 | ------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------- |
+| `EnvironmentAccess` | What a new calendar starts from: this year, the user's language          | `BROWSER_ENVIRONMENT`: the system clock, `navigator.language` |
 | `IdAccess`          | New project ids, unique across tabs, browsers and files                  | `BROWSER_IDS`: random v4 UUIDs, from `crypto.getRandomValues` |
 | `ProjectFileAccess` | A project file the user chose, read unless too large; one saved for them | `BROWSER_PROJECT_FILES`: the file input's `File`, a download  |
 | `PrinterAccess`     | The pages printed, on paper or to a PDF                                  | `BROWSER_PRINTER`: `window.print()`                           |

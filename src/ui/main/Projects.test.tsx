@@ -3,6 +3,7 @@ import { useReducer } from 'react'
 import { describe, expect, it, vi } from 'vitest'
 
 import { defaultLayoutOptions, LAYOUT_IDS, type LayoutId } from '../../layouts'
+import { TEST_ENV } from '../../test/environment'
 import { projectOf, type ProjectId } from '../../workspace/Project'
 import type { Workspace } from '../../workspace/Workspace'
 import { workspaceReducer } from '../../workspace/workspaceReducer'
@@ -20,7 +21,7 @@ function noId(): ProjectId {
 
 /** A project of `layout` named `name`, with its defaults. */
 function project(id: ProjectId, name: string, layout: LayoutId) {
-	return projectOf({ id, name, layout, options: defaultLayoutOptions(layout) })
+	return projectOf({ id, name, layout, options: defaultLayoutOptions(layout, TEST_ENV) })
 }
 
 /** Home (yearly, open) and Work (weekly), and Desk (monthly) when `withDesk`. */

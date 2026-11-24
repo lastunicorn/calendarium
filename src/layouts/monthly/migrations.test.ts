@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
+import { TEST_ENV } from '../../test/environment'
 import { parseOptions } from '../LayoutSpec'
 import { MONTHLY_MIGRATIONS } from './migrations'
 import { MONTHLY_SPEC } from './options'
@@ -66,7 +67,7 @@ describe('monthly migrations', () => {
 	})
 
 	it('give options that parse, keeping every value', () => {
-		expect(parseOptions(MONTHLY_SPEC, from5(options))).toMatchObject(grouped)
+		expect(parseOptions(MONTHLY_SPEC, from5(options), TEST_ENV)).toMatchObject(grouped)
 	})
 
 	it('add no mini month when there were no adjacent months', () => {

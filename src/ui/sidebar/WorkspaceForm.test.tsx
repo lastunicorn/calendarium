@@ -9,8 +9,11 @@ import {
 	withSectionToggled,
 	type SectionId,
 } from '../../preferences/Preferences'
+import { TEST_ENV } from '../../test/environment'
+import { testPorts } from '../../test/ports'
 import type { Project } from '../../workspace/Project'
 import { defaultWorkspace, type Workspace } from '../../workspace/Workspace'
+import { PortsContext } from '../ports'
 import { WorkspaceForm } from './WorkspaceForm'
 
 function noop() {}
@@ -20,7 +23,7 @@ const ID = '00000000-0000-4000-8000-000000000001'
 /** A workspace holding one project of `layout`, with its defaults or `options`, open. */
 function workspaceFor(
 	layout: LayoutId = 'yearly',
-	options: object = defaultLayoutOptions(layout),
+	options: object = defaultLayoutOptions(layout, TEST_ENV),
 	id = ID,
 ): Workspace {
 	const project = { id, name: '', layout, options } as Project
@@ -39,20 +42,26 @@ const PROJECT_ACTIONS = {
 
 type FormProps = Omit<ComponentProps<typeof WorkspaceForm>, 'openSection' | 'onToggleSection'>
 
-/** The form with its open section held as the app holds it, in the viewer's preferences. */
+/**
+ * The form with its open section held as the app holds it, in the viewer's preferences, on test
+ * ports, so its sections' defaults are in the test environment.
+ */
 function Form(props: FormProps) {
 	const [preferences, setPreferences] = useState(defaultPreferences)
+	const [ports] = useState(testPorts)
 
 	function handleToggleSection(id: SectionId) {
 		setPreferences((current) => withSectionToggled(current, id))
 	}
 
 	return (
-		<WorkspaceForm
-			{...props}
-			openSection={preferences.openSection}
-			onToggleSection={handleToggleSection}
-		/>
+		<PortsContext value={ports}>
+			<WorkspaceForm
+				{...props}
+				openSection={preferences.openSection}
+				onToggleSection={handleToggleSection}
+			/>
+		</PortsContext>
 	)
 }
 
@@ -157,7 +166,7 @@ describe('WorkspaceForm', () => {
 		fireEvent.click(screen.getByRole('button', { name: 'Page' }))
 		expect(screen.queryByRole('group', { name: 'Spine' })).toBeNull()
 
-		const layout = defaultLayoutOptions('yearly')
+		const layout = defaultLayoutOptions('yearly', TEST_ENV)
 		const mirrored = workspaceFor('yearly', {
 			...layout,
 			page: { ...layout.page, mirrorMargins: true },
@@ -176,7 +185,7 @@ describe('WorkspaceForm', () => {
 
 	it('sets every margin from the top one with equal margins, unavailable with mirror margins', () => {
 		const workspace = workspaceFor()
-		const layout = defaultLayoutOptions('yearly')
+		const layout = defaultLayoutOptions('yearly', TEST_ENV)
 		const onUpdate = vi.fn()
 		function withPage(page: Partial<typeof layout.page>) {
 			return workspaceFor('yearly', { ...layout, page: { ...layout.page, ...page } })
@@ -313,7 +322,7 @@ describe('WorkspaceForm', () => {
 		const question = screen.getByRole('alertdialog')
 		expect(document.activeElement).toBe(within(question).getByRole('button', { name: 'Reset' }))
 		fireEvent.click(within(question).getByRole('button', { name: 'Reset' }))
-		const { calendar } = defaultLayoutOptions('yearly')
+		const { calendar } = defaultLayoutOptions('yearly', TEST_ENV)
 		expect(onUpdate).toHaveBeenCalledWith('yearly', { calendar })
 		expect(screen.queryByRole('alertdialog')).toBeNull()
 	})

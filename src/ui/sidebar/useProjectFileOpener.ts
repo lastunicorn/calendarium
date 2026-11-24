@@ -42,7 +42,7 @@ export function useProjectFileOpener(
 	projects: Workspace['projects'],
 	onImport: (project: Project<ProjectId | null>) => void,
 ): ProjectFileOpener {
-	const { projectFiles } = usePorts()
+	const { environment, projectFiles } = usePorts()
 	const [error, setError] = useState('')
 	const [notice, setNotice] = useState('')
 	const [pendingOverwrite, setPendingOverwrite] = useState<PendingOverwrite | null>(null)
@@ -55,7 +55,9 @@ export function useProjectFileOpener(
 
 	async function open(file: ChosenFile) {
 		const read = await projectFiles.read(file, MAX_PROJECT_FILE_SIZE)
-		const opened = read.ok ? parseProjectFile(read.text, read.name) : read
+		const opened = read.ok
+			? parseProjectFile(read.text, read.name, environment.current())
+			: read
 		setError('')
 		setNotice('')
 		if (!opened.ok) {

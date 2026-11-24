@@ -2,6 +2,7 @@ import { fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { defaultLayoutOptions } from '../../layouts'
+import { TEST_ENV } from '../../test/environment'
 import { testPorts } from '../../test/ports'
 import type { Project } from '../../workspace/Project'
 import { serializeProject } from '../../workspace/projectDocument'
@@ -13,13 +14,13 @@ const WORK: Project = {
 	id: '3f0c9a52-7d1e-4b8a-9c61-2e5f4a8b7d10',
 	name: 'Work 2027',
 	layout: 'weekly',
-	options: defaultLayoutOptions('weekly'),
+	options: defaultLayoutOptions('weekly', TEST_ENV),
 }
 const HOME: Project = {
 	id: '8a1d2c3b-4e5f-4a6b-8c7d-9e0f1a2b3c4d',
 	name: '',
 	layout: 'daily',
-	options: defaultLayoutOptions('daily'),
+	options: defaultLayoutOptions('daily', TEST_ENV),
 }
 
 function store(project: Project) {

@@ -3,12 +3,13 @@ import { describe, expect, it } from 'vitest'
 
 import type { PageSetup } from '../../core/paper'
 import { commonDefaults } from '../../layouts/common'
+import { TEST_ENV } from '../../test/environment'
 import { Page } from '../layouts/Page'
 import { Spreads } from './Spreads'
 
 /** Spreads of `count` pages, with the default page setup and `changes`. */
 function spreadsOf(count: number, changes: Partial<PageSetup> = {}) {
-	const setup = { ...commonDefaults().page, ...changes }
+	const setup = { ...commonDefaults(TEST_ENV).page, ...changes }
 	const { container } = render(
 		<Spreads setup={setup}>
 			{Array.from({ length: count }, (_, index) => (

@@ -154,7 +154,7 @@ describe('updateOptions', () => {
 			layout: 'daily',
 			patch: { page: { margins: { top: 5 } }, miniMonth: { size: 'large' } },
 		})
-		const { page, miniMonth } = defaultLayoutOptions('daily')
+		const { page, miniMonth } = defaultLayoutOptions('daily', ENV)
 		expect(openProject(updated)?.options).toMatchObject({
 			// The top margin alone changed, so the margins are no longer equal.
 			page: { ...page, margins: { ...page.margins, top: 5 }, equalMargins: false },
@@ -164,7 +164,7 @@ describe('updateOptions', () => {
 
 	it('changes nothing when the patch changes nothing', () => {
 		const workspace = created(['Week'], 'weekly')
-		const { calendar, page } = defaultLayoutOptions('weekly')
+		const { calendar, page } = defaultLayoutOptions('weekly', ENV)
 		const patch = {
 			calendar: { year: calendar.year },
 			page: { margins: { top: page.margins.top } },
@@ -260,7 +260,7 @@ describe('deleteProject', () => {
 })
 
 describe('importProject', () => {
-	const defaults = defaultLayoutOptions('monthly')
+	const defaults = defaultLayoutOptions('monthly', ENV)
 	const imported: Project = {
 		id: id(9),
 		name: 'Office',

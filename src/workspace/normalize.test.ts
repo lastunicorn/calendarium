@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import { defaultLayoutOptions, LAYOUT_IDS, normalizeLayout } from '../layouts'
+import { TEST_ENV } from '../test/environment'
 import { LEGACY_FILE_FORMAT } from './legacy'
 import { parseProjectFile } from './projectFile'
 import { defaultWorkspace, openProject } from './Workspace'
@@ -14,7 +15,7 @@ const DIFFERING = { top: 5, right: 10, bottom: 15, left: 20 }
 describe('normalizeLayout', () => {
 	it('applies the page rules in every layout', () => {
 		for (const layout of LAYOUT_IDS) {
-			const workspace = defaultLayoutOptions(layout)
+			const workspace = defaultLayoutOptions(layout, TEST_ENV)
 			expect(workspace.page.equalMargins).toBe(true)
 			const differing = { ...workspace.page, margins: DIFFERING }
 			expect(normalizeLayout(layout, { ...workspace, page: differing }).page).toEqual({
@@ -35,7 +36,7 @@ describe('normalizeLayout', () => {
 			layout: 'day-per-page',
 			page: { margins: DIFFERING },
 		}
-		const opened = parseProjectFile(JSON.stringify(file), 'day.json')
+		const opened = parseProjectFile(JSON.stringify(file), 'day.json', TEST_ENV)
 		expect(opened.ok && opened.project.options.page).toMatchObject({
 			margins: DIFFERING,
 			equalMargins: false,
@@ -44,7 +45,7 @@ describe('normalizeLayout', () => {
 
 	it('applies to every reducer change of a project’s options', () => {
 		const layout = 'monthly'
-		const { page } = defaultLayoutOptions(layout)
+		const { page } = defaultLayoutOptions(layout, TEST_ENV)
 		const id = '00000000-0000-4000-8000-000000000001'
 		const created = workspaceReducer(defaultWorkspace(), {
 			type: 'createProject',
@@ -67,7 +68,10 @@ describe('normalizeLayout', () => {
 				id,
 				name: '',
 				layout,
-				options: { ...defaultLayoutOptions(layout), page: { ...page, margins: DIFFERING } },
+				options: {
+					...defaultLayoutOptions(layout, TEST_ENV),
+					page: { ...page, margins: DIFFERING },
+				},
 			},
 		})
 		expect(openProject(imported)?.options.page.equalMargins).toBe(false)

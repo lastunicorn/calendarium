@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
+import { TEST_ENV } from '../../test/environment'
 import { parseOptions } from '../LayoutSpec'
 import { WEEKLY_MIGRATIONS } from './migrations'
 import { WEEKLY_SPEC } from './options'
@@ -16,7 +17,11 @@ describe('weekly migrations', () => {
 		})
 		// Parsed as 6 reads it, after the step from 5 grouped it.
 		const from5 = WEEKLY_MIGRATIONS[5]!
-		const parsed = parseOptions(WEEKLY_SPEC, from5(from3({ highlightWeekends: 'off' })))
+		const parsed = parseOptions(
+			WEEKLY_SPEC,
+			from5(from3({ highlightWeekends: 'off' })),
+			TEST_ENV,
+		)
 		expect(parsed.content.highlightWeekendDays).toBe(false)
 	})
 
@@ -113,7 +118,7 @@ describe('weekly migrations from 5', () => {
 	})
 
 	it('give options that parse, keeping every value', () => {
-		expect(parseOptions(WEEKLY_SPEC, from5(options))).toMatchObject(grouped)
+		expect(parseOptions(WEEKLY_SPEC, from5(options), TEST_ENV)).toMatchObject(grouped)
 	})
 
 	it('add the next month to the mini months even without a 5 mini month', () => {

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import { defaultLayoutOptions, LAYOUT_IDS } from '../layouts'
+import { TEST_ENV } from '../test/environment'
 import {
 	defaultPreferences,
 	nextTheme,
@@ -64,7 +65,9 @@ describe('preferences', () => {
 	})
 
 	it('name a section after each option group of every layout', () => {
-		const groups = new Set(LAYOUT_IDS.flatMap((id) => Object.keys(defaultLayoutOptions(id))))
+		const groups = new Set(
+			LAYOUT_IDS.flatMap((id) => Object.keys(defaultLayoutOptions(id, TEST_ENV))),
+		)
 		expect(new Set(SECTION_IDS)).toEqual(new Set(['project', ...groups]))
 	})
 

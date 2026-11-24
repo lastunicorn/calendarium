@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { defaultLayoutOptions } from '../layouts'
 import type { IdAccess } from '../ports/IdAccess'
+import { TEST_ENV } from '../test/environment'
 import { memoryStorage } from '../test/memoryStorage'
 import { sequentialIds } from '../test/ports'
 import type { Project } from './Project'
@@ -17,7 +18,7 @@ function id(n: number): string {
 
 /** A monthly project with the `n`th test id, named `name`, of `year`. */
 function monthly(n: number, name: string, year = 2031): Project {
-	const defaults = defaultLayoutOptions('monthly')
+	const defaults = defaultLayoutOptions('monthly', TEST_ENV)
 	return {
 		id: id(n),
 		name,
@@ -76,7 +77,7 @@ describe('saveWorkspace and loadWorkspace', () => {
 			app: APP_VERSION,
 			open: id(2),
 		})
-		expect(loadWorkspace(ids)).toEqual(workspace)
+		expect(loadWorkspace(TEST_ENV, ids)).toEqual(workspace)
 	})
 
 	it('write only the projects that changed, and the record only when the open one changed', () => {
@@ -93,7 +94,7 @@ describe('saveWorkspace and loadWorkspace', () => {
 		setItem.mockClear()
 		saveWorkspace(workspaceOf([home, renamed], id(1)), workspaceOf([home, renamed], id(2)))
 		expect(setItem.mock.calls.map(([key]) => key)).toEqual(['calendarium-workspace'])
-		expect(loadWorkspace(ids)).toEqual(workspaceOf([home, renamed], id(2)))
+		expect(loadWorkspace(TEST_ENV, ids)).toEqual(workspaceOf([home, renamed], id(2)))
 	})
 
 	it('remove a deleted project’s key', () => {
@@ -101,7 +102,7 @@ describe('saveWorkspace and loadWorkspace', () => {
 		saveWorkspace(defaultWorkspace(), before)
 		saveWorkspace(before, workspaceOf([monthly(1, 'Home')], id(1)))
 		expect(localStorage.getItem(`calendarium-document:${id(2)}`)).toBeNull()
-		expect(projectList(loadWorkspace(ids)).map((p) => p.id)).toEqual([id(1)])
+		expect(projectList(loadWorkspace(TEST_ENV, ids)).map((p) => p.id)).toEqual([id(1)])
 	})
 
 	it('back up a record a later version wrote before overwriting it', () => {
@@ -166,7 +167,7 @@ describe('saveWorkspace outcome', () => {
 describe('loadWorkspace', () => {
 	it('gives an empty workspace without any data, and writes nothing', () => {
 		const writes = spyOnWrites()
-		expect(loadWorkspace(ids)).toEqual(defaultWorkspace())
+		expect(loadWorkspace(TEST_ENV, ids)).toEqual(defaultWorkspace())
 		for (const write of writes) expect(write).not.toHaveBeenCalled()
 	})
 
@@ -174,7 +175,7 @@ describe('loadWorkspace', () => {
 		vi.spyOn(localStorage, 'getItem').mockImplementation(() => {
 			throw new Error('SecurityError')
 		})
-		expect(loadWorkspace(ids)).toEqual(defaultWorkspace())
+		expect(loadWorkspace(TEST_ENV, ids)).toEqual(defaultWorkspace())
 	})
 
 	it('skips the records it can’t read, leaving them as they are, and other apps’ keys', () => {
@@ -201,7 +202,7 @@ describe('loadWorkspace', () => {
 		for (const [key, text] of Object.entries(others)) localStorage.setItem(key, text)
 
 		const writes = spyOnWrites()
-		expect(projectList(loadWorkspace(ids)).map((p) => p.name)).toEqual(['Home'])
+		expect(projectList(loadWorkspace(TEST_ENV, ids)).map((p) => p.name)).toEqual(['Home'])
 		for (const write of writes) expect(write).not.toHaveBeenCalled()
 		expect(stored()).toMatchObject(others)
 	})
@@ -210,23 +211,23 @@ describe('loadWorkspace', () => {
 		const text = serializeProject(monthly(9, 'Home'), { pretty: false })
 		localStorage.setItem(`calendarium-document:${id(1)}`, text)
 		localStorage.setItem(`calendarium-document:${id(2)}`, text.replace(`"${id(9)}"`, 'null'))
-		expect(projectList(loadWorkspace(ids)).map((p) => p.id)).toEqual([id(1), id(2)])
+		expect(projectList(loadWorkspace(TEST_ENV, ids)).map((p) => p.id)).toEqual([id(1), id(2)])
 	})
 
 	it('opens the first listed project when the record names none of them, or is missing', () => {
 		saveWorkspace(defaultWorkspace(), workspaceOf([monthly(1, 'b'), monthly(2, 'a')], id(1)))
 		for (const open of [id(9), null, 'toString']) {
 			localStorage.setItem('calendarium-workspace', JSON.stringify({ version: 6, open }))
-			expect(loadWorkspace(ids).open).toBe(id(2))
+			expect(loadWorkspace(TEST_ENV, ids).open).toBe(id(2))
 		}
 		localStorage.removeItem('calendarium-workspace')
-		expect(loadWorkspace(ids).open).toBe(id(2))
+		expect(loadWorkspace(TEST_ENV, ids).open).toBe(id(2))
 	})
 })
 
 describe('loadWorkspace of 5.x data', () => {
 	const defaults = (layout: 'yearly' | 'monthly' | 'weekly' | 'daily') =>
-		defaultLayoutOptions(layout)
+		defaultLayoutOptions(layout, TEST_ENV)
 
 	/** 5.x data showing `layout`, holding every layout's flat options, `changes` applied. */
 	function legacyData(layout: string, changes: Record<string, object> = {}) {
@@ -250,7 +251,7 @@ describe('loadWorkspace of 5.x data', () => {
 			'day-per-page': { dayPageLines: 'ruled', year: 2030 },
 		})
 		localStorage.setItem('calendarium-config', JSON.stringify(data))
-		const workspace = loadWorkspace(ids)
+		const workspace = loadWorkspace(TEST_ENV, ids)
 		const projects = projectList(workspace)
 		expect(projects.map((p) => p.layout).toSorted()).toEqual(['daily', 'monthly', 'weekly'])
 		for (const project of projects) expect(project.name).toBe('')
@@ -270,7 +271,7 @@ describe('loadWorkspace of 5.x data', () => {
 			legacyData('year-per-page', { 'day-per-page': { firstHour: 5 } }),
 		)
 		localStorage.setItem('calendarium-config', text)
-		const workspace = loadWorkspace(ids)
+		const workspace = loadWorkspace(TEST_ENV, ids)
 		expect(localStorage.getItem('calendarium-config')).toBe(text)
 		expect(JSON.parse(localStorage.getItem('calendarium-workspace')!)).toMatchObject({
 			open: workspace.open,
@@ -287,10 +288,10 @@ describe('loadWorkspace of 5.x data', () => {
 			'calendarium-config',
 			JSON.stringify(legacyData('day-per-page', { 'year-per-page': { title: 'Wall' } })),
 		)
-		const first = loadWorkspace(ids)
+		const first = loadWorkspace(TEST_ENV, ids)
 		expect(Object.keys(first.projects)).toHaveLength(2)
 		const writes = spyOnWrites()
-		expect(loadWorkspace(ids)).toEqual(first)
+		expect(loadWorkspace(TEST_ENV, ids)).toEqual(first)
 		for (const write of writes) expect(write).not.toHaveBeenCalled()
 	})
 
@@ -299,7 +300,7 @@ describe('loadWorkspace of 5.x data', () => {
 			'calendarium-config',
 			JSON.stringify({ version: 4, layout: 'month-per-page', layouts: {} }),
 		)
-		const workspace = loadWorkspace(ids)
+		const workspace = loadWorkspace(TEST_ENV, ids)
 		expect(openProject(workspace)?.options).toEqual(defaults('monthly'))
 		expect(projectList(workspace)).toHaveLength(1)
 	})
@@ -312,7 +313,7 @@ describe('loadWorkspace of 5.x data', () => {
 		]) {
 			localStorage.setItem('calendarium-config', text)
 			const writes = spyOnWrites()
-			expect(loadWorkspace(ids)).toEqual(defaultWorkspace())
+			expect(loadWorkspace(TEST_ENV, ids)).toEqual(defaultWorkspace())
 			for (const write of writes) expect(write).not.toHaveBeenCalled()
 			vi.restoreAllMocks()
 		}
@@ -321,6 +322,6 @@ describe('loadWorkspace of 5.x data', () => {
 	it('is not migrated once the workspace record exists', () => {
 		localStorage.setItem('calendarium-config', JSON.stringify(legacyData('year-per-page')))
 		localStorage.setItem('calendarium-workspace', JSON.stringify({ version: 6, open: null }))
-		expect(loadWorkspace(ids)).toEqual(defaultWorkspace())
+		expect(loadWorkspace(TEST_ENV, ids)).toEqual(defaultWorkspace())
 	})
 })

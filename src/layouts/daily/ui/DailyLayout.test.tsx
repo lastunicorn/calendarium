@@ -2,13 +2,14 @@ import { render } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 
 import { applyPatch, type Patch } from '../../../core/data'
+import { TEST_ENV } from '../../../test/environment'
 import { DAILY_SPEC, type DailyOptions } from '../options'
 import { DailyLayout } from './DailyLayout'
 
 /** The default options for 2025, with `changes` on top. */
 function optionsWith(changes: Patch<DailyOptions> = {}): DailyOptions {
 	return applyPatch(
-		applyPatch(DAILY_SPEC.defaults(), {
+		applyPatch(DAILY_SPEC.defaults(TEST_ENV), {
 			calendar: { year: 2025, locale: 'en-GB', weekStart: 'auto' },
 		}),
 		changes,

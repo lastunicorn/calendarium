@@ -1,5 +1,5 @@
 import { buildYear, isYear, type CalendarMonth, type WeekStart } from '../core/calendar'
-import { currentEnvironment, type Environment } from '../core/environment'
+import type { Environment } from '../core/environment'
 import { parseEvents, type CalendarEvent } from '../core/events'
 import {
 	isWeekStartSetting,
@@ -52,7 +52,7 @@ function defaultLocale(tag: string | undefined): Locale {
  * The options shared by every layout, with the values all layouts start from in `env`: its year,
  * in its language.
  */
-export function commonDefaults(env: Environment = currentEnvironment()): CommonOptions {
+export function commonDefaults(env: Environment): CommonOptions {
 	return {
 		calendar: { year: env.year, locale: defaultLocale(env.language), weekStart: 'auto' },
 		events: [],

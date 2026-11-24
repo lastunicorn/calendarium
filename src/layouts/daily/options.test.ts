@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
+import { TEST_ENV } from '../../test/environment'
 import { parseOptions } from '../LayoutSpec'
 import { DAILY_SPEC } from './options'
 
@@ -7,11 +8,11 @@ const grid = { weekdayFormat: 'short', highlightWeekends: 'off', showWeekNumbers
 
 describe('daily options', () => {
 	it('start portrait', () => {
-		expect(DAILY_SPEC.defaults().page.orientation).toBe('portrait')
+		expect(DAILY_SPEC.defaults(TEST_ENV).page.orientation).toBe('portrait')
 	})
 
 	it('keeps valid fields', () => {
-		const defaults = DAILY_SPEC.defaults()
+		const defaults = DAILY_SPEC.defaults(TEST_ENV)
 		const options = {
 			...defaults,
 			calendar: { ...defaults.calendar, month: 2 },
@@ -47,7 +48,7 @@ describe('daily options', () => {
 			footer: { show: true, height: 42 },
 		}
 		const ignored: string[] = []
-		expect(parseOptions(DAILY_SPEC, options, ignored)).toEqual(options)
+		expect(parseOptions(DAILY_SPEC, options, TEST_ENV, ignored)).toEqual(options)
 		expect(ignored).toEqual([])
 	})
 
@@ -79,7 +80,9 @@ describe('daily options', () => {
 			},
 			footer: { show: 'yes', height: 2.5 },
 		}
-		expect(parseOptions(DAILY_SPEC, options, ignored)).toEqual(DAILY_SPEC.defaults())
+		expect(parseOptions(DAILY_SPEC, options, TEST_ENV, ignored)).toEqual(
+			DAILY_SPEC.defaults(TEST_ENV),
+		)
 		expect(ignored).toEqual([
 			'calendar.month',
 			'header.heading',
@@ -108,9 +111,10 @@ describe('daily options', () => {
 	})
 
 	it('prints the whole year by default, or one month counted from 1', () => {
-		expect(DAILY_SPEC.defaults().calendar.month).toBe('all')
+		expect(DAILY_SPEC.defaults(TEST_ENV).calendar.month).toBe('all')
 		const month = (value: unknown, ignored: string[] = []) =>
-			parseOptions(DAILY_SPEC, { calendar: { month: value } }, ignored).calendar.month
+			parseOptions(DAILY_SPEC, { calendar: { month: value } }, TEST_ENV, ignored).calendar
+				.month
 		expect(month(1)).toBe(1)
 		expect(month(12)).toBe(12)
 		expect(month('all')).toBe('all')
@@ -119,16 +123,20 @@ describe('daily options', () => {
 			expect(month(invalid, ignored)).toBe('all')
 			expect(ignored).toEqual(['calendar.month'])
 		}
-		expect(parseOptions(DAILY_SPEC, { calendar: { year: 2030 } }).calendar.month).toBe('all')
+		expect(
+			parseOptions(DAILY_SPEC, { calendar: { year: 2030 } }, TEST_ENV).calendar.month,
+		).toBe('all')
 	})
 
 	it('keeps the mini month to abbreviated weekday names', () => {
-		const parsed = parseOptions(DAILY_SPEC, { miniMonth: { weekdayFormat: 'full' } })
-		expect(parsed.miniMonth.weekdayFormat).toBe(DAILY_SPEC.defaults().miniMonth.weekdayFormat)
+		const parsed = parseOptions(DAILY_SPEC, { miniMonth: { weekdayFormat: 'full' } }, TEST_ENV)
+		expect(parsed.miniMonth.weekdayFormat).toBe(
+			DAILY_SPEC.defaults(TEST_ENV).miniMonth.weekdayFormat,
+		)
 	})
 
 	it('puts a reversed schedule in order, and keeps an ordered one as is', () => {
-		const defaults = DAILY_SPEC.defaults()
+		const defaults = DAILY_SPEC.defaults(TEST_ENV)
 		const withHours = (firstHour: number, lastHour: number) => ({
 			...defaults,
 			content: {
@@ -145,7 +153,7 @@ describe('daily options', () => {
 	})
 
 	it('faces its pages with two pages per day only', () => {
-		const defaults = DAILY_SPEC.defaults()
+		const defaults = DAILY_SPEC.defaults(TEST_ENV)
 		const withTwoPages = (twoPages: boolean) => ({
 			...defaults,
 			content: { ...defaults.content, twoPages },

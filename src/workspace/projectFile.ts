@@ -1,3 +1,4 @@
+import type { Environment } from '../core/environment'
 import { asObject } from '../core/validation'
 import { LEGACY_FILE_FORMAT, legacyFile } from './legacy'
 import type { Project } from './Project'
@@ -69,10 +70,15 @@ function nameFromFileName(fileName: string): string {
 
 /**
  * Reads an opened project file: a serialized project (`PROJECT_FORMAT`, from 6 on), or a legacy
- * file (`LEGACY_FILE_FORMAT`, from 3 to 5), whose project is named after `fileName`. Anything
- * else, including text that is not a JSON object, is not a project.
+ * file (`LEGACY_FILE_FORMAT`, from 3 to 5), whose project is named after `fileName`, a field it
+ * lacks taking its default in `env`. Anything else, including text that is not a JSON object, is
+ * not a project.
  */
-export function parseProjectFile(text: string, fileName: string): OpenedProjectFile {
+export function parseProjectFile(
+	text: string,
+	fileName: string,
+	env: Environment,
+): OpenedProjectFile {
 	let data: unknown
 	try {
 		data = JSON.parse(text)
@@ -80,8 +86,8 @@ export function parseProjectFile(text: string, fileName: string): OpenedProjectF
 		return { ok: false, reason: 'notProject' }
 	}
 	const raw = asObject(data)
-	if (raw?.format !== LEGACY_FILE_FORMAT) return parseProjectDocument(data)
+	if (raw?.format !== LEGACY_FILE_FORMAT) return parseProjectDocument(data, env)
 	const fields = legacyFile(raw)
 	if (fields === null) return { ok: false, reason: 'notProject' }
-	return parseProjectFields({ ...fields, name: nameFromFileName(fileName) }, false)
+	return parseProjectFields({ ...fields, name: nameFromFileName(fileName) }, false, env)
 }

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import { defaultLayoutOptions } from '../../layouts'
+import { TEST_ENV } from '../../test/environment'
 import { projectOf, type ProjectId } from '../../workspace/Project'
 import { defaultWorkspace, type Workspace } from '../../workspace/Workspace'
 import { chosenProject } from './projectChoice'
@@ -11,7 +12,7 @@ const WORK = '00000000-0000-4000-8000-000000000002' as ProjectId
 /** A workspace holding Home and Work, Home open. */
 function workspace(): Workspace {
 	const project = (id: ProjectId, name: string) =>
-		projectOf({ id, name, layout: 'yearly', options: defaultLayoutOptions('yearly') })
+		projectOf({ id, name, layout: 'yearly', options: defaultLayoutOptions('yearly', TEST_ENV) })
 	return {
 		projects: { [HOME]: project(HOME, 'Home'), [WORK]: project(WORK, 'Work') },
 		open: HOME,

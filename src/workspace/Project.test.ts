@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import { defaultLayoutOptions } from '../layouts'
 import { BROWSER_IDS } from '../ports/IdAccess'
+import { TEST_ENV } from '../test/environment'
 import { sequentialIds } from '../test/ports'
 import { isProjectId, newProjectId, projectOf, withOptions, type Project } from './Project'
 
@@ -9,7 +10,7 @@ const ID = '3f0c9a52-7d1e-4b8a-9c61-2e5f4a8b7d10'
 
 describe('projectOf', () => {
 	it('builds a project of a layout with its options', () => {
-		const options = defaultLayoutOptions('weekly')
+		const options = defaultLayoutOptions('weekly', TEST_ENV)
 		expect(projectOf({ id: ID, name: 'Work', layout: 'weekly', options })).toEqual({
 			id: ID,
 			name: 'Work',
@@ -24,7 +25,7 @@ describe('projectOf', () => {
 			name: '',
 			layout: 'weekly',
 			// @ts-expect-error: the daily layout's options are not the weekly layout's
-			options: defaultLayoutOptions('daily'),
+			options: defaultLayoutOptions('daily', TEST_ENV),
 		})
 		expect(project.id).toBeNull()
 	})
@@ -36,7 +37,7 @@ describe('withOptions', () => {
 			id: ID,
 			name: 'Work',
 			layout: 'weekly',
-			options: defaultLayoutOptions('weekly'),
+			options: defaultLayoutOptions('weekly', TEST_ENV),
 		})
 		const options = { ...project.options, events: ['2030-01-01 New year'] }
 		expect(withOptions(project, options)).toEqual({ ...project, options })
@@ -47,10 +48,10 @@ describe('withOptions', () => {
 			id: ID,
 			name: '',
 			layout: 'weekly',
-			options: defaultLayoutOptions('weekly'),
+			options: defaultLayoutOptions('weekly', TEST_ENV),
 		}
 		// @ts-expect-error: the daily layout's options are not the weekly layout's
-		expect(withOptions(weekly, defaultLayoutOptions('daily')).layout).toBe('weekly')
+		expect(withOptions(weekly, defaultLayoutOptions('daily', TEST_ENV)).layout).toBe('weekly')
 	})
 })
 

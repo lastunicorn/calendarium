@@ -1,3 +1,4 @@
+import type { Environment } from '../core/environment'
 import { asObject, type UntrustedObject } from '../core/validation'
 import { isLayoutId, layoutSpec } from '../layouts'
 import { parseOptions } from '../layouts/LayoutSpec'
@@ -47,10 +48,14 @@ export type ParsedProject =
  * A project's fields in the current shape (`id`, `name`, `layout`, `options`), still untrusted,
  * as a serialized project or a converted legacy file holds them, read field by field: an invalid
  * id is `null`, a name that is not a string `''`, the options are read by their layout's
- * `parseOptions`, falling back to its defaults; options that are not an object are `ignored`
- * whole, as `options`. `newer` is passed on as is.
+ * `parseOptions`, falling back to its defaults in `env`; options that are not an object are
+ * `ignored` whole, as `options`. `newer` is passed on as is.
  */
-export function parseProjectFields(fields: UntrustedObject, newer: boolean): ParsedProject {
+export function parseProjectFields(
+	fields: UntrustedObject,
+	newer: boolean,
+	env: Environment,
+): ParsedProject {
 	const { layout } = fields
 	if (!isLayoutId(layout)) return { ok: false, reason: 'unknownLayout' }
 	const ignored: string[] = []
@@ -59,7 +64,7 @@ export function parseProjectFields(fields: UntrustedObject, newer: boolean): Par
 		id: isProjectId(fields.id) ? fields.id : null,
 		name: typeof fields.name === 'string' ? fields.name : '',
 		layout,
-		options: parseOptions(layoutSpec(layout), fields.options, ignored),
+		options: parseOptions(layoutSpec(layout), fields.options, env, ignored),
 	})
 	return { ok: true, project, ignored, newer }
 }
@@ -68,12 +73,12 @@ export function parseProjectFields(fields: UntrustedObject, newer: boolean): Par
  * Reads untrusted data as a serialized project of any version from 6 on, brought to the current
  * shape (`PROJECT_MIGRATIONS`). Data without `PROJECT_FORMAT`, or with it but no version from 6
  * on, is not a project; one from a later version is read as the current shape, as far as it
- * matches.
+ * matches. A field it lacks takes its default in `env`.
  */
-export function parseProjectDocument(data: unknown): ParsedProject {
+export function parseProjectDocument(data: unknown, env: Environment): ParsedProject {
 	const raw = asObject(data)
 	if (raw === null || raw.format !== PROJECT_FORMAT) return { ok: false, reason: 'notProject' }
 	const upgraded = upgradeProject(raw)
 	if (upgraded === null) return { ok: false, reason: 'notProject' }
-	return parseProjectFields(upgraded, isFromLaterVersion(raw))
+	return parseProjectFields(upgraded, isFromLaterVersion(raw), env)
 }

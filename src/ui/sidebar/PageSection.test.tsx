@@ -3,10 +3,11 @@ import { describe, expect, it, vi } from 'vitest'
 
 import type { PageSetup } from '../../core/paper'
 import { commonDefaults } from '../../layouts/common'
+import { TEST_ENV } from '../../test/environment'
 import { renderWithSectionsOpen } from '../../test/formSections'
 import { PageSection } from './PageSection'
 
-const DEFAULTS = commonDefaults().page
+const DEFAULTS = commonDefaults(TEST_ENV).page
 
 function renderSection(changes: Partial<PageSetup>) {
 	const onUpdate = vi.fn()

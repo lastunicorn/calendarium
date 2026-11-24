@@ -1,4 +1,4 @@
-import { currentEnvironment, type Environment } from '../core/environment'
+import type { Environment } from '../core/environment'
 import { asObject } from '../core/validation'
 import {
 	hasDefaultOptions,
@@ -60,17 +60,18 @@ function workspaceOf(projects: readonly Project[], open: unknown): Workspace {
 }
 
 /**
- * Every project stored under a project key, by the key's id, whatever the one inside says. Those
- * it can't read (broken JSON, a later version's layout) are skipped and left as they are.
+ * Every project stored under a project key, by the key's id, whatever the one inside says, a field
+ * it lacks taking its default in `env`. Those it can't read (broken JSON, a later version's layout)
+ * are skipped and left as they are.
  */
-function storedProjects(): Project[] {
+function storedProjects(env: Environment): Project[] {
 	const keys = Array.from({ length: localStorage.length }, (_, i) => localStorage.key(i))
 	const projects: Project[] = []
 	for (const key of keys) {
 		if (key === null || !key.startsWith(PROJECT_KEY_PREFIX)) continue
 		const id = key.slice(PROJECT_KEY_PREFIX.length)
 		if (!isProjectId(id)) continue
-		const parsed = parseProjectDocument(storedJson(key))
+		const parsed = parseProjectDocument(storedJson(key), env)
 		if (parsed.ok) projects.push({ ...parsed.project, id })
 	}
 	return projects
@@ -106,24 +107,24 @@ function hasDefaultsBesidesYear(
 
 /**
  * The workspace the data of 3 to 5 (`calendarium-config`) becomes: an unnamed project of each
- * layout whose options differ from its defaults, the year aside, and always of the layout that
- * was shown, which opens, each given an id from `ids`; `null` when there is no such data. Written at once, the projects first
- * and the workspace record, the marker that the migration ran, last, so the ids stay the same
- * from one load to the next and a second load (as React's StrictMode does in development) loads
- * them instead of migrating again. `calendarium-config` is left as it is.
+ * layout whose options differ from its defaults in `env`, the year aside, and always of the
+ * layout that was shown, which opens, each given an id from `ids`; `null` when there is no such
+ * data. Written at once, the projects first and the workspace record, the marker that the
+ * migration ran, last, so the ids stay the same from one load to the next and a second load (as
+ * React's StrictMode does in development) loads them instead of migrating again.
+ * `calendarium-config` is left as it is.
  */
-function migrateLegacy(ids: IdAccess): Workspace | null {
+function migrateLegacy(env: Environment, ids: IdAccess): Workspace | null {
 	const data = asObject(storedJson(LEGACY_KEY))
 	const legacy = data === null ? null : legacyWorkspace(data)
 	if (legacy === null) return null
 
-	const env = currentEnvironment()
 	const projects: Project[] = []
 	let open: ProjectId | null = null
 	for (const layout of LAYOUT_IDS) {
 		const shown = layout === legacy.shown
 		if (!shown && !Object.hasOwn(legacy.layouts, layout)) continue
-		const options = parseOptions(layoutSpec(layout), legacy.layouts[layout], [], env)
+		const options = parseOptions(layoutSpec(layout), legacy.layouts[layout], env)
 		if (!shown && hasDefaultsBesidesYear(layout, options, env)) continue
 		const project = projectOf({ id: newProjectId(ids), name: '', layout, options })
 		projects.push(project)
@@ -141,18 +142,19 @@ function migrateLegacy(ids: IdAccess): Workspace | null {
 
 /**
  * Loads the workspace: every stored project, and the open one from the workspace record, else the
- * first listed. The first time, when there is no workspace record, the data of 3 to 5 is migrated
- * (`migrateLegacy`), the one load that writes, its projects' ids from `ids`. Falls back to an
- * empty workspace when storage is unavailable.
+ * first listed, the fields a project lacks taking their defaults in `env`. The first time, when
+ * there is no workspace record, the data of 3 to 5 is migrated (`migrateLegacy`), the one load
+ * that writes, its projects' ids from `ids`. Falls back to an empty workspace when storage is
+ * unavailable.
  */
-export function loadWorkspace(ids: IdAccess): Workspace {
+export function loadWorkspace(env: Environment, ids: IdAccess): Workspace {
 	try {
 		if (localStorage.getItem(WORKSPACE_KEY) === null) {
-			const migrated = migrateLegacy(ids)
+			const migrated = migrateLegacy(env, ids)
 			if (migrated !== null) return migrated
 		}
 		const record = asObject(storedJson(WORKSPACE_KEY))
-		return workspaceOf(storedProjects(), record?.open)
+		return workspaceOf(storedProjects(env), record?.open)
 	} catch {
 		return defaultWorkspace()
 	}

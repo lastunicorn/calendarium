@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import { defaultLayoutOptions } from '../../layouts'
+import { TEST_ENV } from '../../test/environment'
 import { projectOf } from '../../workspace/Project'
 import { defaultWorkspace, type Workspace } from '../../workspace/Workspace'
 import { MAIN_CONTENTS, shownContent } from './mainContent'
@@ -13,7 +14,7 @@ function withProject(): Workspace {
 		id: ID,
 		name: 'Home',
 		layout: 'yearly',
-		options: defaultLayoutOptions('yearly'),
+		options: defaultLayoutOptions('yearly', TEST_ENV),
 	})
 	return { projects: { [ID]: project }, open: ID }
 }

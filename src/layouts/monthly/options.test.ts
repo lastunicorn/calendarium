@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
+import { TEST_ENV } from '../../test/environment'
 import { parseOptions } from '../LayoutSpec'
 import { MONTHLY_SPEC } from './options'
 
@@ -7,14 +8,14 @@ const grid = { weekdayFormat: 'short', highlightWeekends: 'off', showWeekNumbers
 
 describe('monthly options', () => {
 	it('start landscape, with full weekday names', () => {
-		const defaults = MONTHLY_SPEC.defaults()
+		const defaults = MONTHLY_SPEC.defaults(TEST_ENV)
 		expect(defaults.page.orientation).toBe('landscape')
 		expect(defaults.content.weekdayFormat).toBe('full')
 	})
 
 	it('keeps valid fields', () => {
 		const options = {
-			...MONTHLY_SPEC.defaults(),
+			...MONTHLY_SPEC.defaults(TEST_ENV),
 			header: { title: 'Office', alignment: 'left', fontSize: 32 },
 			miniMonth: {
 				showPreviousMonth: false,
@@ -36,7 +37,7 @@ describe('monthly options', () => {
 			},
 		}
 		const ignored: string[] = []
-		expect(parseOptions(MONTHLY_SPEC, options, ignored)).toEqual(options)
+		expect(parseOptions(MONTHLY_SPEC, options, TEST_ENV, ignored)).toEqual(options)
 		expect(ignored).toEqual([])
 	})
 
@@ -52,7 +53,9 @@ describe('monthly options', () => {
 				dayNumber: { fontSize: 60, horizontalAlignment: 'top' },
 			},
 		}
-		expect(parseOptions(MONTHLY_SPEC, options, ignored)).toEqual(MONTHLY_SPEC.defaults())
+		expect(parseOptions(MONTHLY_SPEC, options, TEST_ENV, ignored)).toEqual(
+			MONTHLY_SPEC.defaults(TEST_ENV),
+		)
 		expect(ignored).toEqual([
 			'header.alignment',
 			'header.fontSize',
@@ -66,11 +69,15 @@ describe('monthly options', () => {
 	})
 
 	it('keeps full weekday names on the page, but not in the mini months', () => {
-		const defaults = MONTHLY_SPEC.defaults()
-		const parsed = parseOptions(MONTHLY_SPEC, {
-			content: { weekdayFormat: 'full' },
-			miniMonth: { weekdayFormat: 'full' },
-		})
+		const defaults = MONTHLY_SPEC.defaults(TEST_ENV)
+		const parsed = parseOptions(
+			MONTHLY_SPEC,
+			{
+				content: { weekdayFormat: 'full' },
+				miniMonth: { weekdayFormat: 'full' },
+			},
+			TEST_ENV,
+		)
 		expect(parsed.content.weekdayFormat).toBe('full')
 		expect(parsed.miniMonth.weekdayFormat).toBe(defaults.miniMonth.weekdayFormat)
 	})

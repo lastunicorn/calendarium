@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
+import { TEST_ENV } from '../../test/environment'
 import { calendarModel } from '../common'
 import { defaultLayoutOptions } from '../index'
 import type { MonthlyContent, MonthlyHeader, MonthlyMiniMonth, MonthlyOptions } from './options'
@@ -8,7 +9,7 @@ import { planMonthPages } from './pages'
 /** The plan of the default month layout for `year`, in British English with Monday weeks. */
 function plan(year: number, changes: Partial<MonthlyOptions> = {}) {
 	const options: MonthlyOptions = {
-		...defaultLayoutOptions('monthly'),
+		...defaultLayoutOptions('monthly', TEST_ENV),
 		calendar: { year, locale: 'en-GB', weekStart: 1 },
 		...changes,
 	}
@@ -17,17 +18,17 @@ function plan(year: number, changes: Partial<MonthlyOptions> = {}) {
 
 /** The default header with `changes`. */
 function header(changes: Partial<MonthlyHeader>): MonthlyHeader {
-	return { ...defaultLayoutOptions('monthly').header, ...changes }
+	return { ...defaultLayoutOptions('monthly', TEST_ENV).header, ...changes }
 }
 
 /** The default mini months with `changes`. */
 function miniMonth(changes: Partial<MonthlyMiniMonth>): MonthlyMiniMonth {
-	return { ...defaultLayoutOptions('monthly').miniMonth, ...changes }
+	return { ...defaultLayoutOptions('monthly', TEST_ENV).miniMonth, ...changes }
 }
 
 /** The default content with `changes`. */
 function content(changes: Partial<MonthlyContent>): MonthlyContent {
-	return { ...defaultLayoutOptions('monthly').content, ...changes }
+	return { ...defaultLayoutOptions('monthly', TEST_ENV).content, ...changes }
 }
 
 describe('planMonthPages', () => {

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
+import { TEST_ENV } from '../../test/environment'
 import { parseOptions } from '../LayoutSpec'
 import { WEEKLY_SPEC } from './options'
 
@@ -7,12 +8,12 @@ const grid = { weekdayFormat: 'short', highlightWeekends: 'off', showWeekNumbers
 
 describe('weekly options', () => {
 	it('start landscape', () => {
-		expect(WEEKLY_SPEC.defaults().page.orientation).toBe('landscape')
+		expect(WEEKLY_SPEC.defaults(TEST_ENV).page.orientation).toBe('landscape')
 	})
 
 	it('keeps valid fields', () => {
 		const options = {
-			...WEEKLY_SPEC.defaults(),
+			...WEEKLY_SPEC.defaults(TEST_ENV),
 			header: { alignment: 'right', fontSize: 32, showWeek: false },
 			miniMonth: {
 				showCurrentMonth: true,
@@ -35,7 +36,7 @@ describe('weekly options', () => {
 			footer: { show: true, height: 42 },
 		}
 		const ignored: string[] = []
-		expect(parseOptions(WEEKLY_SPEC, options, ignored)).toEqual(options)
+		expect(parseOptions(WEEKLY_SPEC, options, TEST_ENV, ignored)).toEqual(options)
 		expect(ignored).toEqual([])
 	})
 
@@ -53,7 +54,9 @@ describe('weekly options', () => {
 				schedule: { hourFormat: 12, firstHour: -1, lastHour: '21' },
 			},
 		}
-		expect(parseOptions(WEEKLY_SPEC, options, ignored)).toEqual(WEEKLY_SPEC.defaults())
+		expect(parseOptions(WEEKLY_SPEC, options, TEST_ENV, ignored)).toEqual(
+			WEEKLY_SPEC.defaults(TEST_ENV),
+		)
 		expect(ignored).toEqual([
 			'header.showWeek',
 			'content.twoPages',
@@ -69,17 +72,21 @@ describe('weekly options', () => {
 	})
 
 	it('keeps full weekday names on the page, but not in the mini months', () => {
-		const defaults = WEEKLY_SPEC.defaults()
-		const parsed = parseOptions(WEEKLY_SPEC, {
-			content: { weekdayFormat: 'full' },
-			miniMonth: { weekdayFormat: 'full' },
-		})
+		const defaults = WEEKLY_SPEC.defaults(TEST_ENV)
+		const parsed = parseOptions(
+			WEEKLY_SPEC,
+			{
+				content: { weekdayFormat: 'full' },
+				miniMonth: { weekdayFormat: 'full' },
+			},
+			TEST_ENV,
+		)
 		expect(parsed.content.weekdayFormat).toBe('full')
 		expect(parsed.miniMonth.weekdayFormat).toBe(defaults.miniMonth.weekdayFormat)
 	})
 
 	it('puts a reversed schedule in order', () => {
-		const defaults = WEEKLY_SPEC.defaults()
+		const defaults = WEEKLY_SPEC.defaults(TEST_ENV)
 		const options = {
 			...defaults,
 			content: {
@@ -92,18 +99,21 @@ describe('weekly options', () => {
 			lastHour: 18,
 		})
 		expect(
-			parseOptions(WEEKLY_SPEC, { content: { schedule: { firstHour: 22, lastHour: 6 } } })
-				.content.schedule,
+			parseOptions(
+				WEEKLY_SPEC,
+				{ content: { schedule: { firstHour: 22, lastHour: 6 } } },
+				TEST_ENV,
+			).content.schedule,
 		).toMatchObject({ firstHour: 6, lastHour: 22 })
 	})
 
 	it('keeps the options as they are when the schedule is in order', () => {
-		const defaults = WEEKLY_SPEC.defaults()
+		const defaults = WEEKLY_SPEC.defaults(TEST_ENV)
 		expect(WEEKLY_SPEC.normalize(defaults)).toBe(defaults)
 	})
 
 	it('faces its pages with two pages per week only', () => {
-		const defaults = WEEKLY_SPEC.defaults()
+		const defaults = WEEKLY_SPEC.defaults(TEST_ENV)
 		const withTwoPages = (twoPages: boolean) => ({
 			...defaults,
 			content: { ...defaults.content, twoPages },

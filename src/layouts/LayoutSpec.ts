@@ -22,11 +22,8 @@ export type LayoutMigrations = Readonly<Partial<Record<number, OptionsMigration>
  * are brought to the current shape.
  */
 export interface LayoutSpec<O> {
-	/**
-	 * A fresh copy of the layout's default options, picked for how it is drawn, in `env` (today's
-	 * year and the browser's language when not given).
-	 */
-	defaults: (env?: Environment) => O
+	/** A fresh copy of the layout's default options, picked for how it is drawn, in `env`. */
+	defaults: (env: Environment) => O
 	/** One check per field, a nested table for an object like `page`, applied field by field when parsing. */
 	validators: Validators<O>
 	/**
@@ -69,15 +66,14 @@ export function defineLayout<const Id extends string, O extends CommonOptions>(
 
 /**
  * Keeps only the valid fields of untrusted options in the current shape, falling back to the
- * spec's defaults, then applies its cross-field rules. Fields that were present but invalid are
- * added to `ignored` as their paths (`firstHour`, `page.margins.top`). The defaults are those of
- * `env`, when given.
+ * spec's defaults in `env`, then applies its cross-field rules. Fields that were present but
+ * invalid are added to `ignored` as their paths (`firstHour`, `page.margins.top`).
  */
 export function parseOptions<O extends object>(
 	spec: LayoutSpec<O>,
 	data: unknown,
+	env: Environment,
 	ignored: string[] = [],
-	env?: Environment,
 ): O {
 	const options = spec.defaults(env)
 	const stored = asObject(data)

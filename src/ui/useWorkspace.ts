@@ -1,8 +1,8 @@
 import { useEffect, useReducer, useRef, useState } from 'react'
 
 import type { Patch } from '../core/data'
-import { currentEnvironment } from '../core/environment'
 import type { LayoutId, LayoutOptions } from '../layouts'
+import type { Ports } from '../ports'
 import { newProjectId, type Project, type ProjectId } from '../workspace/Project'
 import { loadWorkspace, saveWorkspace, type SaveFailure } from '../workspace/storage'
 import { workspaceReducer, type WorkspaceAction } from '../workspace/workspaceReducer'
@@ -14,14 +14,20 @@ export type UpdateLayoutOptions = <K extends LayoutId>(
 	patch: Patch<LayoutOptions[K]>,
 ) => void
 
+/** The workspace kept in this browser, in the environment now, migrated projects taking ids from `ids`. */
+function initialWorkspace({ environment, ids }: Ports) {
+	return loadWorkspace(environment.current(), ids)
+}
+
 /**
  * The app's single workspace state: loaded from and saved to `localStorage`, with why the last
  * save wasn't written, `null` when it was. New projects' ids, from the ports, and the environment
  * the defaults are taken in, are made here, so the reducer stays pure.
  */
 export function useWorkspace() {
-	const { ids } = usePorts()
-	const [workspace, dispatch] = useReducer(workspaceReducer, ids, loadWorkspace)
+	const ports = usePorts()
+	const { environment, ids } = ports
+	const [workspace, dispatch] = useReducer(workspaceReducer, ports, initialWorkspace)
 	// Saved after each change, as what changed since the last save written: the projects loaded
 	// are already stored, and a failed save's changes are written again with the next change.
 	const saved = useRef(workspace)
@@ -40,7 +46,7 @@ export function useWorkspace() {
 	 */
 	function createProject(name: string, layout: LayoutId, open = true): ProjectId {
 		const id = newProjectId(ids)
-		dispatch({ type: 'createProject', id, name, layout, env: currentEnvironment(), open })
+		dispatch({ type: 'createProject', id, name, layout, env: environment.current(), open })
 		return id
 	}
 
@@ -59,7 +65,7 @@ export function useWorkspace() {
 
 	/** Puts the open project's options back to its layout's defaults. */
 	function resetOptions() {
-		dispatch({ type: 'resetOptions', env: currentEnvironment() })
+		dispatch({ type: 'resetOptions', env: environment.current() })
 	}
 
 	function deleteProject(id: ProjectId) {

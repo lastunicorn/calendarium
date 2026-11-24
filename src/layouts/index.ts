@@ -64,10 +64,10 @@ export function migrateLayoutOptions(
 	return step === undefined ? options : step(options)
 }
 
-/** A fresh copy of `layout`'s default options in `env` (by default, the current one). */
+/** A fresh copy of `layout`'s default options in `env`. */
 export function defaultLayoutOptions<K extends LayoutId>(
 	layout: K,
-	env?: Environment,
+	env: Environment,
 ): LayoutOptions[K] {
 	return layoutSpec(layout).defaults(env)
 }
@@ -79,7 +79,7 @@ export function defaultLayoutOptions<K extends LayoutId>(
 export function hasDefaultOptions<K extends LayoutId>(
 	layout: K,
 	options: LayoutOptions[K],
-	env?: Environment,
+	env: Environment,
 ): boolean {
 	return sameData(options, defaultLayoutOptions(layout, env))
 }

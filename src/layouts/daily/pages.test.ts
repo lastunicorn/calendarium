@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import { applyPatch, type Patch } from '../../core/data'
+import { TEST_ENV } from '../../test/environment'
 import { calendarModel } from '../common'
 import { defaultLayoutOptions } from '../index'
 import type { DailyContent, DailyOptions } from './options'
@@ -9,7 +10,7 @@ import { planDayPages, type DayPages } from './pages'
 /** The plan of the default day layout for `year`, in British English with Monday weeks, changed by `changes`. */
 function plan(year: number, changes: Patch<DailyOptions> = {}): DayPages[] {
 	const options = applyPatch(
-		applyPatch(defaultLayoutOptions('daily'), {
+		applyPatch(defaultLayoutOptions('daily', TEST_ENV), {
 			calendar: { year, locale: 'en-GB', weekStart: 1 },
 		}),
 		changes,

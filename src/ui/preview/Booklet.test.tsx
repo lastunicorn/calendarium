@@ -3,12 +3,13 @@ import { describe, expect, it } from 'vitest'
 
 import type { PageSetup } from '../../core/paper'
 import { commonDefaults } from '../../layouts/common'
+import { TEST_ENV } from '../../test/environment'
 import { Page } from '../layouts/Page'
 import { Booklet } from './Booklet'
 
 /** A booklet of `count` pages, each holding its number, with the default page setup and `changes`. */
 function bookletOf(count: number, changes: Partial<PageSetup> = {}) {
-	const setup = { ...commonDefaults().page, booklet: true, ...changes }
+	const setup = { ...commonDefaults(TEST_ENV).page, booklet: true, ...changes }
 	const { container } = render(
 		<Booklet setup={setup}>
 			{Array.from({ length: count }, (_, index) => (

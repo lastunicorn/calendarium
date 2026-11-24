@@ -17,7 +17,7 @@ How a layout stays independent of the others is in [architecture.md](architectur
 
 ## A layout's spec
 
-Each layout's knowledge of its options is one `LayoutSpec` in `layouts/<layout-id>/options.ts`, next to its options type: `defaults`, `validators` (extending `COMMON_VALIDATORS`), `normalize`, `migrations` (its own steps between format versions, in `layouts/<layout-id>/migrations.ts`, `{}` when it has none) and, for a layout whose pages face each other, `facingPages` (the preview then shows spreads, [printing.md](printing.md#spreads)); `parseOptions(spec, data)` (`LayoutSpec.ts`) reads untrusted options by them.
+Each layout's knowledge of its options is one `LayoutSpec` in `layouts/<layout-id>/options.ts`, next to its options type: `defaults`, `validators` (extending `COMMON_VALIDATORS`), `normalize`, `migrations` (its own steps between format versions, in `layouts/<layout-id>/migrations.ts`, `{}` when it has none) and, for a layout whose pages face each other, `facingPages` (the preview then shows spreads, [printing.md](printing.md#spreads)); `parseOptions(spec, data, env)` (`LayoutSpec.ts`) reads untrusted options by them, a field it lacks taking its default in `env`.
 
 Everything only one layout uses lives in its folders; what several share stays in the host (`common.ts`, `monthGrid.ts`, `schedule.ts`, `heading.ts`, `migrations.ts`). Rules a layout's pages follow sit next to its options, like `weekly/cells.ts` (`weekCells`, `splitWeekCells`).
 
@@ -66,7 +66,7 @@ Every option belongs to one layout's set, and every option is in a group: one pe
 Adding an option touches:
 
 1. `CommonOptions` (every layout, `layouts/common.ts`), a shared group, or one of a layout's groups in `layouts/<layout-id>/options.ts`;
-2. its default in `commonDefaults()`, the group's defaults or that layout's spec `defaults`;
+2. its default in `commonDefaults(env)`, the group's defaults or that layout's spec `defaults`;
 3. a validator in `COMMON_VALIDATORS` (`layouts/common.ts`), the group's validators or that layout's spec `validators` (a nested `Validators` table per group);
 4. and a control in the matching section (`ui/sidebar/*Section.tsx` for shared options, the layout's `ui/` folder for its own), shown by that layout's form.
 

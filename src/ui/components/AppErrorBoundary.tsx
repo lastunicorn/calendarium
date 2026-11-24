@@ -27,9 +27,9 @@ function reloadPage() {
 }
 
 /** The stored projects, in `projectList` order; none when even reading them fails. */
-function storedProjects({ ids }: Ports): Project[] {
+function storedProjects({ environment, ids }: Ports): Project[] {
 	try {
-		return projectList(loadWorkspace(ids))
+		return projectList(loadWorkspace(environment.current(), ids))
 	} catch {
 		return []
 	}

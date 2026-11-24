@@ -2,6 +2,7 @@ import { act, fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 
 import { defaultLayoutOptions, LAYOUT_IDS, type LayoutId } from '../../layouts'
+import { TEST_ENV } from '../../test/environment'
 import type { Project } from '../../workspace/Project'
 import { Preview } from './Preview'
 
@@ -27,13 +28,16 @@ function overflowEveryPage() {
 }
 
 /** A project of `layout`, with its defaults or `options`. */
-function projectFor(layout: LayoutId, options: object = defaultLayoutOptions(layout)): Project {
+function projectFor(
+	layout: LayoutId,
+	options: object = defaultLayoutOptions(layout, TEST_ENV),
+): Project {
 	return { id: '00000000-0000-4000-8000-000000000001', name: '', layout, options } as Project
 }
 
 /** The class of the box around the pages of `layout`, with `changes` and `page` changed. */
 function pagesBoxClass(layout: LayoutId, changes: object, page: object) {
-	const options = defaultLayoutOptions(layout)
+	const options = defaultLayoutOptions(layout, TEST_ENV)
 	const { container } = render(
 		<Preview
 			project={projectFor(layout, {
@@ -72,7 +76,7 @@ describe('Preview', () => {
 	})
 
 	it('prints a booklet on a sheet of two pages, completing the last sheet', () => {
-		const options = defaultLayoutOptions('monthly')
+		const options = defaultLayoutOptions('monthly', TEST_ENV)
 		const { container } = render(
 			<Preview
 				project={projectFor('monthly', {
@@ -96,7 +100,7 @@ describe('Preview', () => {
 			'weekly',
 			{
 				content: {
-					...defaultLayoutOptions('weekly').content,
+					...defaultLayoutOptions('weekly', TEST_ENV).content,
 					twoPages: true,
 					fill: 'none',
 				},
@@ -106,7 +110,7 @@ describe('Preview', () => {
 			'daily',
 			{
 				content: {
-					...defaultLayoutOptions('daily').content,
+					...defaultLayoutOptions('daily', TEST_ENV).content,
 					twoPages: true,
 					fill: 'blank',
 				},
@@ -130,7 +134,7 @@ describe('Preview', () => {
 	})
 
 	it('marks the pages with the calendar’s language', () => {
-		const defaults = defaultLayoutOptions('yearly')
+		const defaults = defaultLayoutOptions('yearly', TEST_ENV)
 		const options = {
 			...defaults,
 			calendar: { ...defaults.calendar, locale: 'el-GR' as const },
@@ -226,7 +230,7 @@ describe('Preview', () => {
 	})
 
 	it('counts a booklet’s sheet sides too', () => {
-		const options = defaultLayoutOptions('monthly')
+		const options = defaultLayoutOptions('monthly', TEST_ENV)
 		render(
 			<Preview
 				project={projectFor('monthly', {

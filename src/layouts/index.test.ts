@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
+import { TEST_ENV } from '../test/environment'
 import { hasDefaultOptions, LAYOUT_IDS, layoutSpec, migrateLayoutOptions } from './index'
 import { parseOptions } from './LayoutSpec'
 
@@ -9,15 +10,15 @@ describe.each(LAYOUT_IDS)('the %s spec', (layout) => {
 	const spec = layoutSpec(layout)
 
 	it('gives defaults that pass its own validation', () => {
-		const defaults = spec.defaults()
+		const defaults = spec.defaults(TEST_ENV)
 		const ignored: string[] = []
-		expect(parseOptions(spec, defaults, ignored)).toEqual(defaults)
+		expect(parseOptions(spec, defaults, TEST_ENV, ignored)).toEqual(defaults)
 		expect(ignored).toEqual([])
 	})
 
 	it('gives a fresh copy of its defaults each time, nested objects included', () => {
-		const first = spec.defaults()
-		const second = spec.defaults()
+		const first = spec.defaults(TEST_ENV)
+		const second = spec.defaults(TEST_ENV)
 		expect(second).toEqual(first)
 		expect(second).not.toBe(first)
 		for (const [field, value] of Object.entries(first)) {
@@ -38,24 +39,24 @@ describe.each(LAYOUT_IDS)('the %s spec', (layout) => {
 			'footer',
 			'page',
 		]
-		const groups = Object.keys(spec.defaults())
+		const groups = Object.keys(spec.defaults(TEST_ENV))
 		expect(groups).toEqual(SIDEBAR_ORDER.filter((group) => groups.includes(group)))
 		expect(groups.every((group) => SIDEBAR_ORDER.includes(group))).toBe(true)
 	})
 
 	it('validates every field of its defaults', () => {
 		expect(Object.keys(spec.validators).toSorted()).toEqual(
-			Object.keys(spec.defaults()).toSorted(),
+			Object.keys(spec.defaults(TEST_ENV)).toSorted(),
 		)
 	})
 
 	it('keeps its defaults as they are when normalizing', () => {
-		const defaults = spec.defaults()
+		const defaults = spec.defaults(TEST_ENV)
 		expect(spec.normalize(defaults)).toBe(defaults)
 	})
 
 	it('normalizes to options that are already normal', () => {
-		const defaults = spec.defaults()
+		const defaults = spec.defaults(TEST_ENV)
 		const margins = { top: 5, right: 10, bottom: 15, left: 20 }
 		const normalized = spec.normalize({ ...defaults, page: { ...defaults.page, margins } })
 		expect(normalized).not.toBe(defaults)
@@ -63,14 +64,18 @@ describe.each(LAYOUT_IDS)('the %s spec', (layout) => {
 	})
 
 	it('tells its defaults from options with a field changed, nested ones included', () => {
-		const defaults = spec.defaults()
-		expect(hasDefaultOptions(layout, defaults)).toBe(true)
+		const defaults = spec.defaults(TEST_ENV)
+		expect(hasDefaultOptions(layout, defaults, TEST_ENV)).toBe(true)
 		const nextYear = structuredClone(defaults)
 		nextYear.calendar.year += 1
-		expect(hasDefaultOptions(layout, nextYear)).toBe(false)
+		expect(hasDefaultOptions(layout, nextYear, TEST_ENV)).toBe(false)
 		const margins = { ...defaults.page.margins, top: defaults.page.margins.top + 1 }
 		expect(
-			hasDefaultOptions(layout, { ...defaults, page: { ...defaults.page, margins } }),
+			hasDefaultOptions(
+				layout,
+				{ ...defaults, page: { ...defaults.page, margins } },
+				TEST_ENV,
+			),
 		).toBe(false)
 	})
 

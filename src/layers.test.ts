@@ -200,16 +200,15 @@ describe('layers', () => {
 })
 
 // What the app reads from where it runs is read in one place each, so the domain stays
-// deterministic and DOM-free: the clock and the browser's language by `core/environment.ts` (a
-// `Date` built only there and by `utcDate`), storage by its two repositories, the random numbers of
-// new ids, the user's files and the printer by their ports, and the page (`window`, `document`) by
-// `ui/`, the files above the layers (`main.tsx`) and the ports that need it. Tests, and their
-// helpers in `test/`, are exempt.
+// deterministic and DOM-free: storage by its two repositories; the clock and the browser's language
+// (a `Date` built only there and by `utcDate`), the random numbers of new ids, the user's files and
+// the printer by their ports; and the page (`window`, `document`) by `ui/`, the files above the
+// layers (`main.tsx`) and the ports that need it. Tests, and their helpers in `test/`, are exempt.
 
 /** Each environment read, and the paths from `src/` allowed to make it. */
 const ENVIRONMENT_READS: { read: RegExp; allowed: RegExp }[] = [
-	{ read: /\bnew Date\(/, allowed: /^core\/(calendar|environment)\.ts$/ },
-	{ read: /\bnavigator\b/, allowed: /^core\/environment\.ts$/ },
+	{ read: /\bnew Date\(/, allowed: /^(core\/calendar|ports\/EnvironmentAccess)\.ts$/ },
+	{ read: /\bnavigator\b/, allowed: /^ports\/EnvironmentAccess\.ts$/ },
 	{ read: /\b(local|session)Storage\b/, allowed: /^(workspace|preferences)\/storage\.ts$/ },
 	{ read: /\bcrypto\./, allowed: /^ports\/IdAccess\.ts$/ },
 	// `window.print()`, or `print()` alone, but not a port's `printer.print()`.

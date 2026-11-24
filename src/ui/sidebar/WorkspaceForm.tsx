@@ -8,6 +8,7 @@ import type { SaveFailure } from '../../workspace/storage'
 import { openProject, type Workspace } from '../../workspace/Workspace'
 import { layoutView } from '../layouts/registry'
 import type { MainContent } from '../main/mainContent'
+import { usePorts } from '../ports'
 import type { UpdateLayoutOptions } from '../useWorkspace'
 import { OpenSectionsContext, type OpenSections } from './openSections'
 import { ProjectSection } from './ProjectSection'
@@ -47,8 +48,12 @@ interface LayoutFormProps<K extends LayoutId> {
  */
 function LayoutForm<K extends LayoutId>({ layout, options, onUpdate }: LayoutFormProps<K>) {
 	const Form = layoutView(layout).Form
+	const { environment } = usePorts()
 	// Fresh defaults hold today's year; computed once per layout, so they don't change while shown.
-	const defaults = useMemo(() => defaultLayoutOptions(layout), [layout])
+	const defaults = useMemo(
+		() => defaultLayoutOptions(layout, environment.current()),
+		[layout, environment],
+	)
 
 	function handleUpdate(patch: Patch<LayoutOptions[K]>) {
 		onUpdate(layout, patch)

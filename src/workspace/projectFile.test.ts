@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import { defaultLayoutOptions, type LayoutId } from '../layouts'
+import { TEST_ENV } from '../test/environment'
 import { LEGACY_FILE_FORMAT } from './legacy'
 import type { Project } from './Project'
 import { PROJECT_FORMAT, serializeProject } from './projectDocument'
@@ -11,7 +12,7 @@ const ID = '3f0c9a52-7d1e-4b8a-9c61-2e5f4a8b7d10'
 
 /** A weekly project named `name`, of `year`. */
 function weekly(name: string, year = 2031): Project {
-	const defaults = defaultLayoutOptions('weekly')
+	const defaults = defaultLayoutOptions('weekly', TEST_ENV)
 	return {
 		id: ID,
 		name,
@@ -44,7 +45,7 @@ describe('parseProjectFile', () => {
 	it('opens a serialized project, keeping its id and name whatever the file’s name', () => {
 		const project = weekly('Work')
 		const text = projectFile(project).text
-		expect(parseProjectFile(text, 'calendar-weekly-2031.json')).toEqual({
+		expect(parseProjectFile(text, 'calendar-weekly-2031.json', TEST_ENV)).toEqual({
 			ok: true,
 			project,
 			ignored: [],
@@ -62,7 +63,7 @@ describe('parseProjectFile', () => {
 			JSON.stringify({ format: 'something-else', version: FORMAT_VERSION }),
 		]
 		for (const text of texts) {
-			expect(parseProjectFile(text, 'other.json')).toEqual({
+			expect(parseProjectFile(text, 'other.json', TEST_ENV)).toEqual({
 				ok: false,
 				reason: 'notProject',
 			})
@@ -77,7 +78,7 @@ describe('parseProjectFile', () => {
 			{ format: LEGACY_FILE_FORMAT, layout: 'week-per-page' },
 		]
 		for (const file of files) {
-			expect(parseProjectFile(JSON.stringify(file), 'week.json')).toEqual({
+			expect(parseProjectFile(JSON.stringify(file), 'week.json', TEST_ENV)).toEqual({
 				ok: false,
 				reason: 'notProject',
 			})
@@ -91,7 +92,7 @@ describe('parseProjectFile', () => {
 			{ format: LEGACY_FILE_FORMAT, version: 5 },
 		]
 		for (const file of files) {
-			expect(parseProjectFile(JSON.stringify(file), 'quarter.json')).toEqual({
+			expect(parseProjectFile(JSON.stringify(file), 'quarter.json', TEST_ENV)).toEqual({
 				ok: false,
 				reason: 'unknownLayout',
 			})
@@ -102,7 +103,10 @@ describe('parseProjectFile', () => {
 		const [major, minor] = APP_VERSION.split('.').map(Number)
 		const data = JSON.parse(projectFile(weekly('Work')).text)
 		const later = JSON.stringify({ ...data, app: `${major}.${minor + 1}.0` })
-		expect(parseProjectFile(later, 'work.json')).toMatchObject({ ok: true, newer: true })
+		expect(parseProjectFile(later, 'work.json', TEST_ENV)).toMatchObject({
+			ok: true,
+			newer: true,
+		})
 	})
 })
 
@@ -274,7 +278,7 @@ describe('parseProjectFile of a legacy file', () => {
 				app: `${version}.0.0`,
 				...file,
 			})
-			const opened = parseProjectFile(text, 'Our calendar.json')
+			const opened = parseProjectFile(text, 'Our calendar.json', TEST_ENV)
 			expect(opened).toMatchObject({
 				ok: true,
 				project: { id: null, name: 'Our calendar', layout },
@@ -291,14 +295,16 @@ describe('parseProjectFile of a legacy file', () => {
 			version: 5,
 			layout: 'month-per-page',
 		})
-		const opened = parseProjectFile(text, 'month.json')
-		expect(opened.ok && opened.project.options).toEqual(defaultLayoutOptions('monthly'))
+		const opened = parseProjectFile(text, 'month.json', TEST_ENV)
+		expect(opened.ok && opened.project.options).toEqual(
+			defaultLayoutOptions('monthly', TEST_ENV),
+		)
 	})
 
 	it('takes the project’s name from the file’s name, unless the app generated it', () => {
 		const text = JSON.stringify({ format: LEGACY_FILE_FORMAT, version: 5, layout: 'daily' })
 		const named = (fileName: string) => {
-			const opened = parseProjectFile(text, fileName)
+			const opened = parseProjectFile(text, fileName, TEST_ENV)
 			return opened.ok && opened.project.name
 		}
 		expect(named('Work 2027.json')).toBe('Work 2027')
@@ -322,7 +328,7 @@ describe('parseProjectFile of a legacy file', () => {
 			firstHour: 25,
 			page: { margins: { top: 99 } },
 		})
-		expect(parseProjectFile(text, 'day.json')).toMatchObject({
+		expect(parseProjectFile(text, 'day.json', TEST_ENV)).toMatchObject({
 			ok: true,
 			ignored: ['page.margins.top', 'content.schedule.firstHour'],
 		})

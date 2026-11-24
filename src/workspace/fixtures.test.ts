@@ -44,7 +44,7 @@ function snapshotPath(name: string): string {
 describe('project files of every released format', () => {
 	for (const { name, text } of fixtures.filter((fixture) => fixture.name.startsWith('file-'))) {
 		it(`opens ${name}`, async () => {
-			const opened = parseProjectFile(text, name)
+			const opened = parseProjectFile(text, name, ENV)
 			expect(opened.ok).toBe(true)
 			await expect(snapshot(opened)).toMatchFileSnapshot(snapshotPath(name))
 		})
@@ -61,7 +61,7 @@ describe('stored settings of every released format before 6', () => {
 			const layouts: Partial<Record<LayoutId, unknown>> = {}
 			for (const [layout, data] of Object.entries(legacy!.layouts) as [LayoutId, unknown][]) {
 				const ignored: string[] = []
-				const options = parseOptions(layoutSpec(layout), data, ignored, ENV)
+				const options = parseOptions(layoutSpec(layout), data, ENV, ignored)
 				layouts[layout] = { options, ignored }
 			}
 			await expect(snapshot({ shown: legacy!.shown, layouts })).toMatchFileSnapshot(

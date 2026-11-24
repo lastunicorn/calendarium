@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import { applyPatch } from '../core/data'
 import { defaultLayoutOptions, LAYOUT_IDS } from '../layouts'
+import { TEST_ENV } from '../test/environment'
 import { projectOf, type Project } from './Project'
 import { parseProjectDocument, PROJECT_FORMAT, serializeProject } from './projectDocument'
 import { APP_VERSION, FORMAT_VERSION } from './version'
@@ -28,7 +29,7 @@ const CHANGED: Project[] = [
 		id: ID,
 		name: 'Wall 2030',
 		layout: 'yearly',
-		options: applyPatch(defaultLayoutOptions('yearly'), {
+		options: applyPatch(defaultLayoutOptions('yearly', TEST_ENV), {
 			calendar: { year: 2030, locale: 'de-DE', weekStart: 0 },
 			events: ['0000-12-25 Weihnachten', 'not an event'],
 			header: { title: 'Wir', subtitle: 'Zuhause', fontSize: 40 },
@@ -40,7 +41,7 @@ const CHANGED: Project[] = [
 		id: ID,
 		name: '',
 		layout: 'monthly',
-		options: applyPatch(defaultLayoutOptions('monthly'), {
+		options: applyPatch(defaultLayoutOptions('monthly', TEST_ENV), {
 			header: { title: 'Office', alignment: 'left' },
 			miniMonth: { showPreviousMonth: false, size: 'large' },
 			content: { showGridLines: false, dayNumber: { verticalAlignment: 'bottom' } },
@@ -50,7 +51,7 @@ const CHANGED: Project[] = [
 		id: ID,
 		name: '  Work  ',
 		layout: 'weekly',
-		options: applyPatch(defaultLayoutOptions('weekly'), {
+		options: applyPatch(defaultLayoutOptions('weekly', TEST_ENV), {
 			header: { alignment: 'right', showWeek: false },
 			miniMonth: { showNextMonth: true, showEvents: false },
 			content: { twoPages: true, fill: 'none', schedule: { firstHour: 6, lastHour: 22 } },
@@ -62,7 +63,7 @@ const CHANGED: Project[] = [
 		id: ID,
 		name: '日記',
 		layout: 'daily',
-		options: applyPatch(defaultLayoutOptions('daily'), {
+		options: applyPatch(defaultLayoutOptions('daily', TEST_ENV), {
 			header: { heading: 'weekday', showDayOfYear: false },
 			miniMonth: { show: false },
 			content: { fill: 'genkoYoshi', genkoYoshi: { direction: 'horizontal', guides: true } },
@@ -78,7 +79,7 @@ describe('serializeProject', () => {
 			id: ID,
 			name: 'Ours',
 			layout: 'weekly',
-			options: defaultLayoutOptions('weekly'),
+			options: defaultLayoutOptions('weekly', TEST_ENV),
 		} as const
 		const data = JSON.parse(serializeProject(project, { pretty: false }))
 		expect(data).toEqual({
@@ -123,11 +124,11 @@ describe('parseProjectDocument', () => {
 				id: ID,
 				name: '',
 				layout,
-				options: defaultLayoutOptions(layout),
+				options: defaultLayoutOptions(layout, TEST_ENV),
 			})
 			for (const pretty of [true, false]) {
 				const text = serializeProject(project, { pretty })
-				expect(parseProjectDocument(JSON.parse(text))).toEqual({
+				expect(parseProjectDocument(JSON.parse(text), TEST_ENV)).toEqual({
 					ok: true,
 					project,
 					ignored: [],
@@ -140,7 +141,7 @@ describe('parseProjectDocument', () => {
 	it('round-trips projects with other options, keeping the name as typed', () => {
 		for (const project of CHANGED) {
 			const text = serializeProject(project, { pretty: true })
-			expect(parseProjectDocument(JSON.parse(text))).toEqual({
+			expect(parseProjectDocument(JSON.parse(text), TEST_ENV)).toEqual({
 				ok: true,
 				project,
 				ignored: [],
@@ -164,13 +165,16 @@ describe('parseProjectDocument', () => {
 			document({ version: '6' }),
 		]
 		for (const data of rejected) {
-			expect(parseProjectDocument(data)).toEqual({ ok: false, reason: 'notProject' })
+			expect(parseProjectDocument(data, TEST_ENV)).toEqual({
+				ok: false,
+				reason: 'notProject',
+			})
 		}
 	})
 
 	it('rejects a layout this version doesn’t have, or none, with its own reason', () => {
 		for (const layout of ['quarterly', 'week-per-page', undefined, 42]) {
-			expect(parseProjectDocument(document({ layout }))).toEqual({
+			expect(parseProjectDocument(document({ layout }), TEST_ENV)).toEqual({
 				ok: false,
 				reason: 'unknownLayout',
 			})
@@ -179,26 +183,26 @@ describe('parseProjectDocument', () => {
 
 	it('reads a missing or invalid id as none', () => {
 		for (const id of [undefined, null, '', 'project-1', ID.toUpperCase(), 42]) {
-			const parsed = parseProjectDocument(document({ id }))
+			const parsed = parseProjectDocument(document({ id }), TEST_ENV)
 			expect(parsed.ok && parsed.project.id, String(id)).toBeNull()
 		}
 	})
 
 	it('reads a name that is not a string as none', () => {
 		for (const name of [undefined, null, 42, ['Ours'], { text: 'Ours' }]) {
-			const parsed = parseProjectDocument(document({ name }))
+			const parsed = parseProjectDocument(document({ name }), TEST_ENV)
 			expect(parsed.ok && parsed.project.name).toBe('')
 		}
 	})
 
 	it('falls back to the defaults for missing options, and lists the invalid fields by path', () => {
-		expect(parseProjectDocument(document({ options: undefined }))).toEqual({
+		expect(parseProjectDocument(document({ options: undefined }), TEST_ENV)).toEqual({
 			ok: true,
 			project: {
 				id: ID,
 				name: 'Ours',
 				layout: 'daily',
-				options: defaultLayoutOptions('daily'),
+				options: defaultLayoutOptions('daily', TEST_ENV),
 			},
 			ignored: [],
 			newer: false,
@@ -209,7 +213,7 @@ describe('parseProjectDocument', () => {
 			content: { schedule: { firstHour: 25, hourFormat: 'sundial' } },
 			page: { paperSize: 'a4', margins: { top: 99, left: 5, right: 'wide' } },
 		}
-		const parsed = parseProjectDocument(document({ options }))
+		const parsed = parseProjectDocument(document({ options }), TEST_ENV)
 		expect(parsed.ok && parsed.project.options.calendar.year).toBe(2030)
 		expect(parsed.ok && parsed.project.options.page.margins.left).toBe(5)
 		expect(parsed.ok && parsed.ignored).toEqual([
@@ -222,19 +226,24 @@ describe('parseProjectDocument', () => {
 	})
 
 	it('lists options that are not an object whole', () => {
-		const parsed = parseProjectDocument(document({ options: 'big' }))
+		const parsed = parseProjectDocument(document({ options: 'big' }), TEST_ENV)
 		expect(parsed).toMatchObject({ ok: true, ignored: ['options'] })
-		expect(parsed.ok && parsed.project.options).toEqual(defaultLayoutOptions('daily'))
+		expect(parsed.ok && parsed.project.options).toEqual(defaultLayoutOptions('daily', TEST_ENV))
 	})
 
 	// Derived from `APP_VERSION`, so the test holds whatever version `package.json` is at.
 	const [major, minor] = APP_VERSION.split('.').map(Number)
 
 	it('reports a project from a later app version of the same format version', () => {
-		const later = parseProjectDocument(document({ app: `${major}.${minor + 1}.0` }))
+		const later = parseProjectDocument(document({ app: `${major}.${minor + 1}.0` }), TEST_ENV)
 		expect(later).toMatchObject({ ok: true, newer: true })
-		expect(parseProjectDocument(document({}))).toMatchObject({ ok: true, newer: false })
-		expect(parseProjectDocument(document({ app: '0.1.0' }))).toMatchObject({ newer: false })
+		expect(parseProjectDocument(document({}), TEST_ENV)).toMatchObject({
+			ok: true,
+			newer: false,
+		})
+		expect(parseProjectDocument(document({ app: '0.1.0' }), TEST_ENV)).toMatchObject({
+			newer: false,
+		})
 	})
 
 	it('reads a project from a later format version as far as it matches, and reports it', () => {
@@ -243,6 +252,7 @@ describe('parseProjectDocument', () => {
 				version: FORMAT_VERSION + 1,
 				options: { calendar: { year: 2031 }, futureGroup: { x: 1 } },
 			}),
+			TEST_ENV,
 		)
 		expect(parsed).toMatchObject({ ok: true, newer: true, ignored: [] })
 		expect(parsed.ok && parsed.project.options.calendar.year).toBe(2031)

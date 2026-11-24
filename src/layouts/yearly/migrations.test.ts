@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
+import { TEST_ENV } from '../../test/environment'
 import { parseOptions } from '../LayoutSpec'
 import { YEARLY_MIGRATIONS } from './migrations'
 import { YEARLY_SPEC } from './options'
@@ -40,7 +41,7 @@ describe('yearly migrations', () => {
 	})
 
 	it('give options that parse, keeping every value', () => {
-		expect(parseOptions(YEARLY_SPEC, from5(options))).toMatchObject(grouped)
+		expect(parseOptions(YEARLY_SPEC, from5(options), TEST_ENV)).toMatchObject(grouped)
 	})
 
 	it('leave out a group none of the fields fill', () => {

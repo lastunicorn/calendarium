@@ -2,10 +2,11 @@ import { screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 
 import { commonDefaults } from '../../layouts/common'
+import { TEST_ENV } from '../../test/environment'
 import { renderWithSectionsOpen } from '../../test/formSections'
 import { EventsSection } from './EventsSection'
 
-const DEFAULTS = commonDefaults()
+const DEFAULTS = commonDefaults(TEST_ENV)
 
 function renderEvents(events: string[]) {
 	renderWithSectionsOpen(

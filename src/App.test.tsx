@@ -1,10 +1,12 @@
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import App from './App'
-import { currentEnvironment } from './core/environment'
 import { defaultLayoutOptions, LAYOUT_IDS } from './layouts'
+import { TEST_ENV } from './test/environment'
+import { testPorts, type TestPorts } from './test/ports'
 import { LAYOUT_VIEWS } from './ui/layouts/registry'
+import { PortsContext } from './ui/ports'
 import { LEGACY_FILE_FORMAT } from './workspace/legacy'
 import type { Project } from './workspace/Project'
 import { serializeProject } from './workspace/projectDocument'
@@ -145,9 +147,25 @@ function addProject(name: string, layout: Project['layout']) {
 	fillNewProject(name, layout)
 }
 
+/** The ports the app runs on in a test, kept across its renders, as a browser keeps them. */
+let ports: TestPorts
+
+beforeEach(() => {
+	ports = testPorts()
+})
+
+/** Renders the app on the test's ports. */
+function renderApp() {
+	return render(
+		<PortsContext value={ports}>
+			<App />
+		</PortsContext>,
+	)
+}
+
 /** Renders the app with no project. */
 function renderEmpty() {
-	return render(<App />)
+	return renderApp()
 }
 
 /** Chooses a file in the project section's hidden file input, as the open button's dialog would. */
@@ -168,12 +186,12 @@ function year(): string {
 
 /** A monthly project file of `year`, named `name`, with the id `id`. */
 function monthlyFile(id: string, name: string, year: number): string {
-	const defaults = defaultLayoutOptions('monthly')
+	const defaults = defaultLayoutOptions('monthly', TEST_ENV)
 	const options = { ...defaults, calendar: { ...defaults.calendar, year } }
 	return serializeProject({ id, name, layout: 'monthly', options }, { pretty: true })
 }
 
-const THIS_YEAR = String(currentEnvironment().year)
+const THIS_YEAR = String(TEST_ENV.year)
 
 describe('App without a project', () => {
 	it('shows Documents on a first launch, with nothing to close or print, and opens no dialog', () => {
@@ -579,7 +597,7 @@ describe('App preferences', () => {
 		await waitFor(() => expect(localStorage.getItem('calendarium-workspace')).not.toBeNull())
 
 		unmount()
-		render(<App />)
+		renderApp()
 		expect(screen.getByLabelText('Year')).not.toBeNull()
 		expect(
 			screen.getByRole('separator', { name: 'Resize sidebar' }).getAttribute('aria-valuenow'),
@@ -607,7 +625,7 @@ describe('App workspace', () => {
 		await waitFor(() => expect(localStorage.getItem('calendarium-workspace')).not.toBeNull())
 
 		unmount()
-		render(<App />)
+		renderApp()
 		expect(screen.queryByRole('dialog')).toBeNull()
 		expect(previewShown()).toBe(true)
 		expect(projectLabels()).toEqual(['Desk — Monthly', 'Home — Yearly'])
