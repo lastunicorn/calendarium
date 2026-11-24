@@ -71,3 +71,7 @@ Dialogs are `ui/components/Dialog`: a native `<dialog>` opened with `showModal` 
 ## A layout's UI
 
 Each layout's UI is one folder inside the layout's, `layouts/<layout-id>/ui/`, whose `index.ts` exports a `LayoutView` (`Component`, `Form`, short `name` and picker `label`); `ui/layouts/registry.ts` collects them in `LAYOUT_VIEWS` and exposes `layoutView(id)`. Parts several layouts draw (`Page`, `CalendarHeader`, `MiniMonth`, `usePagePlan`) stay in `ui/layouts/`, with `LayoutView` and the registry. Everything one layout has, its domain and its UI, is in its one folder, `layouts/<layout-id>/`.
+
+## Ports
+
+A component or hook that reaches outside the app does it through a port ([architecture.md](architecture.md#srcports)), taken from `PortsContext` by `usePorts()` (`ui/ports.ts`): the browser's, which `main.tsx` provides around `AppErrorBoundary` and `App` and the context gives by default, or a test's (`testPorts()`). The project toolbar's Print asks `printer.print()`.

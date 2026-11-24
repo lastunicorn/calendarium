@@ -22,6 +22,8 @@ A layout's own rules are tested in its folder (its options in `options.test.ts` 
 
 Component tests are `src/**/*.test.tsx` (Vitest `component` project: jsdom + Testing Library, setup in `src/test/setupDom.ts`); they check structure only (page counts, which form sections show, the import flow), never appearance. What a layout draws and which sections its form shows are tested next to its component and form in `layouts/<layout-id>/ui/` (`formSectionTitles` in `src/test/formSections.ts` renders a form alone). Run one project with `npx vitest run --project unit` (or `component`).
 
+A component that reaches outside the app does it through a port ([architecture.md](architecture.md#srcports)), so its test renders it under `<PortsContext value={testPorts()}>` (`src/test/ports.ts`) and reads back what the ports were asked (the printer counts its prints). A port's browser adapter is tested beside it, in the `component` project when it needs the page (`ports/PrinterAccess.test.tsx`).
+
 ## Coverage
 
 `npm run test:coverage` runs them all with V8 coverage, a summary in the terminal and the report in `coverage/index.html`, and fails below the thresholds in `vite.config.ts`'s `test.coverage`: close to full for the domain folders (`core`, a layout's own files but not its `ui/`, `workspace`, `preferences`), looser for the whole app; they sit a little under the measured values, so raise them when coverage rises and never lower them to let a change pass.

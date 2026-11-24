@@ -1,6 +1,6 @@
 # 0010. Plain records and functions: no classes, no DI
 
-- Status: Accepted
+- Status: Accepted; the repository without an interface superseded by [0015](0015-external-resources-behind-ports.md)
 - Date: 2026-10-20
 
 ## Context

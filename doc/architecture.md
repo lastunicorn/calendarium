@@ -1,10 +1,11 @@
 # Architecture
 
-Calendarium is a browser app (Vite + React + TypeScript) that generates a calendar to print on paper. This file covers how its code is organized, and `core/`, the folder every other one builds on. The other folders each have their own file:
+Calendarium is a browser app (Vite + React + TypeScript) that generates a calendar to print on paper. This file covers how its code is organized, and `core/` and `ports/`, the folders every other one builds on. The other folders each have their own file:
 
 | Folder             | Bounded context                             | Described in                               |
 | ------------------ | ------------------------------------------- | ------------------------------------------ |
 | `src/core/`        | Calendar, languages, paper (generic)        | [below](#srccore)                          |
+| `src/ports/`       | What the app needs from outside it          | [below](#srcports)                         |
 | `src/layouts/`     | What each layout is and prints (core)       | [layouts.md](layouts.md)                   |
 | `src/workspace/`   | The saved projects, storage, files, formats | [persistence.md](persistence.md)           |
 | `src/preferences/` | The viewer's own settings                   | [ui.md](ui.md#preferences)                 |
@@ -14,7 +15,7 @@ The words used for each concept are in the [glossary](glossary.md); why the main
 
 ## Layers
 
-Five folders, one per bounded context, from the bottom up: `core` ← `layouts` ← `workspace` ← `preferences` ← `ui`. Each imports only the folders below it, and only `ui/` uses React (a layout's UI, in `layouts/<layout-id>/ui/`, is `ui/`).
+Six folders, from the bottom up: `core` ← `ports` ← `layouts` ← `workspace` ← `preferences` ← `ui`, each one bounded context but `ports`, which holds what the app needs from outside it ([below](#srcports)). Each imports only the folders below it, and only `ui/` uses React (a layout's UI, in `layouts/<layout-id>/ui/`, is `ui/`). Above `ports/`, a port is imported for its types only, except by `ui/` and the files above the layers (`main.tsx`), so only they pick its adapter.
 
 ## Layouts as plugins
 
@@ -22,16 +23,17 @@ Each layout is one unit, like a plugin of the host (everything outside the layou
 
 ## The layers test
 
-`src/layers.test.ts` fails on any import that breaks these rules (`from '…'`, as an import or an export, `import '…'` or `import('…')`), and on a layout folder not named after an id in `LAYOUT_IDS`. It lists the files with `import.meta.glob`, so `vite.config.ts` keeps Vitest from caching such a module (`freshGlobs`), which would otherwise miss files added since.
+`src/layers.test.ts` fails on any import that breaks these rules (`from '…'`, as an import or an export, `import '…'` or `import('…')`; one is of types only when it says `import type` or `export type`, or marks each of its names `type`), and on a layout folder not named after an id in `LAYOUT_IDS`. It lists the files with `import.meta.glob`, so `vite.config.ts` keeps Vitest from caching such a module (`freshGlobs`), which would otherwise miss files added since.
 
 It also fails on a read of the environment outside the files allowed to make it, looked for in code, not in comments or strings, tests and their helpers in `src/test/` exempt:
 
-| Read                              | Only in                                                                     |
-| --------------------------------- | --------------------------------------------------------------------------- |
-| `new Date(`                       | `core/calendar.ts` (`utcDate`), `core/environment.ts`                       |
-| `navigator`                       | `core/environment.ts`                                                       |
-| `localStorage`, `sessionStorage`  | `workspace/storage.ts`, `preferences/storage.ts`                            |
-| `window.`, `document.` (the page) | `ui/`, a layout's `ui/` folder, and the files above the layers (`main.tsx`) |
+| Read                              | Only in                                                                                           |
+| --------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `new Date(`                       | `core/calendar.ts` (`utcDate`), `core/environment.ts`                                             |
+| `navigator`                       | `core/environment.ts`                                                                             |
+| `localStorage`, `sessionStorage`  | `workspace/storage.ts`, `preferences/storage.ts`                                                  |
+| `window.print`, `print()`         | `ports/PrinterAccess.ts`                                                                          |
+| `window.`, `document.` (the page) | `ui/`, a layout's `ui/` folder, the files above the layers (`main.tsx`), `ports/PrinterAccess.ts` |
 
 Import cycles are left to lint: oxlint's `import/no-cycle` (`npm run lint`) fails on a cycle of value imports of any length, inside a folder too; a cycle of type imports alone is erased by the build and allowed.
 
@@ -63,3 +65,18 @@ What the app reads from where it runs, today's year and the browser's language, 
 
 - The page setup (`PageSetup`, `Margins`, their `PAGE_VALIDATORS`) is in `paper.ts`; paper sizes are described in [printing.md](printing.md).
 - The generic checks (`Validators`, `oneOf`, …) and `copyValid`, which applies a `Validators` table to untrusted data field by field, are in `validation.ts`.
+
+## `src/ports/`
+
+What the app needs from outside it: each external resource it reaches, behind a port named and shaped after the need, not after what fulfills it, so that two needs one resource meets are two ports. See [ADR 0015](adr/0015-external-resources-behind-ports.md).
+
+- A port is an interface of functions in `ports/<Name>Access.ts`, beside its browser adapter, a `BROWSER_*` constant; a helper two adapters share has no `Access` suffix. `ports/index.ts` collects the ports in `Ports`, and the browser's adapters in `BROWSER_PORTS`.
+- The UI takes the ports from `PortsContext` (`ui/ports.ts`, read by `usePorts()`), which `main.tsx`, the composition root, gives `BROWSER_PORTS`; the domain gets what it needs from them as arguments. Above `ports/`, outside `ui/`, a port is imported for its types only ([the layers test](#the-layers-test)).
+- An adapter owns where things are kept (keys, the browser's names for its errors), the domain what they say (formats, versions, validation, which records to write). A port doesn't throw: its adapter names a failure, or drops it where the app needn't know.
+- Tests give the app `testPorts()` (`src/test/ports.ts`), whose ports record what they are asked and reach nothing outside the test; each browser adapter is tested beside it.
+
+| Port            | The need                                | Browser adapter                     |
+| --------------- | --------------------------------------- | ----------------------------------- |
+| `PrinterAccess` | The pages printed, on paper or to a PDF | `BROWSER_PRINTER`: `window.print()` |
+
+The other resources are read where [the layers test](#the-layers-test) says, until each moves behind its port.

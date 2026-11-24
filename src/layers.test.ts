@@ -3,10 +3,12 @@ import { describe, expect, it } from 'vitest'
 import { LAYOUT_IDS } from './layouts'
 
 // The folders, from the bottom up. Each may import only itself and the folders below it:
-// `core/` (generic: calendar, languages, paper) ← `layouts/` (each layout's options, rules and
-// pages) ← `workspace/` (the saved settings) ← `preferences/` (the viewer's own) ← `ui/`.
-// Only `ui/` may use React. A layout's UI, in `layouts/<layout-id>/ui/`, is in `ui/`.
-const LAYERS = ['core', 'layouts', 'workspace', 'preferences', 'ui'] as const
+// `core/` (generic: calendar, languages, paper) ← `ports/` (what the app needs from outside it) ←
+// `layouts/` (each layout's options, rules and pages) ← `workspace/` (the saved settings) ←
+// `preferences/` (the viewer's own) ← `ui/`. Only `ui/` may use React. A layout's UI, in
+// `layouts/<layout-id>/ui/`, is in `ui/`. Above `ports/`, only `ui/` and the files above the layers
+// (`main.tsx`) may import a port's adapters; the others import its types only.
+const LAYERS = ['core', 'ports', 'layouts', 'workspace', 'preferences', 'ui'] as const
 
 // Each layout is one unit, like a plugin of the host (everything outside the layouts' folders):
 // its files import only their own layout's files and the host's, and the host knows a layout only
@@ -57,11 +59,15 @@ function resolve(file: string, specifier: string): string | null {
 	return FILES.some((source) => source.startsWith(`${path}/`)) ? `${path}/index` : path
 }
 
-/** An import of one file, with the path from `src/` it resolves to (`null` for a package). */
+/**
+ * An import of one file, with the path from `src/` it resolves to (`null` for a package), and
+ * whether it imports types only.
+ */
 interface Import {
 	file: string
 	specifier: string
 	target: string | null
+	typeOnly: boolean
 }
 
 /** An import's specifier, in `from '…'` (an import or an export), `import '…'` or `import('…')`. */
@@ -72,13 +78,49 @@ function specifiers(source: string): string[] {
 	return [...source.matchAll(IMPORT)].map(([, specifier]) => specifier)
 }
 
+/**
+ * An import or export statement from `'…'`: whether it says `type` before its names, the names
+ * (`{ … }`, a default one, maybe followed by `{ … }`, or `*`), and the specifier.
+ */
+const STATEMENT =
+	/\b(?:import|export)\s+(type\s+)?(\{[^}]*\}|[\w$]+(?:\s*,\s*\{[^}]*\})?|\*(?:\s+as\s+[\w$]+)?)\s*from\s*'([^']+)'/g
+
+/** Whether the names a statement imports, `{ type A, type B }`, are each marked as a type. */
+function typeNamesOnly(names: string): boolean {
+	if (!names.startsWith('{')) return false
+	const each = names
+		.slice(1, -1)
+		.split(',')
+		.map((name) => name.trim())
+		.filter((name) => name !== '')
+	return each.length > 0 && each.every((name) => name.startsWith('type '))
+}
+
+/** The specifiers `source` imports types only from, in order. */
+function typeOnlySpecifiers(source: string): string[] {
+	return [...source.matchAll(STATEMENT)]
+		.filter(([, type, names]) => type !== undefined || typeNamesOnly(names))
+		.map(([, , , specifier]) => specifier)
+}
+
+/** The specifiers `source` imports, in order, each with whether it imports types only. */
+function importsOf(source: string): { specifier: string; typeOnly: boolean }[] {
+	const typeOnly = typeOnlySpecifiers(source)
+	return specifiers(source).map((specifier) => {
+		const index = typeOnly.indexOf(specifier)
+		if (index !== -1) typeOnly.splice(index, 1)
+		return { specifier, typeOnly: index !== -1 }
+	})
+}
+
 /** Every import of every file under `src/`. */
 function imports(): Import[] {
 	return FILES.flatMap((file) =>
-		specifiers(SOURCES[`./${file}`]).map((specifier) => ({
+		importsOf(SOURCES[`./${file}`]).map(({ specifier, typeOnly }) => ({
 			file,
 			specifier,
 			target: resolve(file, specifier),
+			typeOnly,
 		})),
 	)
 }
@@ -105,6 +147,35 @@ describe('layers', () => {
 		expect(specifiers(source)).toEqual(['./a', './b', './c.css', './d'])
 	})
 
+	it('reads which imports are types only', () => {
+		const source = [
+			"import type { A } from './a'",
+			"import { type B, type C } from './b'",
+			"import {\n\ttype D,\n\ttype E,\n} from './d'",
+			"import { type F, f } from './f'",
+			"import g, { type G } from './g'",
+			"import * as h from './h'",
+			"export type { I } from './i'",
+			"export { j } from './j'",
+			"export * from './k'",
+			"import './l.css'",
+			"const m = await import('./m')",
+		].join('\n')
+		expect(importsOf(source)).toEqual([
+			{ specifier: './a', typeOnly: true },
+			{ specifier: './b', typeOnly: true },
+			{ specifier: './d', typeOnly: true },
+			{ specifier: './f', typeOnly: false },
+			{ specifier: './g', typeOnly: false },
+			{ specifier: './h', typeOnly: false },
+			{ specifier: './i', typeOnly: true },
+			{ specifier: './j', typeOnly: false },
+			{ specifier: './k', typeOnly: false },
+			{ specifier: './l.css', typeOnly: false },
+			{ specifier: './m', typeOnly: false },
+		])
+	})
+
 	it('never imports a folder above its own, and uses React only in ui/', () => {
 		const rule = ({ file, specifier, target }: Import) => {
 			const layer = layerOf(file)
@@ -115,20 +186,39 @@ describe('layers', () => {
 		}
 		expect(violations(rule)).toEqual([])
 	})
+
+	it('imports a port only for its types above ports/, outside ui/', () => {
+		const rule = ({ file, target, typeOnly }: Import) => {
+			if (isTest(file) || typeOnly || target === null || !target.startsWith('ports/')) {
+				return false
+			}
+			const layer = layerOf(file)
+			return layer > LAYERS.indexOf('ports') && LAYERS[layer] !== 'ui'
+		}
+		expect(violations(rule)).toEqual([])
+	})
 })
 
 // What the app reads from where it runs is read in one place each, so the domain stays
 // deterministic and DOM-free: the clock and the browser's language by `core/environment.ts` (a
-// `Date` built only there and by `utcDate`), storage by its two repositories, and the page
-// (`window`, `document`) by `ui/` and the files above the layers (`main.tsx`). Tests, and their
-// helpers in `test/`, are exempt.
+// `Date` built only there and by `utcDate`), storage by its two repositories, the printer by its
+// port, and the page (`window`, `document`) by `ui/`, the files above the layers (`main.tsx`) and
+// the ports that need it. Tests, and their helpers in `test/`, are exempt.
 
 /** Each environment read, and the paths from `src/` allowed to make it. */
 const ENVIRONMENT_READS: { read: RegExp; allowed: RegExp }[] = [
 	{ read: /\bnew Date\(/, allowed: /^core\/(calendar|environment)\.ts$/ },
 	{ read: /\bnavigator\b/, allowed: /^core\/environment\.ts$/ },
 	{ read: /\b(local|session)Storage\b/, allowed: /^(workspace|preferences)\/storage\.ts$/ },
-	{ read: /\b(window|document)\./, allowed: /^((ui|layouts\/[^/]+\/ui)\/|[^/]+$)/ },
+	// `window.print()`, or `print()` alone, but not a port's `printer.print()`.
+	{
+		read: /\b(window|globalThis)\.print\b|(?<![.\w])print\(/,
+		allowed: /^ports\/PrinterAccess\.ts$/,
+	},
+	{
+		read: /\b(window|document)\./,
+		allowed: /^((ui|layouts\/[^/]+\/ui)\/|[^/]+$|ports\/PrinterAccess\.ts$)/,
+	},
 ]
 
 /** A comment, or a quoted string on one line, matched in one pass so neither hides the other. */

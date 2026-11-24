@@ -9,11 +9,8 @@ import {
 
 import { IconButton } from '../components/IconButton'
 import { DocumentsIcon, NewIcon, OpenIcon, PrintIcon, SaveIcon } from '../components/icons'
+import { usePorts } from '../ports'
 import styles from './ProjectToolbar.module.css'
-
-function handlePrintClick() {
-	window.print()
-}
 
 /** The label of the action button `target` is in, or empty outside a button. */
 function actionLabel(target: EventTarget): string {
@@ -52,6 +49,7 @@ export function ProjectToolbar({
 	onSave,
 	manageRef,
 }: ProjectToolbarProps) {
+	const { printer } = usePorts()
 	const fileInput = useRef<HTMLInputElement>(null)
 	const [hint, setHint] = useState('')
 
@@ -77,6 +75,10 @@ export function ProjectToolbar({
 		// Reset so choosing the same file again still fires `change`.
 		input.value = ''
 		if (file) onOpenFile(file)
+	}
+
+	function handlePrintClick() {
+		printer.print()
 	}
 
 	return (

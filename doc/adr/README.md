@@ -18,6 +18,7 @@ Each record says why one lasting decision was made, so it isn't undone by someon
 | [0012](0012-the-ui-calls-a-project-a-document.md)           | The UI calls a project a document                        | Accepted |
 | [0013](0013-the-stored-data-says-document.md)               | The stored data says document                            | Accepted |
 | [0014](0014-documents-are-managed-in-the-main-area.md)      | Documents are managed in the main area                   | Accepted |
+| [0015](0015-external-resources-behind-ports.md)             | External resources behind ports, named after the need    | Accepted |
 
 ## Writing one
 
