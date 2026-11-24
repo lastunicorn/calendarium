@@ -1,6 +1,21 @@
 import type { Ports } from '../ports'
+import type { IdAccess } from '../ports/IdAccess'
 import type { PrinterAccess } from '../ports/PrinterAccess'
 import { BROWSER_PROJECT_FILES, type ProjectFileAccess } from '../ports/ProjectFileAccess'
+
+/**
+ * Ids counting up from 1, each a lowercase v4 UUID (`00000000-0000-4000-8000-000000000001`, …), so
+ * a test can name the ones it will be given.
+ */
+export function sequentialIds(): IdAccess {
+	let made = 0
+	return {
+		newId: () => {
+			made += 1
+			return `00000000-0000-4000-8000-${String(made).padStart(12, '0')}`
+		},
+	}
+}
 
 /** A project file saved, as it would have been downloaded. */
 export interface SavedFile {
@@ -46,11 +61,16 @@ function countingPrinter(): CountingPrinter {
 
 /** The ports a test runs on: each records what it is asked, and reaches nothing outside the test. */
 export interface TestPorts extends Ports {
+	ids: IdAccess
 	projectFiles: RecordingProjectFiles
 	printer: CountingPrinter
 }
 
 /** Fresh test ports, for a test to give the app (`PortsContext`) and read back. */
 export function testPorts(): TestPorts {
-	return { projectFiles: recordingProjectFiles(), printer: countingPrinter() }
+	return {
+		ids: sequentialIds(),
+		projectFiles: recordingProjectFiles(),
+		printer: countingPrinter(),
+	}
 }

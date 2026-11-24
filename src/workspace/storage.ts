@@ -8,6 +8,7 @@ import {
 	type LayoutId,
 } from '../layouts'
 import { parseOptions } from '../layouts/LayoutSpec'
+import type { IdAccess } from '../ports/IdAccess'
 import { legacyWorkspace } from './legacy'
 import { isFromLaterVersion } from './migrations'
 import { isProjectId, newProjectId, projectOf, type Project, type ProjectId } from './Project'
@@ -106,12 +107,12 @@ function hasDefaultsBesidesYear(
 /**
  * The workspace the data of 3 to 5 (`calendarium-config`) becomes: an unnamed project of each
  * layout whose options differ from its defaults, the year aside, and always of the layout that
- * was shown, which opens; `null` when there is no such data. Written at once, the projects first
+ * was shown, which opens, each given an id from `ids`; `null` when there is no such data. Written at once, the projects first
  * and the workspace record, the marker that the migration ran, last, so the ids stay the same
  * from one load to the next and a second load (as React's StrictMode does in development) loads
  * them instead of migrating again. `calendarium-config` is left as it is.
  */
-function migrateLegacy(): Workspace | null {
+function migrateLegacy(ids: IdAccess): Workspace | null {
 	const data = asObject(storedJson(LEGACY_KEY))
 	const legacy = data === null ? null : legacyWorkspace(data)
 	if (legacy === null) return null
@@ -124,7 +125,7 @@ function migrateLegacy(): Workspace | null {
 		if (!shown && !Object.hasOwn(legacy.layouts, layout)) continue
 		const options = parseOptions(layoutSpec(layout), legacy.layouts[layout], [], env)
 		if (!shown && hasDefaultsBesidesYear(layout, options, env)) continue
-		const project = projectOf({ id: newProjectId(), name: '', layout, options })
+		const project = projectOf({ id: newProjectId(ids), name: '', layout, options })
 		projects.push(project)
 		if (shown) open = project.id
 	}
@@ -141,13 +142,13 @@ function migrateLegacy(): Workspace | null {
 /**
  * Loads the workspace: every stored project, and the open one from the workspace record, else the
  * first listed. The first time, when there is no workspace record, the data of 3 to 5 is migrated
- * (`migrateLegacy`), the one load that writes. Falls back to an empty workspace when storage is
- * unavailable.
+ * (`migrateLegacy`), the one load that writes, its projects' ids from `ids`. Falls back to an
+ * empty workspace when storage is unavailable.
  */
-export function loadWorkspace(): Workspace {
+export function loadWorkspace(ids: IdAccess): Workspace {
 	try {
 		if (localStorage.getItem(WORKSPACE_KEY) === null) {
-			const migrated = migrateLegacy()
+			const migrated = migrateLegacy(ids)
 			if (migrated !== null) return migrated
 		}
 		const record = asObject(storedJson(WORKSPACE_KEY))

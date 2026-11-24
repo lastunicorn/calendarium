@@ -10,7 +10,7 @@ It reports 235 errors: about 170 in tests (`pages.test.ts`, `calendar.test.ts`, 
 
 - a week's first day (`week[0].key`, `days[0]`, `weeks[0].map(...)`): `buildMonth` always returns 6 weeks of 7 days, and a week plan always has days;
 - a select's or radio's chosen option (`options[event.currentTarget.selectedIndex]`), always one of the options it lists;
-- the 16 bytes of `newProjectId`, the parts of a version `isLaterAppVersion` compares, `LAYOUT_IDS[0]`;
+- the 16 bytes of a new id (`ports/IdAccess.ts`), the parts of a version `isLaterAppVersion` compares, `LAYOUT_IDS[0]`;
 - the CSS Modules' class names (`styles.alignLeft`), typed as an index signature, which each `Record<Align, string>` of classes would need asserted.
 
 Each site would take a `!` and a comment saying why, or a narrowing that can never fail: noise around invariants the tests already hold, against no bug found. The few lookups by untrusted keys (`workspace.projects[id]`, `LEGACY_LAYOUT_IDS[id]`) already check `Object.hasOwn` first.

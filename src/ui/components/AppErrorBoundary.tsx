@@ -1,5 +1,6 @@
 import { Component, type ContextType, type ErrorInfo, type MouseEvent, type ReactNode } from 'react'
 
+import type { Ports } from '../../ports'
 import type { Project } from '../../workspace/Project'
 import { projectFile } from '../../workspace/projectFile'
 import { loadWorkspace } from '../../workspace/storage'
@@ -26,9 +27,9 @@ function reloadPage() {
 }
 
 /** The stored projects, in `projectList` order; none when even reading them fails. */
-function storedProjects(): Project[] {
+function storedProjects({ ids }: Ports): Project[] {
 	try {
-		return projectList(loadWorkspace())
+		return projectList(loadWorkspace(ids))
 	} catch {
 		return []
 	}
@@ -47,14 +48,13 @@ export class AppErrorBoundary extends Component<AppErrorBoundaryProps, AppErrorB
 	state: AppErrorBoundaryState = { error: null, projects: [] }
 
 	static getDerivedStateFromError(error: unknown): Partial<AppErrorBoundaryState> {
-		return {
-			error: error instanceof Error ? error : new Error(String(error)),
-			projects: storedProjects(),
-		}
+		return { error: error instanceof Error ? error : new Error(String(error)) }
 	}
 
+	// The projects are read here, not above: a static method can't reach the ports.
 	componentDidCatch(error: unknown, info: ErrorInfo) {
 		console.error('Calendarium failed to render:', error, info.componentStack)
+		this.setState({ projects: storedProjects(this.context) })
 	}
 
 	handleReloadClick = () => {

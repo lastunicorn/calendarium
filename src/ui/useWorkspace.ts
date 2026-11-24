@@ -6,6 +6,7 @@ import type { LayoutId, LayoutOptions } from '../layouts'
 import { newProjectId, type Project, type ProjectId } from '../workspace/Project'
 import { loadWorkspace, saveWorkspace, type SaveFailure } from '../workspace/storage'
 import { workspaceReducer, type WorkspaceAction } from '../workspace/workspaceReducer'
+import { usePorts } from './ports'
 
 /** Changes some of one layout's options, nested objects field by field. */
 export type UpdateLayoutOptions = <K extends LayoutId>(
@@ -15,11 +16,12 @@ export type UpdateLayoutOptions = <K extends LayoutId>(
 
 /**
  * The app's single workspace state: loaded from and saved to `localStorage`, with why the last
- * save wasn't written, `null` when it was. New projects' ids, and the environment defaults are
- * taken in, are made here, so the reducer stays pure.
+ * save wasn't written, `null` when it was. New projects' ids, from the ports, and the environment
+ * the defaults are taken in, are made here, so the reducer stays pure.
  */
 export function useWorkspace() {
-	const [workspace, dispatch] = useReducer(workspaceReducer, undefined, loadWorkspace)
+	const { ids } = usePorts()
+	const [workspace, dispatch] = useReducer(workspaceReducer, ids, loadWorkspace)
 	// Saved after each change, as what changed since the last save written: the projects loaded
 	// are already stored, and a failed save's changes are written again with the next change.
 	const saved = useRef(workspace)
@@ -37,7 +39,7 @@ export function useWorkspace() {
 	 * one is open; gives its id.
 	 */
 	function createProject(name: string, layout: LayoutId, open = true): ProjectId {
-		const id = newProjectId()
+		const id = newProjectId(ids)
 		dispatch({ type: 'createProject', id, name, layout, env: currentEnvironment(), open })
 		return id
 	}
@@ -66,7 +68,7 @@ export function useWorkspace() {
 
 	/** Adds an opened file's project, or replaces the one with its id, and opens it. */
 	function importProject(project: Project<ProjectId | null>) {
-		const id = project.id ?? newProjectId()
+		const id = project.id ?? newProjectId(ids)
 		dispatch({ type: 'importProject', project: { ...project, id } })
 	}
 

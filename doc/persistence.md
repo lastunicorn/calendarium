@@ -6,7 +6,7 @@
 
 A `Project` (`Project.ts`) is one calendar being made:
 
-- its `id` (a `ProjectId`, a lowercase v4 UUID, `isProjectId`; `newProjectId` builds one from `crypto.getRandomValues`, since `crypto.randomUUID` needs a secure context and the release zip may be served over plain HTTP);
+- its `id` (a `ProjectId`, a lowercase v4 UUID, `isProjectId`; `newProjectId(ids)` takes one from the `IdAccess` port, whose browser adapter builds it from `crypto.getRandomValues`, since `crypto.randomUUID` needs a secure context and the release zip may be served over plain HTTP);
 - its `name` (kept as typed, `''` for none, trimmed only to show it or name a file, and never printed: the printed title is `header.title`);
 - its `layout`, chosen when it is created and never changed afterwards;
 - and that layout's `options`.

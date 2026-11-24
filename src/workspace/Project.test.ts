@@ -1,6 +1,8 @@
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
 
 import { defaultLayoutOptions } from '../layouts'
+import { BROWSER_IDS } from '../ports/IdAccess'
+import { sequentialIds } from '../test/ports'
 import { isProjectId, newProjectId, projectOf, withOptions, type Project } from './Project'
 
 const ID = '3f0c9a52-7d1e-4b8a-9c61-2e5f4a8b7d10'
@@ -74,12 +76,18 @@ describe('isProjectId', () => {
 })
 
 describe('newProjectId', () => {
-	it('builds a new project id each time, without `crypto.randomUUID`', () => {
-		const randomUUID = vi.spyOn(crypto, 'randomUUID')
-		const ids = Array.from({ length: 100 }, newProjectId)
-		for (const id of ids) expect(isProjectId(id), id).toBe(true)
-		expect(new Set(ids).size).toBe(ids.length)
-		expect(randomUUID).not.toHaveBeenCalled()
-		randomUUID.mockRestore()
+	it('takes the id the port makes', () => {
+		const ids = sequentialIds()
+		expect([newProjectId(ids), newProjectId(ids)]).toEqual([
+			'00000000-0000-4000-8000-000000000001',
+			'00000000-0000-4000-8000-000000000002',
+		])
+	})
+
+	it('is a project id, from the browser’s port', () => {
+		for (let i = 0; i < 100; i += 1) {
+			const id = newProjectId(BROWSER_IDS)
+			expect(isProjectId(id), id).toBe(true)
+		}
 	})
 })
