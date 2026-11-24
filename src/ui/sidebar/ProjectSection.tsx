@@ -5,11 +5,11 @@ import { projectFile } from '../../workspace/projectFile'
 import type { SaveFailure } from '../../workspace/storage'
 import { openProject, type Workspace } from '../../workspace/Workspace'
 import { LayoutIcon } from '../components/icons'
-import { downloadFile } from '../download'
 import { ReadOnlyField } from '../fields/ReadOnlyField'
 import { TextField } from '../fields/TextField'
 import { LAYOUT_VIEWS } from '../layouts/registry'
 import type { MainContent } from '../main/mainContent'
+import { usePorts } from '../ports'
 import { OverwriteProjectDialog } from './OverwriteProjectDialog'
 import { describeSaveFailure } from './projectFileNotices'
 import styles from './ProjectSection.module.css'
@@ -53,6 +53,7 @@ export function ProjectSection({
 	onImport,
 	manageRef,
 }: ProjectSectionProps) {
+	const { projectFiles } = usePorts()
 	const project = openProject(workspace)
 	const shown = content === 'preview' ? project : null
 	const fileOpener = useProjectFileOpener(workspace.projects, onImport)
@@ -65,7 +66,7 @@ export function ProjectSection({
 	function handleToolbarSave() {
 		if (project === null) return
 		const file = projectFile(project)
-		downloadFile(file.fileName, file.text, 'application/json')
+		projectFiles.save(file.fileName, file.text)
 	}
 
 	return (

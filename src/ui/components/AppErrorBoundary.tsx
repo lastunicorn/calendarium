@@ -1,11 +1,11 @@
-import { Component, type ErrorInfo, type MouseEvent, type ReactNode } from 'react'
+import { Component, type ContextType, type ErrorInfo, type MouseEvent, type ReactNode } from 'react'
 
 import type { Project } from '../../workspace/Project'
 import { projectFile } from '../../workspace/projectFile'
 import { loadWorkspace } from '../../workspace/storage'
 import { APP_VERSION } from '../../workspace/version'
 import { projectList } from '../../workspace/Workspace'
-import { downloadFile } from '../download'
+import { PortsContext } from '../ports'
 import { projectLabel } from '../projectLabel'
 import styles from './AppErrorBoundary.module.css'
 
@@ -41,6 +41,9 @@ function storedProjects(): Project[] {
  * (`PreviewErrorBoundary`), which keeps the sidebar working.
  */
 export class AppErrorBoundary extends Component<AppErrorBoundaryProps, AppErrorBoundaryState> {
+	static contextType = PortsContext
+	declare context: ContextType<typeof PortsContext>
+
 	state: AppErrorBoundaryState = { error: null, projects: [] }
 
 	static getDerivedStateFromError(error: unknown): Partial<AppErrorBoundaryState> {
@@ -62,7 +65,7 @@ export class AppErrorBoundary extends Component<AppErrorBoundaryProps, AppErrorB
 		// Each button carries its project's index in `projects`.
 		const project = this.state.projects[Number(event.currentTarget.dataset.index)]
 		const file = projectFile(project)
-		downloadFile(file.fileName, file.text, 'application/json')
+		this.context.projectFiles.save(file.fileName, file.text)
 	}
 
 	render() {

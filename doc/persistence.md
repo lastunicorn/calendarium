@@ -65,7 +65,9 @@ Reading one:
 `projectFile.ts` keeps what is particular to files:
 
 - the file name (`projectFile`: the project's name in lowercase, whitespace and `\/:*?"<>|` as `-`, or `calendar-<layout>-<year>.json` when it has none);
-- and reading a file (`readProjectFile(file)`, refusing one over `MAX_PROJECT_FILE_SIZE`, 1 MB, unread, then `parseProjectFile(text, fileName)`, an `OpenedProjectFile`), a legacy file's project being named after the file, unless the app generated that name.
+- and reading a file (`parseProjectFile(text, fileName)`, an `OpenedProjectFile`, once `ProjectFileAccess.read` has read it, refusing one over `MAX_PROJECT_FILE_SIZE`, 1 MB, unread), a legacy file's project being named after the file, unless the app generated that name.
+
+Files are read and saved through the `ProjectFileAccess` port ([architecture.md](architecture.md#srcports)): `read` the file the user chose, `save` a project's `projectFile` through the browser's download.
 
 ## Versions
 

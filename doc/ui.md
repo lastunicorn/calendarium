@@ -27,7 +27,7 @@ The `ProjectSection`, titled Document (the UI's word for a project, [ADR 0012](a
 
 They act on the open project only beside its preview: while the main area shows Documents, Save hides, Print is disabled, and neither the name and layout nor the project's form shows, their open section kept for when the preview shows again.
 
-Opening a file of a project already kept asks first (`OverwriteProjectDialog`). `useProjectFileOpener` reads the file chosen, waits for that answer, imports it and holds what to tell about it, an error or a notice (`projectFileNotices.ts`), which the section shows under the toolbar, after why changes aren't being saved, if they aren't. The `ProjectSection` composes these parts and keeps the open project's name and layout.
+Opening a file of a project already kept asks first (`OverwriteProjectDialog`). `useProjectFileOpener` reads the file chosen (`projectFiles.read`), waits for that answer, imports it and holds what to tell about it, an error or a notice (`projectFileNotices.ts`), which the section shows under the toolbar, after why changes aren't being saved, if they aren't. The `ProjectSection` composes these parts and keeps the open project's name and layout.
 
 ### The open project's form
 
@@ -74,4 +74,4 @@ Each layout's UI is one folder inside the layout's, `layouts/<layout-id>/ui/`, w
 
 ## Ports
 
-A component or hook that reaches outside the app does it through a port ([architecture.md](architecture.md#srcports)), taken from `PortsContext` by `usePorts()` (`ui/ports.ts`): the browser's, which `main.tsx` provides around `AppErrorBoundary` and `App` and the context gives by default, or a test's (`testPorts()`). The project toolbar's Print asks `printer.print()`.
+A component or hook that reaches outside the app does it through a port ([architecture.md](architecture.md#srcports)), taken from `PortsContext` by `usePorts()` (`ui/ports.ts`): the browser's, which `main.tsx` provides around `AppErrorBoundary` and `App` and the context gives by default, or a test's (`testPorts()`). The project toolbar's Print asks `printer.print()`; Save document to a file, and the error boundary's saves, `projectFiles.save`.

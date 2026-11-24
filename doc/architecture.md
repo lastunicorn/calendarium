@@ -27,13 +27,14 @@ Each layout is one unit, like a plugin of the host (everything outside the layou
 
 It also fails on a read of the environment outside the files allowed to make it, looked for in code, not in comments or strings, tests and their helpers in `src/test/` exempt:
 
-| Read                              | Only in                                                                                           |
-| --------------------------------- | ------------------------------------------------------------------------------------------------- |
-| `new Date(`                       | `core/calendar.ts` (`utcDate`), `core/environment.ts`                                             |
-| `navigator`                       | `core/environment.ts`                                                                             |
-| `localStorage`, `sessionStorage`  | `workspace/storage.ts`, `preferences/storage.ts`                                                  |
-| `window.print`, `print()`         | `ports/PrinterAccess.ts`                                                                          |
-| `window.`, `document.` (the page) | `ui/`, a layout's `ui/` folder, the files above the layers (`main.tsx`), `ports/PrinterAccess.ts` |
+| Read                                                     | Only in                                                                                                                         |
+| -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `new Date(`                                              | `core/calendar.ts` (`utcDate`), `core/environment.ts`                                                                           |
+| `navigator`                                              | `core/environment.ts`                                                                                                           |
+| `localStorage`, `sessionStorage`                         | `workspace/storage.ts`, `preferences/storage.ts`                                                                                |
+| `window.print`, `print()`                                | `ports/PrinterAccess.ts`                                                                                                        |
+| A file's `.text()`, `createObjectURL`, `revokeObjectURL` | `ports/ProjectFileAccess.ts`                                                                                                    |
+| `window.`, `document.` (the page)                        | `ui/`, a layout's `ui/` folder, the files above the layers (`main.tsx`), `ports/PrinterAccess.ts`, `ports/ProjectFileAccess.ts` |
 
 Import cycles are left to lint: oxlint's `import/no-cycle` (`npm run lint`) fails on a cycle of value imports of any length, inside a folder too; a cycle of type imports alone is erased by the build and allowed.
 
@@ -75,8 +76,9 @@ What the app needs from outside it: each external resource it reaches, behind a 
 - An adapter owns where things are kept (keys, the browser's names for its errors), the domain what they say (formats, versions, validation, which records to write). A port doesn't throw: its adapter names a failure, or drops it where the app needn't know.
 - Tests give the app `testPorts()` (`src/test/ports.ts`), whose ports record what they are asked and reach nothing outside the test; each browser adapter is tested beside it.
 
-| Port            | The need                                | Browser adapter                     |
-| --------------- | --------------------------------------- | ----------------------------------- |
-| `PrinterAccess` | The pages printed, on paper or to a PDF | `BROWSER_PRINTER`: `window.print()` |
+| Port                | The need                                                                 | Browser adapter                                              |
+| ------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------ |
+| `ProjectFileAccess` | A project file the user chose, read unless too large; one saved for them | `BROWSER_PROJECT_FILES`: the file input's `File`, a download |
+| `PrinterAccess`     | The pages printed, on paper or to a PDF                                  | `BROWSER_PRINTER`: `window.print()`                          |
 
 The other resources are read where [the layers test](#the-layers-test) says, until each moves behind its port.

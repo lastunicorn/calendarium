@@ -8,7 +8,7 @@ import {
 	type ParsedProject,
 } from './projectDocument'
 
-/** A project file to download. */
+/** A project file to save. */
 export interface ProjectFile {
 	fileName: string
 	text: string
@@ -31,7 +31,7 @@ function projectFileName({ name, layout, options }: Project): string {
 	return base === '' ? `calendar-${layout}-${options.calendar.year}.json` : `${base}.json`
 }
 
-/** `project` as a file to download, pretty-printed and named after it. */
+/** `project` as a file to save, pretty-printed and named after it. */
 export function projectFile(project: Project): ProjectFile {
 	return {
 		fileName: projectFileName(project),
@@ -41,7 +41,8 @@ export function projectFile(project: Project): ProjectFile {
 
 /**
  * A project read from an opened file (see `ParsedProject`): its id is `null` when the file has
- * none, as a legacy one never has. A file over `MAX_PROJECT_FILE_SIZE` is refused unread.
+ * none, as a legacy one never has. A file over `MAX_PROJECT_FILE_SIZE` is refused unread
+ * (`ProjectFileAccess.read`).
  */
 export type OpenedProjectFile = ParsedProject | { ok: false; reason: 'tooLarge' }
 
@@ -83,10 +84,4 @@ export function parseProjectFile(text: string, fileName: string): OpenedProjectF
 	const fields = legacyFile(raw)
 	if (fields === null) return { ok: false, reason: 'notProject' }
 	return parseProjectFields({ ...fields, name: nameFromFileName(fileName) }, false)
-}
-
-/** Reads an opened file as a project (`parseProjectFile`), unless it is too large to be one. */
-export async function readProjectFile(file: File): Promise<OpenedProjectFile> {
-	if (file.size > MAX_PROJECT_FILE_SIZE) return { ok: false, reason: 'tooLarge' }
-	return parseProjectFile(await file.text(), file.name)
 }

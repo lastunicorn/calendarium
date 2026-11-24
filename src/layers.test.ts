@@ -201,9 +201,9 @@ describe('layers', () => {
 
 // What the app reads from where it runs is read in one place each, so the domain stays
 // deterministic and DOM-free: the clock and the browser's language by `core/environment.ts` (a
-// `Date` built only there and by `utcDate`), storage by its two repositories, the printer by its
-// port, and the page (`window`, `document`) by `ui/`, the files above the layers (`main.tsx`) and
-// the ports that need it. Tests, and their helpers in `test/`, are exempt.
+// `Date` built only there and by `utcDate`), storage by its two repositories, the printer and the
+// user's files by their ports, and the page (`window`, `document`) by `ui/`, the files above the
+// layers (`main.tsx`) and the ports that need it. Tests, and their helpers in `test/`, are exempt.
 
 /** Each environment read, and the paths from `src/` allowed to make it. */
 const ENVIRONMENT_READS: { read: RegExp; allowed: RegExp }[] = [
@@ -215,9 +215,15 @@ const ENVIRONMENT_READS: { read: RegExp; allowed: RegExp }[] = [
 		read: /\b(window|globalThis)\.print\b|(?<![.\w])print\(/,
 		allowed: /^ports\/PrinterAccess\.ts$/,
 	},
+	// A file's contents (`file.text()`), and the URL of what is downloaded.
+	{
+		read: /\.text\(\)|\b(create|revoke)ObjectURL\b/,
+		allowed: /^ports\/ProjectFileAccess\.ts$/,
+	},
 	{
 		read: /\b(window|document)\./,
-		allowed: /^((ui|layouts\/[^/]+\/ui)\/|[^/]+$|ports\/PrinterAccess\.ts$)/,
+		allowed:
+			/^((ui|layouts\/[^/]+\/ui)\/|[^/]+$|ports\/(PrinterAccess|ProjectFileAccess)\.ts$)/,
 	},
 ]
 

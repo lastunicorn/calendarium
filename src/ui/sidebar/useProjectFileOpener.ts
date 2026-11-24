@@ -1,8 +1,10 @@
 import { useState } from 'react'
 
+import type { ChosenFile } from '../../ports/ProjectFileAccess'
 import type { Project, ProjectId } from '../../workspace/Project'
-import { readProjectFile } from '../../workspace/projectFile'
+import { MAX_PROJECT_FILE_SIZE, parseProjectFile } from '../../workspace/projectFile'
 import type { Workspace } from '../../workspace/Workspace'
+import { usePorts } from '../ports'
 import { describeOpened, describeRejected, type OpenedFile } from './projectFileNotices'
 
 /** A file waiting for the user to say whether it overwrites the project with its id. */
@@ -22,7 +24,7 @@ export interface ProjectFileOpener {
 	/** The project the file chosen would overwrite, until the user says whether it does; `null` when none. */
 	overwriting: Project | null
 	/** Reads a project file and adds its project, asking first if it would overwrite one. */
-	open: (file: File) => Promise<void>
+	open: (file: ChosenFile) => Promise<void>
 	/** Overwrites the project with the waiting file's. */
 	confirmOverwrite: () => void
 	/** Keeps the project the waiting file would have overwritten. */
@@ -40,6 +42,7 @@ export function useProjectFileOpener(
 	projects: Workspace['projects'],
 	onImport: (project: Project<ProjectId | null>) => void,
 ): ProjectFileOpener {
+	const { projectFiles } = usePorts()
 	const [error, setError] = useState('')
 	const [notice, setNotice] = useState('')
 	const [pendingOverwrite, setPendingOverwrite] = useState<PendingOverwrite | null>(null)
@@ -50,8 +53,9 @@ export function useProjectFileOpener(
 		onImport(opened.project)
 	}
 
-	async function open(file: File) {
-		const opened = await readProjectFile(file)
+	async function open(file: ChosenFile) {
+		const read = await projectFiles.read(file, MAX_PROJECT_FILE_SIZE)
+		const opened = read.ok ? parseProjectFile(read.text, read.name) : read
 		setError('')
 		setNotice('')
 		if (!opened.ok) {

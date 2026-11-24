@@ -1,9 +1,13 @@
 import { act, renderHook } from '@testing-library/react'
+import type { ReactNode } from 'react'
 import { describe, expect, it, vi } from 'vitest'
 
 import { defaultLayoutOptions } from '../../layouts'
+import { testPorts } from '../../test/ports'
 import { projectOf, type Project } from '../../workspace/Project'
 import { serializeProject } from '../../workspace/projectDocument'
+import { MAX_PROJECT_FILE_SIZE, projectFile } from '../../workspace/projectFile'
+import { PortsContext } from '../ports'
 import { useProjectFileOpener } from './useProjectFileOpener'
 
 const ID = '00000000-0000-4000-8000-000000000001'
@@ -22,7 +26,11 @@ function fileOf(project: Project, fileName = 'desk.json'): File {
 function renderOpener(projects: Project[] = []) {
 	const onImport = vi.fn()
 	const kept = Object.fromEntries(projects.map((project) => [project.id, project]))
-	const { result } = renderHook(() => useProjectFileOpener(kept, onImport))
+	const ports = testPorts()
+	function Ports({ children }: { children: ReactNode }) {
+		return <PortsContext value={ports}>{children}</PortsContext>
+	}
+	const { result } = renderHook(() => useProjectFileOpener(kept, onImport), { wrapper: Ports })
 	return { opener: result, onImport }
 }
 
@@ -57,6 +65,30 @@ describe('useProjectFileOpener', () => {
 		act(() => opener.current.confirmOverwrite())
 		expect(opener.current.overwriting).toBeNull()
 		expect(onImport).toHaveBeenCalledWith(expect.objectContaining({ id: ID, name: 'Office' }))
+	})
+
+	it('reads a file of up to MAX_PROJECT_FILE_SIZE bytes', async () => {
+		const { opener, onImport } = renderOpener()
+		const { text } = projectFile(monthly('Desk'))
+		const padded = text + ' '.repeat(MAX_PROJECT_FILE_SIZE - new Blob([text]).size)
+
+		await act(() => opener.current.open(new File([padded], 'desk.json')))
+		expect(opener.current.error).toBe('')
+		expect(onImport).toHaveBeenCalledWith(expect.objectContaining({ id: ID, name: 'Desk' }))
+	})
+
+	it('refuses a larger file unread', async () => {
+		const { opener, onImport } = renderOpener()
+		const { text } = projectFile(monthly('Desk'))
+		const file = new File([text + ' '.repeat(MAX_PROJECT_FILE_SIZE)], 'desk.json')
+		const read = vi.spyOn(file, 'text')
+
+		await act(() => opener.current.open(file))
+		expect(opener.current.error).toBe(
+			'desk.json is too large to be a calendar document file (over 1 MB).',
+		)
+		expect(read).not.toHaveBeenCalled()
+		expect(onImport).not.toHaveBeenCalled()
 	})
 
 	it('says why a file isn’t a project, importing nothing, until dismissed', async () => {

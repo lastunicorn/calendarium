@@ -2,8 +2,11 @@ import { fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { defaultLayoutOptions } from '../../layouts'
+import { testPorts } from '../../test/ports'
 import type { Project } from '../../workspace/Project'
 import { serializeProject } from '../../workspace/projectDocument'
+import { projectFile } from '../../workspace/projectFile'
+import { PortsContext } from '../ports'
 import { AppErrorBoundary } from './AppErrorBoundary'
 
 const WORK: Project = {
@@ -30,11 +33,14 @@ function Broken(): never {
 	throw new Error('Something broke')
 }
 
-function renderBroken(reload = vi.fn()) {
+/** The boundary around a child that fails, on `ports`. */
+function renderBroken(reload = vi.fn(), ports = testPorts()) {
 	render(
-		<AppErrorBoundary reload={reload}>
-			<Broken />
-		</AppErrorBoundary>,
+		<PortsContext value={ports}>
+			<AppErrorBoundary reload={reload}>
+				<Broken />
+			</AppErrorBoundary>
+		</PortsContext>,
 	)
 	return reload
 }
@@ -47,7 +53,6 @@ describe('AppErrorBoundary', () => {
 
 	afterEach(() => {
 		vi.restoreAllMocks()
-		vi.unstubAllGlobals()
 	})
 
 	it('renders its children when nothing fails', () => {
@@ -81,17 +86,14 @@ describe('AppErrorBoundary', () => {
 	it('lists the stored projects, each saved to a file by its button', () => {
 		store(WORK)
 		store(HOME)
-		const createObjectURL = vi.fn(() => 'blob:project')
-		vi.stubGlobal('URL', { createObjectURL, revokeObjectURL: vi.fn() })
-		const click = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {})
-		renderBroken()
+		const ports = testPorts()
+		renderBroken(vi.fn(), ports)
 		const items = within(screen.getByRole('list')).getAllByRole('listitem')
 		expect(items.map((item) => item.firstChild!.textContent)).toEqual([
 			'Work 2027 — Weekly',
 			'Untitled — Daily',
 		])
 		fireEvent.click(screen.getByRole('button', { name: 'Save Work 2027 — Weekly to a file' }))
-		expect(click).toHaveBeenCalledOnce()
-		expect(click.mock.contexts[0]).toMatchObject({ download: 'work-2027.json' })
+		expect(ports.projectFiles.saved).toEqual([projectFile(WORK)])
 	})
 })
